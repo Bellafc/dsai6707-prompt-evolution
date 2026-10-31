@@ -79,3 +79,18 @@ def test_vendor_extract_safe(tmp_path):
         tf.addfile(info, io.BytesIO(b""))
     with pytest.raises(SystemExit, match="unsafe"):
         extract(bad, tmp_path / "out2")
+
+
+def test_pregen_fills_cache_then_run_is_free(sandbox):
+    out = run.pregen("exp01", ["A", "D"], "dev", backend="fake")
+    assert out["A"]["new"] == out["A"]["requests"] == 6 * 3
+    again = run.run("exp01", ["A", "D"], "dev", backend="fake")
+    assert all(s["cached_fraction"] == 1.0 for s in again)  # the scored run makes no new calls
+    assert not (run.RESULTS.exists() and len(open(run.RESULTS).readlines()) > 3)  # pregen itself logs no rows
+
+
+def test_pregen_refuses_tuned_arm_and_placeholders(sandbox):
+    with pytest.raises(SystemExit, match="dev tuning"):
+        run.pregen("exp01", ["B"], "dev", backend="fake")
+    with pytest.raises(SystemExit, match="original prompts"):
+        run.pregen("exp01", ["D"], "test", backend="fake")

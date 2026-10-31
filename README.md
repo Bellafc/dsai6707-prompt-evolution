@@ -11,7 +11,9 @@
 | RQ2 | 用總經狀態找歷史類比，能不能比敘事相似度更準地預測資產反應？ | exp02：擴展時間窗檢索，只用當時已知的資料（point-in-time） | 5 | P1 |
 | RQ3 | 多學派合成的機率預測，在模型訓練之後才結算的真實總經結果上，是否比單一學派、prompt 學派更好？是否校準、一致？ | exp03：2025–26 已結算總經市場；exp04：一致性；exp05：即時前瞻（可選） | 6 | P0／P1／P2 |
 
-exp01 已事先登記（[`prereg/`](prereg/)，含兩份修正案）。exp02–05 的草稿在 [`research/prereg_drafts/`](research/prereg_drafts/)，要在計算任何分數之前由你登記。
+論文的知識架構沿用 pmpol 的 L0–L5 分層：三個學派是 L3（有爭議的框架，並列、不選邊），每個預測都附回溯到 L0–L4 的推理證明和分析信心（見 THESIS_DESIGN §2a）。
+
+exp01 已事先登記（[`prereg/`](prereg/)，含三份修正案）。D 組（Opus 5.5）不需要 GPU，原始 prompt 和 test 事件備齊後可以先用 `mosaic pregen` 產生、之後再評分（修正案 3）。exp02–05 的草稿在 [`research/prereg_drafts/`](research/prereg_drafts/)，要在計算任何分數之前由你登記。
 
 ## 分工
 

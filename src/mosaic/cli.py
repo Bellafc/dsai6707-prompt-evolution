@@ -50,6 +50,12 @@ def main(argv: list[str] | None = None) -> int:
     rs.add_argument("--file", required=True, help="jsonl with a 'text' or 'response' field per line")
     rs.add_argument("--school", required=True)
 
+    pg = sub.add_parser("pregen", help="generate (not score) untuned arms into the cache, e.g. arm D before the freeze")
+    pg.add_argument("--exp", required=True)
+    pg.add_argument("--arms", required=True)
+    pg.add_argument("--split", choices=["dev", "test"], required=True)
+    pg.add_argument("--backend", choices=["fake"], default=None)
+    pg.add_argument("--note", default="")
     j = sub.add_parser("judge", help="LLM-as-judge on the latest A/B/C runs (exp01 secondary outcome)")
     j.add_argument("--exp", required=True)
     j.add_argument("--split", choices=["dev", "test"], required=True)
@@ -73,7 +79,7 @@ def main(argv: list[str] | None = None) -> int:
 
     a = ap.parse_args(argv)
     if a.cmd == "freeze" or (a.cmd == "run" and (a.final or a.allow_rerun)) or \
-            (a.cmd == "judge" and a.split == "test"):
+            (a.cmd in ("judge", "pregen") and a.split == "test"):
         human_gate(a.exp)
     if a.cmd == "doctor":
         from mosaic.doctor import doctor
@@ -96,6 +102,12 @@ def main(argv: list[str] | None = None) -> int:
         probs = locks.verify(a.exp)
         print("\n".join(probs) or "lock OK")
         return 1 if probs else 0
+    if a.cmd == "pregen":
+        from mosaic.run import pregen
+        if a.split == "test" and a.backend:
+            raise SystemExit("no fake backend on the test split")
+        pregen(a.exp, a.arms.split(","), a.split, backend=a.backend, note=a.note)
+        return 0
     if a.cmd == "judge":
         from mosaic.judge import judge
         if a.split == "test" and (a.limit or a.backend):

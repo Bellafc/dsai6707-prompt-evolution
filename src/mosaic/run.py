@@ -99,6 +99,62 @@ def make_backends(cfg: dict, arms: list[str], kind: str | None, cache: Cache) ->
     return out
 
 
+def build_requests(cfg: dict, arm: str, events, schools: list[str], systems: dict, user_t: str,
+                   p: dict) -> tuple[list[Request], list]:
+    """The exact requests an arm sends for these events (shared by run and pregen, so cache keys match)."""
+    acfg = cfg["arms"].get(arm, {})
+    pools = {}
+    if arm == "B":
+        pools = {s: load_trajectories(Path(p["trajectories_dir"]) / f"{s}.jsonl", s) for s in schools}
+    reqs, meta = [], []
+    for ev in events:
+        for s in schools:
+            exemplars = (pick_exemplars(pools[s], ev, int(acfg.get("k", 3)), acfg.get("strategy", "random"),
+                                        int(cfg["sampling"].get("seed", 0)), acfg.get("max_chars"))
+                         if arm == "B" else None)
+            system = systems[s]
+            if arm == "B" and acfg.get("extra_dir"):  # optional extra school guidance, few-shot arm only
+                extra = ROOT / acfg["extra_dir"] / f"{s}.txt"
+                if extra.exists():
+                    system = system.rstrip() + "\n\n" + extra.read_text(encoding="utf-8").strip()
+            msgs = build_messages(arm, s, ev, system=system, user_template=user_t, exemplars=exemplars)
+            reqs.append(Request(msgs, adapter=s if arm == "C" else None, tag=f"{arm}|{s}|{ev.id}"))
+            meta.append((ev, s))
+    return reqs, meta
+
+
+PREGEN_ARMS = ("A", "C", "D", "T")  # inputs fixed by the prereg; never B (tuned on dev)
+
+
+def pregen(exp: str, arms: list[str], split: str, *, backend: str | None = None, note: str = "") -> dict:
+    """Generate (not score) the outputs of untuned arms into the cache, e.g. arm D on the human's subscription
+    before the freeze (prereg/exp01_amendment_3.md). The final run later reads them back with zero new calls,
+    because the cache key is the exact model, messages and sampling. Nothing is scored or written to runs/."""
+    bad = [a for a in arms if a not in PREGEN_ARMS]
+    if bad:
+        raise SystemExit(f"pregen only for arms {PREGEN_ARMS}; not {bad} (B depends on dev tuning)")
+    cfg = copy.deepcopy(load_toml(ROOT / f"configs/{exp}.toml"))
+    schools, p = list(SCHOOLS), paths()
+    prompts_dir = ROOT / "configs/prompts"
+    user_t = read_prompt("user_template.txt", prompts_dir)
+    systems = {s: read_prompt(f"{s}.system.txt", prompts_dir) for s in schools}
+    if split == "test" and any(has_placeholder(t) for t in [user_t, *systems.values()]):
+        raise SystemExit("restore the original prompts first: a placeholder prompt would waste the generations")
+    events = load_events(Path(p["events_dir"]) / f"{split}.jsonl")
+    cache = Cache(CACHE_PATH)
+    backends = make_backends(cfg, arms, backend, cache)
+    out = {}
+    for arm in arms:
+        reqs, _ = build_requests(cfg, arm, events, schools, systems, user_t, p)
+        before = sum(1 for r in reqs if cache.get(backends[arm].key(r)))
+        if split == "test":
+            locks.log_test_access(exp, f"pregen-{arm}", note or "generation only, not scored")
+        gens = backends[arm].generate(reqs)
+        out[arm] = {"requests": len(reqs), "already_cached": before, "new": sum(not g["cached"] for g in gens)}
+        print(json.dumps({"arm": arm, "split": split, **out[arm]}))
+    return out
+
+
 def run(exp: str, arms: list[str], split: str, *, schools: list[str] | None = None, limit: int | None = None,
         overrides: list[str] | None = None, backend: str | None = None, final: bool = False,
         allow_rerun: str | None = None, note: str = "") -> list[dict]:
@@ -138,24 +194,7 @@ def run(exp: str, arms: list[str], split: str, *, schools: list[str] | None = No
     git = locks.git_state()
     summaries = []
     for arm in arms:
-        acfg = cfg["arms"].get(arm, {})
-        pools = {}
-        if arm == "B":
-            pools = {s: load_trajectories(Path(p["trajectories_dir"]) / f"{s}.jsonl", s) for s in schools}
-        reqs, meta = [], []
-        for ev in events:
-            for s in schools:
-                exemplars = (pick_exemplars(pools[s], ev, int(acfg.get("k", 3)), acfg.get("strategy", "random"),
-                                            int(cfg["sampling"].get("seed", 0)), acfg.get("max_chars"))
-                             if arm == "B" else None)
-                system = systems[s]
-                if arm == "B" and acfg.get("extra_dir"):  # optional extra school guidance, few-shot arm only
-                    extra = ROOT / acfg["extra_dir"] / f"{s}.txt"
-                    if extra.exists():
-                        system = system.rstrip() + "\n\n" + extra.read_text(encoding="utf-8").strip()
-                msgs = build_messages(arm, s, ev, system=system, user_template=user_t, exemplars=exemplars)
-                reqs.append(Request(msgs, adapter=s if arm == "C" else None, tag=f"{arm}|{s}|{ev.id}"))
-                meta.append((ev, s))
+        reqs, meta = build_requests(cfg, arm, events, schools, systems, user_t, p)
         utc = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         chash = stable_hash({"cfg": cfg, "arm": arm, "split": split, "limit": limit, "schools": schools})[:8]
         run_id = f"{exp}-{arm}-{split}-{utc}-{chash}"

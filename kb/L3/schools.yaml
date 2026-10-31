@@ -1,0 +1,56 @@
+# Schools of macroeconomic thought (L3: contested frameworks). Format follows pmpol's kb (vendor/pmpol-academic/kb).
+# L3 rule (pmpol README): frameworks that contradict each other are CITED, NOT ADOPTED, and shown side by side.
+# Macro-MOSAIC operationalises this rule: each school is a separate agent, and no stage picks a winner silently.
+# Status: proposed. Before review: add a verbatim quote from each source (pmpol rule for reviewed facts), and a
+# second person reviews. configs/judge.toml's school definitions must stay consistent with these entries.
+facts:
+  - id: school.keynesian.core
+    layer: L3
+    subject: Keynesian economics (incl. New Keynesian)
+    predicate: core_mechanisms
+    value:
+      drivers: "aggregate demand determines output and employment in the short run"
+      frictions: "sticky prices and wages; liquidity trap at the zero lower bound"
+      policy: "fiscal multiplier; countercyclical stabilisation; forward guidance (New Keynesian)"
+      typical_signals: "output gap, unemployment gap, demand shocks"
+    source:
+      title: "J. M. Keynes (1936), The General Theory of Employment, Interest and Money; J. Galí (2015), Monetary Policy, Inflation, and the Business Cycle, 2nd ed."
+      url: ""
+    admiralty: B2
+    status: proposed
+    recorded_at: 2026-10-31
+    note: contested framework (L3); cited, not adopted. Quote to be added before review.
+
+  - id: school.austrian.core
+    layer: L3
+    subject: Austrian business cycle theory
+    predicate: core_mechanisms
+    value:
+      drivers: "credit expansion that holds the market rate below the natural rate"
+      frictions: "distortion of the time structure of production (malinvestment); Cantillon effects"
+      policy: "stimulus delays the necessary liquidation; sound money"
+      typical_signals: "credit growth, term structure, capital-goods vs consumer-goods prices"
+    source:
+      title: "F. A. Hayek (1931), Prices and Production; L. von Mises (1912), The Theory of Money and Credit; R. Garrison (2001), Time and Money"
+      url: ""
+    admiralty: B2
+    status: proposed
+    recorded_at: 2026-10-31
+    note: contested framework (L3); cited, not adopted. Quote to be added before review.
+
+  - id: school.monetarist.core
+    layer: L3
+    subject: Monetarism
+    predicate: core_mechanisms
+    value:
+      drivers: "money growth drives nominal income (MV = PQ, stable velocity)"
+      frictions: "long and variable lags; output returns to its natural rate"
+      policy: "stable monetary rules rather than discretionary fine-tuning"
+      typical_signals: "M2 growth, velocity, inflation expectations"
+    source:
+      title: "M. Friedman (1968), The Role of Monetary Policy, American Economic Review 58(1); M. Friedman & A. Schwartz (1963), A Monetary History of the United States"
+      url: ""
+    admiralty: B2
+    status: proposed
+    recorded_at: 2026-10-31
+    note: contested framework (L3); cited, not adopted. Quote to be added before review.

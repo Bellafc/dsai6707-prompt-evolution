@@ -1,7 +1,8 @@
 # exp01: is fine-tuning better than prompting? (Confirmation panel question: "why fine-tune instead of CoT?")
 # Pre-registration: prereg/exp01_prompt_vs_sft.md. Frozen by `mosaic freeze --exp exp01` before the test run.
 
-prereg = ["prereg/exp01_prompt_vs_sft.md", "prereg/exp01_amendment_1.md", "prereg/exp01_amendment_2.md"]
+prereg = ["prereg/exp01_prompt_vs_sft.md", "prereg/exp01_amendment_1.md", "prereg/exp01_amendment_2.md",
+          "prereg/exp01_amendment_3.md"]
 
 [model]
 base = "Qwen/Qwen2.5-7B-Instruct"
