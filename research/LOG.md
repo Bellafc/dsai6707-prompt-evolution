@@ -165,3 +165,19 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
 ## For the human (2026-10-31, Task 2)
 - 35 個 FRED 指標的確切清單不在 repo 裡（Confirmation 只寫類別）。`configs/exp03_indicators.toml` 前 25 個是我依類別
   對應的 FRED id，後 10 個（group = "filler"）是猜的。請對照 episode 資料庫匯出的欄位，換成真正的 id。
+
+### 2026-10-31 18:20 UTC — infra: Task S and Task 2 in parallel (human: run autonomously, parallel OK)
+- CA-MTL-1 (volume `dy1ct9hkm0`) had no H100 or A40 at 18:06, so both pods run without a network volume
+  (200 GB pod volume each), in whatever data center RunPod picks; models are downloaded again.
+- pod start: `ivotx555nzu8ir` (mosaic-S-20261031-1820), task S, NVIDIA H100 80GB HBM3, $3.99/h, `--hours 4`,
+  push branch `agent/task-S-20261031-1820`.
+- pod start: `7bthnznndpeuxu` (mosaic-2-20261031-1820), task 2, NVIDIA A40, $0.59/h, `--hours 6`,
+  push branch `agent/task-2-20261031-1820`.
+- permission flags of #4: confirmed through the heartbeats; both agents run their allowed commands (the few
+  denials were `sed`, `python -c` and `ls` outside the repository, as intended).
+
+### 2026-10-31 20:21 UTC — infra: Task 2 pod finished and stopped itself
+- pod stop: `7bthnznndpeuxu` (task 2, A40, $0.59/h) ended its session at 20:21 UTC with READY FOR HUMAN:
+  register exp03, pushed `agent/task-2-20261031-1820` and stopped itself; ≈ 2 h, ≈ $1.2.
+- merged as #5 (orchestrator checks: 49 passed, 13 skipped for the pmpol archive, 0 failed; no measurement
+  files touched).
