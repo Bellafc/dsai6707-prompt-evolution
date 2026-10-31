@@ -51,3 +51,10 @@
 
 - decision (human): the Confirmation LaTeX source and slides are not kept; the thesis and new slides are written
   from scratch, with the report's content taken from `docs/project/confirmation/jft_confirmation_final.{pdf,txt}`.
+
+### 2026-10-31 05:29 UTC — infra: first orchestrated pod (Task 2)
+- change: `src/mosaic/runpod.py` sends an explicit User-Agent (Cloudflare blocked urllib's default, error 1010).
+- pod start: `4px2qrufhfwxzj` (mosaic-2-20261031-0529), task 2 (exp03 data build), NVIDIA A40, $0.59/h,
+  `--hours 2`, no network volume (200 GB pod volume), push branch `agent/task-2-20261031-0529`.
+- why task 2 first: cheapest useful smoke test of the RunPod secrets and bootstrap; Task S (80 GB) follows once
+  a network volume exists.
