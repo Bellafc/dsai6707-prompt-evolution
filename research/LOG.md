@@ -58,3 +58,10 @@
   `--hours 2`, no network volume (200 GB pod volume), push branch `agent/task-2-20261031-0529`.
 - why task 2 first: cheapest useful smoke test of the RunPod secrets and bootstrap; Task S (80 GB) follows once
   a network volume exists.
+
+### 2026-10-31 08:27 UTC — infra: network volume and Task S pod (parallel with Task 2, human OK)
+- volume: `dy1ct9hkm0` (mosaic-volume, 200 GB, CA-MTL-1; chosen from RunPod's public stock data: H100 80GB
+  and A40 High in the same data center).
+- pod start: `3wiqxmzq8f05mg` (mosaic-S-20261031-0827), task S, NVIDIA H100 80GB HBM3, $3.99/h, `--hours 4`,
+  volume `dy1ct9hkm0`, push branch `agent/task-S-20261031-0827`. Started with `--allow-parallel` because the
+  human allowed it while the Task 2 pod (`4px2qrufhfwxzj`) was still running past its expected end.
