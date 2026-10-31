@@ -27,6 +27,10 @@ stop_pod() {
   log "WARNING: the pod could not stop itself; the orchestrator must run: python -m mosaic pod stop $POD"
 }
 
+# Hard cap on the pod's life, whatever hangs (setup, the session, a push): $MOSAIC_MAX_HOURS + 2 h, then stop.
+CAP_S=$(awk -v h="${MOSAIC_MAX_HOURS:-4}" 'BEGIN { print int(h * 3600) + 7200 }')
+( sleep "$CAP_S"; log "WATCHDOG: lifetime cap of ${CAP_S} s reached"; stop_pod ) &
+
 if [ -f "$DONE" ]; then log "this pod already finished ($DONE)"; stop_pod; exit 0; fi
 for v in CLAUDE_CODE_OAUTH_TOKEN GITHUB_TOKEN MOSAIC_TASK MOSAIC_PUSH_BRANCH MOSAIC_MAX_HOURS; do
   val="${!v:-}"
@@ -77,7 +81,7 @@ if [ -d /workspace/assets ]; then
 fi
 
 log "setup (EXTRA_MODELS='${EXTRA_MODELS:-}')"
-EXTRA_MODELS="${EXTRA_MODELS:-}" bash setup/runpod_setup.sh </dev/null || log "setup reported problems (see above)"
+EXTRA_MODELS="${EXTRA_MODELS:-}" timeout 90m bash setup/runpod_setup.sh </dev/null || log "setup reported problems (see above)"
 # shellcheck disable=SC1091
 source /workspace/venv/bin/activate 2>/dev/null || true
 export PATH="$HOME/.local/bin:$PATH"
