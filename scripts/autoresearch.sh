@@ -10,10 +10,15 @@ source /workspace/venv/bin/activate 2>/dev/null || true
 mkdir -p logs
 BUDGET="${BUDGET_USD:-25}"
 LOG="logs/session-$(date -u +%Y%m%dT%H%M%SZ).jsonl"
+TASK_HINT=""
+if [ -n "${MOSAIC_TASK:-}" ]; then  # set by `mosaic pod create` (ops/ORCHESTRATOR.md)
+  TASK_HINT=" This pod session is for program.md Task ${MOSAIC_TASK} only (hard limit ${MOSAIC_MAX_HOURS:-?} h). \
+Commit after every logged step; the bootstrap script pushes your commits when the session ends."
+fi
 echo "session log: $LOG  (agent budget ${BUDGET} USD)"
 claude -p "Read CLAUDE.md, program.md and research/LOG.md. Continue the auto-research loop from where the log stops, \
-following program.md exactly. Stop at the hand-off, when a program.md budget is reached, or when only the human \
-can unblock you (write what you need under 'For the human' in research/LOG.md)." \
+following program.md exactly.${TASK_HINT} Stop at the hand-off, when a program.md budget is reached, or when only \
+the human can unblock you (write what you need under 'For the human' in research/LOG.md)." \
   --permission-mode acceptEdits \
   --max-budget-usd "$BUDGET" \
   --output-format stream-json --verbose | tee "$LOG"

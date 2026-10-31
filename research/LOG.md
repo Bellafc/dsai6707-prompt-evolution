@@ -28,3 +28,11 @@
   commit；必須在任何 A/B/C 的 test 輸出（含 pregen）之前。
 - D7（Qwen3-8B 主力 + Qwen3.5-27B 前沿）確認後，把 `research/backlog.md` 的 `train` 列狀態改成 `go`。
 - D10：exp06 做 Part I+II（預設）還是只做 Part I。
+
+### 2026-10-31 — infra: orchestrated RunPod workflow
+- change: `mosaic pod list|get|create|stop|start|terminate|volumes|volume-create` (RunPod REST, standard library;
+  no key in code: network secret on the Claude Code environment, RunPod secrets for the pod's tokens);
+  `scripts/pod_bootstrap.sh` (setup → one agent session for `$MOSAIC_TASK` under a hard time limit → push to an
+  `agent/...` branch → stop the pod; task `H` = a pod for the human); `ops/ORCHESTRATOR.md`; program.md rule 8.
+- state: 32 offline tests pass. Not yet tried against the real RunPod API (first `pod create` = Task S).
+- next: the human does the one-time setup in `ops/ORCHESTRATOR.md`, then the orchestrator starts Task S.

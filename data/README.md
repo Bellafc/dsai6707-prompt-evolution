@@ -9,4 +9,7 @@
 | `data/legacy/{base,sft}_<school>.jsonl` | optional: the Confirmation's saved generations, `{"text": …}` per line | Task 0 parity |
 
 `mosaic doctor` checks all of this, including that dev and test share no ids or texts.
+
+On RunPod with a network volume, upload the assets once to `/workspace/assets/{events,trajectories,episodes,legacy}/`;
+`scripts/pod_bootstrap.sh` links each of them into `data/` of the checkout on the volume (`/workspace/polyu`).
 Upload from your machine with `runpodctl send <path>` / `runpodctl receive <code>`, or `scp` to the pod's SSH port.

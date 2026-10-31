@@ -20,10 +20,17 @@ exp01 已事先登記（[`prereg/`](prereg/)，含三份修正案）。Confirmat
 - **Agent（Claude Code，無人值守）**：照 [`program.md`](program.md) 做 dev 和校準資料上的工作：parity 檢查、調 few-shot 組、建 exp03 資料集、實作和測試。每一步都記在 [`research/LOG.md`](research/LOG.md)，產出記在 [`research/AI_USE_LEDGER.md`](research/AI_USE_LEDGER.md)。agent 不寫論文內文。
 - **你**：提供資料和原始 prompt、做設計決策（THESIS_DESIGN §8）、登記、凍結、跑 test（`scripts/final.sh`）、人工評分、寫論文。凍結、跑 test 和 test 上的評審都需要在互動終端機手動確認。
 
-## 在 RunPod 上開始
+## 用 Claude Code Cloud 指揮 RunPod（建議）
+
+一個沒有 GPU 的 Claude Code cloud session 當「指揮」：用 RunPod API 開 GPU pod、看進度、關機；實驗在 pod 上由另一個
+Claude Code 照 `program.md` 跑，結束時把 commit 推到 `agent/...` 分支、自己關機，由你合併。一次性設定（RunPod
+secrets、network volume、Claude Code 環境的 network secret）和指揮的規則見 [`ops/ORCHESTRATOR.md`](ops/ORCHESTRATOR.md)。
+金鑰不進 repo、不貼進對話。
+
+## 手動在 RunPod 上開始
 
 ```bash
-cd /workspace && git clone https://github.com/alexanderkong-arch/PolyU polyu && cd polyu && git checkout exp-env
+cd /workspace && git clone https://github.com/alexanderkong-arch/PolyU polyu && cd polyu
 bash setup/runpod_setup.sh                 # venv、vLLM、Claude Code、下載 Qwen3-8B（約 16 GB）
 # 想同時準備 exp01b：EXTRA_MODELS="Qwen/Qwen3-8B-Base Qwen/Qwen3.5-27B" bash setup/runpod_setup.sh
 # 上傳資料（見 data/README.md；adapter 在 pod 上用 mosaic train 重新訓練），換回原始 prompt 和關鍵字表
@@ -47,7 +54,8 @@ src/mosaic/                 框架：data、prompts、backends（vLLM+LoRA / Cla
                             judge、stats、run、report、locks、vendor
 experiments/results.tsv     每一次跑分一列（只增不刪）
 locks/                      凍結紀錄與 test 存取紀錄
-scripts/                    autoresearch.sh（agent）、final.sh（人）
+scripts/                    autoresearch.sh（agent）、pod_bootstrap.sh（pod 開機流程）、final.sh（人）
+ops/ORCHESTRATOR.md         指揮 session 的規則與一次性設定
 ```
 
 `pmpol-academic-2026-10-21.tar.gz` 是團隊的預測市場系統，exp03 的資料會用到（`python -m mosaic vendor` 解壓到 `vendor/`）；論文裡要標明它是團隊程式碼。

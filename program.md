@@ -30,7 +30,9 @@ this file → `research/backlog.md` → the end of `research/LOG.md` (to resume 
    draft) gets one line in `research/AI_USE_LEDGER.md`: date, what, files, how a human can verify it.
 7. **No thesis prose.** You write code, data cards, result tables and factual summaries. You do not draft thesis
    chapters, abstracts or the GSB/2B synopsis (PolyU GenAI rules; see THESIS_DESIGN §6).
-8. **Commit** after each logged iteration (`git add -A && git commit -m "<exp>: <change> (<run_id>)"`). Never push.
+8. **Commit** after each logged iteration (`git add -A && git commit -m "<exp>: <change> (<run_id>)"`). Never push:
+   on a pod started by the orchestrator (`ops/ORCHESTRATOR.md`), `scripts/pod_bootstrap.sh` pushes your commits
+   to the pod's `agent/...` branch when the session ends, and the human merges.
 9. **No leakage.** Do not open `data/events/test.jsonl`. Inputs to any forecast must be point-in-time (published
    on or before the forecast time). No news or text written after the forecast time.
 10. **Data etiquette.** When fetching from Kalshi, Polymarket, FRED/ALFRED: use pmpol's User-Agent, stop on HTTP

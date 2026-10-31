@@ -1,4 +1,4 @@
-"""mosaic <command>: doctor | run | report | judge* | freeze | verify | rescore | status"""
+"""mosaic <command>: doctor | run | report | judge* | freeze | verify | rescore | status | pod"""
 
 from __future__ import annotations
 
@@ -16,6 +16,44 @@ def human_gate(exp: str) -> None:
         raise SystemExit("this step needs a human at an interactive terminal (program.md, rule 1)")
     if input(f"Type the experiment id ({exp}) to confirm: ").strip() != exp:
         raise SystemExit("not confirmed")
+
+
+def pod_command(a) -> int:
+    import json
+
+    import os
+
+    from mosaic import runpod as rp
+
+    if os.environ.get("RUNPOD_POD_ID") and a.pod_cmd not in ("list", "get") and not getattr(a, "dry_run", False):
+        raise SystemExit("pod management runs in the orchestrator session only, not on a pod")
+    try:
+        if a.pod_cmd == "list":
+            for p in rp.list_pods():
+                print(rp.summary(p))
+        elif a.pod_cmd == "get":
+            print(json.dumps(rp.redact(rp.request("GET", f"/pods/{a.pod_id}")), indent=2))
+        elif a.pod_cmd in ("stop", "start"):
+            rp.request("POST", f"/pods/{a.pod_id}/{a.pod_cmd}")
+            print(f"{a.pod_cmd} requested for {a.pod_id}")
+        elif a.pod_cmd == "terminate":
+            rp.request("DELETE", f"/pods/{a.pod_id}")
+            print(f"terminated {a.pod_id} (its pod volume is gone; a network volume stays)")
+        elif a.pod_cmd == "create":
+            gpus = rp.GPU_CLASSES.get(a.gpu) or [g.strip() for g in a.gpu.split(",") if g.strip()]
+            out = rp.create(a.task, gpus=gpus, hours=a.hours, branch=a.branch, push_branch=a.push_branch,
+                            volume_id=a.volume, volume_gb=a.volume_gb, data_center=a.dc,
+                            image=a.image or rp.DEFAULT_IMAGE, cloud="COMMUNITY" if a.community else "SECURE",
+                            with_hf=a.with_hf, allow_parallel=a.allow_parallel, dry_run=a.dry_run)
+            print(json.dumps(rp.redact(out), indent=2))
+        elif a.pod_cmd == "volumes":
+            print(json.dumps(rp.request("GET", "/networkvolumes"), indent=2))
+        elif a.pod_cmd == "volume-create":
+            print(json.dumps(rp.request("POST", "/networkvolumes",
+                                        {"name": a.name, "size": a.size, "dataCenterId": a.dc}), indent=2))
+    except (rp.RunPodError, ValueError) as e:
+        raise SystemExit(str(e)) from None
+    return 0
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -77,6 +115,31 @@ def main(argv: list[str] | None = None) -> int:
     st = sub.add_parser("status", help="last rows of experiments/results.tsv")
     st.add_argument("-n", type=int, default=15)
 
+    po = sub.add_parser("pod", help="RunPod pods for the orchestrator (ops/ORCHESTRATOR.md)")
+    psub = po.add_subparsers(dest="pod_cmd", required=True)
+    psub.add_parser("list", help="all pods: id, name, status, GPU, $/h, push branch")
+    for name in ("get", "stop", "start", "terminate"):
+        psub.add_parser(name).add_argument("pod_id")
+    pc = psub.add_parser("create", help="start one GPU pod for one program.md task")
+    pc.add_argument("--task", required=True, help="program.md task id, e.g. S, 0, 1, 2, 5")
+    pc.add_argument("--hours", type=float, required=True, help="hard time limit of the agent session (<= 12)")
+    pc.add_argument("--gpu", default="80gb", help="80gb | 48gb | comma list of RunPod gpuTypeIds")
+    pc.add_argument("--volume", default=None, help="network volume id (persistent /workspace); recommended")
+    pc.add_argument("--volume-gb", type=int, default=200, help="pod volume size when no network volume is given")
+    pc.add_argument("--dc", default=None, help="data center id (must match the network volume's)")
+    pc.add_argument("--branch", default="main", help="branch the pod checks out")
+    pc.add_argument("--push-branch", default=None, help="agent/... branch the pod pushes to")
+    pc.add_argument("--image", default=None)
+    pc.add_argument("--community", action="store_true", help="community cloud instead of secure cloud")
+    pc.add_argument("--with-hf", action="store_true", help="also pass the hf_token RunPod secret")
+    pc.add_argument("--allow-parallel", action="store_true")
+    pc.add_argument("--dry-run", action="store_true", help="print the request without calling RunPod")
+    psub.add_parser("volumes", help="list network volumes")
+    pv = psub.add_parser("volume-create", help="create a network volume")
+    pv.add_argument("--name", default="mosaic")
+    pv.add_argument("--size", type=int, default=200, help="GB")
+    pv.add_argument("--dc", required=True, help="data center id, e.g. one that has H100/A100 80GB")
+
     a = ap.parse_args(argv)
     if a.cmd == "freeze" or (a.cmd == "run" and (a.final or a.allow_rerun)) or \
             (a.cmd in ("judge", "pregen") and a.split == "test"):
@@ -134,6 +197,8 @@ def main(argv: list[str] | None = None) -> int:
         from mosaic.rescore import rescore
         rescore(a.file, a.school)
         return 0
+    if a.cmd == "pod":
+        return pod_command(a)
     if a.cmd == "status":
         if not runmod.RESULTS.exists():
             print("no runs yet")
