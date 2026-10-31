@@ -90,3 +90,18 @@
 - pod start: `phe3hfe0mapatt` (mosaic-S-20261031-1402), task S, NVIDIA H100 80GB HBM3, $3.99/h, `--hours 4`,
   volume `dy1ct9hkm0` (CA-MTL-1), checks out `claude/vibrant-tesla-rqvzo1` (the fix is not on `main` yet; human
   chose this over waiting for the merge), push branch `agent/task-S-20261031-1402`.
+
+### 2026-10-31 14:16 UTC — infra: idle-proof pods; why the pod agent could not work
+- pod `phe3hfe0mapatt` (14:02, `--branch` build): setup 2 min, agent session 14:04:47–14:05:41, push to
+  `agent/task-S-20261031-1402` and self-stop all worked. The agent (logged there) was denied every Bash call
+  ("This command requires approval"), even `nvidia-smi`, `python -m pytest`, `git add`, which are on the allow
+  list of `.claude/settings.json`, and stopped. `claude -p` silently ignores settings files that fail
+  validation, so the project's allow and deny rules were probably never applied on the pods.
+- pod `x5vqzpo13npvwy` (14:16, `main`, $3.99/h): first heartbeat 14:16:40; agent session ended after 2 s with
+  status 1 (the human's subscription hit its usage limit then), pushed `agent/task-S-20261031-1416` (no
+  changes) and stopped itself at 14:18. Cost ≈ $0.15.
+- merged #1 (setup heredoc fix), #2 (log heartbeat to `agent/log-<pod>`), #3 (setup timeout 90 min, lifetime
+  watchdog at `--hours` + 2 h); the orchestrator now merges its own PRs (ORCHESTRATOR.md rule 4).
+- fix (this PR): `scripts/autoresearch.sh` passes the allow and deny rules of `.claude/settings.json` to
+  `claude -p` as `--allowedTools` / `--disallowedTools` (both rule spellings, `src/mosaic/runpod.py`
+  `permission_flags`), so they apply whether or not the project file is read; 36 offline tests pass.
