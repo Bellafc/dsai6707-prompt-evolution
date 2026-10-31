@@ -113,6 +113,22 @@ def main(argv: list[str] | None = None) -> int:
 
     sub.add_parser("vendor", help="extract the team's pmpol archive into vendor/")
 
+    e3 = sub.add_parser("exp03", help="exp03 data build (Task 2): fetch ground truth, build questions and contexts")
+    e3sub = e3.add_subparsers(dest="e3_cmd", required=True)
+    e3f = e3sub.add_parser("fetch", help="settled macro markets with daily prices before close (network)")
+    e3f.add_argument("--venue", choices=["kalshi", "polymarket"], required=True)
+    e3f.add_argument("--since", default="2025-05-01")
+    e3sub.add_parser("build", help="question set from the fetched markets: scenario sets, exclusions, counts (offline)")
+    e3sub.add_parser("card", help="write research/exp03_data_card.md from the built files (offline)")
+    e3sub.add_parser("contexts", help="ALFRED point-in-time panel for every question (network, cached)")
+    e3p = e3sub.add_parser("pilot", help="format-compliance pilot on <= 10 calibration questions (GPU)")
+    e3p.add_argument("--limit", type=int, default=10)
+    e3p.add_argument("--systems", default="base,K',A',M'", help="comma list of base, K, A, M (adapters), K', A', M'")
+    e3p.add_argument("--backend", choices=["fake"], default=None)
+    e3v = e3sub.add_parser("vintages", help="ALFRED values of one series as of given dates (network, cached)")
+    e3v.add_argument("--series", required=True)
+    e3v.add_argument("--dates", required=True, help="comma list of YYYY-MM-DD")
+
     st = sub.add_parser("status", help="last rows of experiments/results.tsv")
     st.add_argument("-n", type=int, default=15)
 
@@ -195,6 +211,57 @@ def main(argv: list[str] | None = None) -> int:
     if a.cmd == "vendor":
         from mosaic.vendor import extract
         extract()
+        return 0
+    if a.cmd == "exp03":
+        from mosaic import exp03_gt
+        if a.e3_cmd == "fetch":
+            n = (exp03_gt.fetch_kalshi if a.venue == "kalshi" else exp03_gt.fetch_polymarket)(since=a.since)
+            print(f"{a.venue}: {n} new settled markets")
+        if a.e3_cmd == "build":
+            import json
+            from collections import Counter
+            from mosaic import exp03_questions as eq
+            recs = []
+            for f in sorted(exp03_gt.RAW.glob("*_econ.jsonl")):
+                recs += [json.loads(x) for x in f.read_text(encoding="utf-8").splitlines() if x.strip()]
+            qs, ex = eq.build_events(recs)
+            eq.write_jsonl(qs, exp03_gt.RAW.parent / "questions.jsonl")
+            eq.write_jsonl(ex, exp03_gt.RAW.parent / "exclusions.jsonl")
+            print(f"{len(recs)} markets -> {len(qs)} questions, {len(ex)} exclusions")
+            print(json.dumps(eq.counts(qs), indent=1))
+            print(Counter(e["reason"] for e in ex).most_common())
+        if a.e3_cmd == "card":
+            import json
+            from mosaic import exp03_questions as eq
+            from mosaic.config import ROOT
+            d = exp03_gt.RAW.parent
+            rd = lambda p: [json.loads(x) for x in p.read_text("utf-8").splitlines() if x.strip()]  # noqa: E731
+            n = sum(len(rd(f)) for f in exp03_gt.RAW.glob("*_econ.jsonl"))
+            covf = d / "context_coverage.json"
+            cov = json.loads(covf.read_text("utf-8")) if covf.exists() else None
+            (ROOT / "research/exp03_data_card.md").write_text(
+                eq.card(rd(d / "questions.jsonl"), rd(d / "exclusions.jsonl"), n, cov), encoding="utf-8")
+            print("wrote research/exp03_data_card.md")
+        if a.e3_cmd == "contexts":
+            import json
+            import sys
+            from mosaic import exp03_context as ec
+            from mosaic import exp03_questions as eq
+            qs = [json.loads(x) for x in (exp03_gt.RAW.parent / "questions.jsonl").read_text("utf-8").splitlines() if x]
+            rows = ec.build_contexts(qs, log=sys.stderr)
+            eq.write_jsonl(rows, exp03_gt.RAW.parent / "contexts.jsonl")
+            cov = ec.coverage(rows)
+            (exp03_gt.RAW.parent / "context_coverage.json").write_text(json.dumps(cov, indent=1), encoding="utf-8")
+            print(f"{len(rows)} contexts; indicators with < 100% coverage:",
+                  {k: v["share"] for k, v in cov.items() if v["share"] < 1})
+        if a.e3_cmd == "pilot":
+            import json
+            from mosaic import exp03_run
+            print(json.dumps(exp03_run.pilot(a.systems.split(","), a.limit, a.backend), indent=1))
+        if a.e3_cmd == "vintages":
+            from mosaic import exp03_context
+            for d, v in exp03_context.fetch_asof(a.series, a.dates.split(",")).items():
+                print(d, v["vintage"], v["obs"][-4:])
         return 0
     if a.cmd == "rescore":
         from mosaic.rescore import rescore
