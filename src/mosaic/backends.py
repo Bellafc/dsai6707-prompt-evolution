@@ -139,8 +139,9 @@ class FakeBackend(Backend):
 class VLLMBackend(Backend):
     def __init__(self, sampling: dict, cache: Cache | None, *, base_model: str, adapters: dict[str, str],
                  max_model_len: int = 16384, gpu_memory_utilization: float = 0.90, max_lora_rank: int = 32,
-                 chat_template_kwargs: dict | None = None):
+                 chat_template_kwargs: dict | None = None, engine_kwargs: dict | None = None):
         super().__init__(sampling, cache)
+        self.engine_kwargs = dict(engine_kwargs or {})  # e.g. max_num_batched_tokens for 27B; not part of the key
         self.model_id = base_model
         self.adapters = adapters
         self.adapter_sha = {s: adapter_fingerprint(p) for s, p in adapters.items()}
@@ -163,7 +164,8 @@ class VLLMBackend(Backend):
 
             self._llm = LLM(model=self.model_id, enable_lora=bool(self.adapters), max_loras=max(1, len(self.adapters)),
                             max_lora_rank=self._opts["max_lora_rank"], max_model_len=self._opts["max_model_len"],
-                            gpu_memory_utilization=self._opts["gpu_memory_utilization"], seed=self.sampling.get("seed", 0))
+                            gpu_memory_utilization=self._opts["gpu_memory_utilization"], seed=self.sampling.get("seed", 0),
+                            **self.engine_kwargs)
         return self._llm
 
     def _generate(self, reqs):
