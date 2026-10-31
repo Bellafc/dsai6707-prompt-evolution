@@ -105,3 +105,63 @@
 - fix (this PR): `scripts/autoresearch.sh` passes the allow and deny rules of `.claude/settings.json` to
   `claude -p` as `--allowedTools` / `--disallowedTools` (both rule spellings, `src/mosaic/runpod.py`
   `permission_flags`), so they apply whether or not the project file is read; 36 offline tests pass.
+
+### 2026-10-31 (pod session, Task 2) — exp03: ground-truth fetchers and ALFRED contexts, first network contact
+- hypothesis: pmpol's politics fetchers extend to macro markets with small changes.
+- change: `src/mosaic/exp03_gt.py` (Kalshi Economics/Financials + Polymarket economy tag, scope filter, flat
+  records with strikes/rules/prices at 1, 7, 30 days before close), `src/mosaic/exp03_context.py` (ALFRED as-of
+  fetch, 12 vintages per request, cache), `configs/exp03_indicators.toml` (the 35-indicator panel),
+  `python -m mosaic exp03 fetch|vintages`, tests `tests/test_exp03_gt.py`, `tests/test_exp03_context.py`
+  (43 offline tests pass). `python -m mosaic vendor` extracted the archive; EXPORT_NOTES.md read (team code; its
+  rules: research only, tests offline, platform text not redistributed).
+- command: `python -m mosaic exp03 fetch --venue kalshi`; `python -m mosaic exp03 vintages --series UNRATE ...`
+- result: (1) Kalshi: 235 in-scope series by title; the run was stopped by **HTTP 429** after 53 markets (pmpol's
+  0.06 s pause is too fast for the historical candle endpoint). Per rule 10 no retry in the same run; pause raised
+  to 0.6 s, scope narrowed (other countries' GDP/unemployment/CPI and CPI sub-indices excluded), file is resumable.
+  (2) ALFRED works keyless: UNRATE as of 2025-09-04 ends at July (August was published 09-05), as of 09-10 at August.
+  (3) The "35 indicators" are not listed anywhere in the repository (the Confirmation names categories only): the
+  panel in `configs/exp03_indicators.toml` is 25 ids mapped from the report's categories plus 10 guessed fillers.
+- decision: keep; Kalshi fetch to be restarted once (slower), not in a loop.
+- next: restart the Kalshi fetch slowly; Polymarket; scenario-set builder with tests.
+
+### 2026-10-31 (pod session, Task 2) — exp03: data build, question set, contexts, runner, pilot
+- hypothesis: the pmpol grids and labels map Kalshi/Polymarket macro markets to ordered scenario sets; the
+  prompted and adapter systems can write per-bin probabilities in the required format.
+- change: `src/mosaic/exp03_gt.py` (whitelist `KALSHI_SERIES`, pause 0.6 s), `exp03_questions.py` (pmpol spans →
+  elementary bins, realised bin from contract results, market benchmark at 7 and 1 days, dedupe, windows, data
+  card), `exp03_context.py` (`build_contexts`, `coverage`), `exp03_run.py` (prompt, `parse_bins`, RPS, log score,
+  Brier, ECE, pools, pilot guarded to ≤ 10 calibration questions), `configs/exp03_prompts/neutral.txt` (school-
+  neutral system prompt; `configs/prompts/` is write-denied, so it lives here), CLI `mosaic exp03
+  fetch|build|contexts|card|pilot|vintages`. 62 offline tests pass.
+- command: `exp03 fetch --venue kalshi|polymarket`, `exp03 build`, `exp03 contexts`, `exp03 card`,
+  `exp03 pilot --limit 10 --systems "base,K',A',M',K,A,M"`
+- run_ids: pilot `runs/exp03-pilot-20261031T194747Z` (10 calibration questions × 3 samples)
+- result: (1) 3,757 Kalshi + Polymarket settled markets → **149 questions** (58 calibration, 91 test; counts per
+  series in `research/exp03_data_card.md`), 405 excluded events (248 out of scope, 68 duplicate listings, 59 no
+  partition, 30 labels pmpol does not read). Calibration is thin for central banks (BoE 2, ECB 1, BoC 1, RBA/BoJ/
+  Banxico/SNB 0) and GDP (2): the primary pooled test rests on US CPI/core/unemployment/Fed. (2) HTTP 429 once
+  (see above); no other refusals. Polymarket economy tag: 1,598 markets fetched. (3) Contexts: 298 rows (149 × 2
+  horizons), all 35 series return data; **TEDRATE is 1,510 days stale** (discontinued 2022) and
+  GFDEBTN/DRTSCILM/CSUSHPINSA are 99–192 days old (quarterly / lagged releases). (4) Pilot parse rates (3 samples ×
+  10 events): base 0.93, K′ 1.00, A′ 0.93, M′ 0.93, no event without a valid sample. Adapters K, A, M: **not run,
+  no adapters exist** (Task 0 `mosaic train` not done). The pilot used the placeholder `user_template.txt`, so
+  numbers are not final. Nothing was scored on any window.
+- decision: keep. Task 2 is complete except the adapter pilot; the registration needs the human decisions below.
+- next: Task 0 (adapters), then rerun `exp03 pilot --systems K,A,M`.
+- note: `pilot` reloads the vLLM engine per system and sample (~10 min each on the A40); acceptable for 10 events,
+  but a final run should reuse one engine.
+
+READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_forecasting.md`), open questions:
+1. The 35-indicator panel (25 mapped + 10 guessed ids; TEDRATE dead) — replace with the episode database's list.
+2. Calibration is only 58 events (central banks 0–2 each): is the calibration window (2025-05 → 12) long enough to
+   fit λ of pool-skill and the temperature of pool-cal, or should the window or the pooling of series change?
+3. Kalshi's "Exactly x%" ladders (KXECONSTAT*) were excluded (no tails); the same releases are covered by the KX*
+   ladders. Polymarket yielded few usable events (see card): keep as a secondary source or drop it?
+4. Bin labels follow pmpol's grid (CPI 0.1 pp): bins are coarser than the grid where a ladder lacks a strike.
+5. Scenario format "S1: 0.25" is new for the schools (trained on free-form scenario lists); the adapter pilot will
+   show whether that costs format compliance.
+6. `configs/exp03_prompts/neutral.txt` is my wording of the school-neutral arm-A style prompt: please review.
+
+## For the human (2026-10-31, Task 2)
+- 35 個 FRED 指標的確切清單不在 repo 裡（Confirmation 只寫類別）。`configs/exp03_indicators.toml` 前 25 個是我依類別
+  對應的 FRED id，後 10 個（group = "filler"）是猜的。請對照 episode 資料庫匯出的欄位，換成真正的 id。
