@@ -56,3 +56,26 @@ def test_set_dotted():
     run.set_dotted(cfg, "arms.B.k=5")
     run.set_dotted(cfg, "arms.B.strategy=category")
     assert cfg["arms"]["B"] == {"k": 5, "strategy": "category"}
+
+
+def test_vendor_extract_safe(tmp_path):
+    import io
+    import tarfile
+
+    from mosaic.vendor import extract
+
+    good = tmp_path / "good.tar.gz"
+    with tarfile.open(good, "w:gz") as tf:
+        data = b"print('hi')\n"
+        info = tarfile.TarInfo("pkg/a.py")
+        info.size = len(data)
+        tf.addfile(info, io.BytesIO(data))
+    extract(good, tmp_path / "out")
+    assert (tmp_path / "out/pkg/a.py").read_text() == "print('hi')\n"
+    bad = tmp_path / "bad.tar.gz"
+    with tarfile.open(bad, "w:gz") as tf:
+        info = tarfile.TarInfo("../evil.py")
+        info.size = 0
+        tf.addfile(info, io.BytesIO(b""))
+    with pytest.raises(SystemExit, match="unsafe"):
+        extract(bad, tmp_path / "out2")

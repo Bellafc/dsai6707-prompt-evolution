@@ -6,7 +6,8 @@ cache/ (not versioned; large).
 
   fake    deterministic, offline, for tests and dry runs
   vllm    Qwen2.5-7B-Instruct with optional LoRA adapters (one engine, adapters switched per request)
-  openai  API teacher (arm D); stops when the run's dollar budget is spent
+  openai  GPT-4o teacher (arm T); stops when the run's dollar budget is spent
+  claude  Claude Opus 5.5 through `claude -p` (arm D and the exp01 judge), on the user's subscription
 """
 
 from __future__ import annotations

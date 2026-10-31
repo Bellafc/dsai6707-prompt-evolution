@@ -14,5 +14,12 @@ mosaic run --exp "$EXP" --arms D --split test --final --note "final"   # Opus 5.
 if [ -n "${OPENAI_API_KEY:-}" ]; then mosaic run --exp "$EXP" --arms T --split test --final --note "final"; \
 else echo "arm T (GPT-4o teacher) skipped: no OPENAI_API_KEY"; fi
 echo "== 5/5 report"; mosaic report --exp "$EXP" --split test
+if [ "$EXP" = "exp01" ]; then
+  echo "== judge (amendment 2): Opus 5.5 on your plan; rerun the same command if it pauses on a usage limit"
+  mosaic judge --exp exp01 --split test && mosaic judge-report --exp exp01 --split test
+  mosaic judge-export --exp exp01 --split test
+  echo "Give reports/exp01_human_rating_sheet.csv to both raters (NOT the key file); then:"
+  echo "  mosaic judge-agree --exp exp01 --ratings rater1.csv,rater2.csv"
+fi
 git add -A experiments/ reports/ locks/ research/ && git commit -m "${EXP}: final test results"
 echo "done: push with 'git push' when you have read the report"

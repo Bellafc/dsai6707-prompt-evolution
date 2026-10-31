@@ -17,7 +17,7 @@ from pathlib import Path
 from mosaic.config import ROOT, file_sha256, load_toml, paths
 from mosaic.prompts import has_placeholder
 
-MEASUREMENT_CODE = ["src/mosaic/metrics.py", "src/mosaic/parse.py", "src/mosaic/prompts.py"]
+MEASUREMENT_CODE = ["src/mosaic/metrics.py", "src/mosaic/parse.py", "src/mosaic/prompts.py", "src/mosaic/judge.py"]
 
 
 def git_state() -> dict:
@@ -32,7 +32,8 @@ def git_state() -> dict:
 def tracked_files(exp: str) -> list[Path]:
     cfg = load_toml(ROOT / f"configs/{exp}.toml")
     prereg = cfg["prereg"] if isinstance(cfg["prereg"], list) else [cfg["prereg"]]
-    files = [ROOT / f"configs/{exp}.toml", *(ROOT / f for f in prereg), ROOT / "configs/lexicons.toml"]
+    files = [ROOT / f"configs/{exp}.toml", *(ROOT / f for f in prereg), ROOT / "configs/lexicons.toml",
+             ROOT / "configs/judge.toml"]
     files += sorted((ROOT / "configs/prompts").glob("*.txt"))
     files += [ROOT / f for f in MEASUREMENT_CODE]
     files.append(Path(paths()["events_dir"]) / "test.jsonl")

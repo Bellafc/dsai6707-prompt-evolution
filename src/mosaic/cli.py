@@ -1,4 +1,4 @@
-"""mosaic <command>: doctor | run | report | freeze | verify | status"""
+"""mosaic <command>: doctor | run | report | judge* | freeze | verify | rescore | status"""
 
 from __future__ import annotations
 
@@ -50,11 +50,30 @@ def main(argv: list[str] | None = None) -> int:
     rs.add_argument("--file", required=True, help="jsonl with a 'text' or 'response' field per line")
     rs.add_argument("--school", required=True)
 
+    j = sub.add_parser("judge", help="LLM-as-judge on the latest A/B/C runs (exp01 secondary outcome)")
+    j.add_argument("--exp", required=True)
+    j.add_argument("--split", choices=["dev", "test"], required=True)
+    j.add_argument("--limit", type=int, default=None, help="events (dev pilots only)")
+    j.add_argument("--backend", choices=["fake"], default=None)
+    jr = sub.add_parser("judge-report", help="paired comparisons of judge scores")
+    jr.add_argument("--exp", required=True)
+    jr.add_argument("--split", choices=["dev", "test"], required=True)
+    je = sub.add_parser("judge-export", help="blinded rating sheet for the two human raters")
+    je.add_argument("--exp", required=True)
+    je.add_argument("--split", choices=["dev", "test"], required=True)
+    ja = sub.add_parser("judge-agree", help="human-human and judge-human agreement")
+    ja.add_argument("--exp", required=True)
+    ja.add_argument("--ratings", required=True, help="comma list of filled rating sheets (CSV)")
+    ja.add_argument("--key", default=None)
+
+    sub.add_parser("vendor", help="extract the team's pmpol archive into vendor/")
+
     st = sub.add_parser("status", help="last rows of experiments/results.tsv")
     st.add_argument("-n", type=int, default=15)
 
     a = ap.parse_args(argv)
-    if a.cmd == "freeze" or (a.cmd == "run" and (a.final or a.allow_rerun)):
+    if a.cmd == "freeze" or (a.cmd == "run" and (a.final or a.allow_rerun)) or \
+            (a.cmd == "judge" and a.split == "test"):
         human_gate(a.exp)
     if a.cmd == "doctor":
         from mosaic.doctor import doctor
@@ -77,6 +96,28 @@ def main(argv: list[str] | None = None) -> int:
         probs = locks.verify(a.exp)
         print("\n".join(probs) or "lock OK")
         return 1 if probs else 0
+    if a.cmd == "judge":
+        from mosaic.judge import judge
+        if a.split == "test" and (a.limit or a.backend):
+            raise SystemExit("judging the test split uses the frozen config: no --limit or fake backend")
+        judge(a.exp, a.split, limit=a.limit, backend=a.backend)
+        return 0
+    if a.cmd == "judge-report":
+        from mosaic.judge import judge_report
+        judge_report(a.exp, a.split)
+        return 0
+    if a.cmd == "judge-export":
+        from mosaic.judge import judge_export
+        judge_export(a.exp, a.split)
+        return 0
+    if a.cmd == "judge-agree":
+        from mosaic.judge import judge_agree
+        judge_agree(a.exp, a.ratings.split(","), a.key)
+        return 0
+    if a.cmd == "vendor":
+        from mosaic.vendor import extract
+        extract()
+        return 0
     if a.cmd == "rescore":
         from mosaic.rescore import rescore
         rescore(a.file, a.school)

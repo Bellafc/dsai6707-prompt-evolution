@@ -1,14 +1,18 @@
 # Research backlog
 
-AUTO = the agent may start it when exp01 is waiting on the human. HUMAN = needs a decision or assets first.
+Priorities and dates follow `research/THESIS_DESIGN.md`. AUTO = the agent may work on it without asking;
+HUMAN = needs a person (assets, registration, freeze, final run, or a decision).
 
-| # | Experiment | Thesis role | Status | Needs |
-|---|---|---|---|---|
-| exp01 | Fine-tuning vs prompting (A/B/C/D) | answers the Confirmation panel question; Stage 2 justification | **active** | original prompts + lexicons (Task 0), dev/test events, trajectories, adapters |
-| exp02 | Stage 1 retrieval: semantic vs Mahalanobis, α sweep, leave-one-out over the 141 episodes; real-time (ALFRED) vs revised state vectors | Stage 1 | HUMAN | episode database export (`data/episodes/`) |
-| exp03 | Calibration data: extend `pmpol` ground truth from politics to Kalshi Economics/Financials and Polymarket economy markets; reliability, slope b per venue and horizon | Stage 3 calibration set; extends Le (2026) to economics | AUTO (code + public read-only APIs; follow pmpol's User-Agent and no-retry-on-429 rules) | network on the pod |
-| exp04 | Coherence of school forecasts on ladder markets (CPI, Fed path): ℓ1 distance to the coherent set, before/after projection (Predd et al. 2009; Shi & Zhai 2026) | Stage 3 aggregation theory | HUMAN (depends on exp03 question set) | exp03 |
-| exp05 | Prospective logging v0: Stage 2 + equal-weight aggregation forecasts on live macro markets, weekly, pre-registered | leakage-free evaluation | HUMAN (registration must be signed off) | exp03, prereg |
+| ID | Experiment | RQ / chapter | Priority | Due | Owner now | Status | Depends on |
+|---|---|---|---|---|---|---|---|
+| exp01 | Fine-tuning vs prompting (A/B/C, D = Opus 5.5, T = GPT-4o optional) + judge validation | RQ1 / Ch. 4 | **P0** | final 11-29, ratings 12-13 | AUTO (Task 0–1 on dev) | registered (+2 amendments) | assets, original prompts/lexicons |
+| exp03 | Multi-school forecasts on resolved macro markets (2025 calibration, 2026 test) | RQ3 / Ch. 6 | **P0** | registered 11-25, final 12-20 | AUTO (Task 2 data build) | draft | pmpol ground truth + ALFRED; adapters |
+| exp02 | Analogy retrieval, expanding window, point-in-time states | RQ2 / Ch. 5 | P1 | 01-31 | AUTO (Task 3, dev queries) | draft | episode DB export; human spot-check of trigger-only descriptions |
+| exp04 | Coherence (CPI MoM↔YoY, FOMC↔year-end) and projection | RQ3 / Ch. 6 | P1 | 02-07 | AUTO after exp03 registration | draft | exp03 question set |
+| exp05 | Prospective live forecasting incl. Opus 5.5 | RQ3 / Ch. 6 | P2 (go/no-go 12-01) | 03-31 | HUMAN | draft | exp03 pipeline |
+| stage4 | Allocation demo on 2025–26 events | Ch. 7 | P2 (decision D2) | — | HUMAN | not planned | D2 |
+| bench | EconCausal / EconLogicQA | Ch. 4 | P2 | — | — | dropped unless time remains | — |
 
-Related-work anchors for each item are in the thesis notes (Paleka et al. ICLR 2025/2026, ForecastBench,
-Halawi et al. 2024, Le 2026, Gebele & Matthes 2026, Shi & Zhai 2026).
+Related-work anchors: Paleka et al. (ICLR 2025, 2026), ForecastBench (ICLR 2025), Halawi et al. (NeurIPS 2024),
+Le (2026), Gebele & Matthes (2026), Shi & Zhai (2026), Predd et al. (2009), Hsieh et al. (2023),
+Khanna et al. "History Rhymes" (2025).

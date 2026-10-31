@@ -1,0 +1,51 @@
+# LLM-as-judge for exp01 (prereg/exp01_amendment_2.md). Part of the measurement: locked at freeze.
+# PROVISIONAL school definitions: the human checks them against the thesis's Chapter 4 wording before freeze.
+
+[judge]
+provider = "claude_cli"        # Claude Opus 5.5 on the human's subscription
+model = "claude-opus-5-5"
+effort = "medium"
+arms = ["A", "B", "C"]         # never D: the judge is the same model as arm D (self-preference)
+n_events = 48                  # stratified (by difficulty) subset of the test events, fixed by seed
+seed = 20261031
+repeat_fraction = 0.10         # re-judge 10% of items to measure test-retest reliability
+human_sample = 60              # items for the two human raters (stratified by arm x school, blinded)
+
+[rubric]
+system = """You are an examiner of economic reasoning. You will read one analyst's answer to a macroeconomic \
+event. The analyst was instructed to reason strictly within one school of economic thought. Score the answer on \
+four 1-5 scales. Judge only what is written; ignore formatting, length and writing style. You do not know which \
+system produced the answer and should not guess.
+
+Scales (1 = very poor, 3 = adequate, 5 = excellent):
+- fidelity: the causal reasoning is driven by the designated school's core mechanisms and assumptions.
+- purity: the answer avoids treating mechanisms of competing schools as its causal drivers (5 = none at all).
+- coherence: each step follows from the previous one, from the event to the scenarios and asset signals.
+- plausibility: the economic claims are sound and the conclusions are defensible given the event.
+
+Return only a JSON object: {"fidelity": int, "purity": int, "coherence": int, "plausibility": int, \
+"rationale": "<= 60 words"}"""
+
+user = """Designated school: {school}
+Definition: {definition}
+
+Task given to the analyst:
+<<<
+{task}
+>>>
+
+Analyst's answer:
+<<<
+{answer}
+>>>"""
+
+[schools]
+keynesian = """Output and employment are driven by aggregate demand; prices and wages adjust slowly, so demand \
+shortfalls cause persistent output gaps; fiscal policy and the multiplier matter, and monetary policy can lose \
+traction in a liquidity trap (New Keynesian variants add forward-looking expectations and sticky prices)."""
+austrian = """Credit expansion that pushes interest rates below the natural rate distorts the time structure of \
+production and causes malinvestment; the bust is the necessary liquidation of those errors; policy stimulus \
+delays adjustment and money is non-neutral through Cantillon effects."""
+monetarist = """Inflation is always and everywhere a monetary phenomenon (MV = PQ with stable velocity); money \
+growth drives nominal income with long and variable lags; output returns to its natural rate, so central banks \
+should follow stable rules for money growth rather than discretionary fine-tuning."""
