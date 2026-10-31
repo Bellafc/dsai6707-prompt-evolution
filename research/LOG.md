@@ -51,3 +51,42 @@
 
 - decision (human): the Confirmation LaTeX source and slides are not kept; the thesis and new slides are written
   from scratch, with the report's content taken from `docs/project/confirmation/jft_confirmation_final.{pdf,txt}`.
+
+### 2026-10-31 05:29 UTC — infra: first orchestrated pod (Task 2)
+- change: `src/mosaic/runpod.py` sends an explicit User-Agent (Cloudflare blocked urllib's default, error 1010).
+- pod start: `4px2qrufhfwxzj` (mosaic-2-20261031-0529), task 2 (exp03 data build), NVIDIA A40, $0.59/h,
+  `--hours 2`, no network volume (200 GB pod volume), push branch `agent/task-2-20261031-0529`.
+- why task 2 first: cheapest useful smoke test of the RunPod secrets and bootstrap; Task S (80 GB) follows once
+  a network volume exists.
+
+### 2026-10-31 08:27 UTC — infra: network volume and Task S pod (parallel with Task 2, human OK)
+- volume: `dy1ct9hkm0` (mosaic-volume, 200 GB, CA-MTL-1; chosen from RunPod's public stock data: H100 80GB
+  and A40 High in the same data center).
+- pod start: `3wiqxmzq8f05mg` (mosaic-S-20261031-0827), task S, NVIDIA H100 80GB HBM3, $3.99/h, `--hours 4`,
+  volume `dy1ct9hkm0`, push branch `agent/task-S-20261031-0827`. Started with `--allow-parallel` because the
+  human allowed it while the Task 2 pod (`4px2qrufhfwxzj`) was still running past its expected end.
+
+### 2026-10-31 08:51 UTC — infra: Task 2 pod stopped by the orchestrator
+- pod stop: `4px2qrufhfwxzj` (task 2, A40) stopped at 08:51 UTC, 3 h 21 min after creation (≈ $2.0), still RUNNING
+  well past its 2 h limit plus setup; no `agent/task-2-20261031-0529` branch was pushed.
+- state: unknown from outside (REST shows no logs). Commits, if any, stay in `/workspace/polyu` on the pod's own
+  200 GB volume (stopped, not terminated). Possible causes: slow setup, the session not ending, or a failed push.
+- next: the human reads the pod's Logs in the RunPod console (`[bootstrap ...]` lines); then decide whether to
+  start it again to push, or terminate it.
+
+### 2026-10-31 13:42 UTC — infra: Task S pod stopped; root cause of both stuck pods
+- pod stop: `3wiqxmzq8f05mg` (task S, H100, $3.99/h) stopped at 13:42 UTC after 5 h 15 min (≈ $21), no branch.
+- cause (from the pod's container log, read by the human): setup finished (models downloaded, 32 tests pass,
+  `claude` logged in with the oauth token, vLLM importable), then `setup/runpod_setup.sh` printed its closing
+  message through an unquoted heredoc. Its backticks ran `mosaic train` (error) and `claude setup-token`, which
+  waited for interactive input forever. Neither pod (task 2, task S) ever reached its agent session; the RunPod
+  secrets and the bootstrap's secret checks worked.
+- fix: quoted heredoc, setup runs with stdin from /dev/null, regression test over all pod shell scripts
+  (`tests/test_runpod.py`); 33 offline tests pass.
+- next: pods clone `main`, so the fix must be merged (or pods started with `--branch`) before the next pod.
+  Models and the venv are cached on volume `dy1ct9hkm0`, so the next setup is short.
+
+### 2026-10-31 14:02 UTC — infra: Task S pod restarted with the setup fix
+- pod start: `phe3hfe0mapatt` (mosaic-S-20261031-1402), task S, NVIDIA H100 80GB HBM3, $3.99/h, `--hours 4`,
+  volume `dy1ct9hkm0` (CA-MTL-1), checks out `claude/vibrant-tesla-rqvzo1` (the fix is not on `main` yet; human
+  chose this over waiting for the merge), push branch `agent/task-S-20261031-1402`.

@@ -70,3 +70,24 @@ def test_cli_dry_run_and_refusal_inside_a_pod(monkeypatch, capsys):
     monkeypatch.setenv("RUNPOD_POD_ID", "abc")
     with pytest.raises(SystemExit, match="orchestrator"):
         main(["pod", "stop", "abc"])
+
+
+def test_pod_shell_scripts_have_no_command_substitution_in_heredocs():
+    """An unquoted heredoc runs `...` in its text: `claude setup-token` in setup's closing message once blocked
+    every pod forever, before the agent session started."""
+    import re
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    for script in [*root.glob("setup/*.sh"), *root.glob("scripts/*.sh")]:
+        lines = script.read_text().splitlines()
+        for i, line in enumerate(lines):
+            m = re.search(r"<<-?\s*([A-Za-z_]+)\b", line)  # unquoted delimiter: body is expanded
+            if not m:
+                continue
+            body = []
+            for nxt in lines[i + 1:]:
+                if nxt.strip() == m.group(1):
+                    break
+                body.append(nxt)
+            assert not any("`" in b or "$(" in b for b in body), f"{script.name}:{i + 1}: quote the heredoc"
