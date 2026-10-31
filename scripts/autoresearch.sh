@@ -16,9 +16,12 @@ if [ -n "${MOSAIC_TASK:-}" ]; then  # set by `mosaic pod create` (ops/ORCHESTRAT
 Commit after every logged step; the bootstrap script pushes your commits when the session ends."
 fi
 echo "session log: $LOG  (agent budget ${BUDGET} USD)"
+# The rules of .claude/settings.json, passed on the command line as well: on the pods the project file's allow list
+# was not applied and `claude -p` denied every Bash call ("requires approval").
+mapfile -t PERMS < <(python3 -m mosaic.runpod)
 claude -p "Read CLAUDE.md, program.md and research/LOG.md. Continue the auto-research loop from where the log stops, \
 following program.md exactly.${TASK_HINT} Stop at the hand-off, when a program.md budget is reached, or when only \
 the human can unblock you (write what you need under 'For the human' in research/LOG.md)." \
-  --permission-mode acceptEdits \
+  --permission-mode acceptEdits "${PERMS[@]}" \
   --max-budget-usd "$BUDGET" \
   --output-format stream-json --verbose | tee "$LOG"
