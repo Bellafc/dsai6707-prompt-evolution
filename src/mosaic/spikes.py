@@ -98,6 +98,21 @@ def serve(model: str = "Qwen/Qwen3-8B", adapters: dict[str, str] | None = None, 
 def main(args) -> int:
     if args.spike_cmd == "env":
         print(json.dumps(versions(), indent=2))
+    elif args.spike_cmd == "hf-ls":
+        from huggingface_hub import HfApi, hf_hub_download
+        info = HfApi().model_info(args.repo, files_metadata=True)
+        for s in info.siblings:
+            print(s.rfilename, s.size)
+        try:
+            print(Path(hf_hub_download(args.repo, "README.md")).read_text(encoding="utf-8")[:6000])
+        except Exception as e:  # noqa: BLE001
+            print("no README:", e)
+    elif args.spike_cmd == "sae":
+        from mosaic import sae
+        texts = sae.public_paragraphs(args.n)
+        print(len(texts), "paragraphs")
+        sae.gate(args.model, args.repo, [int(x) for x in args.layers.split(",")], texts, args.chat,
+                 out_path=SCRATCH / f"S3_{args.tag}.json")
     elif args.spike_cmd == "dummy":
         make_dummy()
     elif args.spike_cmd == "serve":

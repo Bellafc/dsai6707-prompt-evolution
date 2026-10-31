@@ -140,3 +140,36 @@
   (real trajectories are longer; estimate to be redone on real data).
 - decision: keep
 - next: S3 SAE reader check; S4 Qwen3.5-27B LoRA feasibility.
+
+### 2026-10-31 20:35 UTC — S3: Qwen-Scope SAE reader check (early reading of gate S0, not the gate)
+- hypothesis: the model-card TopK encoder (`topk(x W_enc^T + b_enc)`, decoder `a W_dec^T + b_dec`, hook = output of
+  `model.model.layers[n]`) reconstructs the residual stream of Qwen3-8B-Base and, less well, of Qwen3-8B.
+- change: `src/mosaic/sae.py` (loader, encode/decode, FVU, CE recovered, splice and mean-ablate hooks, `gate()`),
+  `tests/test_sae.py` (3 offline tests on random tensors), `mosaic spike sae|hf-ls`. SAE `Qwen/SAE-Res-Qwen3-8B-Base-
+  W64K-L0_50`, layers 9, 18, 27. Texts: first 200 paragraphs of 60–200 words from WikiText-103 test
+  (`Salesforce/wikitext`), ≈ 29k tokens; position 0 excluded; for Qwen3-8B the paragraph is the assistant reply to
+  "Write a short informative paragraph." in non-thinking chat format, scored on reply tokens only. Also compared the
+  variant "subtract b_dec before encoding" ("center").
+- command: `python -m mosaic spike sae --model Qwen/Qwen3-8B-Base --tag base_plain`; `… --model Qwen/Qwen3-8B --chat --tag chat`
+- result (card formula; "center" was worse everywhere: FVU 0.28–1.14, so the card formula is the right one):
+
+  | model | layer | FVU | CE clean | CE splice | CE mean-abl. | CE recovered |
+  |---|---|---|---|---|---|---|
+  | Base, plain | 9 | 0.255 | 2.44 | 5.81 | 8.99 | **0.49** |
+  | Base, plain | 18 | 0.153 | 2.44 | 3.47 | 9.72 | 0.86 |
+  | Base, plain | 27 | 0.262 | 2.44 | 2.86 | 8.20 | 0.93 |
+  | Qwen3-8B, chat | 9 | 0.271 | 3.07 | 5.76 | 8.86 | **0.53** |
+  | Qwen3-8B, chat | 18 | 0.322 | 3.07 | 4.89 | 8.65 | **0.67** |
+  | Qwen3-8B, chat | 27 | 0.297 | 3.07 | 3.34 | 10.27 | 0.96 |
+
+  Against the draft thresholds (FVU ≤ 0.40, CE recovered ≥ 0.80, FVU ≤ 1.5 × reader's): reader passes at layers 18
+  and 27 and fails at 9 (CE recovered 0.49). Qwen3-8B (chat) passes only at layer 27; at 18 it fails on CE recovered
+  (0.67) and on the relative FVU (0.32 > 1.5 × 0.153 = 0.23). Layer 9 fails CE in both: its FVU is fine, so either
+  early layers are fragile to splicing or the layer-index convention is off by one there; not tested (only the
+  three layers allowed). Caveats: one neutral corpus (Wikipedia), 200 paragraphs, no LoRA state, no school-specific
+  text; the 0.80 threshold is not confirmed on school text. The splice result at layer 27 for the chat model is
+  the one analysis layer that currently looks usable for all states.
+- decision: keep (the reader works; exp06 Task 5 should expect to pick layers from {18, 27} plus layers ≠ 9, and
+  check more layers in gate S0 proper. Draft threshold "3 layers ≥ 4 apart that pass for every state" may be
+  impossible with layers 9/18/27 only.)
+- next: S4 Qwen3.5-27B LoRA feasibility.
