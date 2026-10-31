@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Start (or resume) an unattended auto-research session. Run inside tmux on the pod:
 #   tmux new -s ar 'bash scripts/autoresearch.sh'
-# Needs ANTHROPIC_API_KEY (or a prior `claude` login). BUDGET_USD caps the agent's own API spend for this session.
+# Auth: your Claude subscription (CLAUDE_CODE_OAUTH_TOKEN from `claude setup-token`, or `claude auth login`).
+# Do NOT export ANTHROPIC_API_KEY on the pod: `claude -p` would then bill the API instead of your plan.
+# BUDGET_USD caps the session by Claude Code's own cost estimate (a usage guard on a subscription).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 source /workspace/venv/bin/activate 2>/dev/null || true

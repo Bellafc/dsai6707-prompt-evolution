@@ -3,9 +3,10 @@
   A  zero-shot   school system prompt + user template             (the Confirmation "base" condition)
   B  few-shot    A + k exemplar (user, assistant) pairs drawn from that school's SFT trajectories
   C  sft         same messages as A, Qwen2.5-7B-Instruct + the school's LoRA adapter
-  D  teacher     same messages as A, sent to the API teacher model (GPT-4o)
+  D  frontier    same messages as A, sent to Claude Opus 5.5 (Claude Code headless, the user's subscription)
+  T  teacher     same messages as A, sent to GPT-4o, the model that generated the SFT data (optional)
 
-A, C and D share messages on purpose: the only difference between A and C is the weights, between A and D the
+A, C, D and T share messages on purpose: the only difference between A and C is the weights, between A and D/T the
 model. Prompt files live in configs/prompts/; a file still containing PLACEHOLDER is refused on the test split.
 """
 
@@ -69,7 +70,7 @@ def build_messages(arm: str, school: str, ev: Event, *, system: str, user_templa
     if arm == "B":
         for t in exemplars or []:
             msgs += [{"role": "user", "content": t.prompt}, {"role": "assistant", "content": t.response}]
-    elif arm not in ("A", "C", "D"):
+    elif arm not in ("A", "C", "D", "T"):
         raise ValueError(f"unknown arm {arm!r}")
     msgs.append({"role": "user", "content": user_message(user_template, ev)})
     return msgs

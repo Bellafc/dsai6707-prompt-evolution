@@ -42,7 +42,10 @@ Next:
   1. Copy your assets (see data/README.md): data/events/{dev,test}.jsonl, data/trajectories/*.jsonl,
      adapters/{keynesian,austrian,monetarist}/, optionally data/legacy/*.jsonl.
   2. Restore the original prompts (configs/prompts/) and keyword lists (configs/lexicons.toml).
-  3. export ANTHROPIC_API_KEY=...   (and OPENAI_API_KEY=... for arm D)
+  3. On your own computer run `claude setup-token`, then on the pod:
+       echo 'export CLAUDE_CODE_OAUTH_TOKEN=<token>' >> ~/.bashrc && source ~/.bashrc
+     Do NOT set ANTHROPIC_API_KEY here (it would override your subscription).
+     Optional, for arm T only: export OPENAI_API_KEY=...
   4. mosaic doctor --arms A,B,C,D   until it says "ready"
   5. tmux new -s ar 'bash scripts/autoresearch.sh'
 MSG

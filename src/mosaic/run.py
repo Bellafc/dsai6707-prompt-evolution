@@ -20,7 +20,7 @@ from pathlib import Path
 import numpy as np
 
 from mosaic import SCHOOLS, locks
-from mosaic.backends import Cache, FakeBackend, OpenAIBackend, Request, VLLMBackend
+from mosaic.backends import Cache, ClaudeCLIBackend, FakeBackend, OpenAIBackend, Request, VLLMBackend
 from mosaic.config import ROOT, load_toml, paths, stable_hash
 from mosaic.data import load_events, load_trajectories, write_jsonl
 from mosaic.metrics import diversity, score_response, signal_set
@@ -83,11 +83,19 @@ def make_backends(cfg: dict, arms: list[str], kind: str | None, cache: Cache) ->
                              max_lora_rank=m.get("max_lora_rank", 32))
         for a in local:
             out[a] = be
-    if "D" in arms:
-        t = cfg["teacher"]
-        out["D"] = FakeBackend(sampling, cache) if kind == "fake" else OpenAIBackend(
-            sampling, cache, model=t["model"], usd_per_mtok_in=t["usd_per_mtok_in"],
-            usd_per_mtok_out=t["usd_per_mtok_out"], budget_usd=t["budget_usd"])
+    for arm in [a for a in arms if a not in ("A", "B", "C")]:
+        acfg = cfg["arms"].get(arm, {})
+        provider = acfg.get("provider")
+        if kind == "fake":
+            out[arm] = FakeBackend(sampling, cache)
+        elif provider == "claude_cli":  # Claude via Claude Code headless, on the user's own login (subscription)
+            out[arm] = ClaudeCLIBackend(sampling, cache, model=acfg["model"], effort=acfg.get("effort"),
+                                        timeout_s=acfg.get("timeout_s", 900))
+        elif provider == "openai":
+            out[arm] = OpenAIBackend(sampling, cache, model=acfg["model"], usd_per_mtok_in=acfg["usd_per_mtok_in"],
+                                     usd_per_mtok_out=acfg["usd_per_mtok_out"], budget_usd=acfg["budget_usd"])
+        else:
+            raise SystemExit(f"arm {arm}: unknown provider {provider!r} in configs")
     return out
 
 

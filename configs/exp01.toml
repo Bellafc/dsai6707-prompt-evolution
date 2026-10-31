@@ -1,7 +1,7 @@
 # exp01: is fine-tuning better than prompting? (Confirmation panel question: "why fine-tune instead of CoT?")
 # Pre-registration: prereg/exp01_prompt_vs_sft.md. Frozen by `mosaic freeze --exp exp01` before the test run.
 
-prereg = "prereg/exp01_prompt_vs_sft.md"
+prereg = ["prereg/exp01_prompt_vs_sft.md", "prereg/exp01_amendment_1.md"]
 
 [model]
 base = "Qwen/Qwen2.5-7B-Instruct"
@@ -9,7 +9,7 @@ max_model_len = 16384          # few-shot prompts are long; 24 GB cards may need
 gpu_memory_utilization = 0.90
 max_lora_rank = 32             # adapters were trained with r = 32, alpha = 64
 
-[sampling]                     # identical for every arm
+[sampling]                     # identical for A, B, C (and T); D cannot set sampling (amendment 1)
 temperature = 0.7
 top_p = 0.9
 max_tokens = 2048
@@ -21,15 +21,20 @@ k = 3                          # tunable on dev only, within the budget in progr
 strategy = "random"            # "random" | "category"
 max_chars = 6000               # truncate long exemplar responses
 [arms.C]                       # LoRA SFT adapter, same messages as A
-[arms.D]                       # API teacher, same messages as A
+[arms.D]                       # frontier reference: Claude Opus 5.5, same messages as A (amendment 1)
+provider = "claude_cli"        # `claude -p` on your own login (subscription); no temperature control
+model = "claude-opus-5-5"
+effort = "medium"              # fixed for every call; recorded in the cache key
+timeout_s = 900
 
-[teacher]
+[arms.T]                       # optional: GPT-4o, the teacher that generated the SFT data, same messages as A
+provider = "openai"
 model = "gpt-4o"
 usd_per_mtok_in = 2.50         # check current pricing before the final run
 usd_per_mtok_out = 10.00
 budget_usd = 15.0              # hard stop per run
 
 [report]
-comparisons = ["A>B", "A>C", "B>C", "C>D", "A>D"]   # "X>Y": Y compared against baseline X
+comparisons = ["A>B", "A>C", "B>C", "C>D", "A>D", "C>T"]   # "X>Y": Y vs baseline X; missing arms skipped
 primary = ["B>C"]                                  # the confirmatory question: SFT vs the strongest prompting
 primary_metric = "consistency"

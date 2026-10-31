@@ -7,9 +7,10 @@
 | A | Qwen2.5-7B + 學派 system prompt，zero-shot CoT（= Confirmation 的 base 組） |
 | B | A + 學派 SFT 軌跡當 few-shot 範例（agent 在 dev 上調到最強） |
 | C | Qwen2.5-7B + 學派 LoRA（你的方法） |
-| D | GPT-4o（老師模型，當上限參考） |
+| D | Claude Opus 5.5（前沿模型參考，走你的 Claude 訂閱） |
+| T | GPT-4o（產生 SFT 資料的老師模型，可選，要 OpenAI API） |
 
-假設與判定規則事先寫死在 [`prereg/exp01_prompt_vs_sft.md`](prereg/exp01_prompt_vs_sft.md)。
+假設與判定規則事先寫死在 [`prereg/exp01_prompt_vs_sft.md`](prereg/exp01_prompt_vs_sft.md)；D 組改用 Opus 的理由與限制見 [`prereg/exp01_amendment_1.md`](prereg/exp01_amendment_1.md)。
 
 ## 分工
 
@@ -22,7 +23,7 @@
 cd /workspace && git clone https://github.com/alexanderkong-arch/PolyU polyu && cd polyu && git checkout exp-env
 bash setup/runpod_setup.sh                 # venv、vLLM、Claude Code、下載 Qwen2.5-7B（約 15 GB）
 # 上傳資料與 adapter（見 data/README.md），換回原始 prompt 和關鍵字表
-export ANTHROPIC_API_KEY=...  OPENAI_API_KEY=...
+export CLAUDE_CODE_OAUTH_TOKEN=...   # 在自己電腦跑 claude setup-token 取得；不要設 ANTHROPIC_API_KEY
 mosaic doctor --arms A,B,C,D               # 直到顯示 ready
 tmux new -s ar 'bash scripts/autoresearch.sh'
 ```

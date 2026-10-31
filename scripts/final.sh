@@ -10,7 +10,9 @@ echo "== 3/5 freeze"; mosaic freeze --exp "$EXP"
 git add locks/ && git commit -m "${EXP}: freeze before final test run"
 echo "== 4/5 final runs (local arms, then the API teacher)"
 mosaic run --exp "$EXP" --arms A,B,C --split test --final --note "final"
-mosaic run --exp "$EXP" --arms D --split test --final --note "final"
+mosaic run --exp "$EXP" --arms D --split test --final --note "final"   # Opus 5.5 on your plan; rerun if paused
+if [ -n "${OPENAI_API_KEY:-}" ]; then mosaic run --exp "$EXP" --arms T --split test --final --note "final"; \
+else echo "arm T (GPT-4o teacher) skipped: no OPENAI_API_KEY"; fi
 echo "== 5/5 report"; mosaic report --exp "$EXP" --split test
 git add -A experiments/ reports/ locks/ research/ && git commit -m "${EXP}: final test results"
 echo "done: push with 'git push' when you have read the report"

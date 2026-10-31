@@ -16,7 +16,9 @@ steps. Read `CLAUDE.md` first, then this file, then `research/LOG.md` (to pick u
 3. **Parser fixes** (`src/mosaic/parse.py`) are allowed only with a failing test first in `tests/` and a
    before/after rescore in the log. A parser change applies to every arm equally.
 4. **Budgets.** Arm B: at most 12 distinct configurations on dev, ≤ 40 events each (prereg). GPU: stop after
-   6 hours of generation in one session. Arm D (API): only `--limit 5` smoke runs on dev, total ≤ 2 USD.
+   6 hours of generation in one session. Arm D (Claude Opus 5.5 on the human's subscription, shared with your
+   own session's quota): one `--limit 3` smoke run on dev to check the format parses, nothing more. Arm T
+   (GPT-4o, paid API) is never run by you.
 5. **Log everything.** Every run command, its `run_id`, the result and your decision go into `research/LOG.md`
    before the next run. Never delete or rewrite earlier log entries; append corrections.
 6. **Commit** after each logged iteration: `git add -A && git commit -m "exp01: <what changed> (<run_id>)"`.

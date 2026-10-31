@@ -199,3 +199,75 @@ class OpenAIBackend(Backend):
             out.append({"text": resp.choices[0].message.content or "", "seconds": time.time() - t0,
                         "usage": {"prompt_tokens": u.prompt_tokens, "completion_tokens": u.completion_tokens}})
         return out
+
+
+class ClaudeUnavailable(RuntimeError):
+    pass
+
+
+class ClaudeCLIBackend(Backend):
+    """Claude through `claude -p`, billed to whatever the CLI is logged in with (a Claude subscription via
+    `claude auth login` or CLAUDE_CODE_OAUTH_TOKEN from `claude setup-token`).
+
+    The call is made as close to a bare model call as the CLI allows: the system prompt is replaced entirely
+    (--system-prompt-file), all tools and MCP servers are off, customizations are not loaded (--safe-mode), one
+    turn, run from an empty directory, nothing persisted. Sampling cannot be set through the CLI (no temperature
+    or top-p): the model's defaults apply and the reasoning effort is fixed by config. This is a documented
+    deviation in prereg/exp01_amendment_1.md. Usage-limit or auth errors stop the run; the cache keeps every
+    response already received, so rerunning the same command resumes.
+    """
+
+    chunk_size = 1
+
+    def __init__(self, sampling: dict, cache: Cache | None, *, model: str, effort: str | None = None,
+                 timeout_s: int = 900, executable: str = "claude"):
+        super().__init__(sampling, cache)
+        self.model = model
+        self.effort = effort
+        self.timeout_s = timeout_s
+        self.executable = executable
+        self.model_id = f"claude-cli:{model}:effort={effort or 'default'}"
+        self.spent = 0.0  # the CLI's own cost estimate; on a subscription nothing is billed per call
+
+    def command(self, system_file: str) -> list[str]:
+        cmd = [self.executable, "-p", "--model", self.model, "--system-prompt-file", system_file,
+               "--tools", "", "--disallowedTools", "mcp__*", "--strict-mcp-config", "--safe-mode",
+               "--no-session-persistence", "--max-turns", "1", "--output-format", "json"]
+        if self.effort:
+            cmd += ["--effort", self.effort]
+        return cmd
+
+    def _generate(self, reqs):
+        import subprocess
+        import tempfile
+
+        out = []
+        for r in reqs:
+            if len(r.messages) != 2 or r.messages[0]["role"] != "system":
+                raise ValueError("ClaudeCLIBackend takes exactly [system, user] (arms D/T, not few-shot)")
+            with tempfile.TemporaryDirectory(prefix="mosaic-claude-") as tmp:
+                sys_file = f"{tmp}/system.txt"
+                with open(sys_file, "w", encoding="utf-8") as f:
+                    f.write(r.messages[0]["content"])
+                t0 = time.time()
+                try:
+                    proc = subprocess.run(self.command(sys_file), input=r.messages[1]["content"], cwd=tmp,
+                                          capture_output=True, text=True, timeout=self.timeout_s)
+                except FileNotFoundError as e:
+                    raise ClaudeUnavailable("`claude` not found on PATH (run setup/runpod_setup.sh)") from e
+                except subprocess.TimeoutExpired as e:
+                    raise ClaudeUnavailable(f"claude -p timed out after {self.timeout_s}s ({r.tag})") from e
+            try:
+                res = json.loads(proc.stdout)
+            except json.JSONDecodeError as e:
+                raise ClaudeUnavailable(f"unreadable claude output (exit {proc.returncode}): "
+                                        f"{(proc.stdout or proc.stderr)[:300]}") from e
+            if res.get("is_error") or proc.returncode != 0 or res.get("subtype", "success") != "success":
+                raise ClaudeUnavailable(f"claude -p failed ({res.get('subtype')}): {str(res.get('result'))[:300]} "
+                                        "— usage limit or login? Progress so far is cached; rerun to resume.")
+            u = res.get("usage") or {}
+            self.spent += float(res.get("total_cost_usd") or 0.0)
+            out.append({"text": res.get("result") or "", "seconds": time.time() - t0,
+                        "usage": {"prompt_tokens": u.get("input_tokens", 0),
+                                  "completion_tokens": u.get("output_tokens", 0)}})
+        return out

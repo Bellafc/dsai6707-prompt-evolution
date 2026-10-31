@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import os
 import shutil
 import subprocess
@@ -33,8 +34,22 @@ def doctor(arms: list[str]) -> int:
     if local:
         line(importlib.util.find_spec("vllm") is not None, "vllm importable")
     if "D" in arms:
-        line(importlib.util.find_spec("openai") is not None, "openai importable")
-        line(bool(os.environ.get("OPENAI_API_KEY")), "OPENAI_API_KEY set (arm D)")
+        cli = shutil.which("claude")
+        line(cli is not None, "claude CLI on PATH (arm D: Claude Opus 5.5)")
+        if cli:
+            st = subprocess.run([cli, "auth", "status"], capture_output=True, text=True)
+            method = ""
+            try:
+                method = json.loads(st.stdout).get("authMethod", "")
+            except json.JSONDecodeError:
+                pass
+            line(st.returncode == 0, f"claude logged in (authMethod: {method or 'unknown'}; "
+                 "subscription = claude.ai or oauth_token)")
+            line(method in ("claude.ai", "oauth_token"), "arm D will use your subscription, not API billing",
+                 hard=False)
+    if "T" in arms:
+        line(importlib.util.find_spec("openai") is not None, "openai importable (arm T)")
+        line(bool(os.environ.get("OPENAI_API_KEY")), "OPENAI_API_KEY set (arm T)")
     line(bool(os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN")),
          "HF token set (only needed if the base model download is gated)", hard=False)
 

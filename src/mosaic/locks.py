@@ -31,7 +31,8 @@ def git_state() -> dict:
 
 def tracked_files(exp: str) -> list[Path]:
     cfg = load_toml(ROOT / f"configs/{exp}.toml")
-    files = [ROOT / f"configs/{exp}.toml", ROOT / cfg["prereg"], ROOT / "configs/lexicons.toml"]
+    prereg = cfg["prereg"] if isinstance(cfg["prereg"], list) else [cfg["prereg"]]
+    files = [ROOT / f"configs/{exp}.toml", *(ROOT / f for f in prereg), ROOT / "configs/lexicons.toml"]
     files += sorted((ROOT / "configs/prompts").glob("*.txt"))
     files += [ROOT / f for f in MEASUREMENT_CODE]
     files.append(Path(paths()["events_dir"]) / "test.jsonl")
