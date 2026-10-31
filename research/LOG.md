@@ -36,3 +36,8 @@
   `agent/...` branch → stop the pod; task `H` = a pod for the human); `ops/ORCHESTRATOR.md`; program.md rule 8.
 - state: 32 offline tests pass. Not yet tried against the real RunPod API (first `pod create` = Task S).
 - next: the human does the one-time setup in `ops/ORCHESTRATOR.md`, then the orchestrator starts Task S.
+
+## For the human (2026-10-31, RunPod)
+- 一次性設定照 `ops/ORCHESTRATOR.md` 最後一節做；RunPod API key 只放在 Claude Code 環境的 network secret。
+- pod 上的 agent 只能跑 `.claude/settings.json` 允許的指令。Task S4（Qwen3.5-27B 要 transformers ≥ 5）如果需要第二個
+  venv，請自己在 allow 清單加上 `"Bash(uv venv *)"`；否則 agent 會記下來請你處理。
