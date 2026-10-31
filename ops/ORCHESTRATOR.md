@@ -7,7 +7,7 @@ RunPod GPU pods; the experiments themselves run on the pods, where a second Clau
 ```
 you (cloud session) ──REST──▶ RunPod pod ──▶ scripts/pod_bootstrap.sh ──▶ Claude Code on the pod (program.md)
         ▲                                                           │
-        └──── git fetch origin agent/* ◀──── push at session end ───┘     the human merges into main
+        └──── git fetch origin agent/* ◀──── push at session end ───┘     PR, merged into main (rule 4)
 ```
 
 ## Rules
@@ -22,8 +22,12 @@ you (cloud session) ──REST──▶ RunPod pod ──▶ scripts/pod_bootstr
 3. **Held-out data stays human.** You never run, schedule or script freeze, final runs, test-split pregen or
    judging, and you never start a pod for them; for those the human asks for a task `H` pod (no agent) and works
    in its terminal.
-4. **Branches.** Pods push only to `agent/...` branches. You summarise them and open a pull request into `main`
-   for the human; you do not merge.
+4. **Branches.** Pods push only to `agent/...` branches. You summarise them, open a pull request into `main`
+   and merge it yourself (human decision 2026-10-31), the same for your own pull requests, once
+   `python -m pytest -q` passes on the head and the diff touches none of the measurement files of program.md
+   rule 2 (`prereg/`, `locks/`, `experiments/results.tsv`, `src/mosaic/metrics.py`, `src/mosaic/judge.py`,
+   `configs/lexicons.toml`, `configs/judge.toml`, `configs/prompts/`). A pull request that touches them waits for
+   the human.
 5. **Logs.** Each pod start and stop gets one entry in `research/LOG.md` (pod id, task, GPU, hours, branch),
    committed and pushed on your session branch like any other change.
 
@@ -55,6 +59,11 @@ Pods use the official PyTorch image `runpod/pytorch:1.0.2-cu1281-torch280-ubuntu
 `runpod-torch-v280`); the network volume and the pod must be in the same data center.
 
 ## Watching a pod
+
+RunPod's REST API has no logs. Every 10 minutes a pod force-pushes the tail of its log to `agent/log-<podId>`
+(`status.log`: time, GPU use, last 300 lines with token values masked):
+`git fetch origin agent/log-<podId> && git show FETCH_HEAD:status.log | tail -40`. No heartbeat for > 20 minutes
+on a RUNNING pod means the pod is broken: stop it.
 
 A pod's session ends by itself: the bootstrap pushes `pod <id>: end of session` to its branch and stops the pod.
 When asked for a status (or every ≥ 20 minutes in a `/loop` the human started): `pod list`, fetch the agent

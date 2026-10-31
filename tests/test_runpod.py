@@ -91,3 +91,12 @@ def test_pod_shell_scripts_have_no_command_substitution_in_heredocs():
                     break
                 body.append(nxt)
             assert not any("`" in b or "$(" in b for b in body), f"{script.name}:{i + 1}: quote the heredoc"
+
+
+def test_pod_heartbeat_pushes_masked_logs_to_an_agent_branch():
+    from pathlib import Path
+
+    src = (Path(__file__).resolve().parents[1] / "scripts" / "pod_bootstrap.sh").read_text()
+    assert 'HEAD:refs/heads/agent/log-${POD}' in src  # pods push only to agent/... branches
+    assert "<github_token>" in src and "<claude_token>" in src  # token values are masked before the push
+    assert src.index("heartbeat running") < src.index("bash setup/runpod_setup.sh")  # covers a hanging setup

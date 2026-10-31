@@ -46,6 +46,27 @@ git config user.name "mosaic-pod"
 git config user.email "mosaic-pod@users.noreply.github.com"
 git checkout -q -B "$MOSAIC_PUSH_BRANCH"
 
+# RunPod's REST API exposes no logs, so the orchestrator could not see a pod that hangs. Every 10 minutes the
+# pod force-pushes the tail of its log (lines cut to 400 chars, token values masked) to agent/log-<pod>, a
+# branch written from a separate repository, so the agent's own commits are never touched.
+HB_DIR=/tmp/mosaic-heartbeat
+heartbeat() {
+  mkdir -p "$HB_DIR" && git -C "$HB_DIR" init -q 2>/dev/null
+  {
+    echo "pod $POD · task $MOSAIC_TASK · $(date -u +%Y-%m-%dT%H:%M:%SZ) · $*"
+    nvidia-smi --query-gpu=name,utilization.gpu,memory.used --format=csv,noheader 2>/dev/null
+    tail -n 300 /workspace/bootstrap.log 2>/dev/null | cut -c1-400 \
+      | sed -e "s|${GITHUB_TOKEN}|<github_token>|g" -e "s|${CLAUDE_CODE_OAUTH_TOKEN}|<claude_token>|g"
+  } > "$HB_DIR/status.log"
+  git -C "$HB_DIR" add status.log
+  git -C "$HB_DIR" -c user.name=mosaic-pod -c user.email=mosaic-pod@users.noreply.github.com \
+    commit -q --allow-empty -m "pod ${POD}: heartbeat" >/dev/null
+  git -C "$HB_DIR" -c http.extraHeader="$AUTH" push -q -f "https://github.com/${MOSAIC_REPO}.git" \
+    "HEAD:refs/heads/agent/log-${POD}" >/dev/null 2>&1 || log "WARNING: heartbeat push failed"
+}
+( while true; do heartbeat running; sleep 600; done ) &
+HB_PID=$!
+
 # Assets the human uploaded to the network volume (/workspace/assets/{events,trajectories,episodes,legacy}) are
 # linked into data/ (not versioned). Trained adapters, caches and runs live in this checkout on the volume.
 if [ -d /workspace/assets ]; then
@@ -79,4 +100,6 @@ else
   log "WARNING: push failed; the commits stay in /workspace/polyu on the volume"
 fi
 touch "$DONE"
+kill "$HB_PID" 2>/dev/null
+heartbeat "session over, stopping"
 stop_pod
