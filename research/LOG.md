@@ -105,3 +105,25 @@
 - fix (this PR): `scripts/autoresearch.sh` passes the allow and deny rules of `.claude/settings.json` to
   `claude -p` as `--allowedTools` / `--disallowedTools` (both rule spellings, `src/mosaic/runpod.py`
   `permission_flags`), so they apply whether or not the project file is read; 36 offline tests pass.
+
+### 2026-10-31 (pod session, Task 2) — exp03: ground-truth fetchers and ALFRED contexts, first network contact
+- hypothesis: pmpol's politics fetchers extend to macro markets with small changes.
+- change: `src/mosaic/exp03_gt.py` (Kalshi Economics/Financials + Polymarket economy tag, scope filter, flat
+  records with strikes/rules/prices at 1, 7, 30 days before close), `src/mosaic/exp03_context.py` (ALFRED as-of
+  fetch, 12 vintages per request, cache), `configs/exp03_indicators.toml` (the 35-indicator panel),
+  `python -m mosaic exp03 fetch|vintages`, tests `tests/test_exp03_gt.py`, `tests/test_exp03_context.py`
+  (43 offline tests pass). `python -m mosaic vendor` extracted the archive; EXPORT_NOTES.md read (team code; its
+  rules: research only, tests offline, platform text not redistributed).
+- command: `python -m mosaic exp03 fetch --venue kalshi`; `python -m mosaic exp03 vintages --series UNRATE ...`
+- result: (1) Kalshi: 235 in-scope series by title; the run was stopped by **HTTP 429** after 53 markets (pmpol's
+  0.06 s pause is too fast for the historical candle endpoint). Per rule 10 no retry in the same run; pause raised
+  to 0.6 s, scope narrowed (other countries' GDP/unemployment/CPI and CPI sub-indices excluded), file is resumable.
+  (2) ALFRED works keyless: UNRATE as of 2025-09-04 ends at July (August was published 09-05), as of 09-10 at August.
+  (3) The "35 indicators" are not listed anywhere in the repository (the Confirmation names categories only): the
+  panel in `configs/exp03_indicators.toml` is 25 ids mapped from the report's categories plus 10 guessed fillers.
+- decision: keep; Kalshi fetch to be restarted once (slower), not in a loop.
+- next: restart the Kalshi fetch slowly; Polymarket; scenario-set builder with tests.
+
+## For the human (2026-10-31, Task 2)
+- 35 個 FRED 指標的確切清單不在 repo 裡（Confirmation 只寫類別）。`configs/exp03_indicators.toml` 前 25 個是我依類別
+  對應的 FRED id，後 10 個（group = "filler"）是猜的。請對照 episode 資料庫匯出的欄位，換成真正的 id。

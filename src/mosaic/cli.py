@@ -113,6 +113,15 @@ def main(argv: list[str] | None = None) -> int:
 
     sub.add_parser("vendor", help="extract the team's pmpol archive into vendor/")
 
+    e3 = sub.add_parser("exp03", help="exp03 data build (Task 2): fetch ground truth, build questions and contexts")
+    e3sub = e3.add_subparsers(dest="e3_cmd", required=True)
+    e3f = e3sub.add_parser("fetch", help="settled macro markets with daily prices before close (network)")
+    e3f.add_argument("--venue", choices=["kalshi", "polymarket"], required=True)
+    e3f.add_argument("--since", default="2025-05-01")
+    e3v = e3sub.add_parser("vintages", help="ALFRED values of one series as of given dates (network, cached)")
+    e3v.add_argument("--series", required=True)
+    e3v.add_argument("--dates", required=True, help="comma list of YYYY-MM-DD")
+
     st = sub.add_parser("status", help="last rows of experiments/results.tsv")
     st.add_argument("-n", type=int, default=15)
 
@@ -195,6 +204,16 @@ def main(argv: list[str] | None = None) -> int:
     if a.cmd == "vendor":
         from mosaic.vendor import extract
         extract()
+        return 0
+    if a.cmd == "exp03":
+        from mosaic import exp03_gt
+        if a.e3_cmd == "fetch":
+            n = (exp03_gt.fetch_kalshi if a.venue == "kalshi" else exp03_gt.fetch_polymarket)(since=a.since)
+            print(f"{a.venue}: {n} new settled markets")
+        if a.e3_cmd == "vintages":
+            from mosaic import exp03_context
+            for d, v in exp03_context.fetch_asof(a.series, a.dates.split(",")).items():
+                print(d, v["vintage"], v["obs"][-4:])
         return 0
     if a.cmd == "rescore":
         from mosaic.rescore import rescore
