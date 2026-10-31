@@ -119,6 +119,7 @@ def main(argv: list[str] | None = None) -> int:
     e3f.add_argument("--venue", choices=["kalshi", "polymarket"], required=True)
     e3f.add_argument("--since", default="2025-05-01")
     e3sub.add_parser("build", help="question set from the fetched markets: scenario sets, exclusions, counts (offline)")
+    e3sub.add_parser("card", help="write research/exp03_data_card.md from the built files (offline)")
     e3sub.add_parser("contexts", help="ALFRED point-in-time panel for every question (network, cached)")
     e3p = e3sub.add_parser("pilot", help="format-compliance pilot on <= 10 calibration questions (GPU)")
     e3p.add_argument("--limit", type=int, default=10)
@@ -229,6 +230,18 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{len(recs)} markets -> {len(qs)} questions, {len(ex)} exclusions")
             print(json.dumps(eq.counts(qs), indent=1))
             print(Counter(e["reason"] for e in ex).most_common())
+        if a.e3_cmd == "card":
+            import json
+            from mosaic import exp03_questions as eq
+            from mosaic.config import ROOT
+            d = exp03_gt.RAW.parent
+            rd = lambda p: [json.loads(x) for x in p.read_text("utf-8").splitlines() if x.strip()]  # noqa: E731
+            n = sum(len(rd(f)) for f in exp03_gt.RAW.glob("*_econ.jsonl"))
+            covf = d / "context_coverage.json"
+            cov = json.loads(covf.read_text("utf-8")) if covf.exists() else None
+            (ROOT / "research/exp03_data_card.md").write_text(
+                eq.card(rd(d / "questions.jsonl"), rd(d / "exclusions.jsonl"), n, cov), encoding="utf-8")
+            print("wrote research/exp03_data_card.md")
         if a.e3_cmd == "contexts":
             import json
             import sys

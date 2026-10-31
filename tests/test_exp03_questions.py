@@ -89,6 +89,13 @@ def test_duplicate_listing_and_windows():
     assert q.counts(qs) == {"us_cpi_mom": {"calibration": 1, "test": 1}}
 
 
+def test_card_counts():
+    qs, ex = q.build_events(cpi_ladder(0.3) + cpi_ladder(0.2, "KXCPI-26JAN", close="2026-02-11T13:30:00Z")
+                            + [rec("KXCFNAI-25OCT", "d", "KXCFNAI", 1)])
+    t = q.card(qs, ex, 9, {"UNRATE": {"share": 1.0, "median_staleness_days": 12}})
+    assert "| us_cpi_mom | 1 | 1 |" in t and "series not in scope: 1 events" in t and "| UNRATE | 1.00 | 12 |" in t
+
+
 def test_missing_price_gives_no_market_distribution():
     rs = cpi_ladder(0.3)
     rs[1]["prices"]["7"] = None
