@@ -119,6 +119,7 @@ def main(argv: list[str] | None = None) -> int:
     e3f.add_argument("--venue", choices=["kalshi", "polymarket"], required=True)
     e3f.add_argument("--since", default="2025-05-01")
     e3sub.add_parser("build", help="question set from the fetched markets: scenario sets, exclusions, counts (offline)")
+    e3sub.add_parser("contexts", help="ALFRED point-in-time panel for every question (network, cached)")
     e3p = e3sub.add_parser("pilot", help="format-compliance pilot on <= 10 calibration questions (GPU)")
     e3p.add_argument("--limit", type=int, default=10)
     e3p.add_argument("--systems", default="base,K',A',M'", help="comma list of base, K, A, M (adapters), K', A', M'")
@@ -228,6 +229,18 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{len(recs)} markets -> {len(qs)} questions, {len(ex)} exclusions")
             print(json.dumps(eq.counts(qs), indent=1))
             print(Counter(e["reason"] for e in ex).most_common())
+        if a.e3_cmd == "contexts":
+            import json
+            import sys
+            from mosaic import exp03_context as ec
+            from mosaic import exp03_questions as eq
+            qs = [json.loads(x) for x in (exp03_gt.RAW.parent / "questions.jsonl").read_text("utf-8").splitlines() if x]
+            rows = ec.build_contexts(qs, log=sys.stderr)
+            eq.write_jsonl(rows, exp03_gt.RAW.parent / "contexts.jsonl")
+            cov = ec.coverage(rows)
+            (exp03_gt.RAW.parent / "context_coverage.json").write_text(json.dumps(cov, indent=1), encoding="utf-8")
+            print(f"{len(rows)} contexts; indicators with < 100% coverage:",
+                  {k: v["share"] for k, v in cov.items() if v["share"] < 1})
         if a.e3_cmd == "pilot":
             import json
             from mosaic import exp03_run

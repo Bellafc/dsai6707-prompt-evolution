@@ -89,5 +89,44 @@ def context_rows(spec: dict, asof: dict, n_last: int = 6) -> dict:
             "last": obs, "n_obs": len(asof["obs"])}
 
 
+def build_contexts(questions: list[dict], horizons=("7", "1"), specs: list[dict] | None = None, fetch=None,
+                   log=None) -> list[dict]:
+    """One row per (question, horizon): the panel as of that forecast date. `fetch(series, dates)` defaults to
+    `fetch_asof`. Series with no data at a date appear with empty `last` (coverage is reported in the data card)."""
+    specs = specs or load_indicators()
+    fetch = fetch or fetch_asof
+    dates = sorted({q["forecast_date"][h] for q in questions for h in horizons})
+    asof = {}
+    for s in specs:
+        asof[s["id"]] = fetch(s["id"], dates)
+        if log:
+            print(f"{s['id']}: {sum(bool(v['obs']) for v in asof[s['id']].values())}/{len(dates)} dates with data",
+                  file=log, flush=True)
+    rows = []
+    for q in questions:
+        for h in horizons:
+            t = q["forecast_date"][h]
+            rows.append({"question_id": q["question_id"], "horizon": h, "forecast_date": t,
+                         "indicators": [context_rows(s, asof[s["id"]][t]) for s in specs]})
+    return rows
+
+
+def coverage(rows: list[dict]) -> dict:
+    """Per indicator: share of contexts with at least one observation, and median staleness in days."""
+    import statistics
+
+    out = {}
+    for r in rows:
+        for c in r["indicators"]:
+            d = out.setdefault(c["id"], {"n": 0, "with_data": 0, "stale": []})
+            d["n"] += 1
+            if c["last"]:
+                d["with_data"] += 1
+                d["stale"].append(staleness_days(c["last"][-1][0], r["forecast_date"]))
+    return {k: {"share": round(v["with_data"] / v["n"], 3),
+                "median_staleness_days": statistics.median(v["stale"]) if v["stale"] else None}
+            for k, v in out.items()}
+
+
 def staleness_days(last_obs_date: str, t: str) -> int:
     return (date.fromisoformat(t) - date.fromisoformat(last_obs_date[:10])).days

@@ -47,13 +47,37 @@ def forecast_date(close_iso: str, days: int) -> str:
     return (t.date() - timedelta(days=days)).isoformat()
 
 
+def norm_label(label: str) -> str:
+    """Kalshi central-bank labels vary by series ('Cut 25 basis points', 'Hike more than 25bp'); pmpol's grammar
+    reads 'bps'. Only the unit spelling is changed."""
+    s = re.sub(r"\bbasis points?\b", "bps", label or "", flags=re.I)
+    return re.sub(r"(?<=\d) ?bp\b", "bps", s, flags=re.I)
+
+
+def series_of(venue: str, event_id: str, rs: list[dict]) -> tuple[str | None, str]:
+    """(pmpol series key, reference period) of an event. Kalshi: the whitelist of series tickers; Polymarket: pmpol's
+    title grammar (`identify`), which also demands that the rules name the statistical agency."""
+    if venue == "kalshi":
+        return KALSHI_SERIES.get(rs[0].get("series", "")), period_of(event_id)
+    use_pmpol()
+    from pmpol.models import Event, Market
+    from pmpol.propositions.indicators import identify
+
+    ev = Event(venue, event_id, rs[0].get("event_title", ""),
+               markets=[Market(venue, r["market_id"], event_id, r["question"], r["outcome"], r.get("rules", ""),
+                               close_time=r["close_time"]) for r in rs])
+    got = identify(ev)
+    return (got[0].key, got[1]) if got else (None, "")
+
+
 def contract_span(rec: dict, series_key: str):
     """(lo, hi) in grid steps for one record, via pmpol; None if pmpol does not read the label."""
     use_pmpol()
     from pmpol.models import Market
     from pmpol.propositions.indicators import SERIES, label_span
 
-    m = Market(rec["venue"], rec["market_id"], rec["event_id"], rec["question"], rec["outcome"], rec.get("rules", ""),
+    m = Market(rec["venue"], rec["market_id"], rec["event_id"], rec["question"], norm_label(rec["outcome"]),
+               rec.get("rules", ""),
                strike_type=rec.get("strike_type"), floor_strike=rec.get("floor_strike"),
                cap_strike=rec.get("cap_strike"))
     sp = label_span(m, SERIES[series_key])
@@ -115,7 +139,9 @@ def market_distribution(bins, spans, prices, kind: str) -> list[float] | None:
 
 def fmt(x: float, unit: str, step: float) -> str:
     v = x * step
-    return f"{v:+.0f} bp" if unit == "bp" else f"{v:.{2 if step < 0.1 else 1}f}%"
+    if unit == "bp":
+        return "no change" if v == 0 else f"{v:+.0f} bp"
+    return f"{v:.{2 if step < 0.1 else 1}f}%"
 
 
 def bin_label(b, unit: str, step: float) -> str:
@@ -144,7 +170,7 @@ def build_events(records: list[dict]) -> tuple[list[dict], list[dict]]:
         ex.append({"venue": venue, "event_id": eid, "reason": reason, "markets": n})
 
     for (venue, eid), rs in sorted(groups.items()):
-        key = KALSHI_SERIES.get(rs[0].get("series", "")) if venue == "kalshi" else None
+        key, period = series_of(venue, eid, rs)
         if key is None:
             drop(venue, eid, "series not in scope", len(rs))
             continue
@@ -168,7 +194,7 @@ def build_events(records: list[dict]) -> tuple[list[dict], list[dict]]:
         s = SERIES[key]
         mk = {h: market_distribution(bins, spans, [r["prices"].get(str(h)) for r in rs], kind) for h in HORIZONS}
         qs.append({
-            "question_id": f"{venue}:{eid}", "venue": venue, "series": key, "period": period_of(eid),
+            "question_id": f"{venue}:{eid}", "venue": venue, "series": key, "period": period,
             "close_time": close, "window": window_of(close), "unit": s.unit, "step": s.step,
             "bins": [{"label": bin_label(b, s.unit, s.step), "lo": None if b[0] == -INF else b[0],
                       "hi": None if b[1] == INF else b[1]} for b in bins],
@@ -191,7 +217,8 @@ def dedupe(qs: list[dict], ex: list[dict]) -> tuple[list[dict], list[dict]]:
     best = {}
     for q in qs:
         k = (q["series"], q["close_time"][:10])
-        if k not in best or q["n_contracts"] > best[k]["n_contracts"]:
+        rank = lambda x: (x["venue"] == "kalshi", x["n_contracts"])  # noqa: E731  Kalshi first: it is the benchmark
+        if k not in best or rank(q) > rank(best[k]):
             if k in best:
                 ex.append({"venue": best[k]["venue"], "event_id": best[k]["question_id"].split(":", 1)[1],
                            "reason": "duplicate listing of the same series and release date",

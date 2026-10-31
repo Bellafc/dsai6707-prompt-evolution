@@ -56,6 +56,16 @@ def test_fed_labels_partition():
     assert x["market"]["1"] == pytest.approx([0.2, 0.2, 0.2, 0.2, 0.2])
 
 
+def test_central_bank_label_spellings():
+    labs = [("Cut more than 25bp", 0), ("Cut 25 basis points", 0), ("Maintain current rate", 1),
+            ("Hike 25 basis points", 0), ("Hike more than 25bp", 0)]
+    rs = [rec("KXCBDECISIONJAPAN-26JAN22", f"j{i}", "KXCBDECISIONJAPAN", r, close="2026-01-23T05:00:00Z", outcome=o)
+          for i, (o, r) in enumerate(labs)]
+    qs, ex = q.build_events(rs)
+    assert not ex, ex
+    assert qs[0]["bins"][qs[0]["realised"]]["label"] == "no change" and qs[0]["series"] == "boj_change"
+
+
 def test_missing_label_and_gap_and_scope_exclusions():
     gap = [rec("KXFEDDECISION-25SEP", "a", "KXFEDDECISION", 1, outcome="Cut 25bps"),
            rec("KXFEDDECISION-25SEP", "b", "KXFEDDECISION", 0, outcome="Hike 25bps")]

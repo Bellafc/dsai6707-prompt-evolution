@@ -25,6 +25,25 @@ def test_fetch_asof_uses_latest_vintage_not_after_t(tmp_path):
     assert len(calls) == 1  # second call served from the cache
 
 
+def test_build_contexts_and_coverage():
+    qs = [{"question_id": "k:1", "forecast_date": {"7": "2025-09-04", "1": "2025-09-10"}}]
+    specs = [{"id": "UNRATE", "name": "Unemployment rate", "group": "employment"},
+             {"id": "TEDRATE", "name": "TED", "group": "fin"}]
+
+    def fetch(series, dates):
+        if series == "TEDRATE":
+            return {d: {"vintage": None, "obs": []} for d in dates}
+        return {d: {"vintage": d, "obs": [("2025-07-01", 4.2)] + ([("2025-08-01", 4.3)] if d > "2025-09-05" else [])}
+                for d in dates}
+
+    rows = c.build_contexts(qs, specs=specs, fetch=fetch)
+    assert [r["horizon"] for r in rows] == ["7", "1"]
+    assert rows[0]["indicators"][0]["last"][-1] == ("2025-07-01", 4.2) and rows[1]["indicators"][0]["last"][-1][1] == 4.3
+    cov = c.coverage(rows)
+    assert cov["TEDRATE"]["share"] == 0 and cov["UNRATE"]["share"] == 1.0
+    assert cov["UNRATE"]["median_staleness_days"] > 0
+
+
 def test_indicator_panel_has_35_unique_ids():
     ids = [i["id"] for i in c.load_indicators()]
     assert len(ids) == 35 and len(set(ids)) == 35
