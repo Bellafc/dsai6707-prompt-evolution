@@ -105,3 +105,17 @@
 - fix (this PR): `scripts/autoresearch.sh` passes the allow and deny rules of `.claude/settings.json` to
   `claude -p` as `--allowedTools` / `--disallowedTools` (both rule spellings, `src/mosaic/runpod.py`
   `permission_flags`), so they apply whether or not the project file is read; 36 offline tests pass.
+
+### 2026-10-31 19:45 UTC — S1: Qwen3-8B serving, non-thinking (pod `agent/task-S-20261031-1820`, H100 80GB)
+- hypothesis: `VLLMBackend` with `chat_template_kwargs = {enable_thinking = false}` serves Qwen3-8B with no `<think>` block.
+- change: new `src/mosaic/spikes.py` + `mosaic spike env|dummy|serve` (dummy events/trajectories under `scratch/`, public
+  text only); `mosaic train` and `tests/test_train_format.py` (S2, below). Env: torch 2.13.0+cu130, vllm 0.32.0,
+  transformers 5.19.0, peft 0.21.2, trl 1.17.1; no bitsandbytes, no flash_attn.
+- command: `python -m mosaic spike serve --tag S1` (3 dummy events × 3 school prompts = 9 requests, max_tokens 1024)
+- result: 0/9 outputs with a `<think>` block or reasoning field; 8,191 completion tokens in 12.0 s = 680 tokens/s
+  (9 concurrent requests, H100). Only 9/9 contain `[Output]` (plain prompt, no fine-tuning; not a quality claim).
+  Cold start was slow: weights 32 s, torch.compile ~1 min, then a first-use FlashInfer sampling JIT build (nvcc,
+  ~2 min); cached afterwards on the volume (`/root/.cache` — check if that is on the network volume).
+  Outputs: `scratch/S1_outputs.jsonl`.
+- decision: keep
+- next: S2 smoke training (20 steps, 50 dummy trajectories) → serve the adapter as arm C.
