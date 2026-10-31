@@ -56,7 +56,7 @@ if [ -d /workspace/assets ]; then
 fi
 
 log "setup (EXTRA_MODELS='${EXTRA_MODELS:-}')"
-EXTRA_MODELS="${EXTRA_MODELS:-}" bash setup/runpod_setup.sh || log "setup reported problems (see above)"
+EXTRA_MODELS="${EXTRA_MODELS:-}" bash setup/runpod_setup.sh </dev/null || log "setup reported problems (see above)"
 # shellcheck disable=SC1091
 source /workspace/venv/bin/activate 2>/dev/null || true
 export PATH="$HOME/.local/bin:$PATH"

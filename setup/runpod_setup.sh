@@ -47,7 +47,7 @@ PY
 echo "== offline tests and doctor"
 cd "$REPO_DIR" && python -m pytest -q
 mosaic doctor --arms A,B,C,D || true
-cat <<MSG
+cat <<'MSG'  # quoted: the backticks below are text, not commands (unquoted, `claude setup-token` ran and waited forever)
 
 Next:
   1. Copy your assets (see data/README.md): data/events/{dev,test}.jsonl, data/trajectories/*.jsonl (the SFT
