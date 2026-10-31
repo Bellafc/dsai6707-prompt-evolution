@@ -65,3 +65,11 @@
 - pod start: `3wiqxmzq8f05mg` (mosaic-S-20261031-0827), task S, NVIDIA H100 80GB HBM3, $3.99/h, `--hours 4`,
   volume `dy1ct9hkm0`, push branch `agent/task-S-20261031-0827`. Started with `--allow-parallel` because the
   human allowed it while the Task 2 pod (`4px2qrufhfwxzj`) was still running past its expected end.
+
+### 2026-10-31 08:51 UTC — infra: Task 2 pod stopped by the orchestrator
+- pod stop: `4px2qrufhfwxzj` (task 2, A40) stopped at 08:51 UTC, 3 h 21 min after creation (≈ $2.0), still RUNNING
+  well past its 2 h limit plus setup; no `agent/task-2-20261031-0529` branch was pushed.
+- state: unknown from outside (REST shows no logs). Commits, if any, stay in `/workspace/polyu` on the pod's own
+  200 GB volume (stopped, not terminated). Possible causes: slow setup, the session not ending, or a failed push.
+- next: the human reads the pod's Logs in the RunPod console (`[bootstrap ...]` lines); then decide whether to
+  start it again to push, or terminate it.
