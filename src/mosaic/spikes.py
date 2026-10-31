@@ -66,13 +66,15 @@ def make_dummy(n_traj: int = 50) -> None:
     print(f"wrote {SCRATCH}/events.jsonl and {n_traj} trajectories per school")
 
 
-def serve(model: str = "Qwen/Qwen3-8B", adapters: dict[str, str] | None = None, tag: str = "S1") -> dict:
+def serve(model: str = "Qwen/Qwen3-8B", adapters: dict[str, str] | None = None, tag: str = "S1",
+          gpu_util: float = 0.90, engine_kwargs: dict | None = None) -> dict:
     """Generate for the dummy events with arm A messages (or arm C when adapters are given)."""
     from mosaic.data import load_events
 
     events = load_events(SCRATCH / "events.jsonl")
     be = VLLMBackend({"temperature": 0.7, "top_p": 0.9, "max_tokens": 1024, "seed": 20261030}, None,
                      base_model=model, adapters=adapters or {}, max_model_len=8192, max_lora_rank=32,
+                     gpu_memory_utilization=gpu_util, engine_kwargs=engine_kwargs,
                      chat_template_kwargs={"enable_thinking": False})
     tmpl = read_prompt("user_template.txt")
     schools = sorted(adapters) if adapters else list(SCHOOLS)
@@ -95,6 +97,25 @@ def serve(model: str = "Qwen/Qwen3-8B", adapters: dict[str, str] | None = None, 
     return summary
 
 
+def rename_adapter(src: Path, dst: Path, old: str, new: str) -> int:
+    """Copy a PEFT adapter, renaming weight keys containing `old` to `new` (e.g. trained on the text-only class
+    Qwen3_5ForCausalLM, served by vLLM as the multimodal Qwen3_5ForConditionalGeneration, whose text layers live under
+    `model.language_model`)."""
+    import shutil
+
+    from safetensors.torch import load_file, save_file
+
+    dst.mkdir(parents=True, exist_ok=True)
+    for f in ("adapter_config.json",):
+        shutil.copy(src / f, dst / f)
+    w = load_file(str(src / "adapter_model.safetensors"))
+    out = {k.replace(old, new, 1): v for k, v in w.items()}
+    save_file(out, str(dst / "adapter_model.safetensors"), metadata={"format": "pt"})
+    n = sum(k != k2 for k, k2 in zip(w, out))
+    print(f"renamed {n}/{len(w)} keys: {old} -> {new}")
+    return n
+
+
 def main(args) -> int:
     if args.spike_cmd == "env":
         print(json.dumps(versions(), indent=2))
@@ -113,13 +134,17 @@ def main(args) -> int:
         print(len(texts), "paragraphs")
         sae.gate(args.model, args.repo, [int(x) for x in args.layers.split(",")], texts, args.chat,
                  out_path=SCRATCH / f"S3_{args.tag}.json")
+    elif args.spike_cmd == "adapter-rename":
+        rename_adapter(Path(args.src), Path(args.dst), args.old, args.new)
     elif args.spike_cmd == "dummy":
         make_dummy()
     elif args.spike_cmd == "serve":
         adapters = None
         if args.adapters_dir:
             adapters = {s: str(Path(args.adapters_dir) / s) for s in SCHOOLS if (Path(args.adapters_dir) / s).is_dir()}
-        serve(args.model, adapters, args.tag)
+        serve(args.model, adapters, args.tag, args.gpu_util,
+              {"max_num_batched_tokens": args.max_batched_tokens, "max_num_seqs": 16}
+              if args.max_batched_tokens else None)
     return 0
 
 

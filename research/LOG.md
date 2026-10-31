@@ -173,3 +173,67 @@
   check more layers in gate S0 proper. Draft threshold "3 layers ≥ 4 apart that pass for every state" may be
   impossible with layers 9/18/27 only.)
 - next: S4 Qwen3.5-27B LoRA feasibility.
+
+### 2026-10-31 22:35 UTC — S4: Qwen3.5-27B bf16 LoRA feasibility (evidence for D7)
+- hypothesis: Qwen3.5-27B can be LoRA-trained in bf16 on one H100 80GB and its adapter served by vLLM.
+- change: none to the recipe; `mosaic train --base Qwen/Qwen3.5-27B` unchanged (same venv: transformers 5.19 and
+  vllm 0.32 coexist, so no second venv was needed). New: `mosaic spike serve --gpu-util --max-batched-tokens`,
+  `VLLMBackend(engine_kwargs=…)` (not part of the cache key), `mosaic spike adapter-rename`.
+- command: `python -m mosaic train --school keynesian --base Qwen/Qwen3.5-27B --data scratch/traj/keynesian.jsonl
+  --out scratch/adapters27/keynesian --max-steps 50 --micro-batch 2`; then `mosaic spike serve --model Qwen/Qwen3.5-27B
+  --adapters-dir … --gpu-util 0.85 --max-batched-tokens 4096`
+- result:
+  - Training works: 50 steps (micro-batch 2 × 8 accumulation = 16) on 50 dummy trajectories in 353 s, peak 56.5 GiB,
+    loss 1.8 → 6e-6 (memorised: dummy data). `all-linear` also hit the Gated DeltaNet projections (`in_proj_qkv`,
+    `in_proj_z`, `in_proj_a`, `in_proj_b`, `out_proj`) as well as q/k/v/o and the MLP. Adapter 992 tensors, fp32.
+  - Serving needed three fixes. (1) Cold start of vLLM on this model: ~20 min in the model-registry inspection plus
+    compile, before any weights load (cached afterwards, but under `/root/.cache`, i.e. probably not on the volume).
+    (2) vLLM OOM at 0.90 and at 0.75 `gpu_memory_utilization` during CUDA-graph memory profiling (77 GiB allocated, so
+    not the utilisation setting): fixed with `max_num_batched_tokens=4096`, `max_num_seqs=16`, util 0.85.
+    (3) **Silent no-op adapter**: the adapter trained through `AutoModelForCausalLM` has keys
+    `base_model.model.model.layers.*`; vLLM loads Qwen3.5 as `Qwen3_5ForConditionalGeneration`, whose text layers are
+    `model.language_model.layers.*`. With the original keys vLLM ran its LoRA kernels without error but the outputs
+    ignored the adapter (long free-text answers, 0/3 in the trained format). After renaming the keys
+    (`mosaic spike adapter-rename`, 992/992 keys) the adapter is applied: 3/3 outputs in the trained format.
+    Serving speed: ~98–110 tokens/s on 3 requests (not a throughput measurement).
+  - Merged-weights fallback was not needed and not tested.
+- decision: keep. D7 evidence: the 27B route is feasible on one 80 GB card; ~6 min for 50 steps at short sequences
+  (real trajectories are longer; expect tens of minutes per adapter). Open risk to fix before exp01b: `mosaic train`
+  should rename keys automatically (or load the multimodal class) and `mosaic doctor`/a post-train check should
+  generate a few tokens through vLLM and compare with the base, because a silently ignored adapter looks like
+  "fine-tuning has no effect".
+- next: hand-off.
+
+### 2026-10-31 22:40 UTC — S: Task S done
+- READY FOR HUMAN: Task S done. All four spikes ran on the pod (H100 80GB, ~3 h of the 4 h limit, GPU generation/training
+  time well under the 6 h budget). 44 offline tests pass. Raw outputs and logs are in `scratch/` (not versioned).
+
+  | spike | result | note |
+  |---|---|---|
+  | S1 serving | pass | no `<think>`, 680 tokens/s at 9 concurrent requests |
+  | S2 train | pass | 20 steps / 29 s / 19.6 GiB; adapter applied in vLLM |
+  | S3 SAE | partial | reader passes layers 18, 27; Qwen3-8B chat passes only layer 27; layer 9 fails CE |
+  | S4 27B | pass with fixes | key rename needed, OOM fix, 20-min cold start |
+
+  Cost estimate for the remaining steps (H100 80GB at $3.99/h, from these timings; real data lengths unknown):
+  - Task 0 (doctor, seed audit): CPU only, ~$0 once the assets arrive. A 48 GB card (A40 $0.59/h class) is enough for
+    8B work: training peak 19.6 GiB (micro-batch 4), vLLM 8B ~16 GiB weights.
+  - Three Qwen3-8B adapters: ~94 optimizer steps each at 500 trajectories × 3 epochs. At the dummy speed (1.5 s/step)
+    that is minutes; with real 1–2k-token trajectories expect 15–30 min each → about $3–6 on an H100, less on a 48 GB card.
+  - exp01 dev loop (Task 1): A, C and 12 B configurations × 40 events × 3 schools of generation; at ~700 tokens/s
+    and ~1k tokens per answer, about 3 s per answer batch-amortised → roughly 1–2 GPU-hours ($4–8), plus 5 min vLLM cold start.
+  - exp06 Task 5: gate S0 over the three states and every 4th layer needs activation passes (S3 took ~6 min per model
+    for 3 layers × 2 encoders on 29k tokens); expect 2–4 GPU-hours on a 48 GB card.
+  - exp01b 27B: per school adapter ~tens of minutes to ~1 h on an 80 GB card, plus the 20-min vLLM cold start each session.
+- assets: not on the pod (`data/events/*.jsonl` missing in `mosaic doctor`). Task 2 (CPU + network) can go on a cheaper
+  pod; the GPU is only needed again once events, trajectories (D11) and the `train` row `go` are there.
+
+## For the human (2026-10-31, Task S)
+- Prompts and lexicon: `mosaic doctor` says the originals are in place (no placeholder warnings) — thanks.
+- Still missing: `data/events/{dev,test}.jsonl`, `data/trajectories/*.jsonl` (decision D11), `data/legacy/*` if it exists.
+- D7: the 27B path works but needs the key rename above; I can add it to `mosaic train` in Task 0 if you want 27B adapters.
+- exp06 draft, gate S0: with only layers 9/18/27 the rule "three layers ≥ 4 apart that pass for every state" is probably
+  unsatisfiable (9 fails CE for reader and chat; 18 fails for chat). Proper S0 should scan every 4th layer, as the draft says;
+  consider relaxing "passes for every state" or accepting layer 27 plus neighbours. Thresholds are yours to set at registration.
+- Environment: vLLM/FlashInfer JIT caches live under `/root/.cache`; if that is not on the network volume, every new pod
+  pays ~5 min (8B) to ~20 min (27B) of cold start. Consider `HF_HOME`/`VLLM_CACHE_ROOT`/`FLASHINFER_WORKSPACE_BASE` on the volume.
