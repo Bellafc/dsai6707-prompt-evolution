@@ -100,3 +100,11 @@ def test_pod_heartbeat_pushes_masked_logs_to_an_agent_branch():
     assert 'HEAD:refs/heads/agent/log-${POD}' in src  # pods push only to agent/... branches
     assert "<github_token>" in src and "<claude_token>" in src  # token values are masked before the push
     assert src.index("heartbeat running") < src.index("bash setup/runpod_setup.sh")  # covers a hanging setup
+
+
+def test_pod_bootstrap_bounds_setup_and_lifetime():
+    from pathlib import Path
+
+    src = (Path(__file__).resolve().parents[1] / "scripts" / "pod_bootstrap.sh").read_text()
+    assert "timeout 90m bash setup/runpod_setup.sh </dev/null" in src  # a hanging setup cannot run forever
+    assert src.index("WATCHDOG") < src.index("FATAL")  # the lifetime cap is armed before anything can hang
