@@ -35,6 +35,7 @@ you (cloud session) ──REST──▶ RunPod pod ──▶ scripts/pod_bootstr
 | Network volumes | `python -m mosaic pod volumes`; create: `python -m mosaic pod volume-create --dc <dataCenterId> --size 200` |
 | Start a task | `python -m mosaic pod create --task S --gpu 80gb --hours 4 --volume <volumeId> [--dc <dataCenterId>]` |
 | Preview the request | add `--dry-run` |
+| If RunPod does not substitute `{{ RUNPOD_SECRET_... }}` in a REST-created pod (the bootstrap then stops the pod with a FATAL line) | the human makes a template in the RunPod console with those variables; pass `--template <templateId>` |
 | Details | `python -m mosaic pod get <podId>` |
 | Stop / resume / delete | `python -m mosaic pod stop <podId>` · `start <podId>` · `terminate <podId>` (terminate only when the human asks) |
 | Results | `git fetch origin 'refs/heads/agent/*:refs/remotes/origin/agent/*'`, then read `research/LOG.md` and the diff on that branch |
@@ -48,7 +49,10 @@ you (cloud session) ──REST──▶ RunPod pod ──▶ scripts/pod_bootstr
 | 0 adapters + parity | 48gb or 80gb | 3 | assets on the volume, backlog row `train` = go |
 | 1 exp01 dev loop | 48gb | 6 | Task 0 done |
 | 5 exp06 instrument | 48gb | 6 | Task 0 done |
-| H human pod (freeze, final runs, ratings) | as needed | ≤ 4 | the human at a terminal |
+| H human pod (freeze, final runs, ratings): add `--jupyter` | as needed | ≤ 4 | the human at a terminal (SSH or JupyterLab) |
+
+Pods use the official PyTorch image `runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404` (template
+`runpod-torch-v280`); the network volume and the pod must be in the same data center.
 
 ## Watching a pod
 
@@ -62,7 +66,7 @@ not stop itself).
 
 1. RunPod：建立這個專案專用的 API key；在 **Secrets** 建 `claude_oauth_token`（自己電腦跑 `claude setup-token`
    的結果）、`github_token`（GitHub fine-grained token，只給 `alexanderkong-arch/PolyU`，Contents: Read and
-   write）、可選 `hf_token`。
+   write）、可選 `hf_token` 和 `jupyter_password`（開人用的 pod 時要用 JupyterLab 上傳檔案才需要）。
 2. RunPod：在有 H100／A100 80GB 的資料中心建一個 200 GB 的 network volume，記下 volume id 和 data center id。
    資料（96 個 test 事件、dev 事件、訓練軌跡、episode DB、開題時的生成結果）上傳到 volume 的
    `/workspace/assets/{events,trajectories,episodes,legacy}/`；原始 prompt 和關鍵字表則 commit 進 repo

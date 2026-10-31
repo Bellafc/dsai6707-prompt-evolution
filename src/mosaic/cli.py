@@ -44,7 +44,8 @@ def pod_command(a) -> int:
             out = rp.create(a.task, gpus=gpus, hours=a.hours, branch=a.branch, push_branch=a.push_branch,
                             volume_id=a.volume, volume_gb=a.volume_gb, data_center=a.dc,
                             image=a.image or rp.DEFAULT_IMAGE, cloud="COMMUNITY" if a.community else "SECURE",
-                            with_hf=a.with_hf, allow_parallel=a.allow_parallel, dry_run=a.dry_run)
+                            with_hf=a.with_hf, jupyter=a.jupyter, template_id=a.template,
+                            allow_parallel=a.allow_parallel, dry_run=a.dry_run)
             print(json.dumps(rp.redact(out), indent=2))
         elif a.pod_cmd == "volumes":
             print(json.dumps(rp.request("GET", "/networkvolumes"), indent=2))
@@ -132,6 +133,8 @@ def main(argv: list[str] | None = None) -> int:
     pc.add_argument("--image", default=None)
     pc.add_argument("--community", action="store_true", help="community cloud instead of secure cloud")
     pc.add_argument("--with-hf", action="store_true", help="also pass the hf_token RunPod secret")
+    pc.add_argument("--jupyter", action="store_true", help="start JupyterLab (RunPod secret jupyter_password)")
+    pc.add_argument("--template", default=None, help="RunPod template id that carries the secret references")
     pc.add_argument("--allow-parallel", action="store_true")
     pc.add_argument("--dry-run", action="store_true", help="print the request without calling RunPod")
     psub.add_parser("volumes", help="list network volumes")

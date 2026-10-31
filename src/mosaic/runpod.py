@@ -22,13 +22,16 @@ from datetime import datetime, timezone
 
 API = "https://rest.runpod.io/v1"
 REPO = "alexanderkong-arch/PolyU"
-DEFAULT_IMAGE = "runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04"  # vLLM brings its own torch (setup/)
-GPU_CLASSES = {  # RunPod gpuTypeIds, in order of preference
-    "80gb": ["NVIDIA H100 80GB HBM3", "NVIDIA A100 80GB PCIe", "NVIDIA A100-SXM4-80GB"],
-    "48gb": ["NVIDIA L40S", "NVIDIA RTX A6000", "NVIDIA A40"],
+# Official template runpod-torch-v280 (torch 2.8.0, CUDA 12.8.1, Ubuntu 24.04, Python 3.12, uv preinstalled).
+# setup/runpod_setup.sh builds its own venv on the volume; vLLM brings a matching torch into it.
+DEFAULT_IMAGE = "runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404"
+GPU_CLASSES = {  # RunPod gpuTypeIds (enum of the v1 PodCreateInput); RunPod picks by availability
+    "80gb": ["NVIDIA H100 80GB HBM3", "NVIDIA H100 PCIe", "NVIDIA A100 80GB PCIe", "NVIDIA A100-SXM4-80GB",
+             "NVIDIA H100 NVL"],
+    "48gb": ["NVIDIA L40S", "NVIDIA RTX 6000 Ada Generation", "NVIDIA RTX A6000", "NVIDIA A40", "NVIDIA L40"],
 }
 SECRETS = {"CLAUDE_CODE_OAUTH_TOKEN": "claude_oauth_token", "GITHUB_TOKEN": "github_token"}
-OPTIONAL_SECRETS = {"HF_TOKEN": "hf_token"}
+OPTIONAL_SECRETS = {"HF_TOKEN": "hf_token", "JUPYTER_PASSWORD": "jupyter_password"}  # Jupyter runs only if set
 TASK_EXTRA_MODELS = {"S": "Qwen/Qwen3-8B-Base Qwen/Qwen3.5-27B"}  # program.md Task S needs the 27B spike
 MAX_HOURS = 12
 
@@ -64,6 +67,7 @@ def start_command() -> list[str]:
     restarting the container in a loop; the bootstrap stops the pod itself."""
     script = (
         'if [ -x /start.sh ]; then (/start.sh > /var/log/runpod-start.log 2>&1 &); fi; '
+        'command -v git >/dev/null || (apt-get update -qq && apt-get install -y -qq git); '
         'mkdir -p /workspace && cd /workspace; '
         'AUTH="Authorization: Basic $(printf "x-access-token:%s" "$GITHUB_TOKEN" | base64 -w0)"; '
         'if [ -d polyu/.git ]; then '
@@ -80,8 +84,8 @@ def start_command() -> list[str]:
 def create_payload(task: str, *, gpus: list[str], hours: float, branch: str = "main", push_branch: str | None = None,
                    volume_id: str | None = None, volume_gb: int = 200, data_center: str | None = None,
                    image: str = DEFAULT_IMAGE, cloud: str = "SECURE", container_disk_gb: int = 80,
-                   with_hf: bool = False, extra_models: str | None = None, name: str | None = None,
-                   now: datetime | None = None) -> dict:
+                   with_hf: bool = False, jupyter: bool = False, template_id: str | None = None,
+                   extra_models: str | None = None, name: str | None = None, now: datetime | None = None) -> dict:
     if not 0 < hours <= MAX_HOURS:
         raise ValueError(f"hours must be in (0, {MAX_HOURS}]: a pod never runs unattended for longer")
     stamp = (now or datetime.now(timezone.utc)).strftime("%Y%m%d-%H%M")
@@ -93,8 +97,13 @@ def create_payload(task: str, *, gpus: list[str], hours: float, branch: str = "m
         "MOSAIC_MAX_HOURS": f"{hours:g}", "MOSAIC_REPO": REPO, "HF_HOME": "/workspace/hf",
         "EXTRA_MODELS": extra_models if extra_models is not None else TASK_EXTRA_MODELS.get(task, ""),
     }
-    secrets = {**SECRETS, **(OPTIONAL_SECRETS if with_hf else {})}
-    env.update({var: "{{ RUNPOD_SECRET_%s }}" % name_ for var, name_ in secrets.items()})
+    secrets = dict(SECRETS)
+    if with_hf:
+        secrets["HF_TOKEN"] = OPTIONAL_SECRETS["HF_TOKEN"]
+    if jupyter:
+        secrets["JUPYTER_PASSWORD"] = OPTIONAL_SECRETS["JUPYTER_PASSWORD"]
+    if not template_id:  # a template made in the RunPod console may carry the secret references instead
+        env.update({var: "{{ RUNPOD_SECRET_%s }}" % name_ for var, name_ in secrets.items()})
     body = {
         "name": name or f"mosaic-{task}-{stamp}", "imageName": image, "gpuTypeIds": gpus, "gpuCount": 1,
         "cloudType": cloud, "containerDiskInGb": container_disk_gb, "volumeMountPath": "/workspace",
@@ -106,6 +115,8 @@ def create_payload(task: str, *, gpus: list[str], hours: float, branch: str = "m
         body["volumeInGb"] = volume_gb
     if data_center:
         body["dataCenterIds"] = [data_center]
+    if template_id:
+        body["templateId"] = template_id
     return body
 
 

@@ -13,7 +13,11 @@ echo "== system packages"
 apt-get update -qq && apt-get install -y -qq tmux jq git curl > /dev/null
 
 echo "== python venv (/workspace/venv)"
-[ -d /workspace/venv ] || python3 -m venv /workspace/venv
+# Ubuntu 24.04 images (runpod-torch-v280) may lack python3-venv; uv is preinstalled there.
+if [ ! -x /workspace/venv/bin/python ]; then
+  rm -rf /workspace/venv
+  python3 -m venv /workspace/venv 2>/dev/null || { rm -rf /workspace/venv; uv venv --seed /workspace/venv; }
+fi
 source /workspace/venv/bin/activate
 grep -q workspace/venv ~/.bashrc 2>/dev/null || echo 'source /workspace/venv/bin/activate' >> ~/.bashrc
 pip install -q --upgrade pip
