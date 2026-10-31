@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mosaic doctor*)",
+      "Bash(mosaic run *)",
+      "Bash(mosaic report *)",
+      "Bash(mosaic status*)",
+      "Bash(mosaic rescore *)",
+      "Bash(mosaic verify *)",
+      "Bash(python -m mosaic *)",
+      "Bash(python -m pytest*)",
+      "Bash(pytest*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(nvidia-smi*)",
+      "Bash(pip install *)",
+      "Bash(ls *)",
+      "Bash(wc *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(jq *)"
+    ],
+    "deny": [
+      "Bash(git push*)",
+      "Bash(mosaic freeze*)",
+      "Bash(rm -rf *)",
+      "Edit(prereg/**)",
+      "Edit(locks/**)",
+      "Edit(experiments/results.tsv)",
+      "Edit(src/mosaic/metrics.py)",
+      "Edit(configs/lexicons.toml)",
+      "Edit(configs/prompts/*.system.txt)",
+      "Edit(configs/prompts/user_template.txt)",
+      "Read(data/events/test.jsonl)"
+    ]
+  }
+}

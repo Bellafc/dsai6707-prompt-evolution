@@ -1,0 +1,35 @@
+# exp01: is fine-tuning better than prompting? (Confirmation panel question: "why fine-tune instead of CoT?")
+# Pre-registration: prereg/exp01_prompt_vs_sft.md. Frozen by `mosaic freeze --exp exp01` before the test run.
+
+prereg = "prereg/exp01_prompt_vs_sft.md"
+
+[model]
+base = "Qwen/Qwen2.5-7B-Instruct"
+max_model_len = 16384          # few-shot prompts are long; 24 GB cards may need 12288 (see program.md)
+gpu_memory_utilization = 0.90
+max_lora_rank = 32             # adapters were trained with r = 32, alpha = 64
+
+[sampling]                     # identical for every arm
+temperature = 0.7
+top_p = 0.9
+max_tokens = 2048
+seed = 20261030
+
+[arms.A]                       # zero-shot CoT: school system prompt + user template (Confirmation "base")
+[arms.B]                       # few-shot CoT: A + k exemplars from the school's SFT trajectories
+k = 3                          # tunable on dev only, within the budget in program.md
+strategy = "random"            # "random" | "category"
+max_chars = 6000               # truncate long exemplar responses
+[arms.C]                       # LoRA SFT adapter, same messages as A
+[arms.D]                       # API teacher, same messages as A
+
+[teacher]
+model = "gpt-4o"
+usd_per_mtok_in = 2.50         # check current pricing before the final run
+usd_per_mtok_out = 10.00
+budget_usd = 15.0              # hard stop per run
+
+[report]
+comparisons = ["A>B", "A>C", "B>C", "C>D", "A>D"]   # "X>Y": Y compared against baseline X
+primary = ["B>C"]                                  # the confirmatory question: SFT vs the strongest prompting
+primary_metric = "consistency"

@@ -1,0 +1,8 @@
+<<PLACEHOLDER: replace with the exact user prompt format used in the Confirmation evaluation.>>
+Event ({event_id}, category: {category}):
+{event_text}
+
+Macro context:
+{macro_context}
+
+Analyse this event and produce your full reasoning trajectory ending with the [Output] block.

@@ -1,0 +1,6 @@
+# GPU stack for arms A/B/C (vLLM brings a matching torch). Pin after the first working install: pip freeze > setup/lock.txt
+vllm>=0.6.3
+huggingface_hub>=0.24
+openai>=1.40
+numpy>=1.24
+pytest>=8

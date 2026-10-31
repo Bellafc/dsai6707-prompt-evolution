@@ -1,0 +1,13 @@
+__pycache__/
+*.egg-info/
+.venv/
+.pytest_cache/
+data/*
+!data/README.md
+adapters/
+runs/
+cache/
+logs/
+vendor/
+configs/paths.toml
+scratch/

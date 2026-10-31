@@ -1,0 +1,25 @@
+# PROVISIONAL: reconstructed from the examples printed in the Confirmation report and slides, NOT the original
+# lists. Replace with the exact lists used for Table 4.3 and delete this line's first word (Task 0, program.md).
+# The pool sizes matter: C_s divides must-have hits by len(must) (report: 7 Keynesian, 6 Austrian, 6 Monetarist).
+
+[options]
+count_mode = "distinct"   # "distinct" terms or total "occurrences"; must match the original scorer
+scope = "full"            # "full" response or only the "output" block
+
+[schools.keynesian]
+must = ["aggregate demand", "multiplier", "output gap", "fiscal", "effective demand", "consumption", "investment"]
+strong = ["liquidity trap", "IS-LM", "paradox of thrift", "animal spirits", "marginal propensity to consume",
+          "New Keynesian", "sticky prices", "Phillips curve"]
+anti = ["malinvestment", "MV=PQ", "quantity theory", "endogenous money", "Minsky", "Austrian business cycle"]
+
+[schools.austrian]
+must = ["malinvestment", "Austrian business cycle", "capital structure", "time preference", "credit expansion",
+        "natural rate of interest"]
+strong = ["ABCT", "roundabout production", "Cantillon effect", "Hayek", "Mises", "sound money", "boom-bust"]
+anti = ["multiplier", "aggregate demand", "output gap", "quantity theory", "MV=PQ"]
+
+[schools.monetarist]
+must = ["MV=PQ", "quantity theory", "M2", "long and variable lags", "natural rate", "money supply"]
+strong = ["Friedman rule", "velocity", "k-percent rule", "monetary base", "adaptive expectations",
+          "Friedman", "money growth"]
+anti = ["multiplier effect", "endogenous money", "malinvestment", "Minsky", "animal spirits"]

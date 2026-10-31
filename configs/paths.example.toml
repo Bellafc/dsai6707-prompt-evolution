@@ -1,0 +1,4 @@
+# Copy to configs/paths.toml (not versioned) if your files live elsewhere. Relative paths are from the repo root.
+events_dir = "data/events"              # dev.jsonl, test.jsonl
+trajectories_dir = "data/trajectories"  # keynesian.jsonl, austrian.jsonl, monetarist.jsonl (SFT training data)
+adapters_dir = "adapters"               # keynesian/, austrian/, monetarist/ (PEFT LoRA directories)
