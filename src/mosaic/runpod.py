@@ -149,9 +149,30 @@ def redact(p: dict) -> dict:
     return q
 
 
+def permission_flags(settings_path: str = ".claude/settings.json") -> list[str]:
+    """The project's permission rules as `claude` command-line flags for the pod's unattended session. On the pods
+    the allow list in .claude/settings.json was not applied (every Bash call "requires approval", and `-p` cannot
+    ask anyone), so scripts/autoresearch.sh passes the same rules on the command line, in both rule spellings."""
+    perms = json.loads(open(settings_path).read())["permissions"]
+
+    def spell(rules: list[str]) -> list[str]:
+        out = []
+        for r in rules:
+            out.append(r)
+            if r.startswith("Bash(") and r.endswith("*)") and not r.endswith(":*)"):
+                out.append(r[:-2].rstrip() + ":*)")  # legacy prefix syntax: Bash(git add:*)
+        return out
+
+    return ["--allowedTools", *spell(perms.get("allow", [])), "--disallowedTools", *spell(perms.get("deny", []))]
+
+
 def summary(p: dict) -> str:
     gpu = (p.get("machine") or {}).get("gpuTypeId") or ",".join(p.get("gpuTypeIds") or []) or "?"
     cost = p.get("costPerHr")
     env = p.get("env") or {}
     return "\t".join(str(x) for x in (p.get("id"), p.get("name"), p.get("desiredStatus"), gpu,
                                       f"${cost}/h" if cost is not None else "", env.get("MOSAIC_PUSH_BRANCH", "")))
+
+
+if __name__ == "__main__":  # one argument per line, for scripts/autoresearch.sh
+    print("\n".join(permission_flags()))

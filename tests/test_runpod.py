@@ -108,3 +108,16 @@ def test_pod_bootstrap_bounds_setup_and_lifetime():
     src = (Path(__file__).resolve().parents[1] / "scripts" / "pod_bootstrap.sh").read_text()
     assert "timeout 90m bash setup/runpod_setup.sh </dev/null" in src  # a hanging setup cannot run forever
     assert src.index("WATCHDOG") < src.index("FATAL")  # the lifetime cap is armed before anything can hang
+
+
+def test_permission_flags_carry_the_project_rules_to_the_pod_session():
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1]
+    flags = rp.permission_flags(str(root / ".claude" / "settings.json"))
+    allow = flags[1:flags.index("--disallowedTools")]
+    deny = flags[flags.index("--disallowedTools") + 1:]
+    assert flags[0] == "--allowedTools"
+    assert "Bash(python -m mosaic *)" in allow and "Bash(python -m mosaic:*)" in allow
+    assert "Bash(git push:*)" in deny and "Read(data/events/test.jsonl)" in deny  # held-out data stays closed
+    assert '"${PERMS[@]}"' in (root / "scripts" / "autoresearch.sh").read_text()
