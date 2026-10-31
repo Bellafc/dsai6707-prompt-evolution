@@ -23,17 +23,17 @@ Files in `docs/project/confirmation/`:
 | File | What it is |
 |---|---|
 | `jft_confirmation_final.pdf` | Final Confirmation report, "AI Agents in Finance: A Survey" + Macro-MOSAIC proposal (65 pages) |
+| `jft_confirmation_final.txt` | Full text of the report (`pdftotext -layout`), for searching and quoting |
 | `macro_mosaic_confirmation.html` | 30-slide static HTML deck (16:9, IEEE citations [1]–[49]); Chinese speaker notes toggle with the N key |
 | `phd_motivation_and_plan.md` | Spoken statement "Why PhD & Research Plan" used at the Confirmation (Chinese) |
 
 The Confirmation literature review grew out of Bella's HKUST PQE survey, kept in `docs/project/survey_pqe/`
 (`main.tex`, `references.bib`, 112 entries).
 
-Not in the Project, so not archived here (they exist only as downloads from earlier chats, if at all): the LaTeX
-source of the Confirmation report (`jft_confirmation_v3_fixed.zip` and later), the 36-slide PowerPoint deck, the
-Traditional Chinese translation of the report, the DSAI programme document `DSAI_RPg_202526.pdf`. The thesis will
-reuse the report's chapters, so the LaTeX source should be committed (e.g. under `docs/confirmation_src/`) by the
-human if it is still available.
+Not archived, by decision of the human (2026-10-31): the LaTeX source of the report, the 36-slide PowerPoint deck
+and the Chinese translation. The thesis text and any new slides are written from scratch; the report's content is
+taken from the PDF and its text version above. The DSAI programme rules that matter are summarised in
+THESIS_DESIGN §1.
 
 ### Confirmation-era design (superseded where THESIS_DESIGN.md says so)
 

@@ -1,0 +1,2064 @@
+AI AGENTS IN FINANCE: A SURVEY
+
+
+                            by
+
+
+                       Futian Jiang
+
+
+
+
+   Department of Data Science and Artificial Intelligence
+            Hong Kong Polytechnic University
+
+
+
+
+               Confirmation of Registration
+ABSTRACT
+
+The rapid advancement of large language models (LLMs) and autonomous agent
+frameworks has catalyzed a new paradigm in computational finance. AI agents,
+which are systems capable of perceiving financial environments, reasoning over com-
+plex data, and executing actions, are being deployed across trading, portfolio man-
+agement, risk assessment, fraud detection, and advisory services. This report has
+two parts. The first is a survey of AI agents in finance, covering both reinforcement
+learning-based agents and LLM-powered autonomous agents. We propose a taxonomy
+along two dimensions: agent design (single-agent, multi-agent, memory-augmented,
+tool-augmented, and reasoning-and-reflection architectures) and financial application
+domain (trading, portfolio management, risk and fraud, advisory, and compliance).
+The survey identifies a gap: existing LLM-based financial agents operate primarily
+at the individual asset level without explicit macroeconomic transmission-mechanism
+reasoning, while macro-focused LLM systems are not directly connected to calibrated
+cross-asset allocation signals.
+   The second part addresses this gap. We propose Macro-MOSAIC (Mixture-Of-
+Schools Analogy-Informed Chains), a four-stage pipeline designed to bridge qualita-
+tive macro event interpretation and quantitative asset allocation: (1) dual-channel
+retrieval over a historical macro episode database, (2) multi-school causal chain gen-
+eration via school-specific fine-tuned LLMs (Keynesian, Austrian, Monetarist), (3)
+Bayesian aggregation with regime-conditional weighting and Platt scaling, and (4)
+fractional Kelly asset allocation. We report preliminary results on two completed
+
+
+                                          1
+components—Stages 1 and 2—while Stages 3 and 4 remain planned work. First, we
+construct a structured database of 141 macro episodes (1971–2025) with 35 FRED
+indicators and 22 tracked instruments per episode, yielding 13,571 asset reaction data
+points. Second, we fine-tune school-specific LoRA adapters on Qwen2.5-7B-Instruct
+and evaluate on 96 held-out events. Fine-tuning improves school-style vocabulary
+consistency by 59.3% on average (Austrian +118.8%, Monetarist +129.7%), reduces
+cross-school contamination by up to 100%, and increases inter-school signal diversity
+(Jaccard distance 0.853 vs. 0.778 for base); these results are best interpreted as input-
+quality validation for Stage 3, not as evidence of end-to-end causal reasoning or trad-
+ing performance. We conclude with a detailed plan for the remaining stages, ablation
+experiments, and end-to-end evaluation on both reasoning benchmarks (EconCausal,
+EconLogicQA) and out-of-sample backtests (2023–2025).
+
+
+
+
+                                           2
+Contents
+
+Abstract                                                                                 1
+
+1 Introduction                                                                           5
+
+2 Literature Review                                                                      9
+  2.1   Background . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .       9
+  2.2   Data Sources and Modalities . . . . . . . . . . . . . . . . . . . . . . .       11
+  2.3   Agent Design . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .      13
+  2.4   Applications . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .    19
+  2.5   Benchmarks and Evaluation . . . . . . . . . . . . . . . . . . . . . . .         23
+
+3 Research Methodology                                                                  25
+  3.1   Gap Analysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .      25
+  3.2   Problem Formulation . . . . . . . . . . . . . . . . . . . . . . . . . . .       26
+  3.3   Macro-MOSAIC: System Architecture . . . . . . . . . . . . . . . . . .           27
+
+4 Preliminary Results                                                                   33
+  4.1   Episode Database Construction . . . . . . . . . . . . . . . . . . . . .         33
+  4.2   School-Specific Agent Evaluation . . . . . . . . . . . . . . . . . . . .        36
+  4.3   Results . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   40
+
+5 Future Plan and Schedule                                                              47
+  5.1   Stage 2: School-Specific LoRA Adapters (Completed) . . . . . . . . .            48
+
+                                            3
+5.2   Stage 1: Retrieval-Augmented Analogy Engine . . . . . . . . . . . . .       48
+5.3   Stage 3: Bayesian Aggregation and Calibration     . . . . . . . . . . . .   49
+5.4   Stage 4: Asset Allocation Signal Generation and Backtesting . . . . .       50
+5.5   End-to-End Integration and Ablation Experiments . . . . . . . . . . .       52
+5.6   Timeline Summary . . . . . . . . . . . . . . . . . . . . . . . . . . . .    53
+5.7   Risk, Governance, and Auditability . . . . . . . . . . . . . . . . . . .    53
+
+
+
+
+                                       4
+Chapter 1
+
+Introduction
+
+The intersection of AI and finance has a long history, from early expert systems
+for credit scoring to statistical arbitrage models powered by machine learning. The
+emergence of large language models (LLMs) and autonomous agent frameworks has
+introduced a new capability: AI systems that perceive, reason, plan, and act within
+complex financial environments with increasing autonomy.
+   An AI agent in finance can be defined as a computational system that observes
+financial data (prices, news, reports, sentiment), maintains internal state or memory,
+reasons about market conditions, and takes actions such as placing trades, generating
+reports, or flagging risks. This covers a wide spectrum, from deep reinforcement
+learning (DRL) agents trained to optimize portfolio returns [Liu et al., 2022b,a] to
+LLM-powered multi-agent frameworks that simulate the collaborative dynamics of
+professional trading firms [Xiao et al., 2024].
+
+
+
+Part I: Literature Review
+Several recent surveys have examined LLM-based financial agents from different an-
+gles: Ding et al. [2024] focus specifically on trading applications, Nie et al. [2024]
+provide a broad overview of LLMs in financial applications, and Dong et al. [2025]
+
+
+                                           5
+bridge research and real-world deployment. Building on these, the first part of this
+report reviews the literature with a specific orientation toward the design of our pro-
+posed system: we organize the space jointly along agent architecture (single-agent,
+multi-agent, memory-augmented, tool-augmented, reasoning-and-reflection) and fi-
+nancial application domain (trading, portfolio management, risk and fraud, advisory,
+compliance), so that the design choices made in Macro-MOSAIC can be explicitly
+situated against existing patterns. The review is organized around the following
+questions:
+
+    RQ1: What data sources and modalities are used by AI agents in finance?
+
+    RQ2: What agent design patterns have been proposed, and how do they differ
+     architecturally?
+
+    RQ3: How are these designs applied across different financial domains?
+
+    RQ4: How are financial AI agents evaluated, and what benchmarks exist?
+
+    RQ5: What are the key open challenges and promising future directions?
+
+
+
+Part II: Gap, Proposed System, and Preliminary
+Results
+The survey surfaces a specific gap at the boundary between equity-level agents and
+macroeconomic reasoning. Existing systems such as FinGPT [Yang et al., 2023],
+TradingAgents [Xiao et al., 2024], and FINCON [Yu et al., 2024] generate asset-level
+signals from news, indicators, and fundamentals, but operate primarily at the indi-
+vidual asset level without explicit macroeconomic transmission-mechanism reasoning.
+Conversely, macro-focused LLM systems such as EconAgent [Li et al., 2024] simulate
+or forecast macro dynamics but are not directly connected to calibrated cross-asset
+allocation signals; equity analysis systems such as MarketSenseAI [Fatouros et al.,
+
+                                          6
+2025] similarly lack explicit macro transmission-mechanism reasoning. Three gaps
+motivate this work: (i) no system we are aware of provides explicit, auditable multi-
+school parallel reasoning chains in which distinct economic frameworks independently
+analyze the same macro event and are formally aggregated; (ii) historical analogy re-
+trieval at the macro-episode level is absent from the systems we surveyed; (iii) no
+system connects qualitative macro interpretation to calibrated probability distribu-
+tions and cross-asset signals in a verified end-to-end pipeline evaluated against both
+reasoning benchmarks and realized outcomes.
+   To address these gaps, we propose Macro-MOSAIC (Mixture-Of-Schools Analogy-
+Informed Chains), a four-stage pipeline:
+
+  1. Historical Analogy Retrieval. Dual-channel retrieval over 141 macro episodes
+     (1971–2025), combining semantic similarity over event narratives with Maha-
+     lanobis distance over 35-dimensional FRED macro state vectors.
+
+  2. Multi-School Causal Chain Generation. Three school-specific LoRA adapters
+     (Keynesian, Austrian, Monetarist) independently interpret the retrieved analo-
+     gies and produce structured causal chains mapping transmission mechanisms to
+     asset impacts.
+
+  3. Bayesian Aggregation and Calibration.             Regime-conditional weighting
+     based on rolling Brier Scores, followed by Platt scaling trained on resolved
+     Polymarket and Metaculus questions.
+
+  4. Asset Allocation Signal Generation. Fractional Kelly allocation over 8
+     liquid instruments, driven by scenario-conditional return forecasts.
+
+   We report preliminary results on two completed components. The episode database
+(Section 4.1) contains 141 episodes across 8 categories and 19 transmission channels,
+with 35 FRED indicators and 22 instruments per episode, producing 13,571 asset
+reaction data points; 117 episodes additionally have LLM-generated narrative sum-
+
+
+                                           7
+maries and three parallel school-specific interpretations (Keynesian, Austrian, Mone-
+tarist). The school-specific adapter evaluation (Section 4.2) fine-tunes LoRA adapters
+on Qwen2.5-7B-Instruct using 500 synthetic agent trajectories per school, and evalu-
+ates on 96 held-out events. Fine-tuning yields a 59.3% average gain in school-style vo-
+cabulary consistency (Austrian +118.8%, Monetarist +129.7%), reduces cross-school
+contamination by 51–100%, raises structured output block presence from 51–81%
+to 93–99%, and produces a higher inter-school Jaccard diversity (0.853 vs. 0.778);
+these results constitute input-quality validation for Stage 3 rather than evidence of
+end-to-end system performance.
+
+
+
+Organization
+The remainder of this report is organized as follows. Chapter 2 presents the liter-
+ature review, covering background (§2.1), data sources and modalities (§2.2), agent
+design patterns (§2.3), applications (§2.4), and benchmarks (§2.5). Chapter 3 presents
+the research methodology: gap analysis (§3.1), problem formulation (§3.2), and the
+Macro-MOSAIC system architecture (§3.3). Chapter 4 reports preliminary results
+on the episode database and school-specific adapter evaluation. Chapter 5 details
+the plan and schedule for the remaining stages, ablation experiments, and end-to-end
+evaluation.
+
+
+
+
+                                          8
+Chapter 2
+
+Literature Review
+
+2.1     Background
+
+2.1.1    Foundations of AI Agents
+
+An AI agent is typically defined as a system that perceives its environment, maintains
+internal state, and takes actions to achieve specified goals [Wooldridge and Jennings,
+1995, Russell and Norvig, 2010]. In the context of LLM-based agents, recent frame-
+works have formalized the agent loop as a cycle of observation, reasoning (often via
+chain-of-thought prompting), action selection (potentially using external tools), and
+memory update [Wang et al., 2024a, Xi et al., 2025].
+   Key architectural components of modern AI agents include: (1) Perception mod-
+ules that process environmental inputs, including text, numerical data, and visual
+information; (2) Memory mechanisms encompassing short-term (context window)
+and long-term (retrieval-augmented) storage for maintaining state across interactions
+[Park et al., 2023]; (3) Reasoning capabilities such as chain-of-thought [Wei et al.,
+2022], tree-of-thought [Yao et al., 2023], or reflection-based deliberation; (4) Action
+interfaces including tool use, API calls, and code generation [Schick et al., 2023];
+and (5) Planning modules that decompose complex goals into subgoals [Huang et al.,
+
+
+
+                                          9
+2024].
+
+
+2.1.2     From Quantitative Models to Agents in Finance
+
+The evolution of AI in finance can be traced through several paradigms. Early quanti-
+tative finance relied on statistical models such as ARIMA and GARCH for time series
+prediction. The rise of machine learning brought random forests, gradient boosting,
+and neural networks for tasks like credit scoring, fraud detection, and price prediction
+[Dixon et al., 2020].
+   Deep reinforcement learning (DRL) represented a significant shift toward agent-
+based financial systems. DRL agents learn trading policies by interacting with sim-
+ulated market environments, optimizing objectives such as cumulative returns or
+Sharpe ratio [Hambly et al., 2023]. The FinRL framework [Liu et al., 2022b,a] estab-
+lished the first open-source library for financial DRL, supporting algorithms such as
+PPO, A2C, DDPG, SAC, and TD3 across stock trading and portfolio management
+tasks. FinRL-Meta [Liu et al., 2022a] further extended this with near-real market
+environments and comprehensive benchmarking.
+   The most recent paradigm shift involves LLM-powered agents that leverage nat-
+ural language understanding and reasoning capabilities. These agents can process
+unstructured financial text, reason about market conditions in natural language, and
+integrate multiple data modalities [Yang et al., 2023, Zhang et al., 2024]. This tran-
+sition from numerical-only DRL agents to language-capable autonomous agents con-
+stitutes the central focus of this survey.
+
+
+2.1.3     Multi-Agent Systems
+
+Multi-agent systems (MAS) have a long history in computational finance, from agent-
+based market simulation models [LeBaron, 2006] to modern LLM-powered collabo-
+rative frameworks. The key insight driving multi-agent approaches is that financial
+decision-making in practice involves multiple specialized roles—analysts, traders, risk
+
+                                             10
+managers—whose interactions produce better outcomes than any single agent [Xiao
+et al., 2024]. Recent multi-agent financial systems draw inspiration from the gen-
+erative agents framework [Park et al., 2023] and software development multi-agent
+systems [Qian et al., 2024], adapting these architectures to the financial domain with
+specialized roles and domain-specific tools.
+
+
+
+2.2     Data Sources and Modalities
+Financial AI agents operate over a diverse landscape of data sources and modalities.
+The richness and variety of the data an agent can access fundamentally shapes its
+perception of the market and the quality of its decisions. This chapter surveys the
+major data categories used by existing financial agents.
+
+
+2.2.1    Numerical Market Data
+
+The most fundamental data source for financial agents is numerical market data,
+including asset prices (open, high, low, close, adjusted close), trading volumes, and
+derived technical indicators such as moving averages, RSI, MACD, and Bollinger
+Bands. Nearly all trading agents ingest this data as their primary input. In DRL-
+based agents such as those built on FinRL [Liu et al., 2022b], the state representation
+typically consists of price features and technical indicators organized as a vector or
+matrix over a lookback window. LLM-based agents such as FinMem [Yu et al., 2023]
+and FinAgent [Zhang et al., 2024] additionally convert numerical data into textual
+summaries or structured prompts that can be processed by language models.
+
+
+2.2.2    Textual Financial Data
+
+Textual data constitutes a major advantage of LLM-based agents over traditional
+quantitative systems. Key textual sources include:
+
+
+
+                                          11
+   News Articles and Headlines. Financial news is widely used for sentiment anal-
+ysis and event detection. Agents such as TradingAgents [Xiao et al., 2024] employ
+dedicated news analyst agents that process and summarize relevant articles. FinGPT
+[Yang et al., 2023] fine-tunes LLMs on financial news for sentiment-enhanced stock
+movement prediction.
+   Financial Reports. Regulatory filings such as SEC Form 10-K and 10-Q pro-
+vide detailed company financials, management discussions, and risk disclosures. Kim
+et al. [2024] demonstrated that LLMs can analyze financial statements with accu-
+racy rivaling professional analysts. Trading agents like FinMem [Yu et al., 2023] and
+TradingGPT [Li et al., 2023] incorporate financial reports to enrich their memory and
+reasoning.
+   Social Media and Forums. Platforms such as Twitter/X, Reddit (e.g., r/wallstreetbets),
+and StockTwits provide real-time retail investor sentiment. Multi-agent systems of-
+ten include dedicated sentiment analyst agents that process social media feeds [Xiao
+et al., 2024].
+   Analyst Reports. Professional analyst reports and investment research provide
+high-quality expert opinions. FinAgent [Zhang et al., 2024] incorporates expert guid-
+ance from platforms such as SeekingAlpha as a key input to its decision-making
+module.
+
+
+2.2.3     Visual and Chart Data
+
+Financial charts encode important pattern information that is not easily captured
+by numerical features alone. FinAgent [Zhang et al., 2024] pioneered the integration
+of visual data in LLM-based trading agents, incorporating Kline charts and trad-
+ing charts alongside numerical and textual data. Using multimodal LLMs such as
+GPT-4V, FinAgent demonstrated that visual inputs can significantly improve trad-
+ing performance compared to text-and-number-only baselines. Despite this promise,
+visual financial data remains underexplored relative to text and numerical modali-
+
+
+                                         12
+ties, partly because most LLMs have not been specifically trained on financial chart
+interpretation.
+
+
+2.2.4     Alternative Data
+
+An emerging trend is the incorporation of alternative data sources that go beyond
+traditional financial data. These include insider trading records and institutional
+holdings, macroeconomic indicators and central bank communications, supply chain
+data and satellite imagery, and earnings call audio transcripts. TradingAgents [Xiao
+et al., 2024] uses insider transaction data and institutional holdings alongside tradi-
+tional price and news data. The integration of such heterogeneous data sources is an
+area of active development, particularly as multi-modal foundation models become
+more capable.
+
+
+2.2.5     Data Integration Challenges
+
+Financial agents face several data integration challenges. First, different data sources
+arrive at different frequencies—prices at millisecond to daily intervals, news irregu-
+larly, and financial reports quarterly. Agents must handle this temporal misalignment.
+Second, data quality varies significantly across sources, with social media data be-
+ing particularly noisy. Third, the volume of available data often exceeds the context
+window of LLMs, requiring agents to implement summarization, filtering, or retrieval-
+augmented generation strategies to select the most relevant information.
+
+
+
+2.3     Agent Design
+This chapter presents a taxonomy of agent design patterns observed in the financial
+AI literature. We categorize existing work by architectural paradigm rather than
+by financial application, focusing on the structural choices that define how agents
+perceive, reason, remember, and act.
+
+                                          13
+2.3.1    Single-Agent Architectures
+
+DRL-Based Agents The simplest agent design is a single DRL agent that directly
+maps market observations to trading actions. These agents formulate trading as a
+Markov Decision Process (MDP) where the state includes market features, the action
+space encompasses buy/hold/sell decisions with optional position sizing, and the re-
+ward reflects trading performance. The FinRL library [Liu et al., 2022b,a] standard-
+ized this paradigm with a three-layer architecture separating market environment,
+agent training, and application layers, supporting algorithms including PPO, A2C,
+DDPG, SAC, and TD3. Zhang et al. [2020] applied deep reinforcement learning with
+attention mechanisms, and Sun et al. [2021] provided a comprehensive survey of RL
+for quantitative trading. The key limitation of DRL-based agents is their reliance on
+numerical state representations, which makes it difficult to incorporate unstructured
+information such as news or financial reports without extensive feature engineering.
+
+
+LLM-Based Single Agents LLM-based single agents address the limitation above
+by using language models as the core reasoning engine. In this design, all financial
+data—numerical, textual, and sometimes visual—is converted into prompts that the
+LLM processes to generate trading decisions. The agent typically follows a perceive-
+reason-act loop: it ingests current market information, reasons about it (potentially
+using chain-of-thought), and outputs a trading action or signal. FinGPT [Yang et al.,
+2023] represents a foundational approach, providing open-source financial LLMs fine-
+tuned for sentiment analysis and trading signal generation. Rather than building a
+full agent loop, FinGPT focuses on the LLM backbone, enabling downstream agent
+applications. Lopez-Lira and Tang [2023] demonstrated that even zero-shot LLM
+predictions based on news headlines can generate profitable trading signals, validating
+the potential of language models as financial reasoning engines.
+
+
+
+
+                                          14
+2.3.2      Memory-Augmented Agents
+
+A critical challenge for financial agents is maintaining relevant context over time.
+Memory-augmented agent designs address this by incorporating explicit memory
+structures that store, organize, and retrieve past observations and reflections.
+   FinMem [Yu et al., 2023] introduced a layered memory architecture inspired by
+human cognitive structures. The agent maintains three memory tiers: working mem-
+ory for immediate context, episodic memory for recent events, and semantic memory
+for long-term knowledge. Raw inputs such as daily news and financial reports are
+summarized into memories, and upon new observations, relevant memories are re-
+trieved based on recency, relevancy, and importance scores. This design allows the
+agent to evolve its knowledge over time and react to new market signals with historical
+context.
+   FinAgent [Zhang et al., 2024] extended the memory-augmented paradigm with a
+dual-level mechanism. It stores not only raw observations but also learned lessons
+from past trading experiences, creating a self-improving feedback loop. The diversified
+retrieval operation assigns specific retrieval types to historical information, enabling
+the agent to access past market intelligence from multiple perspectives and senses.
+   The memory-augmented design pattern is particularly important in finance be-
+cause market regimes change over time, and an agent’s ability to recall and reason
+about analogous historical situations can significantly improve decision quality.
+
+
+2.3.3      Tool-Augmented Agents
+
+Tool-augmented agents extend the base LLM with access to external tools and APIs,
+enabling capabilities that pure language generation cannot provide. In the financial
+context, tools may include real-time market data APIs, technical indicator calculators,
+backtesting engines, web search for current news, code execution environments for
+quantitative analysis, and order execution interfaces.
+   FinAgent [Zhang et al., 2024] exemplifies this pattern by integrating established
+
+                                          15
+trading strategies and expert financial tools with the LLM’s reasoning. The agent can
+invoke technical analysis tools, query market data APIs, and execute code to process
+numerical data that would be unreliable if handled through pure language generation.
+   QuantAgent [Wang et al., 2024b] takes tool augmentation further by using LLMs
+not for direct trading but for generating alpha factors—quantitative signals that pre-
+dict asset returns. The system operates through an inner-loop and outer-loop archi-
+tecture: the inner loop uses the LLM to generate candidate alpha factor expressions,
+while the outer loop validates them against historical data using backtesting tools.
+This design leverages the LLM’s creative reasoning for hypothesis generation while
+relying on quantitative tools for rigorous validation.
+   Tool augmentation is particularly valuable in finance because financial reasoning
+often requires precise numerical computation that LLMs handle poorly, and because
+real-time market data access is essential for actionable decisions.
+
+
+2.3.4     Reasoning-and-Reflection Agents
+
+Reasoning-and-reflection agents incorporate explicit mechanisms for the agent to eval-
+uate and improve its own reasoning process. This design pattern goes beyond simple
+chain-of-thought prompting by adding iterative self-critique, reflection on past deci-
+sions, and adaptive strategy refinement.
+   FinAgent [Zhang et al., 2024] implements a dual-level reflection mechanism. At
+the first level, the agent reflects on individual trading decisions by analyzing whether
+the outcome matched its reasoning. At the second level, it performs meta-reflection on
+its overall strategy, identifying systematic biases or recurring errors. These reflections
+are stored in memory and influence future decisions.
+   FinMem [Yu et al., 2023] incorporates reflection through its memory architec-
+ture: when new observations arrive, the agent generates reflections that synthesize
+recent memories with new information. Both memories and reflections are stored and
+retrieved during subsequent decision-making, creating a cycle of experience-driven
+
+
+                                           16
+improvement.
+   The reasoning-and-reflection pattern is critical in finance because markets are non-
+stationary, and strategies that worked in one regime may fail in another. An agent’s
+ability to recognize when its assumptions are no longer valid and adapt accordingly
+is essential for sustained performance.
+
+
+2.3.5    Multi-Agent Collaborative Frameworks
+
+Multi-agent designs assign different specialized roles to separate LLM agents that
+collaborate to produce decisions. This pattern mirrors the organizational structure
+of real-world trading firms and investment institutions, where analysts, researchers,
+traders, and risk managers each contribute specialized expertise.
+
+
+Role-Specialized Agent Teams TradingAgents [Xiao et al., 2024] proposed a
+framework directly inspired by professional trading firms, featuring agents in special-
+ized roles: fundamental analysts who assess company financials, sentiment analysts
+who gauge market mood from social media, technical analysts who identify price
+patterns, news analysts who evaluate macroeconomic developments, and traders who
+synthesize all inputs to make final decisions. The framework also includes a risk
+management team that monitors portfolio exposure.
+   HedgeAgents [Li et al., 2025] introduced a coordinated multi-agent system with a
+central fund manager agent orchestrating multiple specialized hedging expert agents,
+each focusing on different asset classes. This hierarchical design enables efficient
+division of labor while maintaining overall portfolio coherence.
+
+
+Debate-Driven Agent Architectures A distinctive variant of multi-agent design
+uses structured debate between agents to improve reasoning quality. In TradingA-
+gents [Xiao et al., 2024], Bull and Bear researcher agents independently assess market
+conditions from optimistic and pessimistic perspectives, then engage in a structured
+
+
+                                          17
+debate. The trader agent observes this debate and synthesizes the opposing argu-
+ments to make a more balanced decision. Xing [2025] applied heterogeneous LLM
+agent debate to financial sentiment analysis, where agents with different biases or
+perspectives analyze the same news and reach more robust classifications through
+argumentation. This approach helps mitigate the tendency of individual LLMs to
+exhibit overconfident or biased sentiment predictions.
+
+
+Information-Distillation Agent Networks FINCON [Yu et al., 2024] proposed
+a multi-agent system with conceptual verbal reinforcement, addressing the challenge
+of information overload in financial decision-making. Rather than passing all raw
+data between agents, FINCON implements an information distillation process where
+each agent compresses and refines information before passing it to downstream agents.
+This addresses a key weakness of naive multi-agent systems—the “telephone effect”
+where details are lost and states become corrupted as information passes through
+multiple agents.
+
+
+2.3.6      Hybrid Agent Designs
+
+In practice, many state-of-the-art financial agents combine multiple design patterns.
+FinAgent [Zhang et al., 2024] is simultaneously memory-augmented, tool-augmented,
+reasoning-and-reflection-enabled, and multimodal. TradingAgents [Xiao et al., 2024]
+combines multi-agent collaboration with role specialization and debate mechanisms.
+This trend toward hybrid designs reflects the inherent complexity of financial decision-
+making, which demands diverse capabilities that no single design pattern can fully
+address.
+   An important design consideration in hybrid systems is the coordination overhead.
+As agents become more complex, the computational cost of inference increases, the
+number of potential failure modes grows, and the system becomes harder to debug and
+interpret. Balancing architectural sophistication with practical deployability remains
+
+
+                                          18
+an open challenge.
+
+
+
+2.4        Applications
+This chapter organizes the literature by financial application domain, examining how
+the agent design patterns described in Section 2.3 are deployed to address specific
+financial tasks.
+
+
+2.4.1      Trading
+
+Trading is the most extensively studied application for financial AI agents. The goal
+is to generate buy/sell/hold signals or execute trades that maximize risk-adjusted
+returns.
+
+
+Stock Trading Stock trading has served as the primary testbed for both DRL-
+based and LLM-based agents. FinRL [Liu et al., 2022b,a] demonstrated that DRL
+agents (PPO, DDPG, A2C) can outperform traditional strategies on Dow Jones 30
+constituents and S&P 500 stocks. LLM-based agents have extended this by incorpo-
+rating news and sentiment: FinMem [Yu et al., 2023] showed that layered memory
+with character design improves trading decisions on individual stocks, while FinAgent
+[Zhang et al., 2024] achieved an average 36% improvement in profitability across six
+datasets by integrating multimodal data. Multi-agent systems have pushed perfor-
+mance further. TradingAgents [Xiao et al., 2024] demonstrated significant improve-
+ments in cumulative returns, Sharpe ratio, and maximum drawdown by simulating
+the collaborative dynamics of a professional trading firm. FINCON [Yu et al., 2024]
+showed superior performance over both DRL agents and single LLM agents through
+its information distillation approach.
+
+
+Cryptocurrency Trading Cryptocurrency markets, characterized by high volatil-
+ity, 24/7 operation, and strong social media influence, represent a distinct challenge
+
+                                         19
+for trading agents. FinAgent [Zhang et al., 2024] and FinRL [Liu et al., 2022b]
+both include cryptocurrency datasets in their evaluations. The unique dynamics of
+crypto markets—including the importance of on-chain data, social media hype cycles,
+and regulatory uncertainty—make them a particularly interesting testbed for agent
+adaptability.
+
+
+Algorithmic and High-Frequency Trading While most LLM-based agents op-
+erate at daily or intraday frequencies, algorithmic and high-frequency trading (HFT)
+remain primarily the domain of DRL agents and traditional quantitative systems due
+to the latency constraints of LLM inference. However, LLM agents are increasingly
+used for longer-horizon components of algorithmic strategies, such as alpha factor
+generation [Wang et al., 2024b] and regime detection, while faster numerical models
+handle execution.
+
+
+2.4.2     Portfolio Management
+
+Portfolio management extends beyond individual asset trading to the construction
+and rebalancing of multi-asset portfolios.
+   DRL-based portfolio management agents optimize asset allocation by treating the
+portfolio weight vector as the action space. FinRL [Liu et al., 2022b] supports portfo-
+lio allocation across multiple stocks with algorithms that learn to balance return and
+risk. LLM-based approaches to portfolio management are emerging: FINCON [Yu
+et al., 2024] evaluated its multi-agent system on portfolio management tasks com-
+paring against Markowitz mean-variance optimization and equal-weighted strategies.
+HedgeAgents [Li et al., 2025] addressed multi-asset hedging through a hierarchical
+multi-agent design where specialized agents manage different asset classes while a
+central manager ensures overall portfolio coherence. This mirrors real-world asset
+management organizations where sector specialists report to a chief investment offi-
+cer.
+
+
+                                             20
+2.4.3    Risk Management and Fraud Detection
+
+Fraud Detection Traditional fraud detection relies on rule-based filters and super-
+vised classifiers. Agent-based approaches enhance these with autonomous monitoring,
+adaptive learning, and multi-step reasoning [Hilal et al., 2022]. LLM-powered fraud
+detection agents can process unstructured data such as customer communications
+and news alongside structured transaction data, providing a more holistic view of
+potential fraud patterns [Dong et al., 2025]. The agentic approach enables systems
+that dynamically adjust detection thresholds, correlate suspicious activities across
+accounts, and generate human-readable explanations for flagged transactions.
+
+
+Credit Risk Assessment AI agents for credit risk go beyond traditional scoring by
+incorporating dynamic information gathering and multi-step reasoning. LLM-based
+agents can analyze financial statements, assess qualitative risk factors from manage-
+ment discussions, and integrate macroeconomic indicators [Kim et al., 2024]. The
+agentic design enables systems that actively seek additional information when initial
+assessments are uncertain and provide transparent reasoning chains for regulatory
+compliance.
+
+
+Market Risk Monitoring Multi-agent systems have been applied to market risk
+monitoring, where different agents track different risk dimensions—market risk, credit
+risk, liquidity risk, and operational risk—and coordinate their assessments. The risk
+management team in TradingAgents [Xiao et al., 2024] exemplifies this approach,
+monitoring portfolio exposure and intervening when risk thresholds are breached.
+
+
+2.4.4    Financial Analysis and Advisory
+
+Financial Report Analysis LLM agents have demonstrated strong capabilities
+in analyzing financial reports. Kim et al. [2024] showed that GPT-4 can generate
+earnings predictions rivaling professional analysts. The agent-based extension in-
+
+
+                                         21
+volves systems that autonomously collect filings, extract key metrics, compare against
+consensus expectations, and generate investment recommendations with supporting
+evidence.
+
+
+Sentiment-Driven Analysis Sentiment analysis agents process news, social me-
+dia, and analyst opinions to gauge market sentiment. FinGPT [Yang et al., 2023]
+provides the LLM backbone for sentiment-enhanced analysis. MarketSenseAI [Fa-
+touros et al., 2025] integrated multiple information sources for stock analysis through
+LLM agents. Multi-agent debate has been applied to sentiment analysis, where agents
+with different perspectives reach more robust conclusions through structured argu-
+mentation [Xing, 2025].
+
+
+Robo-Advisory AI agents for financial advisory combine financial knowledge with
+personalized client profiling. These systems assess risk tolerance, financial goals, and
+constraints, then generate and monitor investment plans. The challenge lies in balanc-
+ing automation with regulatory requirements, which in many jurisdictions mandate
+human oversight for personalized advice. Conversational AI agents in banking handle
+routine inquiries, explain portfolio performance, and escalate complex situations to
+human advisors.
+
+
+2.4.5       Regulatory Compliance and Reporting
+
+Compliance Monitoring Financial institutions must comply with extensive reg-
+ulatory frameworks including AML rules, data privacy standards, and reporting obli-
+gations [Arner et al., 2017]. LLM-based compliance agents can interpret regulatory
+text, map requirements to internal controls, and flag gaps. Their advantage over rule-
+based systems lies in handling ambiguous situations, adapting to regulatory changes,
+and providing natural language explanations.
+
+
+
+
+                                          22
+Automated Financial Reporting Agentic AI systems automate financial report-
+ing workflows including data collection, reconciliation, analysis, and report generation
+[Nie et al., 2024]. Multi-agent architectures assign specialized roles—data gathering,
+validation, analysis, and drafting agents—that collaborate to produce comprehensive
+reports.
+
+
+Anti-Money Laundering AML is a high-value application for AI agents due to
+the volume of transactions requiring monitoring and the complexity of laundering
+schemes. Agent-based AML systems trace funds across accounts and institutions,
+identify layering patterns, and generate suspicious activity reports with evidence
+chains.
+
+
+
+2.5        Benchmarks and Evaluation
+
+2.5.1      Trading Performance Metrics
+
+Financial AI agents are typically evaluated using standard quantitative finance met-
+rics. Cumulative Return (CR) measures total return over the evaluation period.
+Sharpe Ratio (SR) captures risk-adjusted return as excess return per unit of volatil-
+ity. Maximum Drawdown (MDD) measures the largest peak-to-trough decline, quan-
+tifying downside risk. Additional metrics include the Sortino Ratio (considering only
+downside deviation) and the Calmar Ratio (annualized return divided by maximum
+drawdown).
+
+
+2.5.2      Financial NLP Benchmarks
+
+For agents that process textual data, several benchmarks evaluate component capa-
+bilities. FinBen [Xie et al., 2024] provides a holistic benchmark covering sentiment
+analysis, named entity recognition, question answering, and numerical reasoning over
+
+
+
+                                          23
+financial data. FinanceBench [Islam et al., 2023] focuses on question answering over
+real financial documents including SEC filings.
+
+
+2.5.3      Agent-Level Benchmarks
+
+A critical gap in the current literature is the lack of comprehensive agent-level bench-
+marks that evaluate end-to-end task completion in realistic financial scenarios. While
+individual systems are evaluated on their specific tasks, standardized benchmarks that
+enable fair comparison across different agent architectures remain scarce. Emerging
+efforts such as FinAgentBench [Choi et al., 2025] aim to address this by evaluating
+agents on multi-step financial tasks that require information gathering, reasoning,
+and action.
+
+
+2.5.4      Evaluation Challenges
+
+Several challenges complicate the evaluation of financial AI agents. First, backtesting
+on historical data may overestimate performance due to look-ahead bias, survivorship
+bias, and the inability to account for market impact. Second, live trading evaluation is
+expensive and risky. Third, comparing agents across different papers is difficult due
+to variations in datasets, time periods, transaction cost assumptions, and baseline
+configurations [Liu et al., 2022a]. Fourth, many LLM-based agents use proprietary
+models (e.g., GPT-4), making exact reproduction challenging. Fifth, financial mar-
+kets are non-stationary, so strong historical performance does not guarantee future
+results.
+
+
+
+
+                                          24
+Chapter 3
+
+Research Methodology
+
+3.1     Gap Analysis
+Existing work on LLM-based financial reasoning falls into two camps that address dif-
+ferent parts of the problem. The first camp, exemplified by TradingAgents [Xiao et al.,
+2024], FinCon [Yu et al., 2024], and FinGPT [Yang et al., 2023], builds multi-agent
+systems that generate equity-level trading signals from news sentiment, technical indi-
+cators, and fundamental data. These systems operate primarily at the individual asset
+level; they do not, for instance, trace how a Federal Reserve rate decision propagates
+through the credit channel to affect corporate bond spreads or equity risk premia.
+The second camp, including EconAgent [Li et al., 2024] and Lopez-Lira and Tang
+[2023], applies LLMs to macroeconomic simulation or forecasting but is not directly
+connected to calibrated cross-asset allocation signals. MarketSenseAI [Fatouros et al.,
+2025], while primarily an equity analysis agent for S&P 100 stocks, similarly operates
+without explicit macro transmission-mechanism reasoning or cross-asset calibration.
+   Three gaps motivate the design of Macro-MOSAIC. First, we are not aware of
+a system that generates explicit, auditable multi-school parallel reasoning
+chains where structurally distinct economic frameworks (Keynesian, Austrian, Mon-
+etarist) independently analyze the same macro event and produce divergent causal
+
+
+                                          25
+chains that are then formally aggregated. FOMC In Silico [Kazinnik and Sinclair,
+2025] comes closest by assigning dovish/hawkish personas to FOMC member agents,
+but these represent individual viewpoints on a single policy variable (the federal funds
+rate) rather than structurally distinct theoretical frameworks applied to general macro
+events. Second, historical analogy retrieval at the macroeconomic episode
+level—combining semantic similarity over event narratives with structural similarity
+over macro state vectors—has not, to our knowledge, been addressed in the systems we
+surveyed. Existing financial RAG systems [Zhang et al., 2024, Lithgow-Serrano et al.,
+2025] retrieve similar price patterns or sentiment-level few-shot examples, not struc-
+tured narratives of comparable macro crises with documented transmission mecha-
+nisms and multi-asset outcomes. Third, the literature lacks a verified end-to-end
+pipeline connecting qualitative macro event interpretation through calibrated prob-
+ability distributions to cross-asset allocation signals, evaluated against both reasoning
+benchmarks and realized financial outcomes.
+
+
+
+3.2      Problem Formulation
+Given a macro event e (e.g., a central bank decision, geopolitical shock, or fiscal
+policy announcement) and the prevailing macro state s (interest rates, inflation, credit
+conditions, etc.), the system must produce three outputs:
+
+  1. Reasoning chains {Ck (e, s)}K
+                                 k=1 : For each of K economic schools, a structured
+
+      causal chain tracing the event through specific transmission mechanisms to its
+      expected impact on asset classes.
+
+  2. Calibrated scenario probabilities {(Sj , pj )}Jj=1 : A discrete set of mutually
+                                                      P
+     exclusive scenarios with probabilities satisfying j pj = 1, where the predicted
+      probability distribution is well-calibrated (i.e., events predicted with probability
+      p occur with empirical frequency p).
+
+
+                                           26
+  3. Asset allocation signals w ∈ RN : A vector of signed position weights across
+      N asset classes, derived from the probability-weighted conditional asset return
+      expectations.
+
+The system is evaluated on: (a) reasoning quality, measured against causal economic
+benchmarks (EconLogicQA [Quan and Liu, 2024], EconCausal [Lee et al., 2025]);
+(b) calibration quality, measured by Brier Score and Expected Calibration Error
+against event resolutions; and (c) signal quality, measured by Sharpe ratio, maximum
+drawdown, and directional accuracy on out-of-sample walk-forward backtests.
+
+
+
+3.3     Macro-MOSAIC: System Architecture
+We propose Macro-MOSAIC (Mixture-Of-Schools Analogy-Informed Chains), a
+four-stage pipeline that bridges qualitative macroeconomic reasoning and quantitative
+asset allocation through explicit causal chain construction.
+
+
+3.3.1    Stage 1: Historical Analogy Retrieval
+
+When a new macro event e arrives, we retrieve the m most relevant historical episodes
+from a curated database of 141 macro episodes spanning 1971–2025 (see Section 4.1).
+Each episode is a structured record containing the triggering event, prevailing macro
+context (35 FRED indicators), tagged transmission channels, multi-horizon asset re-
+actions across 22 instruments, and school-specific interpretive narratives.
+   Retrieval operates via a dual-channel scoring mechanism. The semantic channel
+computes cosine similarity between the embedding of the incoming event description
+and the pre-computed embeddings of each episode’s narrative text. The structural
+channel computes Mahalanobis distance between the current macro state vector s
+and each episode’s recorded macro context si , capturing similarity in the economic
+regime (rate environment, inflation level, credit conditions) rather than surface-level
+
+
+
+                                          27
+narrative similarity. The final retrieval score is a weighted combination:
+
+                                                                                
+            score(e, ei ) = α · cos sim(ve , vei ) + (1 − α) · exp − dM (s, si )    (3.1)
+
+
+where α is a tunable parameter and dM denotes the Mahalanobis distance. The top-m
+episodes, along with their historical asset reactions, are injected into the reasoning
+context for Stage 2.
+
+
+3.3.2     Stage 2: Multi-School Causal Chain Generation
+
+Each retrieved analogy is interpreted through K = 3 distinct economic school per-
+spectives (Keynesian, Austrian, and Monetarist), implemented as separate LoRA
+adapters [Hu et al., 2022] fine-tuned on school-specific corpora. These three schools
+were selected for three reasons. First, they represent structurally distinct theoretical
+frameworks with genuinely different transmission mechanism logic: Keynesian anal-
+ysis centers on aggregate demand and fiscal multipliers, Austrian analysis on capital
+structure distortions and malinvestment, and Monetarist analysis on money supply
+dynamics and expectations—producing divergent causal chains for the same macro
+event. Second, these three schools are prominently represented in the academic and
+policy discourse relevant to macro-financial analysis: Keynesian frameworks appear
+in central bank communications and fiscal policy debates, Austrian frameworks pro-
+vide a contrasting supply-side and capital-structure lens, and Monetarist frameworks
+anchor inflation and monetary transmission analysis. Their perspectives are therefore
+directly relevant to cross-asset signal generation even if none can be characterised as
+universally dominant in institutional practice. Third, they have sufficient published
+literature (NBER working papers filterable by JEL codes E12, B53, E41/E51) to con-
+struct school-specific fine-tuning corpora of adequate size and quality. Post-Keynesian
+and Institutionalist perspectives, while intellectually valuable, were excluded due to
+smaller and less standardized corpora, which we leave as a direction for future exten-
+
+
+                                             28
+sion.
+   The expected benefit of aggregating diverse school-specific forecasts rests on a
+standard ensemble learning argument: if individual school models make different
+systematic errors—for instance, Keynesian frameworks tend to underweight supply-
+side transmission channels while Austrian frameworks tend to underweight demand-
+multiplier effects—their errors will partially offset under aggregation, reducing the
+ensemble’s overall systematic bias. This argument requires two empirical conditions
+to hold. First, each school must achieve above-chance directional accuracy on at least
+a subset of event categories, so that its contribution to the ensemble is informative
+rather than noise. Second, the school-specific outputs must be genuinely distinct
+rather than stylistic variations of a single mainstream analysis. Our preliminary
+results in Section 4.3 provide partial evidence on both conditions: Table 4.7 (Sec-
+tion 4.3.5) shows that the Monetarist adapter produces the largest consistency gains
+on inflation and employment events while gains are smallest for geopolitical shocks,
+suggesting category-level complementarity across schools; Table 4.4 shows that fine-
+tuned adapters achieve a mean inter-school Jaccard distance of 0.853 versus 0.778 for
+the base model, confirming signal-level diversity. Whether these Stage 2 properties
+translate into improved calibration scores and risk-adjusted returns in the end-to-
+end pipeline remains an open empirical question, which the ablation experiments in
+Section 5.4 are specifically designed to isolate and test.
+
+    Keynesian adapter: Fine-tuned on New Keynesian macro literature (IS-
+        LM/AD-AS framing, multiplier analysis, output gap reasoning, liquidity trap
+        dynamics).
+
+    Austrian adapter: Fine-tuned on Austrian school texts (ABCT malinvest-
+        ment logic, Cantillon effects, natural rate deviation analysis, liquidationist rea-
+        soning).
+
+    Monetarist adapter: Fine-tuned on monetarist literature (quantity theory
+
+                                             29
+     transmission, velocity analysis, expectations-augmented Phillips Curve, rules-
+     vs-discretion framing).
+
+Each adapter takes as input the event description, current macro state, and retrieved
+historical analogies, and produces a structured causal chain in a fixed schema:
+
+              h                                                                      i
+                      mechanismk                       channelk
+   Ck (e, s) = Event −−−−−−−→    Intermediate Effects −−−−−→    Asset Impactsk , p̂k
+                                                                                    (3.2)
+where p̂k is the adapter’s raw confidence estimate for its predicted scenario. Each
+chain explicitly names the transmission mechanism (credit channel, exchange rate
+channel, expectations channel, etc.) and maps to directional asset class impacts,
+ensuring interpretability and auditability.
+   The LoRA adapters are trained on school-specific corpora curated from NBER
+Working Papers filtered by JEL classification codes (E12 for Keynesian, B53 for
+Austrian, E41/E51 for Monetarist), supplemented with canonical textbook passages
+and FOMC communication data annotated for hawkish/dovish stance [Shah et al.,
+2023].
+
+
+3.3.3     Stage 3: Bayesian Aggregation and Calibration
+
+The K school-specific outputs are aggregated into a unified probability distribution
+via Bayesian model averaging. Rather than fixed equal weighting, each school re-
+ceives a dynamic weight wk based on its historical calibration performance within the
+detected macro regime:
+
+                                                           
+                                (t)             (regime(t))
+                               wk ∝ exp − λ · BSk                                   (3.3)
+
+          (regime)
+where BSk            is school k’s rolling Brier Score on resolved predictions within the
+current macro regime (e.g., tightening cycle, crisis, expansion), and λ is a temperature
+parameter controlling the sharpness of weighting. Regimes are detected via a Hidden
+
+                                             30
+Markov Model fitted on returns and volatility.
+                                                  P
+   The weighted aggregate probability p̂agg =        k wk p̂k is then passed through a cal-
+
+ibration layer trained on historical prediction–resolution pairs sourced from resolved
+Polymarket and Metaculus questions. We adopt Platt scaling [Platt, 1999] as the de-
+fault calibration method, to be compared against isotonic regression and temperature
+scaling in ablation experiments (Section 5.2):
+
+                                                               
+                              pcal = σ a · logit(p̂agg ) + b                         (3.4)
+
+
+where σ is the sigmoid function and (a, b) are learned parameters. This two-stage
+process—regime-conditional school weighting followed by Platt scaling calibration—
+addresses both the model selection problem (which school is most accurate in this
+regime?) and the overconfidence problem (LLMs systematically produce poorly cali-
+brated probabilities, as documented by Nel [2025]).
+
+
+Calibration transfer assumption. We acknowledge that prediction-market ques-
+tions (Polymarket, Metaculus) differ from macro-to-asset-return forecasts in resolu-
+tion horizon, phrasing, and outcome granularity. The calibration layer is therefore
+best interpreted as correcting systematic overconfidence in the model’s probability
+outputs rather than as a guarantee of calibration on financial return targets. Whether
+the learned (a, b) parameters generalise to asset-return scenarios will be tested empir-
+ically in Section 5.2 via Brier Score comparisons between calibrated and uncalibrated
+signals on held-out macro events with known market outcomes.
+
+
+3.3.4     Stage 4: Asset Allocation Signal Generation
+
+For each scenario Sj with calibrated probability pj , the system produces conditional
+asset return forecasts r̂j ∈ RN informed by the causal chains and historical analogy
+
+
+
+
+                                            31
+outcomes. The unconditional expected return vector is:
+
+                                                        X
+                                               E[r] =        pj · r̂j                          (3.5)
+                                                         j
+
+
+The allocation weight for each asset is computed via a fractional Kelly criterion:
+
+                                                             E[rn ]
+                                                wn = f ·                                       (3.6)
+                                                              σ̂n2
+
+                                          2
+where σ̂n2 =             2
+               P
+                  j pj r̂j,n −   E[rn ]        is the scenario-implied variance, and f ∈ (0, 1] is a
+fractional Kelly parameter (typically f = 0.25) that controls aggressiveness. Positions
+are subject to maximum absolute weight constraints (|wn | ≤ wmax ) and net exposure
+limits.
+   The final output for each event is a structured record containing: the retrieved
+historical analogies, three school-specific causal chains, the calibrated scenario prob-
+ability distribution, and the resulting cross-asset allocation signal with per-asset con-
+viction scores.
+
+
+
+
+                                                        32
+Chapter 4
+
+Preliminary Results
+
+4.1     Episode Database Construction
+We construct a structured historical macro episode database covering 54 years of
+major macroeconomic events, designed to serve as the retrieval corpus for Stage 1 of
+the Macro-MOSAIC pipeline. To our knowledge, no existing publicly available dataset
+simultaneously links macro event narratives, school-specific economic interpretations,
+quantitative macro state snapshots, and multi-asset market reactions within a unified
+schema; the closest prior work addresses only subsets of these components in isolation.
+Table 4.1 summarizes the database.
+
+
+Coverage. The 141 episodes are organized into eight categories: central bank policy
+decisions (25), banking and credit crises (20), geopolitical shocks (17), commodity
+shocks (17), currency and exchange rate crises (16), inflation and stagflation events
+(16), fiscal policy events (16), and pandemic or black swan events (14). The temporal
+distribution reflects both the increasing frequency of macro-financial events in recent
+decades and the greater availability of high-frequency data: 4 episodes from the 1970s,
+8 from the 1980s, 15 from the 1990s, 18 from the 2000s, 44 from the 2010s, and 52
+from the 2020s.
+
+
+                                          33
+                  Table 4.1: Episode database summary statistics.
+
+                Attribute                                     Value
+                Total episodes                                  141
+                Temporal coverage                            1971–2025
+                Event categories                                 8
+                Unique tags                                     453
+                Transmission channels                            19
+                Quantitative layers
+                 FRED macro indicators per episode              35
+                 Financial instruments tracked                  22
+                 Return horizons per instrument                  5
+                 Total asset reaction data points             13,571
+                Qualitative layers
+                 Episodes with narrative summaries              117
+                 Episodes with 3 school interpretations         117
+                 Mean narrative length (chars)                 3,036
+                 Mean school interpretation length (chars)      935
+
+
+Quantitative layers. Each episode is anchored to a specific trigger date and con-
+tains three quantitative layers. The macro context snapshot records 35 economic
+indicators from the Federal Reserve Economic Data (FRED) system at the trigger
+date, covering interest rates (federal funds rate, 2Y/5Y/10Y/30Y Treasury yields,
+yield curve spreads), inflation (CPI, core CPI, core PCE, breakeven inflation, Michi-
+gan expectations), employment (unemployment rate, nonfarm payrolls, initial claims),
+money and credit (M2, bank credit, senior loan officer survey), financial conditions
+(high-yield OAS, TED spread, St. Louis Financial Stress Index), fiscal position (fed-
+eral debt, surplus/deficit), and housing (Case-Shiller index, housing starts). The
+trigger-date price snapshot records closing levels for 22 financial instruments across
+equities (S&P 500, DJIA, NASDAQ, FTSE 100, Nikkei 225, Shanghai Compos-
+ite, EEM), fixed income (10Y/5Y/30Y/3M yields, TLT, HYG), currencies (DXY,
+USD/JPY, EUR/USD, GBP/USD), commodities (gold, silver, WTI, Brent), and
+volatility (VIX). The asset reaction panel records realized returns (or level changes
+for yields and VIX) at five horizons post-trigger: 1 week, 1 month, 3 months, 6 months,
+
+
+                                          34
+and 12 months, yielding 13,571 individual data points across all episodes. This count
+is derived as 141 × 22 × 5 = 15,510 theoretical cells minus 1,939 missing observations
+arising from two sources: (i) instruments not yet in existence at the time of early
+episodes (e.g., EEM was launched in 2003, HYG in 2007, and breakeven inflation
+series begin in the mid-1990s), for which no value is imputed; and (ii) incomplete
+return windows for episodes occurring close to the data extraction date, where some
+forward horizons have not yet resolved. Each return is measured from the market
+close on the trigger date to the market close at the corresponding horizon, using
+adjusted closing prices from Bloomberg and Yahoo Finance cross-validated against
+FRED where applicable. For yield instruments and VIX, we record level changes in
+basis points and index points respectively rather than log returns. Event windows
+are non-overlapping at the 1-week horizon by construction (no two trigger dates fall
+within the same calendar week); at longer horizons, windows may overlap and returns
+are treated as independent observations for analysis purposes.
+
+
+Qualitative layers. For 117 of the 141 episodes, we generate two qualitative layers
+using an LLM (Claude Sonnet). The narrative summary (mean length: 3,036 charac-
+ters) provides a factual account of the event including key dates, market moves, policy
+responses, and aftermath. The school-specific interpretations provide three parallel
+analyses of the same episode—Keynesian (mean: 935 characters), Austrian (mean:
+968 characters), and Monetarist (mean: 905 characters)—each framed exclusively
+within that school’s axiomatic framework and terminology. These interpretations
+serve two purposes: as few-shot exemplars injected into the reasoning context during
+Stage 2 inference, and as seed content whose vocabulary and causal structure in-
+formed the construction of the school-specific synthetic trajectory templates used for
+LoRA adapter training (Section 4.2). Critically, the adapters are not trained directly
+on these 117 episode interpretations; instead, 500 synthetic trajectories per school
+are generated from 107 abstract event templates instantiated with randomised macro
+
+
+
+                                          35
+Table 4.2: Asset reaction validation against known benchmarks. S&P 500 returns
+and VIX changes are measured at the 1-month horizon from the trigger date.
+
+       Episode                     S&P 500 (1M)       ∆VIX (1M)       ∆10Y (bp)
+       Lehman (Sep 2008)               −16.3%             +23.4           +54.0
+       COVID crash (Feb 2020)          −24.1%             +36.6           −56.1
+       Trump tariffs (Apr 2025)        +0.3%              +1.2            +12.6
+
+
+state snapshots, as described in Section 4.2.1.
+
+
+Structural metadata. Each episode is annotated with categorical tags (453 unique
+tags across 583 assignments) and transmission channel labels drawn from a taxonomy
+of 19 channels. The most frequently tagged channels are confidence (75 episodes),
+expectations (64), credit (43), liquidity (33), interest rate (30), exchange rate (28), and
+commodity (28). This channel taxonomy directly maps to the causal chain schema
+used in Stage 2, enabling structured retrieval: when the system identifies an incoming
+event as primarily operating through the credit channel, it can preferentially retrieve
+episodes tagged with the same transmission mechanism.
+
+
+Validation. We verify the asset reaction data against known historical benchmarks.
+Table 4.2 reports three representative episodes. The recorded values are consistent
+with independently reported market data, confirming the integrity of the automated
+collection pipeline.
+
+
+
+4.2      School-Specific Agent Evaluation
+We evaluate whether fine-tuning separate LoRA adapters on school-specific agent
+trajectories produces agents that (1) consistently reason within their designated eco-
+nomic framework, (2) adopt the structural behavior pattern of tool-augmented agents,
+and (3) generate meaningfully divergent analyses across schools. We compare three
+fine-tuned school agents—Keynesian, Austrian, and Monetarist—against a shared
+
+
+                                            36
+base model prompted with equivalent school-specific system instructions.
+
+
+4.2.1     Data
+
+Training data. For each of the three schools, we generate 500 synthetic agent
+trajectories using a template-based pipeline. Each trajectory consists of a struc-
+tured multi-step reasoning chain: [Think] → [ToolCall:           query episode db] →
+[Observe] → [Think] → [ToolCall:           get macro data] → [Observe] → [Think]
+→ [Output]. The output includes a causal reasoning chain grounded in the school’s
+theoretical concepts, a scenario probability distribution, and cross-asset directional
+signals with conviction scores.
+   The 500 trajectories per school are generated from 107 unique macroeconomic
+event templates spanning 14 categories (monetary policy, fiscal policy, inflation data,
+employment data, geopolitical shocks, trade and tariffs, commodity shocks, mar-
+ket events, economic data surprises, China-specific, emerging market crises, housing,
+banking stress, and black swan events). This finer-grained categorization extends the
+eight episode database categories by splitting broad classes (e.g., separating mone-
+tary policy into distinct central bank decisions, inflation data, and employment data
+events) to improve coverage of training scenarios. Each event template is instanti-
+ated with varying macroeconomic context snapshots (randomized Fed funds rate, CPI,
+unemployment, VIX, DXY, etc.) to ensure the model learns the reasoning pattern
+rather than memorizing specific event-response pairs. Because training trajectories
+are generated from abstract event templates with randomized macro state snapshots
+rather than from specific historical episode records, the fine-tuning corpora contain no
+instance-level information about the 2023–2025 events used in out-of-sample evalua-
+tion, precluding data leakage from the episode database into the backtesting period.
+Crucially, each school’s trajectories differ in three dimensions: (a) the core theoretical
+concepts invoked (e.g., multiplier effect for Keynesian vs. malinvestment for Austrian
+vs. M2 money supply for Monetarist), (b) the transmission mechanisms cited, and (c)
+
+
+                                           37
+the directional asset signals produced.
+
+
+Test data. We construct a held-out evaluation set of 96 novel macroeconomic events
+that are structurally distinct from the training templates. These include multi-factor
+contradictory events (e.g., “The Fed cuts rates by 50bp while simultaneously an-
+nouncing a $500 billion QE program, but the 10-year yield rises 30bp on the an-
+nouncement”), unprecedented policy actions (e.g., “BRICS+ launches a gold-backed
+digital settlement currency”), and complex data surprises (e.g., “US Q3 GDP comes
+in at +3.8% annualized, but GDI shows −0.5%, the largest GDP–GDI divergence on
+record”). Events are labeled by difficulty (medium: 42, hard : 47, very hard : 7) and
+by expected inter-school divergence.
+
+
+4.2.2     Model and Training
+
+We fine-tune three LoRA adapters on a shared Qwen2.5-7B-Instruct base model
+[Qwen Team, 2025]. Each adapter is trained independently on its school’s 500-
+trajectory dataset. We use 4-bit NormalFloat quantization [Dettmers et al., 2023]
+with double quantization to fit the 7B model within 24GB GPU memory. The LoRA
+configuration uses rank r = 32, α = 64, and targets all attention and MLP projection
+matrices (q proj, k proj, v proj, o proj, gate proj, up proj, down proj), yield-
+ing approximately 80.7M trainable parameters (1.05% of total). Training runs for 3
+epochs with a cosine learning rate schedule (peak 2 × 10−4 ), AdamW-8bit optimizer,
+effective batch size of 16, and gradient checkpointing enabled.
+   The baseline condition uses the same Qwen2.5-7B-Instruct model without any
+adapter, prompted with a school-specific system instruction describing the school’s
+core principles and requesting the same output format (causal chain, scenario prob-
+abilities, asset signals).
+
+
+
+
+                                          38
+4.2.3     Evaluation Metrics
+
+We evaluate on four dimensions:
+
+
+School consistency score. We define a keyword-based scoring function for each
+school. For each school s, we maintain three keyword lists: (a) must-have core con-
+cepts (6–7 per school, e.g., {aggregate demand, multiplier, output gap, fiscal, effective
+demand, consumption, investment} for Keynesian); (b) strong-signal terms that in-
+dicate deeper school-specific reasoning (e.g., liquidity trap, IS-LM, paradox of thrift);
+and (c) anti-signal terms from competing schools that indicate theoretical contam-
+ination (e.g., the presence of malinvestment or MV=PQ in a Keynesian response).
+The consistency score is:
+                                                                                 
+           1 |must-have hits|  1       |strong hits|
+Cs = max 0, ·                 + · min                , 1 − 0.15 · |anti-signal hits|
+           2 |must-have pool| 2              5
+                                                                           (4.1)
+
+
+Cross-school contamination. We report the mean number of anti-signal keyword
+hits per response. Lower values indicate purer school-specific reasoning with less
+“leakage” from competing frameworks.
+
+
+Structure completeness. We check for the presence of seven structural elements
+in each response: [Think], [ToolCall], [Observe], [Output], a causal reasoning
+chain, scenario probabilities, and asset signals. The completeness score is the fraction
+of these elements present.
+
+
+Inter-school diversity. For each test event, we extract the directional asset signals
+(long/short/neutral) for major asset classes from all school responses and compute
+the mean pairwise Jaccard distance:
+                                                      
+                                 1 X        |Si ∩ Sj |
+                             D = K      1−                                         (4.2)
+                                 2  i<j
+                                            |Si ∪ Sj |
+
+                                           39
+Table 4.3: School consistency scores for fine-tuned (SFT) vs. base model with prompt-
+only school instructions, evaluated on 96 held-out events. Win rate denotes the
+fraction of events on which the SFT adapter outscores the base model.
+
+ School            Base             SFT            ∆      Rel. Improv.      SFT Win Rate
+ Keynesian 0.368 ± 0.163       0.338 ± 0.175     −0.030       −8.1%               39.6%
+ Austrian   0.146 ± 0.109      0.319 ± 0.187     +0.173      +118.8%              75.0%
+ Monetarist 0.230 ± 0.137      0.528 ± 0.233     +0.298      +129.7%              83.3%
+ Average           0.248            0.395        +0.147       +59.3%              65.6%
+
+
+where Si is the set of (asset, direction) pairs produced by school i and K is the
+number of schools. Higher diversity indicates that the schools are generating mean-
+ingfully different analytical perspectives, which is a prerequisite for effective ensemble
+aggregation.
+
+
+
+4.3         Results
+We report results across all 96 held-out test events. Table 4.3 summarizes the main
+findings.
+
+
+4.3.1       School Consistency
+
+Fine-tuning produces substantial gains in school-specific reasoning for the Austrian
+and Monetarist agents, with more modest results for the Keynesian agent.
+   The Monetarist adapter achieves the largest improvement, with a consistency
+score of 0.528 compared to 0.230 for the base model (+129.7%). The SFT agent
+wins on 80 of 96 events (83.3%). Examining the sub-components, we find that the
+SFT Monetarist agent hits 3.6 out of 6 must-have keywords per response (vs. 2.6
+for base) and 2.4 strong-signal keywords (vs. 1.4). The base model rarely produces
+core Monetarist terms like MV=PQ, quantity theory, or long and variable lags un-
+less explicitly prompted, whereas the fine-tuned agent incorporates these concepts as
+
+
+                                            40
+natural components of its reasoning chain.
+   The Austrian adapter shows similarly large relative improvement (+118.8%),
+rising from 0.146 to 0.319, with SFT winning on 75.0% of events. The base model
+scores particularly low on Austrian must-have terms (0.3 out of 6), indicating that
+Qwen2.5-7B-Instruct has limited familiarity with heterodox Austrian concepts such as
+malinvestment, ABCT, and capital structure distortion. Fine-tuning raises must-have
+hits to 1.9 out of 6, demonstrating successful internalization of these domain-specific
+concepts.
+   The Keynesian adapter shows a small decrease in the composite consistency score
+(−8.1%), which warrants careful interpretation. The apparent regression is an artifact
+of the scoring metric, not a degradation in reasoning quality: the deficit is driven en-
+tirely by reduced strong-signal keyword hits, while school purity and output structure
+both improve substantially. Decomposing the score reveals that the deficit is driven
+entirely by a reduction in strong-signal hits (2.1 → 0.9), while must-have keyword
+coverage improves (3.0 → 3.4 out of 7), anti-signal contamination drops to zero (0.44
+→ 0.00), and structured output block presence rises from 59% to 97%. We attribute
+the strong-signal decline to a fundamental asymmetry between the Keynesian school
+and the other two: the Qwen2.5-7B-Instruct base model has been pretrained on large
+volumes of mainstream macroeconomic text in which Keynesian vocabulary is the
+dominant analytical idiom. The base model therefore produces stylistically Keyne-
+sian outputs without fine-tuning, but its fluency is undifferentiated—conflating New
+Keynesian IS-LM reasoning with Post-Keynesian and Old Keynesian terminology into
+a single vocabulary pool. Fine-tuning specializes the adapter toward New Keynesian
+axiomatic structure, causing it to avoid Post-Keynesian strong-signal terms (e.g., en-
+dogenous money, Minsky moment) that fall outside this sub-school’s scope—reducing
+keyword count while improving theoretical coherence. For the downstream pipeline,
+the properties that matter are output parsability and school purity, not standalone
+keyword density: the SFT Keynesian adapter’s 97% structured output rate (vs. 59%
+
+
+                                          41
+for base) and perfect anti-signal elimination make it substantially more reliable as an
+input to the Bayesian aggregation stage than the base model’s superficially higher
+consistency score would suggest.
+
+
+4.3.2    Cross-School Contamination
+
+Table 4.4 reports the mean number of anti-signal keywords per response—terms from
+competing schools that appear in a given school’s output.
+
+Table 4.4: Cross-school contamination measured by anti-signal keyword hits per re-
+sponse (lower is better). SFT adapters substantially reduce leakage from competing
+frameworks.
+
+                      School        Base     SFT    Reduction
+                      Keynesian      0.44    0.00     −100%
+                      Austrian       1.21    0.59     −51.2%
+                      Monetarist     0.88    0.02     −97.7%
+
+
+   The reduction in contamination is striking. The base Keynesian agent occasion-
+ally references Minsky dynamics or endogenous money (Post-Keynesian concepts) and
+malinvestment (Austrian); the SFT agent produces zero anti-signal hits across all 96
+events. The base Monetarist agent averages 0.88 anti-signal terms per response—
+frequently invoking multiplier effect (Keynesian) or Minsky (Post-Keynesian)—while
+the SFT agent reduces this to 0.02. The base Austrian agent shows the highest con-
+tamination at 1.21 anti-signal terms, often producing mainstream Keynesian language
+(output gap, aggregate demand ); SFT reduces this by 51.2%.
+   This finding has direct implications for the downstream Bayesian aggregation
+layer: if individual school agents produce contaminated outputs that partially overlap
+with other schools’ perspectives, the aggregation step receives redundant rather than
+complementary signals, reducing the effective diversity of the ensemble.
+
+
+
+
+                                            42
+Table 4.5: Structural completeness scores and sub-component rates (% of responses
+containing each element).
+
+                           Completeness             Output       Scenarios
+         School        Base     SFT       ∆      Base    SFT    Base    SFT
+         Keynesian 0.742 0.693 −0.049             59%    97%    93%     91%
+         Austrian   0.763 0.768 +0.004            81%    93%    93%     94%
+         Monetarist 0.628 0.717 +0.089            51%    99%    85%    100%
+
+
+4.3.3     Output Structure
+
+The SFT agents show marked improvement in the [Output] block adherence, which
+contains the structured causal chain, scenarios, and signals. The base Monetarist
+agent produces a recognizable [Output] section in only 51% of responses, while the
+SFT agent does so in 99%. Similar gains appear for Keynesian (59% → 97%) and
+Austrian (81% → 93%). The Monetarist adapter also achieves 100% scenario prob-
+ability generation (vs. 85% for base) and 100% signal generation (vs. 91%). These
+improvements are critical for the end-to-end pipeline, as downstream components
+(Bayesian aggregation, asset allocation) require parseable structured output.
+
+
+4.3.4     Inter-School Diversity
+
+The SFT ensemble produces higher inter-school diversity than the base ensemble
+on 62.5% of test events, with a mean Jaccard distance of 0.853 ± 0.082 compared to
+0.778±0.158 for base (p < 0.01). The SFT ensemble’s lower variance (0.082 vs. 0.158)
+indicates more consistently diverse outputs, whereas the base ensemble occasionally
+produces near-identical responses across schools.
+   This result is consistent with a key design prerequisite of Macro-MOSAIC: fine-
+tuning on school-specific trajectories produces agents that generate meaningfully dif-
+ferent analytical perspectives on the same event, rather than minor stylistic variations
+of a single mainstream analysis. Whether this inter-school diversity translates into
+improved calibration and financial signal quality remains to be evaluated in Stages 3
+
+                                          43
+and 4.
+
+
+4.3.5    Analysis by Event Difficulty and Category
+
+    Table 4.6: Mean consistency score (three-school average) by event difficulty.
+
+                     Difficulty           Base    SFT       ∆
+                     Medium (n = 42)      0.241   0.395 +0.154
+                     Hard (n = 47)        0.254   0.391 +0.137
+                     Very Hard (n = 7)    0.252   0.425 +0.173
+
+
+   Fine-tuning gains are consistent across difficulty levels, and the largest absolute
+improvement occurs on the most challenging events (+0.173 for very hard ). These
+events involve multi-factor contradictions—such as simultaneous deflation and com-
+modity spikes, or failed easing where long-term yields rise despite rate cuts—where
+school-specific frameworks provide structured interpretive scaffolding that the base
+model’s generic analysis lacks.
+   Table 4.7 presents results by event category. SFT gains are largest for data-
+driven events—inflation data (+0.261), economic data (+0.259), and employment
+data (+0.227)—where the schools’ theoretical frameworks offer the most differenti-
+ated causal interpretations. For instance, on an unexpected CPI reacceleration, the
+Monetarist agent attributes the outcome to prior M2 growth with a 12–18 month lag,
+while the Austrian agent frames it as a consequence of malinvestment-driven supply
+bottlenecks. Gains are smallest for geopolitical events (−0.002), where all schools
+tend to converge on similar supply-shock analyses.
+
+
+4.3.6    Summary of Findings
+
+These preliminary results indicate that LoRA fine-tuning on 500 synthetic agent tra-
+jectories per school produces meaningfully differentiated economic reasoning agents
+at the Stage 2 level. The fine-tuned agents exhibit (1) substantially higher school-
+
+                                         44
+Table 4.7: SFT improvement (∆ in consistency score) by event category, three-school
+average, sorted by improvement magnitude. Categories with fewer than 5 test events
+are omitted.
+
+                 Category              ∆ (SFT − Base)        Events
+                 Inflation data                +0.261           10
+                 Economic data                 +0.259            8
+                 Employment data               +0.227            8
+                 Monetary policy               +0.180           15
+                 Market events                 +0.170           10
+                 China-specific                +0.168            7
+                 Commodity shocks              +0.117            8
+                 Fiscal policy                 +0.084           10
+                 Trade / tariffs               +0.014            7
+                 Geopolitical                  −0.002           12
+
+
+style consistency for non-mainstream frameworks (Austrian +118.8%, Monetarist
++129.7%), (2) near-complete elimination of cross-school contamination (Keynesian
+anti-signal hits reduced from 0.44 to 0.00; Monetarist from 0.88 to 0.02), (3) more
+reliable structured output generation (Output block presence rising from 51–81%
+to 93–99%), and (4) higher inter-school diversity in asset signal directions (Jaccard
+distance 0.853 vs. 0.778). These properties are necessary preconditions for the down-
+stream Bayesian aggregation stage, which requires diverse, school-pure, and struc-
+turally parseable inputs.
+
+
+Scope of current evidence. It is important to state clearly what these results
+do and do not establish. The evaluation demonstrates school-style vocabulary consis-
+tency, output parsability, reduced cross-school contamination, and signal diversity—all
+measured via keyword-based proxies on held-out synthetic events. The results do not
+yet establish that the fine-tuned adapters produce better causal reasoning, better-
+calibrated probabilities, or superior trading performance relative to the base model or
+any external benchmark. Those claims require Stages 3 and 4 of the pipeline, specif-
+ically the calibration evaluation against resolved Polymarket/Metaculus questions
+
+
+                                          45
+and the out-of-sample backtests described in Chapter 5. The current results should
+therefore be interpreted as input-quality validation for Stage 3, not as evidence of
+end-to-end system performance.
+
+
+
+
+                                        46
+Chapter 5
+
+Future Plan and Schedule
+
+Table 5.1 summarises the current completion status of each system component. Two
+components are complete: the episode database (Section 4.1) and the school-specific
+LoRA adapters (Section 4.2). Four components remain to be built and evaluated: the
+retrieval engine (Stage 1), the Bayesian aggregation and calibration layer (Stage 3),
+the asset allocation signal generator (Stage 4), and the end-to-end integration with
+ablation experiments. No end-to-end backtesting results are available at this stage.
+
+                     Table 5.1: Component completion status.
+
+ Component                                                             Stage            Status
+ Episode database (141 episodes, 35 FRED indicators, 22 instruments)   Stage 1 input   Complete
+ School-specific LoRA adapters (Keynesian, Austrian, Monetarist)       Stage 2         Complete
+ Dual-index retrieval engine (FAISS + Mahalanobis)                     Stage 1          Planned
+ Bayesian aggregation and Platt scaling calibration                    Stage 3          Planned
+ Fractional Kelly allocation and backtesting                           Stage 4          Planned
+ End-to-end integration and ablation experiments                       Full pipeline    Planned
+
+
+   Note that Stage 2 adapter training was completed prior to Stage 1 pipeline con-
+struction because the two components are independent: the LoRA adapters require
+only the episode narratives as seed content for trajectory generation, whereas the
+retrieval engine additionally requires the embedding index and Mahalanobis distance
+infrastructure implemented in Phase 1 below.
+
+                                          47
+5.1     Stage 2: School-Specific LoRA Adapters (Com-
+        pleted)
+Training of the three school-specific LoRA adapters (Keynesian, Austrian, Mone-
+tarist) on Qwen2.5-7B-Instruct is complete. Full details and evaluation results are
+reported in Chapter 4. No further work is required for this stage.
+
+
+
+5.2     Stage 1: Retrieval-Augmented Analogy En-
+        gine
+Embedding and indexing. We will encode all 141 episode narratives and their
+associated macro context vectors into a dual-index retrieval store. For the seman-
+tic channel, we will embed each episode’s embedding text field using a sentence
+transformer (e.g., all-MiniLM-L6-v2 or BGE-large-en) and store the vectors in a
+FAISS index with inner-product search. For the structural channel, we will normal-
+ize the 35-dimensional FRED macro context vectors across all episodes, compute
+the pooled covariance matrix Σ, and implement Mahalanobis distance retrieval via
+             p
+dM (s, si ) = (s − si )⊤ Σ−1 (s − si ). Missing values in the macro context (primarily
+for pre-1990 episodes where certain FRED series do not exist) will be handled via
+mean imputation within each decade.
+
+
+Retrieval fusion and evaluation. The semantic and structural scores will be
+combined via the weighted score in Eq. (3.1), with α tuned on a held-out validation
+set of 20 episodes. We will evaluate retrieval quality through two protocols: (i) a
+category-match metric measuring whether the top-3 retrieved episodes share at least
+one category tag with the query episode (e.g., a banking crisis retrieves other banking
+crises), and (ii) a downstream utility metric measuring whether including the retrieved
+analogies improves the school-specific causal chain quality compared to no-retrieval
+
+
+                                          48
+baselines, scored by human or GPT-4o evaluation on a 1–5 rubric for causal coherence,
+mechanism specificity, and asset prediction accuracy.
+
+
+Estimated timeline. 1–2 weeks. The primary engineering effort is building the
+dual-index retrieval pipeline and tuning α; no model training is required.
+
+
+
+5.3      Stage 3: Bayesian Aggregation and Calibra-
+         tion
+Calibration data collection. We will collect resolved prediction market questions
+from Polymarket (via public API and Kaggle dumps) and Metaculus (via the Python
+SDK at github.com/Metaculus/forecasting-tools), filtering for macroeconomic
+and geopolitical topics (monetary policy, inflation, GDP, elections, conflicts). We
+target a minimum of 500 resolved question–resolution pairs spanning 2023–2025 for
+calibration training and 200 held-out pairs for evaluation.
+
+
+School-specific Brier Score tracking. For each resolved question, we will run
+all three LoRA adapters to generate predicted probabilities, then compute per-school
+Brier Scores partitioned by macro regime. Regime labels will be assigned by fitting
+a 3-state Gaussian HMM (using hmmlearn) on monthly S&P 500 returns and real-
+ized volatility, producing states interpretable as expansion, contraction, and crisis.
+The regime-conditional Brier Scores will populate the dynamic weighting function in
+Eq. (3.3).
+
+
+Calibration layer training. We will implement and compare three calibration
+methods: Platt scaling (logistic, 2 parameters), isotonic regression (non-parametric),
+and temperature scaling [Guo et al., 2017] (1 parameter). Each will be trained on the
+500-question training set and evaluated on the 200-question held-out set using Brier
+Score, Expected Calibration Error (ECE, 10 bins), and reliability diagrams. We will
+
+                                         49
+report whether the two-stage process (regime-conditional weighting → Platt scaling)
+outperforms single-stage calibration applied directly to equal-weighted aggregates.
+
+
+Estimated timeline. 2–3 weeks. The bottleneck is running all three adapters
+across 700+ questions and iterating on the calibration pipeline.
+
+
+
+5.4      Stage 4: Asset Allocation Signal Generation
+         and Backtesting
+Signal construction. We will implement the fractional Kelly allocation from Eq. (3.6)
+with f = 0.25 and wmax = 0.10 per asset. The system will produce signals for 8
+liquid instruments: S&P 500 futures (ES), 10-year Treasury futures (ZN), gold fu-
+tures (GC), WTI crude oil futures (CL), DXY index, EUR/USD, USD/JPY, and the
+iShares MSCI Emerging Markets ETF (EEM). Transaction costs will be modeled at
+5 basis points per round trip for futures and 10 basis points for ETFs.
+
+
+Backtesting protocol. Following the evaluation critique of Li et al. [2026] and
+walk-forward validation standards [López de Prado, 2018], we will adopt a strictly
+out-of-sample evaluation design:
+
+    In-sample period (2015–2022): Used for calibration layer training, regime
+      model fitting, and retrieval parameter tuning (α, f , λ). No signal-quality met-
+      rics will be reported on this period.
+
+    Out-of-sample period (2023–2025): All reported Sharpe ratios, drawdowns,
+      and directional accuracy are computed on this period only, using a rolling 6-
+      month calibration window that expands forward.
+
+    Memorization defense: Following Lopez-Lira et al. [2025], we will include
+      a pre/post knowledge-cutoff performance comparison and apply counterfactual
+
+                                          50
+      perturbation tests (randomly shifting macro input values by ±10% and verifying
+      that model predictions change proportionally rather than remaining anchored
+      to memorized outputs).
+
+    Fine-tuning isolation: LoRA adapter training relies on synthetic trajecto-
+      ries generated from abstract templates with randomized macro states, not on
+      the historical episode records themselves. No instance-level information about
+      specific 2023–2025 events enters the fine-tuning corpora, ensuring that the out-
+      of-sample evaluation window is unseen at the adapter training stage.
+
+
+Baselines. We will compare Macro-MOSAIC signals against five baselines: (i) buy-
+and-hold S&P 500, (ii) a random walk forecast (no-change assumption), (iii) a Bayesian
+VAR model (BVAR with Minnesota prior) on the same 8 instruments, (iv) GPT-4o
+with zero-shot CoT prompting given the same event inputs, and (v) the single best-
+performing LoRA adapter (no multi-school aggregation). Pairwise forecast compar-
+isons will use Diebold-Mariano tests with Newey-West standard errors.
+
+
+Metrics. Annualized Sharpe ratio, maximum drawdown, Sortino ratio, annualized
+return, directional accuracy (fraction of trades with correct sign), and CAPM alpha.
+Statistical significance of Sharpe differences will be assessed via the Ledoit and Wolf
+[2008] test.
+
+
+Estimated timeline. 2–3 weeks. The primary effort is building the event-driven
+backtesting harness and ensuring no look-ahead bias in the signal generation pipeline.
+
+
+
+
+                                          51
+5.5      End-to-End Integration and Ablation Experi-
+         ments
+Pipeline integration. We will assemble the four stages into a single callable pipeline:
+given a natural-language event description and a date, the system will automatically
+(1) fetch the current macro state from FRED, (2) retrieve top-3 historical analogies,
+(3) run all three LoRA adapters with the retrieved context to produce causal chains,
+(4) aggregate and calibrate probabilities, and (5) output cross-asset allocation sig-
+nals. The pipeline will be implemented as a Python package with a CLI interface for
+reproducibility.
+
+
+Ablation design. We will conduct systematic ablations to quantify each compo-
+nent’s marginal contribution:
+
+Table 5.2: Planned ablation experiments. Each row removes one component from the
+full system.
+
+ Ablation          What is removed                       What it tests
+ −RAG              No historical analogy retrieval       Value of macro episode memory
+ −Multi-school     Single adapter (best-performing)      Value of school diversity
+ −Bayesian         Equal-weight aggregation              Value of regime-conditional weighting
+ −Calibration      Raw probabilities (no Platt)          Value of calibration layer
+ −Causal schema    Free-form CoT (no structured chain)   Value of structured transmission logic
+
+
+All ablations will be evaluated on the same out-of-sample period (2023–2025) across
+all three evaluation dimensions: reasoning quality (EconCausal, EconLogicQA), cal-
+ibration (Brier Score, ECE), and signal quality (Sharpe, drawdown). We will report
+95% bootstrap confidence intervals on all metrics.
+
+
+Reasoning evaluation. In parallel with the backtesting, we will evaluate causal
+chain quality on the EconCausal benchmark [Lee et al., 2025] (10,490 causal triplets)
+and EconLogicQA [Quan and Liu, 2024] (sequential economic reasoning). This evalu-
+
+
+                                         52
+ation isolates the reasoning contribution from the financial performance and provides
+a direct comparison against GPT-4o and Claude Sonnet.
+
+
+
+5.6      Timeline Summary
+
+                  Table 5.3: Projected timeline for remaining work.
+
+      Phase       Task                                                  Duration
+      Completed   Episode database construction (141 episodes)          —
+      Completed   School-specific LoRA adapter training (×3)            —
+      Phase 1     RAG engine: embedding, indexing, retrieval fusion     Weeks 1–2
+      Phase 2     Calibration data collection & Bayesian aggregation    Weeks 2–4
+      Phase 3     Signal generation & walk-forward backtesting          Weeks 4–6
+      Phase 4     End-to-end integration & ablation experiments         Weeks 6–8
+      Phase 5     Reasoning benchmarks (EconCausal, EconLogicQA)        Weeks 7–8
+      Phase 6     Paper writing & supplementary materials               Weeks 8–10
+
+
+
+
+5.7      Risk, Governance, and Auditability
+Deploying an LLM-based system in a financial decision context raises several risks
+that we address explicitly here.
+
+
+Hallucination and factual grounding. LLMs can generate plausible but factu-
+ally incorrect causal chains. Macro-MOSAIC mitigates this through two structural
+mechanisms: (i) retrieved historical episodes provide concrete anchor points—specific
+dates, FRED values, and measured asset reactions—that constrain generation, and
+(ii) the structured chain schema requires each step to name a specific, verifiable trans-
+mission mechanism (e.g., credit channel, exchange rate channel) rather than vague
+narrative. Causal claims are therefore traceable to specific evidence in the episode
+database. Residual hallucination risk will be quantified in the EconCausal evaluation
+
+
+
+                                           53
+(Section 5.4), which compares generated causal steps against a ground-truth causal
+triplet database.
+
+
+Data leakage and reproducibility. As discussed in Section 5.3, LoRA adapters
+are trained on synthetic trajectories generated from abstract templates with ran-
+domised macro snapshots; no historical episode records from the out-of-sample pe-
+riod (2023–2025) enter the fine-tuning corpora. The episode database construction
+pipeline will be fully documented and released, including data sources (Bloomberg,
+Yahoo Finance, FRED), extraction scripts, and the LLM prompts used to generate
+narrative summaries and school interpretations, enabling independent replication.
+
+
+Backtest overfitting. Walk-forward evaluation with a rolling 6-month calibration
+window and strictly out-of-sample reporting (Section 5.3) limits look-ahead bias. In
+addition, the −RAG and −Multi-school ablations (Section 5.4) test whether perfor-
+mance gains are attributable to the structural components or to incidental pattern
+matching. We will apply the Ledoit-Wolf Sharpe ratio test and report bootstrap
+confidence intervals to guard against inflated significance claims.
+
+
+Human oversight. Macro-MOSAIC is designed as a decision-support system, not
+an autonomous trading agent. Each output is a structured record containing the
+retrieved analogies, explicit causal chains, scenario probabilities, and per-asset con-
+viction scores, all of which a human portfolio manager can inspect and override. The
+explicit school labels and transmission mechanism fields make the system’s reasoning
+auditable in a way that black-box LLM outputs are not. In any live deployment, final
+allocation decisions would remain under human review, with the system’s role limited
+to structured signal generation.
+
+
+Traceability. The causal chain schema (event → mechanism → intermediate effects
+→ asset impacts) ensures that every allocation signal can be traced back through the
+
+
+                                          54
+probability aggregation to the school-specific chains, and from those chains to the re-
+trieved historical episodes and the specific FRED values and price reactions that mo-
+tivate the analogy. This traceability is an explicit design objective of Macro-MOSAIC
+and distinguishes it from systems that produce opaque end-to-end predictions.
+
+
+
+
+                                          55
+Bibliography
+
+Douglas W. Arner, Jànos Barberis, and Ross P. Buckley. FinTech, RegTech, and the
+  reconceptualization of financial regulation. Northwestern Journal of International
+  Law & Business, 37(3):371–432, 2017. URL https://scholarlycommons.law.
+  northwestern.edu/njilb/vol37/iss3/2.
+
+Chanyeol Choi, Jihoon Kwon, Alejandro Lopez-Lira, et al. FinAgentBench: A bench-
+  mark dataset for agentic retrieval in financial question answering. arXiv preprint
+  arXiv:2508.14052, 2025.
+
+Tim Dettmers, Artidoro Pagnoni, Ari Holtzman, and Luke Zettlemoyer. QLoRA: Ef-
+  ficient finetuning of quantized LLMs. In Advances in Neural Information Processing
+  Systems, volume 36, pages 10088–10115, 2023.
+
+Han Ding, Yinheng Li, Junhao Wang, and Hang Chen. Large language model agent
+  in financial trading: A survey. arXiv preprint arXiv:2408.06361, 2024.
+
+Matthew F Dixon, Igor Halperin, and Paul Bilokon. Machine Learning in Finance:
+  From Theory to Practice. Springer, 2020.
+
+Yifei Dong, Fengyi Wu, Kunlin Zhang, Yilong Dai, Sanjian Zhang, Wanghao
+  Ye, Sihan Chen, and Zhi-Qi Cheng. Large language model agents in finance:
+  A survey bridging research, practice, and real-world deployment.         In Christos
+  Christodoulopoulos, Tanmoy Chakraborty, Carolyn Rose, and Violet Peng, editors,
+  Findings of the Association for Computational Linguistics: EMNLP 2025, pages
+
+                                        56
+  17889–17907, Suzhou, China, November 2025. Association for Computational Lin-
+  guistics. ISBN 979-8-89176-335-7. doi: 10.18653/v1/2025.findings-emnlp.972. URL
+  https://aclanthology.org/2025.findings-emnlp.972/.
+
+George Fatouros, Kostas Metaxas, John Soldatos, and Manos Karathanassis. Mar-
+  ketSenseAI 2.0: Enhancing stock analysis through LLM agents. arXiv preprint
+  arXiv:2502.00415, 2025.
+
+Chuan Guo, Geoff Pleiss, Yu Sun, and Kilian Q. Weinberger. On calibration of
+  modern neural networks. In Proceedings of the 34th International Conference on
+  Machine Learning, pages 1321–1330, 2017.
+
+Ben Hambly, Renyuan Xu, and Huining Yang. Recent advances in reinforcement
+  learning in finance. Mathematical Finance, 33(3):437–503, 2023. doi: https://doi.
+  org/10.1111/mafi.12382. URL https://onlinelibrary.wiley.com/doi/abs/10.
+  1111/mafi.12382.
+
+Waleed Hilal, S Andrew Gadsden, and John Yawney. Financial fraud: A review of
+  anomaly detection techniques and recent advances. Expert Systems with Applica-
+  tions, 193:116429, 2022.
+
+Edward J Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean
+  Wang, Lu Wang, and Weizhu Chen. LoRA: Low-rank adaptation of large language
+  models. In International Conference on Learning Representations, 2022. URL
+  https://openreview.net/forum?id=nZeVKeeFYf9.
+
+Xu Huang, Weiwen Liu, Xiaolong Chen, Xingmei Wang, Hao Wang, Defu Lian,
+  Yasheng Wang, Ruiming Tang, and Enhong Chen.           Understanding the plan-
+  ning of llm agents: A survey.     ArXiv, abs/2402.02716, 2024.     URL https:
+  //api.semanticscholar.org/CorpusID:267411892.
+
+Pranab Islam, Anand Kannappan, Douwe Kiela, Rebecca Qian, Nino Scherrer, and
+
+
+                                        57
+  Bertie Vidgen. Financebench: A new benchmark for financial question answering,
+  2023. URL https://arxiv.org/abs/2311.11944.
+
+Sophia Kazinnik and Tara M. Sinclair. FOMC in silico: A multi-agent system for
+  monetary policy decision modeling. Technical Report 2025-005, The George Wash-
+  ington University, Center for Economic Research, 2025.
+
+Alex Kim, Maximilian Muhn, and Valeri Nikolaev. Financial statement analysis with
+  large language models. Chicago Booth Research Paper, 2024.
+
+Blake LeBaron. Agent-based computational finance. Handbook of Computational
+  Economics, 2:1187–1233, 2006.
+
+Olivier Ledoit and Michael Wolf. Robust performance hypothesis testing with the
+  Sharpe ratio. Journal of Empirical Finance, 15(5):850–859, 2008.
+
+Donggyu Lee, Hyeok Yun, Meeyoung Cha, Sungwon Park, Sangyoon Park, and Jihee
+  Kim. Econcausal: A context-aware causal reasoning benchmark for large language
+  models in social science. arXiv preprint arXiv:2510.07231, 2025.
+
+Nian Li, Chen Gao, Mingyu Li, Yong Li, and Qingmin Liao. EconAgent: Large
+  language model-empowered agents for simulating macroeconomic activities. In
+  Lun-Wei Ku, Andre Martins, and Vivek Srikumar, editors, Proceedings of the
+  62nd Annual Meeting of the Association for Computational Linguistics (Volume
+  1: Long Papers), pages 15523–15536, Bangkok, Thailand, August 2024. Associ-
+  ation for Computational Linguistics. doi: 10.18653/v1/2024.acl-long.829. URL
+  https://aclanthology.org/2024.acl-long.829/.
+
+Weixian Waylon Li, Hyeonjun Kim, Mihai Cucuringu, and Tiejun Ma. Can LLM-
+  based financial investing strategies outperform the market in long run? In Pro-
+  ceedings of the 32nd ACM SIGKDD Conference on Knowledge Discovery and Data
+  Mining, 2026.
+
+
+                                        58
+Xiangyu Li, Yawen Zeng, Xiaofen Xing, Jin Xu, and Xiangmin Xu. HedgeAgents: A
+  balanced-aware multi-agent financial trading system. In Companion Proceedings of
+  the ACM Web Conference 2025, New York, NY, USA, 2025. ACM. doi: 10.1145/
+  3701716.3715232.
+
+Yang Li, Yangyang Yu, Haohang Li, Zhi Chen, and Khaldoun Khashanah. Trading-
+  GPT: Multi-agent system with layered memory and distinct characters for enhanced
+  financial trading performance. arXiv preprint arXiv:2309.03736, 2023.
+
+Oscar Lithgow-Serrano, David Kletz, Vani Kanjirangat, David Adametz, Marzio
+  Lunghi, Claudio Bonesana, Matilde Tristany-Farinha, Yuntao Li, Detlef Rep-
+  plinger, Marco Pierbattista, Stefania Stan, and Oleg Szehr.     Assessing RAG
+  system capabilities on financial documents. In Chung-Chi Chen, Genta Indra
+  Winata, Stephen Rawls, Anirban Das, Hsin-Hsi Chen, and Hiroya Takamura,
+  editors, Proceedings of The 10th Workshop on Financial Technology and Natu-
+  ral Language Processing, pages 124–147, Suzhou, China, November 2025. Asso-
+  ciation for Computational Linguistics. doi: 10.18653/v1/2025.finnlp-2.9. URL
+  https://aclanthology.org/2025.finnlp-2.9/.
+
+Xiao-Yang Liu, Ziyi Xia, Jingyang Rui, Jiechao Gao, Hongyang Yang, Ming Zhu,
+  Christina Dan Wang, Zhaoran Wang, and Jian Guo. Finrl-meta: market environ-
+  ments and benchmarks for data-driven financial reinforcement learning. In Pro-
+  ceedings of the 36th International Conference on Neural Information Processing
+  Systems, NIPS ’22, Red Hook, NY, USA, 2022a. Curran Associates Inc. ISBN
+  9781713871088.
+
+Xiao-Yang Liu, Hongyang Yang, Jiechao Gao, and Christina Dan Wang. Finrl: deep
+  reinforcement learning framework to automate trading in quantitative finance. In
+  Proceedings of the Second ACM International Conference on AI in Finance, ICAIF
+  ’21, New York, NY, USA, 2022b. Association for Computing Machinery. ISBN
+
+
+
+                                        59
+  9781450391481. doi: 10.1145/3490354.3494366. URL https://doi.org/10.1145/
+  3490354.3494366.
+
+Marcos López de Prado. Advances in Financial Machine Learning. John Wiley &
+  Sons, 2018.
+
+Alejandro Lopez-Lira and Yuehua Tang. Can ChatGPT forecast stock price move-
+  ments? return predictability and large language models. SSRN Electronic Journal,
+  2023.
+
+Alejandro Lopez-Lira, Yuehua Tang, and Mingyin Zhu. The memorization problem:
+  Can we trust LLMs’ economic forecasts? arXiv preprint arXiv:2504.14765, 2025.
+
+Lukas Nel. Do large language models know what they don’t know? KalshiBench: A
+  new benchmark for evaluating epistemic calibration via prediction markets. arXiv
+  preprint arXiv:2512.16030, 2025.
+
+Yuqi Nie, Yaxuan Kong, Xiaowen Dong, John M. Mulvey, H. Vincent Poor, Qingsong
+  Wen, and Stefan Zohren. A survey of large language models for financial applica-
+  tions: Progress, prospects and challenges, 2024. URL https://arxiv.org/abs/
+  2406.11903.
+
+Joon Sung Park, Joseph C O’Brien, Carrie J Cai, Meredith Ringel Morris, Percy
+  Liang, and Michael S Bernstein. Generative agents: Interactive simulacra of human
+  behavior. In Proceedings of the 36th Annual ACM Symposium on User Interface
+  Software and Technology, pages 1–22, 2023.
+
+John C. Platt. Probabilistic outputs for support vector machines and comparisons
+  to regularized likelihood methods. In Advances in Large Margin Classifiers, pages
+  61–74. MIT Press, 1999.
+
+Chen Qian, Wei Liu, Hongzhang Liu, Nuo Chen, Yufan Dang, Jiahao Li, Cheng
+  Yang, Weize Chen, Yusheng Su, Xin Cong, Juyuan Xu, Dahai Li, Zhiyuan Liu,
+
+                                        60
+  and Maosong Sun. ChatDev: Communicative agents for software development.
+  In Lun-Wei Ku, Andre Martins, and Vivek Srikumar, editors, Proceedings of the
+  62nd Annual Meeting of the Association for Computational Linguistics (Volume 1:
+  Long Papers), pages 15174–15186, Bangkok, Thailand, August 2024. Association
+  for Computational Linguistics. doi: 10.18653/v1/2024.acl-long.810. URL https:
+  //aclanthology.org/2024.acl-long.810/.
+
+Yinzhu Quan and Zefang Liu. EconLogicQA: A question-answering benchmark for
+  evaluating large language models in economic sequential reasoning.        In Yaser
+  Al-Onaizan, Mohit Bansal, and Yun-Nung Chen, editors, Findings of the Asso-
+  ciation for Computational Linguistics: EMNLP 2024, pages 2273–2282, Miami,
+  Florida, USA, November 2024. Association for Computational Linguistics. doi:
+  10.18653/v1/2024.findings-emnlp.125. URL https://aclanthology.org/2024.
+  findings-emnlp.125/.
+
+Qwen Team. Qwen2.5 technical report. arXiv preprint arXiv:2412.15115, 2025.
+
+Stuart Russell and Peter Norvig. Artificial Intelligence: A Modern Approach. Prentice
+  Hall, 3rd edition, 2010.
+
+Timo Schick, Jane Dwivedi-Yu, Roberto Dessi, Roberta Raileanu, Maria Lomeli, Eric
+  Hambro, Luke Zettlemoyer, Nicola Cancedda, and Thomas Scialom. Toolformer:
+  Language models can teach themselves to use tools. In Thirty-seventh Conference
+  on Neural Information Processing Systems, 2023. URL https://openreview.net/
+  forum?id=Yacmpz84TH.
+
+Agam Shah, Suvan Paturi, and Sudheer Chava. Trillion dollar words: A new financial
+  dataset, task & market analysis. In Proceedings of the 61st Annual Meeting of the
+  Association for Computational Linguistics (Volume 1: Long Papers), pages 6664–
+  6679, 2023.
+
+
+
+
+                                         61
+Shuo Sun, Rundong Wang, and Bo An. Reinforcement learning for quantitative
+  trading. arXiv preprint arXiv:2109.13851, 2021.
+
+Lei Wang, Chen Ma, Xueyang Feng, Zeyu Zhang, Hao Yang, Jingsen Zhang, Zhiyuan
+  Chen, Jiakai Tang, Xu Chen, Yankai Lin, Wayne Xin Zhao, and Jirong Wen. A
+  survey on large language model based autonomous agents. Frontiers of Computer
+  Science, 18(6):186345, 2024a.
+
+Saizhuo Wang, Hang Yuan, Lionel M. Ni, and Jian Guo. QuantAgent: Seeking
+  holy grail in trading by self-improving large language model.       arXiv preprint
+  arXiv:2402.03755, 2024b.
+
+Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Brian Ichter, Fei Xia,
+  Ed H. Chi, Quoc V. Le, and Denny Zhou. Chain-of-thought prompting elicits
+  reasoning in large language models. In Proceedings of the 36th International Con-
+  ference on Neural Information Processing Systems, NIPS ’22, Red Hook, NY, USA,
+  2022. Curran Associates Inc. ISBN 9781713871088.
+
+Michael Wooldridge and Nicholas R Jennings. Intelligent agents: Theory and practice.
+  The Knowledge Engineering Review, 10(2):115–152, 1995.
+
+Zhiheng Xi, Wenxiang Chen, Xin Guo, Wei He, Yiwen Ding, Boyang Hong, Ming
+  Zhang, Junzhe Wang, Senjie Jin, Enyu Zhou, Rui Zheng, Xiaoran Fan, Xiao
+  Wang, Limao Xiong, Yuhao Zhou, Weiran Wang, Changhao Jiang, Yicheng Zou,
+  Xiangyang Liu, Zhangyue Yin, Shihan Dou, Rongxiang Weng, Wensen Cheng,
+  Qi Zhang, Wenjuan Qin, Yongyan Zheng, Xipeng Qiu, Xuanjing Huang, and Tao
+  Gui. The rise and potential of large language model based agents: a survey. Science
+  China Information Sciences, 68:121101, 2025. doi: 10.1007/s11432-024-4222-0.
+
+Yijia Xiao, Edward Sun, Di Luo, and Wei Wang. TradingAgents: Multi-agents LLM
+  financial trading framework. arXiv preprint arXiv:2412.20138, 2024.
+
+
+
+                                         62
+Qianqian Xie, Weiguang Han, Zhengyu Chen, Ruoyu Xiang, Xiao Zhang, Yueru He,
+  Mengxi Xiao, Dong Li, Yongfu Dai, Duanyu Feng, Yijing Xu, Haoqiang Kang,
+  Ziyan Kuang, Chenhan Yuan, Kailai Yang, Zheheng Luo, Tianlin Zhang, Zhiwei
+  Liu, GUOJUN XIONG, Zhiyang Deng, Yuechen Jiang, Zhiyuan Yao, Haohang
+  Li, Yangyang Yu, Gang Hu, Huang Jiajia, Xiao-Yang Liu, Alejandro Lopez-Lira,
+  Benyou Wang, Yanzhao Lai, Hao Wang, Min Peng, Sophia Ananiadou, and Jimin
+  Huang. Finben: An holistic financial benchmark for large language models. In The
+  Thirty-eight Conference on Neural Information Processing Systems Datasets and
+  Benchmarks Track, 2024. URL https://openreview.net/forum?id=loDHZstVP6.
+
+Frank Xing. Designing heterogeneous llm agents for financial sentiment analysis.
+  ACM Trans. Manage. Inf. Syst., 16(1), February 2025. ISSN 2158-656X. doi:
+  10.1145/3688399. URL https://doi.org/10.1145/3688399.
+
+Hongyang Yang, Xiao-Yang Liu, and Christina Dan Wang. FinGPT: Open-source
+  financial large language models. arXiv preprint arXiv:2306.06031, 2023.
+
+Shunyu Yao, Dian Yu, Jeffrey Zhao, Izhak Shafran, Thomas L. Griffiths, Yuan Cao,
+  and Karthik R Narasimhan. Tree of thoughts: Deliberate problem solving with
+  large language models. In Thirty-seventh Conference on Neural Information Pro-
+  cessing Systems, 2023. URL https://openreview.net/forum?id=5Xc1ecxO1h.
+
+Yangyang Yu, Haohang Li, Zhi Chen, Yuechen Jiang, Yang Li, Denghui Zhang, Rong
+  Liu, Jordan W. Suchow, and Khaldoun Khashanah. FinMem: A performance-
+  enhanced LLM trading agent with layered memory and character design. arXiv
+  preprint arXiv:2311.13743, 2023.
+
+Yangyang Yu, Zhiyuan Peng, Haohang Li, Zhi Chen, and Jordan W. Suchow. FIN-
+  CON: A synthesized LLM multi-agent system with conceptual verbal reinforcement
+  for enhanced financial decision making. In Advances in Neural Information Pro-
+  cessing Systems, volume 37, 2024.
+
+
+                                        63
+Wentao Zhang, Lingxuan Zhao, Haochong Xia, Shuo Sun, Jiaze Sun, Molei Qin, Xinyi
+  Li, Yuqing Zhao, Yilei Zhao, Xinyu Cai, Longtao Zheng, Xinrun Wang, and Bo An.
+  A multimodal foundation agent for financial trading: Tool-augmented, diversified,
+  and generalist. In Proceedings of the 30th ACM SIGKDD Conference on Knowledge
+  Discovery and Data Mining, pages 4314–4325, 2024.
+
+Zihao Zhang, Stefan Zohren, and Stephen Roberts. Deep reinforcement learning for
+  trading. The Journal of Financial Data Science, 2(2):25–40, 2020.
+
+
+
+
+                                        64
+

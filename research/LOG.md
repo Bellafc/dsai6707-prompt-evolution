@@ -49,7 +49,5 @@
   (snapshot of the Chinese design document, rev 38). Pointers added to README, CLAUDE.md and THESIS_DESIGN.
 - state: from now on work continues in Claude Code on this repository; THESIS_DESIGN.md remains the source of truth.
 
-## For the human (2026-10-31, archive)
-- 開題報告的 LaTeX 原始檔（`jft_confirmation_v3_fixed.zip` 之後的版本）、36 頁 PowerPoint、中文翻譯 PDF、
-  `DSAI_RPg_202526.pdf` 都不在 Project 裡，只存在先前對話的下載檔。手上有的話請 commit 到 `docs/confirmation_src/`
-  和 `docs/project/`，寫論文時會用到。
+- decision (human): the Confirmation LaTeX source and slides are not kept; the thesis and new slides are written
+  from scratch, with the report's content taken from `docs/project/confirmation/jft_confirmation_final.{pdf,txt}`.
