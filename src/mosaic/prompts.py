@@ -2,7 +2,7 @@
 
   A  zero-shot   school system prompt + user template             (the Confirmation "base" condition)
   B  few-shot    A + k exemplar (user, assistant) pairs drawn from that school's SFT trajectories
-  C  sft         same messages as A, Qwen2.5-7B-Instruct + the school's LoRA adapter
+  C  sft         same messages as A, the base model ([model] base) + the school's LoRA adapter
   D  frontier    same messages as A, sent to Claude Opus 5.5 (Claude Code headless, the user's subscription)
   T  teacher     same messages as A, sent to GPT-4o, the model that generated the SFT data (optional)
 

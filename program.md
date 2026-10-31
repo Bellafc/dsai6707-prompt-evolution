@@ -2,7 +2,8 @@
 
 You are running experiments for an MPhil thesis (Macro-MOSAIC, PolyU DSAI). You work in a loop: pick the next
 task by priority and due date, change one thing, run it on **dev / calibration data only**, log it, decide,
-repeat. A human owns registration, freezing, final runs and every thesis sentence.
+repeat. A human owns registration, freezing, final runs and every thesis sentence. On a new pod start with
+Task S; then Task 0 as soon as the assets are in `data/`.
 
 Read first, in this order: `CLAUDE.md` → `research/THESIS_DESIGN.md` (priorities, dates, rules for AI use) →
 this file → `research/backlog.md` → the end of `research/LOG.md` (to resume where the last session stopped).
@@ -20,9 +21,10 @@ this file → `research/backlog.md` → the end of `research/LOG.md` (to resume 
    edit (counts, field names, mapping rules); log every edit.
 3. **Parser fixes** (`src/mosaic/parse.py`) only with a failing test first and a before/after rescore in the log.
 4. **Budgets.** exp01 arm B: ≤ 12 configurations on dev, ≤ 40 events each. GPU: stop after 6 hours of
-   generation per session. Claude Opus 5.5 calls (arm D smoke test, judge pilot, trigger-only descriptions) share
-   the human's subscription with your own session: arm D `--limit 3` once; judge `--split dev --limit 5` once;
-   descriptions ≤ 150 calls in total. Arm T (GPT-4o, paid) is never run by you.
+   generation or training per session. Claude Opus 5.5 calls (arm D smoke test, judge pilot, trigger-only
+   descriptions, exp06 feature labels) share the human's subscription with your own session: arm D `--limit 3`
+   once; judge `--split dev --limit 5` once; descriptions ≤ 150 calls in total; feature labels ≤ 500 in total.
+   Arm T (paid API) is never run by you.
 5. **Log everything** in `research/LOG.md` before the next run (format below). Never delete or rewrite entries.
 6. **AI-use ledger.** Every substantive thing you produce (code module, data transformation, analysis, edited
    draft) gets one line in `research/AI_USE_LEDGER.md`: date, what, files, how a human can verify it.
@@ -39,15 +41,42 @@ this file → `research/backlog.md` → the end of `research/LOG.md` (to resume 
     subcommands with tests. Other shell commands may be denied by the session's permission settings.
 13. **Deadlines.** If a due date in `research/backlog.md` is at risk, say so under "For the human" with the reason.
 
-## Task 0 — parity (first; blocks Task 1)
+## Task S — first-day spikes (no assets needed; run first on a new pod, ≤ 4 GPU-hours in total)
+
+Prove every GPU path works before the data arrives. Use dummy events and trajectories you create under
+`scratch/` (never under `data/events/`) and public text only. Log each spike as its own entry.
+
+- **S1 serving.** Qwen3-8B through `VLLMBackend` with `chat_template_kwargs = {enable_thinking = false}` on 3
+  dummy events; check the outputs contain no `<think>` block and record tokens/s.
+- **S2 `mosaic train`.** Implement LoRA SFT (PEFT + TRL) with the recipe of
+  `research/prereg_drafts/exp01_amendment_4_DRAFT.md` (Change 2), the chat template in non-thinking mode, loss on
+  assistant tokens only; offline unit tests for the formatting and masking (fake tokenizer). Smoke test: 20 steps
+  on 50 dummy trajectories → adapter → served by vLLM as arm C on the dummy events. Record time and memory.
+- **S3 SAE reader check.** Implement a minimal `src/mosaic/sae.py`: load one Qwen-Scope layer file
+  (`Qwen/SAE-Res-Qwen3-8B-Base-W64K-L0_50`, layers 9, 18, 27 only), TopK encode/decode as on the model card,
+  FVU and CE recovered (exp06 draft, S0) on ~200 public neutral paragraphs, for `Qwen/Qwen3-8B-Base` (plain
+  text) and `Qwen/Qwen3-8B` (chat format). An early reading of gate S0, not the gate itself.
+- **S4 exp01b feasibility.** `Qwen/Qwen3.5-27B`: bf16 LoRA for 50 steps on dummy data (transformers ≥ 5, in a
+  second venv if vLLM's pin clashes); serve the adapter with vLLM, or merged weights as a fallback. Record memory,
+  time per adapter and anything that failed. This is the evidence for decision D7.
+
+Then log `READY FOR HUMAN: Task S done` with a cost estimate per remaining step. If the assets have not arrived,
+go on with Task 2 (CPU and network only) and say so, so the human can switch to a cheaper pod.
+
+## Task 0 — adapters and parity (needs the assets; blocks Task 1)
 
 1. `mosaic doctor --arms A,B,C` and fix what you can. Report what only the human can provide.
-2. If `data/legacy/{base,sft}_{school}.jsonl` exist, `mosaic rescore` all six and compare with Confirmation
+2. Seed-episode audit (amendment 4, Change 6): list the trajectories by seed-episode date, write the exclusions
+   to `research/exp01_training_data_card.md`.
+3. Train the three Qwen3-8B adapters with `mosaic train` once the backlog row `train` says `go` (the human
+   confirms decision D7 there). One run per school, no tuning. If the human chose amendment 4 Change 4, also train
+   the Qwen2.5-7B reproduction adapters (4-bit NF4) into `adapters/qwen2.5-7b/`.
+4. If `data/legacy/{base,sft}_{school}.jsonl` exist, `mosaic rescore` all six and compare with Confirmation
    Table 4.3 (consistency base / SFT: K 0.368 / 0.338, A 0.146 / 0.319, M 0.230 / 0.528; anti-signal hits
    K 0.44 / 0.00, A 1.21 / 0.59, M 0.88 / 0.02; `[Output]` presence K 59 / 97 %, A 81 / 93 %, M 51 / 99 %).
    Within ±0.01 consistency and ±2 pp presence = passed. Otherwise diagnose (count mode, scope, parser, lists) in
    `scratch/` and recommend the fix to the human; do not edit the lexicon yourself.
-3. Without legacy generations: run A and C on dev (`--limit 20`) and check the Confirmation's ordering holds
+5. Without legacy generations: run A and C on dev (`--limit 20`) and check the Confirmation's ordering holds
    (C fewer anti-signal hits and higher `[Output]` presence than A for every school). Log "qualitative parity".
 
 ## Task 1 — exp01 dev loop (strongest prompting baseline), then hand-off
@@ -90,6 +119,16 @@ the human spot-checks 20), implement the expanding-window protocol from the draf
 ## Task 4 — exp04 coherence (P1; only after exp03 is registered)
 
 Implement the checks from the draft with tests; run on the calibration window only; summary + hand-off.
+
+## Task 5 — exp06 SAE instrument (P1; after Task 0; must be ready before the exp01 freeze)
+
+Follow `research/prereg_drafts/exp06_sae.md`. Complete `src/mosaic/sae.py` and `mosaic sae gate|select|score|
+internal|diff` with offline tests on small random tensors. Run gate S0 on dev and probe data for the reader and the
+A, B, C states. Draft the keyword-free paraphrases (20 per school + 20 neutral, automatic lexicon check) for the
+author to approve; never use test events. Select F_s and F_s^kf, label features (Opus calls: ≤ 150 per day,
+≤ 500 in total), write `configs/sae_features.toml` and `research/exp06_dev_summary.md` (gate table, layers chosen,
+feature cards, baselines), commit, and log `READY FOR HUMAN: register exp06 with the exp01 freeze`. After that
+registration, `configs/sae_features.toml` is measurement (rule 2).
 
 ## Log entry format (`research/LOG.md`)
 

@@ -10,7 +10,7 @@ requires-python = ">=3.10"
 dependencies = ["numpy>=1.24", "tomli>=2.0; python_version < '3.11'"]
 
 [project.optional-dependencies]
-gpu = ["vllm>=0.6", "peft>=0.11", "transformers>=4.44"]
+gpu = ["vllm>=0.17", "peft>=0.13", "trl>=0.12", "datasets>=2.20", "accelerate>=0.34"]
 api = ["openai>=1.40"]
 dev = ["pytest>=8"]
 

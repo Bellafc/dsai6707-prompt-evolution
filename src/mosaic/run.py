@@ -21,7 +21,7 @@ import numpy as np
 
 from mosaic import SCHOOLS, locks
 from mosaic.backends import Cache, ClaudeCLIBackend, FakeBackend, OpenAIBackend, Request, VLLMBackend
-from mosaic.config import ROOT, load_toml, paths, stable_hash
+from mosaic.config import ROOT, adapters_root, load_toml, paths, stable_hash
 from mosaic.data import load_events, load_trajectories, write_jsonl
 from mosaic.metrics import diversity, score_response, signal_set
 from mosaic.parse import parse
@@ -74,13 +74,14 @@ def make_backends(cfg: dict, arms: list[str], kind: str | None, cache: Cache) ->
         if kind == "fake":
             be = FakeBackend(sampling, cache)
         else:
-            p = paths()
-            adapters = {s: str(Path(p["adapters_dir"]) / s) for s in SCHOOLS} if "C" in arms else {}
             m = cfg["model"]
+            root = adapters_root(m, paths())
+            adapters = {s: str(root / s) for s in SCHOOLS} if "C" in arms else {}
             be = VLLMBackend(sampling, cache, base_model=m["base"], adapters=adapters,
                              max_model_len=m.get("max_model_len", 16384),
                              gpu_memory_utilization=m.get("gpu_memory_utilization", 0.9),
-                             max_lora_rank=m.get("max_lora_rank", 32))
+                             max_lora_rank=m.get("max_lora_rank", 32),
+                             chat_template_kwargs=m.get("chat_template_kwargs"))
         for a in local:
             out[a] = be
     for arm in [a for a in arms if a not in ("A", "B", "C")]:

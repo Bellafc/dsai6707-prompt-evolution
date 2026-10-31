@@ -1,7 +1,8 @@
 """Freezing an experiment before it may touch the test split.
 
 `mosaic freeze --exp exp01` records the SHA-256 of everything that defines the measurement (prereg, experiment
-config, prompts, lexicons, parser, metrics, the test events) in locks/<exp>.json, which is committed. A test run
+config, prompts, lexicons, parser, metrics, the test events, arm C's adapter files) in locks/<exp>.json, which is
+committed. A test run
 then refuses to start if any of those files changed, if a prompt still has a placeholder, or if a final run of the
 experiment already exists (one shot; `--allow-rerun "<reason>"` overrides and the reason is logged).
 Every access to the test split is appended to locks/test_access.log.
@@ -14,7 +15,8 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
-from mosaic.config import ROOT, file_sha256, load_toml, paths
+from mosaic import SCHOOLS
+from mosaic.config import ROOT, adapters_root, file_sha256, load_toml, paths
 from mosaic.prompts import has_placeholder
 
 MEASUREMENT_CODE = ["src/mosaic/metrics.py", "src/mosaic/parse.py", "src/mosaic/prompts.py", "src/mosaic/judge.py"]
@@ -36,7 +38,15 @@ def tracked_files(exp: str) -> list[Path]:
              ROOT / "configs/judge.toml"]
     files += sorted((ROOT / "configs/prompts").glob("*.txt"))
     files += [ROOT / f for f in MEASUREMENT_CODE]
-    files.append(Path(paths()["events_dir"]) / "test.jsonl")
+    p = paths()
+    files.append(Path(p["events_dir"]) / "test.jsonl")
+    if "C" in cfg.get("arms", {}):  # arm C's adapters are part of the frozen system (retrained, amendment 4 draft)
+        root = adapters_root(cfg.get("model", {}), p)
+        for s in SCHOOLS:
+            weights = root / s / "adapter_model.safetensors"
+            if not weights.exists() and (root / s / "adapter_model.bin").exists():
+                weights = root / s / "adapter_model.bin"
+            files += [root / s / "adapter_config.json", weights]
     return files
 
 

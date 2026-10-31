@@ -4,8 +4,8 @@
 |---|---|---|
 | `data/events/test.jsonl` | the 96 held-out Confirmation events, one JSON per line: `{"id", "text", "difficulty", "category", "macro_context"?, "template_id"?}` | final test run only |
 | `data/events/dev.jsonl` | 30–40 events disjoint from test, same fields. Recommended: historical episodes from the episode database (narrative as `text`, FRED snapshot as `macro_context`) | dev loop |
-| `data/trajectories/<school>.jsonl` | the 500 SFT trajectories per school: `{"messages": [{"role","content"},…], "template_id"}` or `{"prompt","response","template_id"}` | arm B exemplars |
-| `adapters/<school>/` | PEFT LoRA directories (`adapter_config.json`, `adapter_model.safetensors`) for keynesian, austrian, monetarist | arm C |
+| `data/trajectories/<school>.jsonl` | the 500 SFT trajectories per school: `{"messages": [{"role","content"},…], "template_id", "seed_episode"?, "seed_date"?}` or `{"prompt","response","template_id"}`; the seed episode and its date are needed for the seed-episode audit (amendment 4, Change 6) | arm B exemplars, training arm C |
+| `adapters/qwen3-8b/<school>/` | PEFT LoRA directories (`adapter_config.json`, `adapter_model.safetensors`) for keynesian, austrian, monetarist, **written by `mosaic train`** on the pod (the Confirmation's Qwen2.5 adapters were not kept; exp01 amendment 4 draft) | arm C |
 | `data/legacy/{base,sft}_<school>.jsonl` | optional: the Confirmation's saved generations, `{"text": …}` per line | Task 0 parity |
 
 `mosaic doctor` checks all of this, including that dev and test share no ids or texts.

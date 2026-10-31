@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# One-time setup on a RunPod GPU pod (PyTorch template, CUDA 12.x). Persistent files go to /workspace.
-# Recommended GPU: 48 GB (A6000 / L40S / A40) — few-shot prompts are long. A 24 GB card (4090) works for arms A/C;
-# for arm B set [model] max_model_len = 12288 in configs/exp01.toml.
+# One-time setup on a RunPod GPU pod (PyTorch template, CUDA 12.x). Persistent files go to /workspace
+# (put it on a network volume, >= 200 GB, so models and caches survive stopping the pod).
+# GPU: one 80 GB card (A100 80GB / H100) for the first-day spikes, which include Qwen3.5-27B (bf16 LoRA needs
+# ~56 GB). Qwen3-8B work alone (exp01, exp03, exp06) runs on 48 GB (A6000 / L40S / A40).
+# Optional: EXTRA_MODELS="Qwen/Qwen3-8B-Base Qwen/Qwen3.5-27B" bash setup/runpod_setup.sh
 set -euo pipefail
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 export HF_HOME=/workspace/hf
@@ -27,11 +29,16 @@ grep -q '.local/bin' ~/.bashrc 2>/dev/null || echo 'export PATH="$HOME/.local/bi
 export PATH="$HOME/.local/bin:$PATH"
 claude --version || echo "WARNING: claude not on PATH yet; open a new shell"
 
-echo "== base model weights (cached in /workspace/hf)"
-python - <<'PY'
+echo "== model weights (cached in /workspace/hf): Qwen/Qwen3-8B ${EXTRA_MODELS:-}"
+MODELS="Qwen/Qwen3-8B ${EXTRA_MODELS:-}" python - <<'PY'
+import os
 from huggingface_hub import snapshot_download
-snapshot_download("Qwen/Qwen2.5-7B-Instruct", allow_patterns=["*.json", "*.safetensors", "*.txt", "*.model"])
+for m in os.environ["MODELS"].split():
+    print("  downloading", m)
+    snapshot_download(m, allow_patterns=["*.json", "*.safetensors", "*.txt", "*.model", "*.jinja"])
 PY
+# Qwen-Scope SAEs (exp06) take 1-2 GB per layer, so the agent downloads only the layers it needs, e.g.
+#   snapshot_download("Qwen/SAE-Res-Qwen3-8B-Base-W64K-L0_50", allow_patterns=["layer18.sae.pt", "*.md"])
 
 echo "== offline tests and doctor"
 cd "$REPO_DIR" && python -m pytest -q
@@ -39,8 +46,9 @@ mosaic doctor --arms A,B,C,D || true
 cat <<MSG
 
 Next:
-  1. Copy your assets (see data/README.md): data/events/{dev,test}.jsonl, data/trajectories/*.jsonl,
-     adapters/{keynesian,austrian,monetarist}/, optionally data/legacy/*.jsonl.
+  1. Copy your assets (see data/README.md): data/events/{dev,test}.jsonl, data/trajectories/*.jsonl (the SFT
+     data; adapters are retrained on the pod with `mosaic train`), optionally data/legacy/*.jsonl.
+     Without them the agent can still do Task S (spikes) and Task 2 (exp03 data) in program.md.
   2. Restore the original prompts (configs/prompts/) and keyword lists (configs/lexicons.toml).
   3. On your own computer run `claude setup-token`, then on the pod:
        echo 'export CLAUDE_CODE_OAUTH_TOKEN=<token>' >> ~/.bashrc && source ~/.bashrc

@@ -5,7 +5,8 @@ instead of the GPU/API, so re-scoring or re-reporting never regenerates. The cac
 cache/ (not versioned; large).
 
   fake    deterministic, offline, for tests and dry runs
-  vllm    Qwen2.5-7B-Instruct with optional LoRA adapters (one engine, adapters switched per request)
+  vllm    the open base model (configs: [model] base, e.g. Qwen3-8B) with optional LoRA adapters (one engine,
+          adapters switched per request); the key also covers chat-template options and the adapter files
   openai  GPT-4o teacher (arm T); stops when the run's dollar budget is spent
   claude  Claude Opus 5.5 through `claude -p` (arm D and the exp01 judge), on the user's subscription
 """
@@ -17,7 +18,26 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
-from mosaic.config import stable_hash
+from mosaic.config import file_sha256, stable_hash
+
+ADAPTER_FILES = ("adapter_config.json", "adapter_model.safetensors", "adapter_model.bin")
+
+
+def adapter_fingerprint(path: str | Path) -> str | None:
+    """SHA-256 over a PEFT adapter's config and weights (None if absent), so that a retrained adapter can never
+    reuse the cached outputs of an earlier one."""
+    d = Path(path)
+    files = {n: file_sha256(d / n) for n in ADAPTER_FILES if (d / n).is_file()}
+    return stable_hash(files) if files else None
+
+
+def split_reasoning(text: str) -> tuple[str, str]:
+    """(reasoning, answer) for outputs of models with a native thinking mode (Qwen3: '<think>…</think>answer').
+    Without a closing tag the whole text is the answer."""
+    if "</think>" not in text:
+        return "", text
+    head, answer = text.split("</think>", 1)
+    return head.replace("<think>", "", 1).strip(), answer.strip()
 
 
 @dataclass
@@ -118,13 +138,24 @@ class FakeBackend(Backend):
 
 class VLLMBackend(Backend):
     def __init__(self, sampling: dict, cache: Cache | None, *, base_model: str, adapters: dict[str, str],
-                 max_model_len: int = 16384, gpu_memory_utilization: float = 0.90, max_lora_rank: int = 32):
+                 max_model_len: int = 16384, gpu_memory_utilization: float = 0.90, max_lora_rank: int = 32,
+                 chat_template_kwargs: dict | None = None):
         super().__init__(sampling, cache)
         self.model_id = base_model
         self.adapters = adapters
+        self.adapter_sha = {s: adapter_fingerprint(p) for s, p in adapters.items()}
+        self.chat_template_kwargs = dict(chat_template_kwargs or {})  # e.g. {"enable_thinking": False} for Qwen3
         self._llm = None
         self._opts = dict(max_model_len=max_model_len, gpu_memory_utilization=gpu_memory_utilization,
                           max_lora_rank=max_lora_rank)
+
+    def key(self, r: Request) -> str:
+        k = {"model": self.model_id, "adapter": r.adapter, "messages": r.messages, "sampling": self.sampling}
+        if r.adapter:
+            k["adapter_sha256"] = self.adapter_sha.get(r.adapter)
+        if self.chat_template_kwargs:
+            k["chat_template_kwargs"] = self.chat_template_kwargs
+        return stable_hash(k)
 
     def _engine(self):
         if self._llm is None:
@@ -151,12 +182,16 @@ class VLLMBackend(Backend):
             if adapter:
                 lora = LoRARequest(adapter, sorted(self.adapters).index(adapter) + 1, self.adapters[adapter])
             t0 = time.time()
-            res = llm.chat([reqs[i].messages for i in idx], sp, lora_request=lora, use_tqdm=True)
+            kw = {"chat_template_kwargs": self.chat_template_kwargs} if self.chat_template_kwargs else {}
+            res = llm.chat([reqs[i].messages for i in idx], sp, lora_request=lora, use_tqdm=True, **kw)
             dt = (time.time() - t0) / max(1, len(idx))
             for i, r in zip(idx, res):
                 o = r.outputs[0]
-                out[i] = {"text": o.text, "seconds": dt,
+                reasoning, answer = split_reasoning(o.text)  # metrics see the answer only (amendment 4 draft)
+                out[i] = {"text": answer, "seconds": dt,
                           "usage": {"prompt_tokens": len(r.prompt_token_ids), "completion_tokens": len(o.token_ids)}}
+                if reasoning:
+                    out[i]["reasoning"] = reasoning
         return out  # type: ignore[return-value]
 
 

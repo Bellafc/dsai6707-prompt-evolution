@@ -13,10 +13,12 @@ on real outcomes without look-ahead.)
 ## Why prediction markets, and why 2025–2026
 
 Each Kalshi macro market is a ladder of mutually exclusive outcomes with a published resolution source, i.e. a
-ground truth plus a crowd benchmark. Qwen2.5 was released in September 2024 and the school adapters were trained
-on template events with randomised macro states (no instance-level information), so events resolving on or after
-**2025-01-01** are outside every local model's training data. Frontier API models are *not* evaluated here
-(their training data covers 2025–2026); they appear only in the prospective exp05.
+ground truth plus a crowd benchmark. The local base model is Qwen3-8B (exp01 amendment 4), released on
+2025-04-29, and the school adapters are trained on trajectories whose seed episodes end before 2025-05 (seed-episode
+audit, amendment 4 Change 6), so events resolving on or after **2025-05-01** are outside every local model's
+training data. Frontier API models are *not* evaluated here (their training data covers 2025–2026); they appear
+only in the prospective exp05. Qwen3.5-27B (exp01b, released 2026-02-24) may enter as a secondary, descriptive
+analysis on test events resolving on or after 2026-03-01.
 
 ## Knowledge layers (pmpol ontology, L0–L5)
 
@@ -47,7 +49,7 @@ disagreement, which is tested separately. The plain-language summary is generate
   `pmpol/propositions/indicators.py`).
 - Each event's contracts are mapped to one ordered set of mutually exclusive bins (the **scenario set**).
   Events whose contracts do not partition the outcome space after mapping are excluded and listed.
-- Resolution window 2025-01-01 → last settled date at build time. **Calibration window**: 2025-01-01 → 2025-12-31.
+- Resolution window 2025-05-01 → last settled date at build time. **Calibration window**: 2025-05-01 → 2025-12-31.
   **Test window**: 2026-01-01 → end. Counts per series and window are reported in `research/exp03_data_card.md`
   before registration (counts only; no forecasts scored).
 
@@ -64,7 +66,7 @@ No news, no market prices, no text written after t.
 
 | System | Description |
 |---|---|
-| base | Qwen2.5-7B-Instruct, school-neutral system prompt (arm-A style) |
+| base | Qwen3-8B (non-thinking), school-neutral system prompt (arm-A style) |
 | K, A, M | each school adapter (arm C) with its school system prompt |
 | K′, A′, M′ | base model with each school's system prompt, no adapter (arm-A style) |
 | pool-eq | equal-weight linear pool of K, A, M |
@@ -104,6 +106,11 @@ Holm correction across H1–H7. Market vs pool is reported descriptively (we exp
 ## Ablations (secondary, P1)
 
 −RAG vs +RAG analogues; horizon 7d vs 1d; per-series breakdown; school weights by series family.
+
+## Exploratory link to exp06 (not a hypothesis)
+
+At each forecast, the school agents' internal school mass and other-school mass (exp06 features) are recorded, to
+describe whether internal school separation relates to inter-school disagreement (H6) and to error.
 
 ## Threats and controls
 

@@ -26,6 +26,15 @@ def paths() -> dict:
     return {k: (ROOT / v if isinstance(v, str) and not Path(v).is_absolute() else v) for k, v in cfg.items()}
 
 
+def adapters_root(model_cfg: dict, p: dict) -> Path:
+    """Directory holding one LoRA adapter per school for this base model: the experiment config's
+    [model] adapters_dir if set (e.g. a second base model in exp01b), else paths()["adapters_dir"]."""
+    d = model_cfg.get("adapters_dir")
+    if d:
+        return Path(d) if Path(d).is_absolute() else ROOT / d
+    return Path(p["adapters_dir"])
+
+
 def stable_hash(obj) -> str:
     return hashlib.sha256(json.dumps(obj, sort_keys=True, ensure_ascii=False, default=str).encode()).hexdigest()
 

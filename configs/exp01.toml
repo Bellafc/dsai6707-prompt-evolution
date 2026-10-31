@@ -3,12 +3,17 @@
 
 prereg = ["prereg/exp01_prompt_vs_sft.md", "prereg/exp01_amendment_1.md", "prereg/exp01_amendment_2.md",
           "prereg/exp01_amendment_3.md"]
+# Amendment 4 (draft: research/prereg_drafts/exp01_amendment_4_DRAFT.md) changes the base model because the
+# Confirmation's Qwen2.5 adapters were lost. The author registers it (moves it to prereg/ and adds it above)
+# before any test-split output of arms A/B/C and before `mosaic freeze`.
 
 [model]
-base = "Qwen/Qwen2.5-7B-Instruct"
+base = "Qwen/Qwen3-8B"         # post-trained Qwen3 (2025-04-29, Apache-2.0); was Qwen/Qwen2.5-7B-Instruct
+chat_template_kwargs = { enable_thinking = false }   # non-thinking mode in training and inference (amendment 4)
 max_model_len = 16384          # few-shot prompts are long; 24 GB cards may need 12288 (see program.md)
 gpu_memory_utilization = 0.90
-max_lora_rank = 32             # adapters were trained with r = 32, alpha = 64
+max_lora_rank = 32             # adapters are trained with r = 32, alpha = 64 (`mosaic train`, amendment 4)
+# adapters_dir = "adapters/qwen3-8b"   # default comes from configs/paths*.toml
 
 [sampling]                     # identical for A, B, C (and T); D cannot set sampling (amendment 1)
 temperature = 0.7

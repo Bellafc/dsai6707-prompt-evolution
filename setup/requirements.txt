@@ -1,5 +1,11 @@
-# GPU stack for arms A/B/C (vLLM brings a matching torch). Pin after the first working install: pip freeze > setup/lock.txt
-vllm>=0.6.3
+# GPU stack (vLLM brings a matching torch). Pin after the first working install: pip freeze > setup/lock.txt
+# vLLM >= 0.17 serves both Qwen3 and Qwen3.5 (exp01b). Qwen3.5 training needs transformers >= 5; if that clashes
+# with vLLM's pin, train the exp01b adapters in a second venv (program.md, Task S).
+vllm>=0.17
+peft>=0.13
+trl>=0.12
+datasets>=2.20
+accelerate>=0.34
 huggingface_hub>=0.24
 openai>=1.40
 numpy>=1.24
