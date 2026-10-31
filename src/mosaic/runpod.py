@@ -21,7 +21,7 @@ import urllib.request
 from datetime import datetime, timezone
 
 API = "https://rest.runpod.io/v1"
-REPO = "alexanderkong-arch/PolyU"
+REPO = "Bellafc/macro-mosaic"
 # Official template runpod-torch-v280 (torch 2.8.0, CUDA 12.8.1, Ubuntu 24.04, Python 3.12, uv preinstalled).
 # setup/runpod_setup.sh builds its own venv on the volume; vLLM brings a matching torch into it.
 DEFAULT_IMAGE = "runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404"

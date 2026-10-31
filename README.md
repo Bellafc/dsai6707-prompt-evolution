@@ -30,7 +30,7 @@ secrets、network volume、Claude Code 環境的 network secret）和指揮的�
 ## 手動在 RunPod 上開始
 
 ```bash
-cd /workspace && git clone https://github.com/alexanderkong-arch/PolyU polyu && cd polyu
+cd /workspace && git clone https://github.com/Bellafc/macro-mosaic polyu && cd polyu
 bash setup/runpod_setup.sh                 # venv、vLLM、Claude Code、下載 Qwen3-8B（約 16 GB）
 # 想同時準備 exp01b：EXTRA_MODELS="Qwen/Qwen3-8B-Base Qwen/Qwen3.5-27B" bash setup/runpod_setup.sh
 # 上傳資料（見 data/README.md；adapter 在 pod 上用 mosaic train 重新訓練），換回原始 prompt 和關鍵字表

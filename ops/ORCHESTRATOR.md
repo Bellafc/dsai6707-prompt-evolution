@@ -65,7 +65,7 @@ not stop itself).
 ## Human setup (一次性設定，人來做)
 
 1. RunPod：建立這個專案專用的 API key；在 **Secrets** 建 `claude_oauth_token`（自己電腦跑 `claude setup-token`
-   的結果）、`github_token`（GitHub fine-grained token，只給 `alexanderkong-arch/PolyU`，Contents: Read and
+   的結果）、`github_token`（GitHub fine-grained token，只給 `Bellafc/macro-mosaic`，Contents: Read and
    write）、可選 `hf_token` 和 `jupyter_password`（開人用的 pod 時要用 JupyterLab 上傳檔案才需要）。
 2. RunPod：在有 H100／A100 80GB 的資料中心建一個 200 GB 的 network volume，記下 volume id 和 data center id。
    資料（96 個 test 事件、dev 事件、訓練軌跡、episode DB、開題時的生成結果）上傳到 volume 的
@@ -75,5 +75,5 @@ not stop itself).
 4. claude.ai/code：建一個 cloud environment，network access 用 **Trusted**，在 **Network secrets** 加一個
    secret：host `rest.runpod.io`，header `Authorization`，prefix `Bearer`，value 貼 RunPod API key。不要把 key
    放進環境變數或貼進對話。
-5. 在這個環境開一個 session（repo `alexanderkong-arch/PolyU`，branch `main`），告訴它：讀 `ops/ORCHESTRATOR.md`，
+5. 在這個環境開一個 session（repo `Bellafc/macro-mosaic`，branch `main`），告訴它：讀 `ops/ORCHESTRATOR.md`，
    用 volume `<id>` 開 Task S。
