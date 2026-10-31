@@ -85,3 +85,8 @@
   (`tests/test_runpod.py`); 33 offline tests pass.
 - next: pods clone `main`, so the fix must be merged (or pods started with `--branch`) before the next pod.
   Models and the venv are cached on volume `dy1ct9hkm0`, so the next setup is short.
+
+### 2026-10-31 14:02 UTC — infra: Task S pod restarted with the setup fix
+- pod start: `phe3hfe0mapatt` (mosaic-S-20261031-1402), task S, NVIDIA H100 80GB HBM3, $3.99/h, `--hours 4`,
+  volume `dy1ct9hkm0` (CA-MTL-1), checks out `claude/vibrant-tesla-rqvzo1` (the fix is not on `main` yet; human
+  chose this over waiting for the merge), push branch `agent/task-S-20261031-1402`.
