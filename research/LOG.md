@@ -119,3 +119,24 @@
   Outputs: `scratch/S1_outputs.jsonl`.
 - decision: keep
 - next: S2 smoke training (20 steps, 50 dummy trajectories) → serve the adapter as arm C.
+
+### 2026-10-31 20:00 UTC — S2: `mosaic train` smoke test, adapter served as arm C
+- hypothesis: LoRA SFT with the amendment 4 recipe (r 32, α 64, dropout .05, all-linear, bf16, lr 2e-4 cosine, 3% warm-up,
+  effective batch 16, loss on assistant tokens only, Qwen3 chat template with enable_thinking=false) trains and the
+  adapter loads in vLLM.
+- change: `src/mosaic/train.py` + `mosaic train` (PEFT + transformers `Trainer`; TRL not used because masking is
+  explicit: prompt = chat template with generation prompt, completion = reply + `<|im_end|>`, labels −100 on the
+  prompt; examples over 4,096 tokens are dropped, not truncated). `tests/test_train_format.py` (5 tests, fake
+  tokenizer): masking, prompt equal to inference prompt incl. empty think block, drop on overflow. Fixed on the
+  way: transformers 5 has no `warmup_ratio` / `group_by_length` in `TrainingArguments` (warm-up steps computed).
+  41 offline tests pass.
+- command: `python -m mosaic train --school keynesian --data scratch/traj/keynesian.jsonl --out scratch/adapters/keynesian
+  --max-steps 20`, then `python -m mosaic spike serve --adapters-dir scratch/adapters --tag S2C`
+- result: 50 dummy trajectories (fake-backend format, `scratch/traj/`), 20 steps (micro-batch 4 × 4 accumulation) in
+  29.2 s, peak 19.6 GiB, mean loss 0.539. vLLM served the adapter (`max_lora_rank` 32) on the 3 dummy events: 0
+  `<think>` blocks, 3/3 outputs follow the trained dummy trajectory format (`[Think] … [ToolCall: query_episode_db]
+  [Observe] …`), i.e. the adapter is applied. 124 tokens/s on 3 requests. Not a quality claim: dummy data.
+  Real run size: 500 trajectories × 3 epochs = ~94 steps per school, roughly 2–3 min of training if lengths are similar
+  (real trajectories are longer; estimate to be redone on real data).
+- decision: keep
+- next: S3 SAE reader check; S4 Qwen3.5-27B LoRA feasibility.

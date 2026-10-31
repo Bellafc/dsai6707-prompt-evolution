@@ -101,12 +101,13 @@ def train(*, base: str, data: str, out: str, template_kwargs: dict | None = None
     if hasattr(model, "enable_input_require_grads"):
         model.enable_input_require_grads()
     micro = min(micro_batch, batch)
+    total = max_steps if max_steps > 0 else int(-(-len(rows) // batch) * epochs)
+    warmup = max(1, round(RECIPE["warmup_ratio"] * total))  # transformers 5 has no warmup_ratio
     args = TrainingArguments(output_dir=str(Path(out) / "_trainer"), per_device_train_batch_size=micro,
                              gradient_accumulation_steps=max(1, batch // micro), num_train_epochs=epochs,
                              max_steps=max_steps, learning_rate=RECIPE["lr"], lr_scheduler_type="cosine",
-                             warmup_ratio=RECIPE["warmup_ratio"], bf16=True, logging_steps=1, save_strategy="no",
-                             seed=seed, report_to=[], gradient_checkpointing=True, remove_unused_columns=False,
-                             group_by_length=False)
+                             warmup_steps=warmup, bf16=True, logging_steps=1, save_strategy="no",
+                             seed=seed, report_to=[], gradient_checkpointing=True, remove_unused_columns=False)
     pad = tok.pad_token_id if tok.pad_token_id is not None else tok.eos_token_id
     trainer = Trainer(model=model, args=args, train_dataset=rows, data_collator=lambda b: collate(b, pad))
     torch.cuda.reset_peak_memory_stats()
