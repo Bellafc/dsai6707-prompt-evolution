@@ -13,6 +13,8 @@ Qwen3-8B; the Confirmation used Qwen2.5-7B-Instruct) for macroeconomic event ana
   orchestrator, under the limits in `ops/ORCHESTRATOR.md` (rule 2).
 - `pmpol-academic-2026-10-21.tar.gz` is the team's prediction-market system (read-only reference; extract to
   `vendor/` when an experiment needs it, see `research/backlog.md`). Its `EXPORT_NOTES.md` rules apply to it.
+- Background: `docs/project/` (Confirmation report, slides, PQE survey, `PROJECT_NOTES.md` with the panel,
+  reviewer fixes and framing guidance) and `research/DESIGN_DOC_zh.md`; `research/THESIS_DESIGN.md` wins on conflicts.
 - Data (`data/`), adapters (`adapters/`), caches and run outputs (`runs/`, `cache/`) are not versioned.
   `experiments/results.tsv`, `research/`, `reports/`, `prereg/` and `locks/` are.
 

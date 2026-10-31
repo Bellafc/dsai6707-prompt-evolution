@@ -1,7 +1,8 @@
 # Thesis design (source of truth for priorities and dates)
 
 MPhil, PolyU DSAI. Author: Futian Jiang. Chief supervisor: Prof. ZHANG Chengqi. Last revised 2026-10-31.
-The human-facing version (Traditional Chinese, with rationale) is the design document linked in the README.
+The human-facing version (Traditional Chinese, with rationale) is `research/DESIGN_DOC_zh.md` (snapshot of the
+Claude Docs document); Confirmation-era material and context are in `docs/project/`.
 
 ## 1. Constraints from the graduation rules
 

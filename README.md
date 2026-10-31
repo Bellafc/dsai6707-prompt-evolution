@@ -2,6 +2,8 @@
 
 這是 Futian Jiang 的 MPhil 論文實驗 repo。實驗在 RunPod 上跑，由 Claude Code 自動執行研究迴圈（auto-research）。
 **論文設計、時程和規則以 [`research/THESIS_DESIGN.md`](research/THESIS_DESIGN.md) 為準。**它依據學校 RPg Handbook 第 10 章和 DSAI 2025/26 課程文件的畢業要求制定。
+附理由的中文設計文件：[`research/DESIGN_DOC_zh.md`](research/DESIGN_DOC_zh.md)（Claude Docs 版的快照）。
+開題報告、投影片、PQE survey 和原本 claude.ai Project 裡的筆記都在 [`docs/project/`](docs/project/)。
 
 ## 三個研究問題與對應實驗
 
@@ -46,9 +48,11 @@ tmux new -s ar 'bash scripts/autoresearch.sh'
 
 ```
 research/THESIS_DESIGN.md   論文設計：畢業要求、RQ、章節、時程、AI 使用規則、口試問題對照、待決事項
+research/DESIGN_DOC_zh.md   中文設計文件（附理由，Claude Docs 快照）
+docs/project/               開題報告 PDF、HTML 投影片、口頭陳述稿、PQE survey、Project 筆記（PROJECT_NOTES.md）
 program.md                  auto-research 協議（規則、預算、Task 0–4、交接）
 prereg/                     已登記的事前登記（登記後不改，只加修正案）
-research/prereg_drafts/     exp02–05 草稿
+research/prereg_drafts/     exp01 修正案 4、exp01b、exp02–06 草稿
 configs/                    exp01.toml、lexicons.toml、judge.toml、prompts/
 src/mosaic/                 框架：data、prompts、backends（vLLM+LoRA / Claude CLI / OpenAI / fake）、parse、metrics、
                             judge、stats、run、report、locks、vendor

@@ -41,3 +41,15 @@
 - 一次性設定照 `ops/ORCHESTRATOR.md` 最後一節做；RunPod API key 只放在 Claude Code 環境的 network secret。
 - pod 上的 agent 只能跑 `.claude/settings.json` 允許的指令。Task S4（Qwen3.5-27B 要 transformers ≥ 5）如果需要第二個
   venv，請自己在 allow 清單加上 `"Bash(uv venv *)"`；否則 agent 會記下來請你處理。
+
+### 2026-10-31 — docs: archive of the claude.ai Project
+- change: everything from the claude.ai Project "PolyU" copied into the repository: `docs/project/` (Confirmation
+  report PDF, 30-slide HTML deck, "Why PhD" statement, Bella's PQE survey source, `PROJECT_NOTES.md` with the
+  panel, reviewer fixes, framing guidance and an index of earlier chats) and `research/DESIGN_DOC_zh.md`
+  (snapshot of the Chinese design document, rev 38). Pointers added to README, CLAUDE.md and THESIS_DESIGN.
+- state: from now on work continues in Claude Code on this repository; THESIS_DESIGN.md remains the source of truth.
+
+## For the human (2026-10-31, archive)
+- 開題報告的 LaTeX 原始檔（`jft_confirmation_v3_fixed.zip` 之後的版本）、36 頁 PowerPoint、中文翻譯 PDF、
+  `DSAI_RPg_202526.pdf` 都不在 Project 裡，只存在先前對話的下載檔。手上有的話請 commit 到 `docs/confirmation_src/`
+  和 `docs/project/`，寫論文時會用到。

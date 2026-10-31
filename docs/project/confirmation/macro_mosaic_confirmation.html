@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Macro-MOSAIC — Confirmation of Registration</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;background:#000;font-family:'Times New Roman',Times,serif;overflow:hidden}
+#deck{width:100vw;height:100vh;position:relative}
+.slide{display:none;position:absolute;top:0;left:0;width:100%;height:100%;background:#000;color:#fff;padding:2.8vh 4.2vw 7vh;flex-direction:column}
+.slide.active{display:flex}
+.t-title{font-size:2.8vw;font-weight:700;line-height:1.2;color:#fff}
+.t-sec{font-size:1.1vw;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;margin-bottom:.5vh}
+.t-h2{font-size:2.0vw;font-weight:700;color:#fff;margin-bottom:.7vh}
+.t-h3{font-size:1.65vw;font-weight:700;color:#fff;margin-bottom:.4vh}
+.t-body{font-size:1.45vw;line-height:1.55;color:#fff}
+.t-small{font-size:1.35vw;line-height:1.5;color:#fff}
+.t-cite{font-size:1.2vw;color:#fff;line-height:1.45}
+.slide-hdr{border-bottom:2px solid #fff;padding-bottom:.6vh;margin-bottom:1.4vh;flex-shrink:0}
+.body-area{flex:1;display:flex;flex-direction:column;overflow:hidden;gap:.9vh}
+.col2{display:grid;grid-template-columns:1fr 1fr;gap:1.8vw}
+.col3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2vw}
+.col52{display:grid;grid-template-columns:5fr 4fr;gap:2vw}
+.box{border:1px solid #fff;border-radius:4px;padding:1.2vh 1.3vw}
+.box-lo{border:1px solid #888;border-radius:4px;padding:1.2vh 1.3vw}
+.box-fill{background:#111;border:1px solid #555;border-radius:4px;padding:1.0vh 1.1vw}
+hr{border:none;border-top:1px solid #555;margin:.7vh 0}
+.formula{font-family:'Courier New',monospace;font-size:1.35vw;color:#fff;background:#0a0a0a;border-left:3px solid #fff;padding:.8vh 1.1vw;border-radius:0 4px 4px 0;margin:.5vh 0}
+.badge{display:inline-block;padding:.1vh .6vw;border-radius:3px;font-size:1.05vw;font-weight:700}
+.done{background:#fff;color:#000}
+.plan{border:1px solid #fff;color:#fff}
+.pipeline{display:flex;align-items:stretch;gap:0}
+.pipe-stage{flex:1;border:1px solid #fff;border-radius:4px;padding:.9vh .6vw;text-align:center}
+.pipe-arrow{display:flex;align-items:center;justify-content:center;font-size:1.8vw;color:#fff;padding:0 .25vw;flex-shrink:0}
+table.dt{width:100%;border-collapse:collapse}
+table.dt th{background:#1a1a1a;color:#fff;padding:.55vh .75vw;text-align:left;border-bottom:2px solid #fff;font-size:1.25vw;font-family:'Times New Roman',serif}
+table.dt td{padding:.5vh .75vw;border-bottom:1px solid #2a2a2a;font-size:1.25vw;color:#fff}
+table.dt tr:last-child td{border-bottom:none}
+.num{text-align:right;font-weight:700}
+.pos{color:#7fff7f;font-weight:700}
+.neg{color:#ff8080;font-weight:700}
+.tl-bar-wrap{background:#111;border:1px solid #2a2a2a;border-radius:3px;height:2.4vh;position:relative;overflow:hidden}
+.tl-bar{height:100%;background:#fff}
+.tl-lbl{position:absolute;left:.5vw;top:50%;transform:translateY(-50%);font-size:1.1vw;font-weight:700;white-space:nowrap;color:#000}
+.snum{position:absolute;bottom:2.2vh;right:2vw;font-size:1.1vw;color:#888}
+#ctrl{position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,.92);display:flex;justify-content:center;align-items:center;gap:1.5vw;padding:.7vh 0;border-top:1px solid #333;z-index:200}
+.btn{background:#111;color:#fff;border:1px solid #555;padding:.45vh 1.8vw;border-radius:4px;cursor:pointer;font-size:1.1vw;font-family:inherit}
+.btn:hover{background:#2a2a2a}
+#counter{color:#fff;font-size:1.1vw;min-width:5vw;text-align:center}
+#notes{position:fixed;bottom:4.2vh;left:0;right:0;background:rgba(0,0,0,.95);border-top:1px solid #555;padding:1vh 3vw;max-height:22vh;overflow-y:auto;font-size:1.2vw;color:#fff;line-height:1.6;display:none;z-index:100}
+#notes.on{display:block}
+.title-wrap{display:flex;flex-direction:column;justify-content:center;height:100%;padding:1.5vh 0}
+</style>
+</head>
+<body>
+<div id="deck">
+
+<!-- S1 TITLE -->
+<div class="slide active" id="s1">
+  <div class="title-wrap">
+    <div class="t-sec" style="margin-bottom:1.8vh">Confirmation of Registration — MPhil</div>
+    <div class="t-title" style="font-size:3.2vw;margin-bottom:.8vh">Macro-MOSAIC</div>
+    <div class="t-h2" style="font-weight:400;margin-bottom:2.8vh">Mixture-Of-Schools Analogy-Informed Chains:<br>A Multi-School AI Pipeline for Macroeconomic Event Analysis<br>and Cross-Asset Allocation</div>
+    <hr style="margin-bottom:2.2vh">
+    <div class="t-body" style="line-height:2.3"><strong>Futian Jiang</strong><br>Department of Data Science and Artificial Intelligence<br>The Hong Kong Polytechnic University<br>Supervisor: Prof. ZHANG Chengqi</div>
+  </div>
+  <div class="snum">1 / 30</div>
+</div>
+
+<!-- S2 ROADMAP -->
+<div class="slide" id="s2">
+  <div class="slide-hdr"><div class="t-sec">Overview</div><div class="t-title">Talk Structure</div></div>
+  <div class="body-area" style="justify-content:center">
+    <div style="display:grid;grid-template-columns:3vw 1fr 5vw;gap:.55vh 1.2vw;align-items:start">
+      <div class="t-h2">I</div>
+      <div><div class="t-body" style="font-weight:700">Literature Review</div><div class="t-small">AI agent foundations, data modalities, five agent design patterns, five application domains, benchmarks</div></div>
+      <div class="t-small" style="text-align:right">8 min</div>
+      <div style="border-bottom:1px solid #333;grid-column:1/4;margin:.3vh 0"></div>
+      <div class="t-h2">II</div>
+      <div><div class="t-body" style="font-weight:700">Research Gap</div><div class="t-small">Two camps in existing literature and three specific gaps motivating this work</div></div>
+      <div class="t-small" style="text-align:right">3 min</div>
+      <div style="border-bottom:1px solid #333;grid-column:1/4;margin:.3vh 0"></div>
+      <div class="t-h2">III</div>
+      <div><div class="t-body" style="font-weight:700">Macro-MOSAIC Architecture</div><div class="t-small">Four-stage pipeline design, mathematical formulation, and training configuration</div></div>
+      <div class="t-small" style="text-align:right">7 min</div>
+      <div style="border-bottom:1px solid #333;grid-column:1/4;margin:.3vh 0"></div>
+      <div class="t-h2">IV</div>
+      <div><div class="t-body" style="font-weight:700">Preliminary Results</div><div class="t-small">Episode database (Stage 1 input) and school-specific adapter evaluation (Stage 2)</div></div>
+      <div class="t-small" style="text-align:right">5 min</div>
+      <div style="border-bottom:1px solid #333;grid-column:1/4;margin:.3vh 0"></div>
+      <div class="t-h2">V</div>
+      <div><div class="t-body" style="font-weight:700">Future Plan</div><div class="t-small">Remaining stages, 10-week timeline, ablation design, risk and governance</div></div>
+      <div class="t-small" style="text-align:right">2 min</div>
+    </div>
+  </div>
+  <div class="snum">2 / 30</div>
+</div>
+
+<!-- S3 FOUNDATIONS -->
+<div class="slide" id="s3">
+  <div class="slide-hdr"><div class="t-sec">Literature Review I</div><div class="t-title">Foundations of AI Agents in Finance</div></div>
+  <div class="body-area">
+    <div class="col2">
+      <div>
+        <div class="t-h3">What is an AI Agent?</div>
+        <div class="t-small">Wooldridge and Jennings [1] define an agent as a computational entity that perceives its environment and acts autonomously to achieve goals. Russell and Norvig [2] extend this to rational agents that select actions maximizing expected utility. The perceive-reason-act loop is foundational to all agent architectures.</div>
+        <div style="margin-top:.8vh" class="t-h3">Key Reasoning Paradigms</div>
+        <div class="t-small">Chain-of-Thought (Wei et al. [3]) enables step-by-step intermediate reasoning in LLMs. Tree-of-Thought (Yao et al. [4]) extends this to branching search over multiple reasoning paths. Toolformer (Schick et al. [5]) trains LLMs to call external APIs within their reasoning sequences. Wang et al. [6] provide a comprehensive survey of LLM-based autonomous agents.</div>
+      </div>
+      <div>
+        <div class="t-h3">From Quantitative Models to Agents</div>
+        <div class="t-small">Classical quantitative finance (Dixon et al. [7]) relied on statistical models, fixed rules, and supervised classifiers. LLM-based agents replace the fixed strategy with flexible natural language reasoning, enabling adaptive multi-step planning over heterogeneous inputs including price data, news, and regulatory text.</div>
+        <div style="margin-top:.7vh" class="t-small">Finance-specific demands distinguish financial agents from general-purpose systems: real-time data feeds, regulatory explainability requirements, multi-asset scope across correlated instruments, and near-zero tolerance for high-stakes errors. These constraints motivate the architectural choices throughout this research.</div>
+      </div>
+    </div>
+    <div class="t-cite">[1] Wooldridge &amp; Jennings, Knowl. Eng. Rev., 1995 | [2] Russell &amp; Norvig, AIMA 3rd ed., 2010 | [3] Wei et al., NeurIPS 2022 | [4] Yao et al., NeurIPS 2024 | [5] Schick et al., NeurIPS 2024 | [6] Wang et al., FCS 2024 | [7] Dixon et al., Springer 2020</div>
+  </div>
+  <div class="snum">3 / 30</div>
+</div>
+
+<!-- S4 DATA MODALITIES -->
+<div class="slide" id="s4">
+  <div class="slide-hdr"><div class="t-sec">Literature Review II</div><div class="t-title">Data Sources and Modalities</div></div>
+  <div class="body-area">
+    <div class="col3" style="flex:0">
+      <div class="box-lo">
+        <div class="t-h3">Numerical Market Data</div>
+        <div class="t-small">OHLCV prices, order-book snapshots, futures curves, options surfaces, macroeconomic indicators (FRED). FinRL [8] standardized market environments across exchanges. Macro state vectors require careful normalization across high-dimensional indicator spaces (35 dimensions in this work).</div>
+      </div>
+      <div class="box-lo">
+        <div class="t-h3">Textual Financial Data</div>
+        <div class="t-small">Earnings call transcripts, SEC filings (10-K, 8-K), central bank statements, analyst reports, financial news feeds. Lopez-Lira and Tang [9] show that zero-shot GPT-4 headline analysis generates profitable signals. Kim et al. [10] find GPT-4 financial statement analysis rivals professional analysts on earnings prediction tasks.</div>
+      </div>
+      <div class="box-lo">
+        <div class="t-h3">Alternative and Visual Data</div>
+        <div class="t-small">Satellite imagery, credit card transaction flows, patent filings, social media sentiment, chart pattern images. Each source requires custom preprocessing pipelines. Integration challenges include temporal misalignment across frequencies, quality variance across sources, and LLM context-window saturation requiring RAG or summarization [6].</div>
+      </div>
+    </div>
+    <div class="box" style="flex:0">
+      <div class="t-h3">RAG and Multi-Modal Fusion</div>
+      <div class="t-small">Retrieval-augmented generation (RAG) selects the most relevant documents before LLM inference, circumventing context window limits. FinAgent [11] fuses numerical tool outputs with LLM reasoning via tool APIs. Agents operating on multiple modalities must align disparate representations into a coherent prompt or embedding space — a challenge directly addressed by Stage 1 of Macro-MOSAIC through dual-channel semantic and structural retrieval.</div>
+    </div>
+    <div class="t-cite">[6] Wang et al., FCS 2024 | [8] Liu et al., FinRL, ICAIF 2022 | [9] Lopez-Lira &amp; Tang, SSRN 2023 | [10] Kim et al., Chicago Booth 2024 | [11] Zhang et al., FinAgent, KDD 2024</div>
+  </div>
+  <div class="snum">4 / 30</div>
+</div>
+
+<!-- S5 AGENT DESIGN 1 -->
+<div class="slide" id="s5">
+  <div class="slide-hdr"><div class="t-sec">Literature Review III</div><div class="t-title">Agent Design Patterns (1/2): Single-Agent and Memory-Augmented</div></div>
+  <div class="body-area">
+    <div class="col2">
+      <div>
+        <div class="t-h3" style="border-bottom:1px solid #555;padding-bottom:.3vh;margin-bottom:.5vh">Type 1 — Single-Agent Architectures</div>
+        <div class="t-small"><strong>DRL-based agents</strong> formulate trading as a Markov Decision Process. The FinRL library [8] standardized this paradigm with PPO, A2C, and DDPG algorithms across multiple market environments. Key limitation: numerical state representations cannot easily incorporate unstructured text such as news or reports without extensive feature engineering.</div>
+        <div style="margin-top:.7vh" class="t-small"><strong>LLM-based single agents</strong> replace fixed strategies with flexible language reasoning via a perceive-reason-act loop. FinGPT [12] provides open-source financial LLMs for sentiment and signal generation. Lopez-Lira and Tang [9] validated zero-shot headline-based trading profitability, confirming the viability of pure language reasoning for financial decisions.</div>
+      </div>
+      <div>
+        <div class="t-h3" style="border-bottom:1px solid #555;padding-bottom:.3vh;margin-bottom:.5vh">Type 2 — Memory-Augmented Agents</div>
+        <div class="t-small"><strong>FinMem</strong> [13] introduced a three-tier memory architecture inspired by human cognitive structures: working memory for immediate context, episodic memory for recent events, and semantic memory for long-term knowledge. Recency, relevancy, and importance scores govern retrieval. Raw inputs are summarized into memories; new observations trigger relevant memory retrieval.</div>
+        <div style="margin-top:.6vh" class="t-small"><strong>FinAgent</strong> [11] extended this with a dual-level mechanism storing both raw observations and extracted lessons, creating a self-improving feedback loop. Diversified retrieval assigns specific retrieval types to historical information, enabling access from multiple analytical perspectives.</div>
+        <div style="margin-top:.6vh" class="t-small">Memory-augmented design is critical because market regimes shift over time; the ability to recall and reason about analogous historical situations significantly improves decision quality. This principle directly motivates Stage 1 of Macro-MOSAIC.</div>
+      </div>
+    </div>
+    <div class="t-cite">[8] Liu et al., FinRL, ICAIF 2022 | [9] Lopez-Lira &amp; Tang, 2023 | [11] Zhang et al., FinAgent, KDD 2024 | [12] Yang et al., FinGPT, arXiv:2306.06031 | [13] Yu et al., FinMem, arXiv:2311.13743</div>
+  </div>
+  <div class="snum">5 / 30</div>
+</div>
+
+<!-- S6 AGENT DESIGN 2 -->
+<div class="slide" id="s6">
+  <div class="slide-hdr"><div class="t-sec">Literature Review IV</div><div class="t-title">Agent Design Patterns (2/2): Tool-Augmented, Reasoning, Multi-Agent</div></div>
+  <div class="body-area">
+    <div class="col3" style="flex:0">
+      <div class="box-lo">
+        <div class="t-h3">Type 3: Tool-Augmented</div>
+        <div class="t-small">Agents access external tools: market APIs, technical indicator calculators, backtesting engines, code execution environments. FinAgent [11] integrates established trading strategies via tool APIs. QuantAgent [14] uses an inner-outer loop: the LLM generates alpha factor hypotheses (inner); backtesting tools validate them against historical data (outer). Precise numerical computation is delegated to tools, bypassing LLM arithmetic limitations.</div>
+      </div>
+      <div class="box-lo">
+        <div class="t-h3">Type 4: Reasoning-and-Reflection</div>
+        <div class="t-small">Agents evaluate and iteratively improve their own reasoning. FinAgent [11] implements dual-level reflection: decision-level (was the trade outcome consistent with the reasoning?) and meta-level (are there systematic biases in the strategy?). FinMem [13] synthesizes reflections from recent memories before each decision cycle. Critical for non-stationary markets where strategies that worked in one regime fail in another.</div>
+      </div>
+      <div class="box-lo">
+        <div class="t-h3">Type 5: Multi-Agent Frameworks</div>
+        <div class="t-small">Three sub-types: <strong>(a) Role-specialized teams:</strong> TradingAgents [15] assigns fundamental, sentiment, technical, and news analyst roles plus a risk management team. HedgeAgents [16] uses a fund manager orchestrating asset-class specialists. <strong>(b) Debate-driven:</strong> Bull and Bear researchers in TradingAgents [15] engage in structured debate before a trader synthesizes. Xing [17] applies heterogeneous debate to sentiment analysis. <strong>(c) Information-distillation networks:</strong> FINCON [18] compresses information between agents to prevent the "telephone effect" — detail loss across multiple agent hops.</div>
+      </div>
+    </div>
+    <div class="t-h3" style="flex:0;margin-top:.4vh">Type 5 (continued): Hybrid Designs</div>
+    <div class="t-small" style="flex:0">Modern systems combine multiple patterns. FLAG-Trader [19] integrates LLM multi-agent reasoning with RL-based execution. Alpha-R1 [20] applies reinforcement learning within a multi-agent framework for alpha generation. Trading-R1 [21] and Fin-o1 [22] extend chain-of-thought reasoning to intraday decisions. The trend is toward architectures that combine the interpretability of language reasoning with the optimization power of reinforcement learning — the multi-school parallel reasoning in Macro-MOSAIC (Stage 2) sits at this intersection.</div>
+    <div class="t-cite">[11] Zhang et al., KDD 2024 | [13] Yu et al., 2023 | [14] Wang et al., QuantAgent, 2024 | [15] Xiao et al., TradingAgents, 2024 | [16] Li et al., HedgeAgents, WWW 2025 | [17] Xing, ACM TMIS 2025 | [18] Yu et al., FINCON, NeurIPS 2024 | [19] Xiong et al., FLAG-Trader, 2025 | [20] Jiang et al., Alpha-R1, 2025 | [21] Xiao et al., Trading-R1, 2025 | [22] Qian et al., Fin-o1, 2025</div>
+  </div>
+  <div class="snum">6 / 30</div>
+</div>
+
+<!-- S7 APPLICATIONS 1 -->
+<div class="slide" id="s7">
+  <div class="slide-hdr"><div class="t-sec">Literature Review V</div><div class="t-title">Application Domains (1/2): Trading and Portfolio Management</div></div>
+  <div class="body-area">
+    <div class="col2">
+      <div>
+        <div class="t-h3" style="border-bottom:1px solid #555;padding-bottom:.3vh;margin-bottom:.5vh">Trading: Equity, Crypto, High-Frequency</div>
+        <div class="t-small"><strong>Equity trading:</strong> TradingAgents [15] demonstrated multi-agent collaboration on daily stock signals, with role-specialized analyst teams feeding a trader agent. Trading-R1 [21] and FinCoT [23] explore structured chain-of-thought reasoning for stock selection. LLM agents now approach professional benchmark performance on held-out equity evaluation periods.</div>
+        <div style="margin-top:.5vh" class="t-small"><strong>Cryptocurrency:</strong> FinAgent [11] and FinRL [8] both include crypto datasets. The unique dynamics — on-chain data, social media sentiment cycles, and regulatory uncertainty — make crypto a challenging testbed for agent adaptability across rapidly shifting regimes.</div>
+        <div style="margin-top:.5vh" class="t-small"><strong>High-frequency trading</strong> remains primarily the domain of DRL and traditional quantitative systems due to LLM inference latency. LLM agents increasingly handle longer-horizon components such as alpha factor generation [14] and regime detection, while faster numerical models handle execution. This latency constraint motivates Macro-MOSAIC's focus on macro event-level (rather than tick-level) analysis.</div>
+      </div>
+      <div>
+        <div class="t-h3" style="border-bottom:1px solid #555;padding-bottom:.3vh;margin-bottom:.5vh">Portfolio Management</div>
+        <div class="t-small"><strong>DRL approaches</strong> treat portfolio weight vectors as the action space, optimizing return-risk tradeoffs across multiple assets. FinRL [8] supports multi-asset allocation with configurable algorithms including PPO and DDPG.</div>
+        <div style="margin-top:.5vh" class="t-small"><strong>LLM-based portfolio management</strong> is emerging. FINCON [18] compares against Markowitz mean-variance and equal-weighted baselines on portfolio allocation tasks, demonstrating that multi-agent verbal reinforcement improves risk-adjusted returns. HedgeAgents [16] addresses multi-asset hedging through a hierarchical design where sector specialists report to a central fund manager — mirroring the organizational structure of real-world investment firms.</div>
+        <div style="margin-top:.5vh" class="t-small">FinRobot [24] and FinVerse [25] extend to multi-strategy and scenario-based portfolio construction. ContestTrade [26] introduces competition-based agent selection. These works share the gap of operating without explicit macro transmission mechanism reasoning — the gap that Macro-MOSAIC addresses.</div>
+      </div>
+    </div>
+    <div class="t-cite">[8] Liu et al., 2022 | [11] Zhang et al., 2024 | [14] Wang et al., 2024 | [15] Xiao et al., 2024 | [16] Li et al., 2025 | [18] Yu et al., 2024 | [23] FinCoT, arXiv:2506.16123, 2025 | [24] Yang et al., FinRobot, 2024 | [25] An et al., FinVerse, 2024 | [26] Zhao et al., ContestTrade, 2025</div>
+  </div>
+  <div class="snum">7 / 30</div>
+</div>
+
+<!-- S8 APPLICATIONS 2 -->
+<div class="slide" id="s8">
+  <div class="slide-hdr"><div class="t-sec">Literature Review VI</div><div class="t-title">Application Domains (2/2): Risk, Advisory, Compliance, and Benchmarks</div></div>
+  <div class="body-area">
+    <div class="col2" style="flex:0">
+      <div>
+        <div class="t-h3">Risk Management and Fraud Detection</div>
+        <div class="t-small">Traditional fraud detection relies on rule-based filters and supervised classifiers. Agent-based approaches add autonomous monitoring, adaptive learning, and multi-step reasoning [27]. LLM fraud detection agents process unstructured customer communications alongside structured transaction data, providing a holistic view of potential fraud patterns [28]. Credit risk agents (Kim et al. [10]) actively gather additional information under uncertainty and produce transparent reasoning chains for regulatory compliance. Market risk monitoring via multi-agent systems (TradingAgents [15]) assigns distinct agents to market, credit, liquidity, and operational risk dimensions, coordinating their assessments into a unified portfolio risk view.</div>
+      </div>
+      <div>
+        <div class="t-h3">Financial Advisory and Regulatory Compliance</div>
+        <div class="t-small"><strong>Financial analysis:</strong> MarketSenseAI [29] integrates multiple information sources for S&amp;P 100 stock analysis via LLM agents. Alpha-GPT [30] and AlphaAgent [31] target institutional-grade investment research automation. <strong>Regulatory compliance:</strong> Arner et al. [32] document the breadth of AML, data privacy, and reporting obligations. LLM compliance agents interpret regulatory text, map requirements to internal controls, and flag gaps — adapting to regulatory changes without rule reprogramming. <strong>Automated reporting:</strong> Nie et al. [33] assign collection, validation, analysis, and drafting roles across a multi-agent pipeline. <strong>AML:</strong> Agent-based systems trace layering patterns across accounts and generate suspicious activity reports with evidence chains that satisfy regulatory documentation requirements.</div>
+      </div>
+    </div>
+    <div class="t-h3" style="flex:0;margin-top:.4vh">Benchmarks and Evaluation</div>
+    <div class="col3" style="flex:0">
+      <div class="box-fill"><div class="t-small"><strong>Trading Metrics:</strong> Cumulative Return, Sharpe Ratio, Maximum Drawdown, Sortino Ratio, Calmar Ratio. Backtesting limitations: look-ahead bias, survivorship bias, market impact underestimation [34].</div></div>
+      <div class="box-fill"><div class="t-small"><strong>NLP Benchmarks:</strong> FinBen [35] covers sentiment, NER, QA, numerical reasoning. FinanceBench [36] tests QA over SEC filings. InvestorBench [37] evaluates investment-oriented agent end-to-end tasks. FinAgentBench [38] evaluates multi-step task completion.</div></div>
+      <div class="box-fill"><div class="t-small"><strong>Causal Reasoning:</strong> EconCausal [39] tests causal reasoning over economic events. EconLogicQA [40] tests supply-demand and macro logic chains. KalshiBench [41] evaluates prediction market calibration. These three benchmarks are planned for Macro-MOSAIC evaluation.</div></div>
+    </div>
+    <div class="t-cite">[10] Kim et al., 2024 | [15] Xiao et al., 2024 | [27] Hilal et al., Expert Systems 2022 | [28] Dong et al., EMNLP 2025 | [29] Fatouros et al., 2025 | [30] Wang et al., 2025 | [31] Tang et al., KDD 2025 | [32] Arner et al., 2017 | [33] Nie et al., 2024 | [34] Liu et al., NeurIPS 2022 | [35] Xie et al., NeurIPS 2024 | [36] Islam et al., 2023 | [37] Li et al., 2024 | [38] Choi et al., 2025 | [39] Lee et al., 2025 | [40] Quan &amp; Liu, EMNLP 2024 | [41] Nel, 2025</div>
+  </div>
+  <div class="snum">8 / 30</div>
+</div>
+
+<!-- S9 TWO CAMPS -->
+<div class="slide" id="s9">
+  <div class="slide-hdr"><div class="t-sec">Research Gap I</div><div class="t-title">Two Camps in the Existing Literature</div></div>
+  <div class="body-area" style="justify-content:center">
+    <div class="col2">
+      <div class="box">
+        <div class="t-h3" style="margin-bottom:.7vh">Camp A: Asset-Level Signal Agents</div>
+        <div class="t-small">TradingAgents [15], FINCON [18], and FinGPT [12] build multi-agent systems generating equity-level trading signals from news sentiment, technical indicators, and fundamental data. These systems excel at processing heterogeneous inputs and producing interpretable per-asset decisions through role-specialized agent architectures.</div>
+        <div style="margin-top:.7vh" class="t-small"><strong>Core limitation:</strong> operation at the individual asset level. They do not trace how a Federal Reserve rate decision propagates through the credit channel to affect corporate bond spreads, equity risk premia, and currency positioning simultaneously. Macro transmission mechanism reasoning — tracing the step-by-step causal pathway from policy event to multi-asset outcome — is absent from these systems.</div>
+      </div>
+      <div class="box">
+        <div class="t-h3" style="margin-bottom:.7vh">Camp B: Macro Simulation Agents</div>
+        <div class="t-small">EconAgent [42] and Lopez-Lira and Tang [9] apply LLMs to macroeconomic simulation or event-level forecasting. These systems capture macro-level dynamics with greater theoretical grounding, simulating how economic actors respond to policy shocks and aggregate market conditions.</div>
+        <div style="margin-top:.7vh" class="t-small"><strong>Core limitation:</strong> not connected to calibrated cross-asset allocation signals. MarketSenseAI [29], while integrating macro context for S&amp;P 100 equity analysis, similarly operates without explicit multi-school parallel reasoning or formal calibration of probability outputs against resolved prediction market outcomes. The macro analysis does not terminate in actionable allocation weights.</div>
+      </div>
+    </div>
+    <div class="box" style="flex:0;margin-top:.6vh">
+      <div class="t-body" style="text-align:center;font-weight:700">Neither camp addresses the full path from macro event interpretation — through auditable school-structured reasoning — to calibrated multi-asset allocation signals.</div>
+    </div>
+    <div class="t-cite">[9] Lopez-Lira &amp; Tang, 2023 | [12] Yang et al., 2023 | [15] Xiao et al., 2024 | [18] Yu et al., 2024 | [29] Fatouros et al., 2025 | [42] Li et al., EconAgent, ACL 2024</div>
+  </div>
+  <div class="snum">9 / 30</div>
+</div>
+
+<!-- S10 THREE GAPS -->
+<div class="slide" id="s10">
+  <div class="slide-hdr"><div class="t-sec">Research Gap II</div><div class="t-title">Three Specific Gaps Motivating Macro-MOSAIC</div></div>
+  <div class="body-area" style="justify-content:center;gap:1.0vh">
+    <div class="box">
+      <div style="display:flex;gap:1.5vw;align-items:flex-start">
+        <div class="t-h2" style="flex-shrink:0">G1</div>
+        <div>
+          <div class="t-h3">No Multi-School Parallel Reasoning System</div>
+          <div class="t-small">No existing system generates explicit, auditable causal chains where structurally distinct economic frameworks (Keynesian, Austrian, Monetarist) independently analyze the same macro event and produce divergent outputs that are then formally aggregated. FOMC In Silico [43] comes closest by assigning dovish and hawkish personas to FOMC member agents, but these represent individual viewpoints on a single policy variable (the federal funds rate) rather than structurally distinct theoretical frameworks applied to general macro events across full asset universes.</div>
+        </div>
+      </div>
+    </div>
+    <div class="box">
+      <div style="display:flex;gap:1.5vw;align-items:flex-start">
+        <div class="t-h2" style="flex-shrink:0">G2</div>
+        <div>
+          <div class="t-h3">No Macro-Episode Analogy Retrieval at the Structural Level</div>
+          <div class="t-small">Historical analogy retrieval combining semantic similarity over event narratives with structural similarity over macro state vectors has not been addressed in surveyed systems. Existing financial RAG systems [11, 44] retrieve similar price patterns or sentiment-level few-shot examples, not structured narratives of comparable macro crises with documented transmission mechanisms and multi-asset outcomes spanning the full 19-channel taxonomy.</div>
+        </div>
+      </div>
+    </div>
+    <div class="box">
+      <div style="display:flex;gap:1.5vw;align-items:flex-start">
+        <div class="t-h2" style="flex-shrink:0">G3</div>
+        <div>
+          <div class="t-h3">No Verified End-to-End Macro-to-Allocation Pipeline</div>
+          <div class="t-small">The literature lacks a verified end-to-end pipeline connecting qualitative macro event interpretation through calibrated probability distributions to cross-asset allocation signals, evaluated against both reasoning benchmarks (EconCausal [39], EconLogicQA [40]) and realized financial outcomes via walk-forward backtesting.</div>
+        </div>
+      </div>
+    </div>
+    <div class="t-cite">[11] Zhang et al., 2024 | [39] Lee et al., 2025 | [40] Quan &amp; Liu, EMNLP 2024 | [43] Kazinnik &amp; Sinclair, GWU 2025 | [44] Lithgow-Serrano et al., FinNLP @ EMNLP 2025</div>
+  </div>
+  <div class="snum">10 / 30</div>
+</div>
+
+<!-- S11 SYSTEM OVERVIEW -->
+<div class="slide" id="s11">
+  <div class="slide-hdr"><div class="t-sec">Macro-MOSAIC I</div><div class="t-title">System Overview: Four-Stage Pipeline</div></div>
+  <div class="body-area">
+    <div class="pipeline" style="flex:0;margin-bottom:.8vh">
+      <div class="pipe-stage"><div class="t-small" style="font-weight:700">Stage 1</div><div class="t-small">Analogy Retrieval</div><div style="margin-top:.3vh"><span class="badge done">Done (DB)</span></div></div>
+      <div class="pipe-arrow">&#8594;</div>
+      <div class="pipe-stage"><div class="t-small" style="font-weight:700">Stage 2</div><div class="t-small">Multi-School Chains</div><div style="margin-top:.3vh"><span class="badge done">Done</span></div></div>
+      <div class="pipe-arrow">&#8594;</div>
+      <div class="pipe-stage"><div class="t-small" style="font-weight:700">Stage 3</div><div class="t-small">Bayesian Aggregation</div><div style="margin-top:.3vh"><span class="badge plan">Planned</span></div></div>
+      <div class="pipe-arrow">&#8594;</div>
+      <div class="pipe-stage"><div class="t-small" style="font-weight:700">Stage 4</div><div class="t-small">Kelly Allocation</div><div style="margin-top:.3vh"><span class="badge plan">Planned</span></div></div>
+    </div>
+    <div class="col2">
+      <div>
+        <div class="t-h3">Problem Formulation</div>
+        <div class="t-small">Given macro event e (e.g., a central bank decision or geopolitical shock) and prevailing macro state s (interest rates, inflation, credit conditions), the system produces three outputs:</div>
+        <div class="formula">1. {C_k(e,s)} — K school-specific causal chains</div>
+        <div class="formula">2. {(S_j, p_j)} — calibrated scenario probabilities</div>
+        <div class="formula">3. {f_i} — fractional Kelly allocation weights per asset</div>
+        <div style="margin-top:.5vh" class="t-small">The three outputs are produced sequentially by Stages 2, 3, and 4 respectively, with Stage 1 supplying retrieved historical analogies as context for Stage 2.</div>
+      </div>
+      <div>
+        <div class="t-h3">Why These Three Economic Schools?</div>
+        <div class="t-small">Each school provides structurally distinct causal pathways for the same macro event, enabling genuine ensemble diversity rather than stylistic variation.</div>
+        <div class="box-fill" style="margin-top:.5vh;margin-bottom:.4vh"><div class="t-small"><strong>Keynesian (JEL E12):</strong> demand management, fiscal multipliers, aggregate demand transmission, IS-LM framework, liquidity trap analysis</div></div>
+        <div class="box-fill" style="margin-bottom:.4vh"><div class="t-small"><strong>Austrian (JEL B53):</strong> capital structure distortion, malinvestment, Austrian Business Cycle Theory (ABCT), heterogeneous capital, time preference</div></div>
+        <div class="box-fill"><div class="t-small"><strong>Monetarist (JEL E41/E51):</strong> quantity theory (MV=PQ), money supply dynamics, long and variable lags, natural rate hypothesis</div></div>
+        <div style="margin-top:.5vh" class="t-small">FOMC In Silico [43] demonstrates the value of multi-perspective policy simulation; Macro-MOSAIC generalizes this to full multi-asset allocation across a structurally diverse school set.</div>
+      </div>
+    </div>
+    <div class="t-cite">[43] Kazinnik &amp; Sinclair, GWU 2025</div>
+  </div>
+  <div class="snum">11 / 30</div>
+</div>
+
+<!-- S12 STAGE 1 -->
+<div class="slide" id="s12">
+  <div class="slide-hdr"><div class="t-sec">Macro-MOSAIC II</div><div class="t-title">Stage 1: Historical Analogy Retrieval</div></div>
+  <div class="body-area">
+    <div class="col2">
+      <div>
+        <div class="t-h3">Dual-Channel Retrieval Design</div>
+        <div class="t-small">For query event e with macro state s, each stored episode e_i receives a composite score combining semantic and structural similarity:</div>
+        <div class="formula">score(e,eᵢ) = α·cos_sim(vₑ,vₑᵢ) + (1−α)·exp(−dM(s,sᵢ))</div>
+        <div style="margin-top:.6vh" class="t-small"><strong>Semantic channel:</strong> Sentence transformer embeddings (e.g., BGE-large-en or all-MiniLM-L6-v2) over episode narrative text fields, indexed via FAISS with inner-product search. Captures thematic similarity — a banking crisis query retrieves other banking crises regardless of the macro regime.</div>
+        <div style="margin-top:.5vh" class="t-small"><strong>Structural channel:</strong> Mahalanobis distance over normalized 35-dimensional FRED macro context vectors, using the pooled covariance matrix across all 141 episodes.</div>
+        <div class="formula">dM(s,sᵢ) = sqrt((s−sᵢ)ᵀ Σ⁻¹ (s−sᵢ))</div>
+        <div class="t-small">Captures macro-regime similarity — episodes in tight monetary conditions retrieve other tight-money environments regardless of narrative framing. The weighting parameter α is tuned on a held-out validation set of 20 episodes.</div>
+      </div>
+      <div>
+        <div class="t-h3">Episode Database (Complete)</div>
+        <table class="dt">
+          <tr><th>Dimension</th><th class="num">Scale</th></tr>
+          <tr><td>Total macro episodes (1971–2025)</td><td class="num">141</td></tr>
+          <tr><td>FRED macro indicators per episode</td><td class="num">35</td></tr>
+          <tr><td>Asset reaction data points</td><td class="num">13,571</td></tr>
+          <tr><td>Transmission channels documented</td><td class="num">19</td></tr>
+          <tr><td>Instruments tracked per episode</td><td class="num">22</td></tr>
+          <tr><td>Episodes with full school interpretations</td><td class="num">117</td></tr>
+        </table>
+        <div style="margin-top:.6vh" class="t-small">Status: Episode database construction is complete. The dual-index retrieval engine (FAISS index and Mahalanobis pipeline) is planned in Phase 1 of the future work schedule (Weeks 1–2). Missing FRED values for pre-1990 episodes are handled via mean imputation within each decade.</div>
+      </div>
+    </div>
+  </div>
+  <div class="snum">12 / 30</div>
+</div>
+
+<!-- S13 STAGE 2 -->
+<div class="slide" id="s13">
+  <div class="slide-hdr"><div class="t-sec">Macro-MOSAIC III</div><div class="t-title">Stage 2: Multi-School Causal Chain Generation</div></div>
+  <div class="body-area">
+    <div class="col2">
+      <div>
+        <div class="t-h3">Architecture and Training Configuration</div>
+        <div class="t-small">Three LoRA adapters trained on Qwen2.5-7B-Instruct [45], one per economic school. Each adapter specializes the base model to produce school-consistent structured reasoning chains following the mandatory output format: [Think] → [ToolCall] → [Observe] → [Output]. The [Output] block must contain a causal chain, scenario probabilities, and directional asset signals.</div>
+        <table class="dt" style="margin-top:.5vh">
+          <tr><th>Parameter</th><th class="num">Value</th></tr>
+          <tr><td>Base model</td><td class="num">Qwen2.5-7B-Instruct</td></tr>
+          <tr><td>LoRA rank / alpha</td><td class="num">32 / 64</td></tr>
+          <tr><td>Trainable parameters</td><td class="num">80.7M (1.05%)</td></tr>
+          <tr><td>Trajectories per school</td><td class="num">500 synthetic</td></tr>
+          <tr><td>Quantization (QLoRA [46])</td><td class="num">4-bit NF4</td></tr>
+          <tr><td>GPU memory requirement</td><td class="num">&lt;24 GB</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="t-h3">School-Specific Vocabulary Design</div>
+        <div class="t-small">Each school is defined by must-have keywords, strong-signal keywords, and anti-signal keywords sourced from school canonical texts and JEL classifications. The consistency score weights these three components; the anti-signal term penalizes cross-school leakage.</div>
+        <div class="box-lo" style="margin-top:.5vh;margin-bottom:.4vh">
+          <div class="t-small"><strong>Keynesian (JEL E12):</strong> aggregate demand, fiscal multiplier, output gap, IS-LM, liquidity trap, automatic stabilizers. Anti-signals: malinvestment, ABCT, quantity theory, MV=PQ.</div>
+        </div>
+        <div class="box-lo" style="margin-bottom:.4vh">
+          <div class="t-small"><strong>Austrian (JEL B53):</strong> malinvestment, ABCT, capital structure distortion, heterogeneous capital, time preference, Mises, Hayek. Anti-signals: multiplier effect, aggregate demand, quantity theory.</div>
+        </div>
+        <div class="box-lo">
+          <div class="t-small"><strong>Monetarist (JEL E41/E51):</strong> MV=PQ, quantity theory, M2, long and variable lags, natural rate, Friedman rule. Anti-signals: multiplier effect, endogenous money, malinvestment.</div>
+        </div>
+        <div style="margin-top:.5vh" class="t-small">Synthetic trajectory generation: GPT-4o used as an oracle teacher with school-specific prompts. 1,500 total trajectories across three schools, domain-balanced across event categories. Training episodes: 117 complete episodes; 24 held out for diversity testing.</div>
+      </div>
+    </div>
+    <div class="t-cite">[45] Qwen Team, arXiv:2412.15115, 2024 | [46] Dettmers et al., QLoRA, NeurIPS 2023</div>
+  </div>
+  <div class="snum">13 / 30</div>
+</div>
+
+<!-- S14 STAGE 3 -->
+<div class="slide" id="s14">
+  <div class="slide-hdr"><div class="t-sec">Macro-MOSAIC IV</div><div class="t-title">Stage 3: Bayesian Aggregation and Calibration (Planned)</div></div>
+  <div class="body-area">
+    <div class="col2">
+      <div>
+        <div class="t-h3">Regime-Conditional Bayesian Weighting</div>
+        <div class="t-small">School weights θ_k(r) are conditioned on the current macro regime r (expansion, contraction, stagflation, deflation). In each regime, the school that historically produced better-calibrated probability forecasts receives higher weight, updated via Brier Score performance on resolved prediction market questions.</div>
+        <div class="formula">P(S_j | e,s) = Σ_k θ_k(r) · P_k(S_j | e,s,C_k)</div>
+        <div style="margin-top:.5vh" class="t-small">Each school's scenario probability P_k(S_j | e, s, C_k) is extracted by parsing the [Output] block from Stage 2. The structured output requirement (93–99% block presence after SFT) ensures reliable extraction for downstream aggregation. Ledoit-Wolf shrinkage [48] is applied when estimating covariance matrices to handle the small-sample regime.</div>
+        <div style="margin-top:.5vh" class="t-small"><strong>Calibration data:</strong> resolved macroeconomic and geopolitical prediction questions from Polymarket (public API and Kaggle dumps) and Metaculus (Python SDK), filtered for monetary policy, inflation, GDP, elections, and conflict topics.</div>
+      </div>
+      <div>
+        <div class="t-h3">Platt Scaling Calibration</div>
+        <div class="t-small">Raw LLM probability outputs are systematically overconfident. Platt scaling [47] fits a two-parameter sigmoid (a, b) to transform raw scores into calibrated probabilities, trained on the resolved prediction market outcomes:</div>
+        <div class="formula">p_calibrated = σ(a · p_raw + b)</div>
+        <div style="margin-top:.5vh" class="t-small">Calibration quality is evaluated via Expected Calibration Error (ECE) and reliability diagrams comparing predicted probabilities to empirical outcome frequencies across probability bins. A well-calibrated model's reliability curve lies close to the diagonal.</div>
+        <div style="margin-top:.6vh" class="box-fill">
+          <div class="t-small"><strong>Status:</strong> Stage 3 is planned. Requires Stage 1 retrieval engine completion to supply analogy-augmented context to school agents. Timeline: Weeks 2–4 of the future schedule.</div>
+        </div>
+      </div>
+    </div>
+    <div class="t-cite">[47] Platt, Advances in Large Margin Classifiers, MIT Press 1999 | [48] Ledoit &amp; Wolf, Journal of Empirical Finance, 2008</div>
+  </div>
+  <div class="snum">14 / 30</div>
+</div>
+
+<!-- S15 STAGE 4 -->
+<div class="slide" id="s15">
+  <div class="slide-hdr"><div class="t-sec">Macro-MOSAIC V</div><div class="t-title">Stage 4: Asset Allocation Signal Generation (Planned)</div></div>
+  <div class="body-area">
+    <div class="col2">
+      <div>
+        <div class="t-h3">Fractional Kelly Criterion</div>
+        <div class="t-small">Given calibrated scenario probabilities from Stage 3, the expected log-return for each asset is computed and the fractional Kelly formula applied with f = 0.25 (quarter-Kelly) to limit variance inflation relative to full Kelly:</div>
+        <div class="formula">f* = (p·b − q) / b</div>
+        <div class="formula">f_i = 0.25 · f*_i (fractional multiplier)</div>
+        <div style="margin-top:.5vh" class="t-small">where p is the probability of the favorable scenario, b is the payoff odds ratio (expected gain divided by expected loss), and q = 1−p. The fractional multiplier 0.25 is consistent with institutional practice (López de Prado [49]) for controlling variance inflation from Kelly sizing. The result f_i is the position size for instrument i expressed as a fraction of capital.</div>
+        <div style="margin-top:.5vh" class="t-small">For assets with multiple scenarios (long, neutral, short), the position is the probability-weighted combination across scenarios, capped by the fractional Kelly bound per instrument.</div>
+      </div>
+      <div>
+        <div class="t-h3">Instrument Universe and Backtesting Design</div>
+        <div class="t-small">Eight instruments spanning major liquid asset classes, selected for accessibility via CME and ETF markets:</div>
+        <div class="col2" style="gap:.5vw;margin-top:.4vh">
+          <div class="box-fill"><div class="t-small">ES — S&amp;P 500 futures<br>ZN — 10Y T-Note futures<br>GC — Gold futures<br>CL — Crude Oil futures</div></div>
+          <div class="box-fill"><div class="t-small">DXY — Dollar Index<br>EUR/USD — FX spot<br>USD/JPY — FX spot<br>EEM — EM Equity ETF</div></div>
+        </div>
+        <div style="margin-top:.5vh" class="t-small"><strong>Walk-forward backtest:</strong> 2023–2025 out-of-sample data. Transaction costs applied at CME standard rates for futures; bid-ask spread midpoint for FX. Rebalancing triggered by new macro events entering the pipeline.</div>
+        <div style="margin-top:.4vh" class="box-fill">
+          <div class="t-small"><strong>Status:</strong> Stage 4 is planned. Depends on Stage 3 calibrated probability outputs. No backtesting results are available at this stage of the Confirmation of Registration. Timeline: Weeks 4–6.</div>
+        </div>
+      </div>
+    </div>
+    <div class="t-cite">[49] López de Prado, Advances in Financial Machine Learning, Wiley 2018</div>
+  </div>
+  <div class="snum">15 / 30</div>
+</div>
+
+<!-- S16 EPISODE DATABASE -->
+<div class="slide" id="s16">
+  <div class="slide-hdr"><div class="t-sec">Preliminary Results I</div><div class="t-title">Episode Database: Construction and Validation</div></div>
+  <div class="body-area">
+    <div class="col2">
+      <div>
+        <div class="t-h3">Database Construction</div>
+        <div class="t-small">The episode database covers 141 macro events from 1971 to 2025, spanning oil shocks, sovereign debt crises, monetary policy pivots, financial crises, pandemics, and geopolitical disruptions. Each episode is represented by:</div>
+        <div class="box-fill" style="margin-top:.5vh">
+          <div class="t-small">
+            (1) Event narrative (text description and date range)<br>
+            (2) 35-dimensional FRED macro context vector at event onset<br>
+            (3) Category tags across 10 event types<br>
+            (4) Difficulty label: medium, hard, or very hard<br>
+            (5) Multi-asset reaction data across 22 instruments<br>
+            (6) Documented transmission channels (19 types)<br>
+            (7) School-specific causal interpretations for 117 of 141 episodes
+          </div>
+        </div>
+        <div style="margin-top:.5vh" class="t-small">Temporal distribution spans 1971–2025: oil shocks and stagflation (1970s), disinflationary recessions (1980s), EM contagion and financial crises (1990s), Global Financial Crisis (2008–2009), European debt crisis (2010s), COVID-19 and post-pandemic inflation (2020–2023), and recent events including SVB failure, Trump tariffs, and Fed pivot (2023–2025).</div>
+      </div>
+      <div>
+        <div class="t-h3">Validation on Landmark Events</div>
+        <table class="dt">
+          <tr><th>Event</th><th>S&amp;P 500</th><th>ΔVIX</th><th>Δ10Y Yield</th></tr>
+          <tr><td>Lehman Brothers, Sep 2008</td><td class="neg">−16.3%</td><td class="pos">+23.4 pts</td><td class="pos">+54 bp</td></tr>
+          <tr><td>COVID-19 shock, Feb 2020</td><td class="neg">−24.1%</td><td class="pos">+36.6 pts</td><td class="neg">−56 bp</td></tr>
+          <tr><td>Trump tariffs, Apr 2025</td><td class="neg">+0.3%</td><td class="pos">+1.2 pts</td><td class="pos">+13 bp</td></tr>
+        </table>
+        <div style="margin-top:.6vh" class="t-small">Asset reactions are measured at event date plus a standardized reaction window, providing ground truth for Stage 4 allocation signal accuracy evaluation in the planned out-of-sample backtest on 2023–2025 data.</div>
+        <div style="margin-top:.5vh" class="t-small">Missing FRED values for pre-1990 episodes (where certain series did not yet exist) are handled via mean imputation within each decade. 117 of 141 episodes have complete school-specific narrative interpretations; the remaining 24 have partial interpretations used for held-out trajectory diversity testing in Stage 2.</div>
+      </div>
+    </div>
+  </div>
+  <div class="snum">16 / 30</div>
+</div>
+
+<!-- S17 TRAINING DATA AND EVALUATION SETUP -->
+<div class="slide" id="s17">
+  <div class="slide-hdr"><div class="t-sec">Preliminary Results II</div><div class="t-title">Training Data and Evaluation Protocol</div></div>
+  <div class="body-area">
+    <div class="col2">
+      <div>
+        <div class="t-h3">Synthetic Trajectory Generation</div>
+        <div class="t-small">For each of the three schools, 500 synthetic agent trajectories are generated using GPT-4o as an oracle teacher, prompted with school-specific stylistic and conceptual constraints from JEL classification sources. Each trajectory must follow the required structure:</div>
+        <div class="formula">[Think] → [ToolCall] → [Observe] → [Output]</div>
+        <div style="margin-top:.5vh" class="t-small">The [Output] block must contain: (1) a causal chain tracing the event through specific transmission mechanisms to asset class impacts, (2) three to five discrete scenario probability distributions summing to 1.0, and (3) directional signals (long, short, or neutral) for each of the eight tracked instruments. Total synthetic dataset: 1,500 trajectories across three schools, domain-balanced across event categories (monetary policy 15%, geopolitical 12%, inflation data 10%, others proportional).</div>
+        <div style="margin-top:.5vh" class="t-small">Training source: 117 complete episodes. Held-out set: 24 episodes used for trajectory diversity testing. Note that Stage 2 adapter training was completed prior to Stage 1 retrieval engine construction because the two components are independent: LoRA adapters require only episode narratives, not the embedding index infrastructure.</div>
+      </div>
+      <div>
+        <div class="t-h3">Test Set and Evaluation Metrics</div>
+        <div class="t-small">Held-out test set: 96 events, stratified by difficulty:</div>
+        <table class="dt" style="margin-top:.4vh">
+          <tr><th>Difficulty</th><th class="num">Events</th><th class="num">Fraction</th></tr>
+          <tr><td>Medium</td><td class="num">42</td><td class="num">43.8%</td></tr>
+          <tr><td>Hard</td><td class="num">47</td><td class="num">49.0%</td></tr>
+          <tr><td>Very Hard</td><td class="num">7</td><td class="num">7.3%</td></tr>
+        </table>
+        <div style="margin-top:.6vh" class="t-h3">Four Evaluation Metrics (Stage 2)</div>
+        <div class="box-fill" style="margin-top:.4vh">
+          <div class="t-small">
+            (1) <strong>School consistency score:</strong> weighted sum of must-have keyword hits plus strong-signal keyword hits, minus anti-signal keyword penalties.<br>
+            (2) <strong>Cross-school contamination:</strong> mean anti-signal keyword hits per response (lower is better — indicates school purity).<br>
+            (3) <strong>Structural completeness:</strong> fraction of seven required response elements present in each output.<br>
+            (4) <strong>Inter-school diversity:</strong> mean pairwise Jaccard distance across the three schools' directional asset signal sets.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="snum">17 / 30</div>
+</div>
+
+<!-- S18 CONSISTENCY RESULTS -->
+<div class="slide" id="s18">
+  <div class="slide-hdr"><div class="t-sec">Preliminary Results III</div><div class="t-title">School Consistency: Fine-Tuning Results (96 Held-Out Events)</div></div>
+  <div class="body-area">
+    <div class="col52">
+      <div>
+        <div class="t-h3">Main Results Table</div>
+        <table class="dt">
+          <tr><th>School</th><th>Base</th><th>SFT</th><th>Δ</th><th>Rel. Improv.</th><th>Win Rate</th></tr>
+          <tr><td>Keynesian</td><td>0.368</td><td>0.338</td><td class="neg">−0.030</td><td class="neg">−8.1%</td><td>39.6%</td></tr>
+          <tr><td>Austrian</td><td>0.146</td><td>0.319</td><td class="pos">+0.173</td><td class="pos">+118.8%</td><td>75.0%</td></tr>
+          <tr><td>Monetarist</td><td>0.230</td><td>0.528</td><td class="pos">+0.298</td><td class="pos">+129.7%</td><td>83.3%</td></tr>
+          <tr><td><strong>Average</strong></td><td><strong>0.248</strong></td><td><strong>0.395</strong></td><td class="pos"><strong>+0.147</strong></td><td class="pos"><strong>+59.3%</strong></td><td><strong>65.6%</strong></td></tr>
+        </table>
+        <div style="margin-top:.7vh" class="t-h3">Interpreting the Keynesian Result</div>
+        <div class="t-small">The apparent −8.1% regression is a scoring artifact, not a quality degradation. Decomposing the score reveals: must-have keyword coverage improves (3.0 → 3.4 out of 7), anti-signal contamination drops to zero (0.44 → 0.00), and [Output] block presence rises from 59% to 97%. The strong-signal decline (2.1 → 0.9) reflects appropriate specialization toward New Keynesian axiomatic structure — the adapter avoids Post-Keynesian terms outside its sub-school scope (e.g., "endogenous money," "Minsky moment"). For the downstream Bayesian aggregation stage, output parsability and school purity dominate keyword density as quality indicators.</div>
+      </div>
+      <div>
+        <canvas id="cChart"></canvas>
+        <div class="t-h3" style="margin-top:.6vh">Monetarist and Austrian Gains</div>
+        <div class="t-small">The Monetarist adapter achieves +129.7%, producing MV=PQ, "quantity theory," and "long and variable lags" as natural reasoning components (must-have hits: 2.6 → 3.6 out of 6; strong-signal: 1.4 → 2.4). The Austrian adapter achieves +118.8%; the base model scored only 0.3 out of 6 on Austrian must-have terms, confirming limited pre-training familiarity with heterodox concepts (malinvestment, ABCT, capital structure distortion). Fine-tuning raises must-have hits to 1.9 out of 6.</div>
+      </div>
+    </div>
+  </div>
+  <div class="snum">18 / 30</div>
+</div>
+
+<!-- S19 CONTAMINATION AND DIVERSITY -->
+<div class="slide" id="s19">
+  <div class="slide-hdr"><div class="t-sec">Preliminary Results IV</div><div class="t-title">Cross-School Contamination and Inter-School Diversity</div></div>
+  <div class="body-area">
+    <div class="col2">
+      <div>
+        <div class="t-h3">Cross-School Contamination (Anti-Signal Keyword Hits)</div>
+        <table class="dt">
+          <tr><th>School</th><th>Base (mean hits)</th><th>SFT (mean hits)</th><th>Reduction</th></tr>
+          <tr><td>Keynesian</td><td>0.44</td><td class="pos">0.00</td><td class="pos">−100%</td></tr>
+          <tr><td>Austrian</td><td>1.21</td><td>0.59</td><td class="pos">−51.2%</td></tr>
+          <tr><td>Monetarist</td><td>0.88</td><td class="pos">0.02</td><td class="pos">−97.7%</td></tr>
+        </table>
+        <div style="margin-top:.6vh" class="t-small">The base Keynesian agent occasionally references "endogenous money" (Post-Keynesian) and "malinvestment" (Austrian); the SFT adapter produces zero anti-signal hits across all 96 events. The base Monetarist agent averages 0.88 anti-signal hits per response — frequently invoking "multiplier effect" (Keynesian) or "Minsky" (Post-Keynesian) — while SFT reduces this to 0.02. The base Austrian agent shows the highest contamination at 1.21, often producing mainstream Keynesian language ("output gap," "aggregate demand"); SFT reduces contamination by 51.2%.</div>
+        <div style="margin-top:.5vh" class="t-small"><strong>Pipeline implication:</strong> contaminated school outputs that partially overlap with other schools' perspectives supply redundant rather than complementary signals to Stage 3 Bayesian aggregation, reducing the effective diversity of the ensemble and undermining the multi-school design rationale.</div>
+      </div>
+      <div>
+        <div class="t-h3">Inter-School Diversity (Jaccard Distance on Asset Signals)</div>
+        <table class="dt">
+          <tr><th>Metric</th><th>Base Ensemble</th><th>SFT Ensemble</th></tr>
+          <tr><td>Mean pairwise Jaccard distance</td><td>0.778 ± 0.158</td><td class="pos">0.853 ± 0.082</td></tr>
+          <tr><td>SFT superior (fraction of events)</td><td colspan="2" class="pos" style="text-align:right">62.5%</td></tr>
+          <tr><td>Statistical significance</td><td colspan="2" class="pos" style="text-align:right">p &lt; 0.01</td></tr>
+        </table>
+        <div style="margin-top:.6vh" class="t-small">Mean pairwise Jaccard distance is computed over directional asset signals (long, short, or neutral) extracted from each school's [Output] block for the same event. Higher distance indicates that the three schools generate more disagreement across the eight instrument directions, providing more informative signal diversity for Bayesian aggregation.</div>
+        <div style="margin-top:.5vh" class="t-small">The SFT ensemble's lower variance (0.082 vs. 0.158) indicates <em>consistently</em> diverse outputs across event types. The base ensemble occasionally produces near-identical responses across schools (very low Jaccard), whereas the SFT ensemble maintains systematic diversity even on events where school-specific frameworks would be expected to converge. This consistent diversity is a necessary precondition for the Bayesian aggregation stage to benefit from the multi-school design.</div>
+      </div>
+    </div>
+  </div>
+  <div class="snum">19 / 30</div>
+</div>
+
+<!-- S20 STRUCTURAL COMPLETENESS -->
+<div class="slide" id="s20">
+  <div class="slide-hdr"><div class="t-sec">Preliminary Results V</div><div class="t-title">Structural Completeness and Event Difficulty Analysis</div></div>
+  <div class="body-area">
+    <div class="col2">
+      <div>
+        <div class="t-h3">Completeness Score and [Output] Block Presence</div>
+        <table class="dt">
+          <tr><th>School</th><th>Base Comp.</th><th>SFT Comp.</th><th>[Out] Base</th><th>[Out] SFT</th></tr>
+          <tr><td>Keynesian</td><td>0.742</td><td>0.693</td><td>59%</td><td class="pos">97%</td></tr>
+          <tr><td>Austrian</td><td>0.763</td><td>0.768</td><td>81%</td><td class="pos">93%</td></tr>
+          <tr><td>Monetarist</td><td>0.628</td><td class="pos">0.717</td><td>51%</td><td class="pos">99%</td></tr>
+        </table>
+        <div style="margin-top:.6vh" class="t-small">The [Output] block — containing the structured causal chain, scenario probabilities, and asset signals — is the critical downstream interface to Stage 3 Bayesian aggregation. SFT adapters achieve 93–99% block presence across all schools (base: 51–81%). The Monetarist adapter also achieves 100% scenario probability generation (base: 85%) and 100% signal generation (base: 91%).</div>
+        <div style="margin-top:.5vh" class="t-small">The Keynesian completeness score shows a small decrease (−0.049) driven by the strong-signal reduction discussed in Slide 18. The 38-percentage-point improvement in [Output] block presence (59% → 97%) dominates from a pipeline reliability standpoint: downstream parsers receive compliant structured responses in nearly all cases after SFT.</div>
+      </div>
+      <div>
+        <div class="t-h3">Analysis by Event Difficulty</div>
+        <table class="dt">
+          <tr><th>Difficulty</th><th>Base (avg.)</th><th>SFT (avg.)</th><th>Δ</th></tr>
+          <tr><td>Medium (n=42)</td><td>0.241</td><td>0.395</td><td class="pos">+0.154</td></tr>
+          <tr><td>Hard (n=47)</td><td>0.254</td><td>0.391</td><td class="pos">+0.137</td></tr>
+          <tr><td>Very Hard (n=7)</td><td>0.252</td><td>0.425</td><td class="pos">+0.173</td></tr>
+        </table>
+        <div style="margin-top:.6vh" class="t-small">Fine-tuning gains are consistent across all difficulty levels. The largest absolute improvement occurs on the most challenging events (+0.173 for very hard). These events involve multi-factor contradictions — such as simultaneous deflation and commodity price spikes, or failed easing episodes where long-term yields rise despite central bank rate cuts — where school-specific frameworks provide structured interpretive scaffolding that the base model's generic macroeconomic analysis lacks.</div>
+        <div style="margin-top:.5vh" class="t-small">The consistency of gains across difficulty levels (rather than gains concentrated on easy pattern-matching events) confirms that fine-tuning instills genuine internalization of school-specific reasoning structures, not merely superficial vocabulary mimicry. This is critical for the pipeline's intended use case of analyzing novel macro events outside the training distribution.</div>
+      </div>
+    </div>
+  </div>
+  <div class="snum">20 / 30</div>
+</div>
+
+<!-- S21 CATEGORY ANALYSIS -->
+<div class="slide" id="s21">
+  <div class="slide-hdr"><div class="t-sec">Preliminary Results VI</div><div class="t-title">Analysis by Event Category</div></div>
+  <div class="body-area">
+    <div class="col2">
+      <div>
+        <div class="t-h3">Consistency Improvement by Category (&#916; SFT &#8722; Base, Three-School Average)</div>
+        <table class="dt">
+          <tr><th>Event Category</th><th class="num">&#916; Consistency</th><th class="num">Test Events</th></tr>
+          <tr><td>Inflation data</td><td class="num pos">+0.261</td><td class="num">10</td></tr>
+          <tr><td>Economic data</td><td class="num pos">+0.259</td><td class="num">8</td></tr>
+          <tr><td>Employment data</td><td class="num pos">+0.227</td><td class="num">8</td></tr>
+          <tr><td>Monetary policy</td><td class="num pos">+0.180</td><td class="num">15</td></tr>
+          <tr><td>Market events</td><td class="num pos">+0.170</td><td class="num">10</td></tr>
+          <tr><td>China-specific</td><td class="num pos">+0.168</td><td class="num">7</td></tr>
+          <tr><td>Commodity shocks</td><td class="num pos">+0.117</td><td class="num">8</td></tr>
+          <tr><td>Fiscal policy</td><td class="num pos">+0.084</td><td class="num">10</td></tr>
+          <tr><td>Trade and tariffs</td><td class="num pos">+0.014</td><td class="num">7</td></tr>
+          <tr><td>Geopolitical</td><td class="num neg">&#8722;0.002</td><td class="num">12</td></tr>
+        </table>
+      </div>
+      <div>
+        <div class="t-h3">Interpretation</div>
+        <div class="t-small">SFT gains are largest for data-driven event categories: inflation data (+0.261), economic data (+0.259), and employment data (+0.227). These categories offer the greatest theoretical differentiation across schools because each framework predicts distinct causal mechanisms for the same data release.</div>
+        <div class="box-fill" style="margin-top:.6vh;margin-bottom:.5vh">
+          <div class="t-small"><strong>Example: unexpected CPI reacceleration</strong><br>Monetarist adapter: attributes the outcome to prior M2 growth with a 12&#8211;18 month lag, per the quantity theory of money and the "long and variable lags" doctrine.<br>Austrian adapter: frames the outcome as a consequence of malinvestment-driven supply bottlenecks from the prior credit expansion phase, with capital structure misalignment amplifying price pressures through heterogeneous capital goods.</div>
+        </div>
+        <div class="t-small">Gains are near-zero for geopolitical events (&#8722;0.002), where all three schools tend to converge on similar supply-shock analyses with limited theoretical differentiation. The dominant causal mechanism (sudden supply disruption) is unambiguous across economic frameworks, leaving little room for school-specific scaffolding to add value.</div>
+        <div style="margin-top:.5vh" class="t-small">This pattern is consistent with the ensemble learning rationale for multi-school design: the system generates the greatest value over single-school approaches precisely when theoretical frameworks diverge, which occurs most strongly on data-driven events where monetary, fiscal, and structural interpretations compete.</div>
+      </div>
+    </div>
+  </div>
+  <div class="snum">21 / 30</div>
+</div>
+
+<!-- S22 SCOPE OF EVIDENCE -->
+<div class="slide" id="s22">
+  <div class="slide-hdr"><div class="t-sec">Preliminary Results VII</div><div class="t-title">Scope of Current Evidence: What These Results Do and Do Not Establish</div></div>
+  <div class="body-area" style="justify-content:center;gap:.9vh">
+    <div class="col2" style="flex:0">
+      <div class="box">
+        <div class="t-h3" style="margin-bottom:.6vh">What Is Established (Stages 1 and 2)</div>
+        <div class="t-small">
+          (1) School-style vocabulary consistency is substantially improved for Austrian (+118.8%) and Monetarist (+129.7%) adapters. The Keynesian adapter shows qualitative improvement in school purity despite a composite score decline driven by appropriate New Keynesian sub-school specialization.<br><br>
+          (2) Cross-school contamination is near-eliminated: Keynesian anti-signal hits drop from 0.44 to 0.00; Monetarist from 0.88 to 0.02. This is a necessary precondition for genuine ensemble diversity in Stage 3.<br><br>
+          (3) Structured output parsability improves dramatically: [Output] block presence rises from 51&#8211;81% (base) to 93&#8211;99% (SFT), enabling reliable downstream parsing by the Bayesian aggregation stage.<br><br>
+          (4) Inter-school diversity in directional asset signals increases (Jaccard 0.778 &#8594; 0.853, p &lt; 0.01), indicating that fine-tuned schools generate meaningfully different analytical perspectives rather than stylistic variations of the same mainstream analysis.
+        </div>
+      </div>
+      <div class="box">
+        <div class="t-h3" style="margin-bottom:.6vh">What Is Not Yet Established (Requires Stages 3 and 4)</div>
+        <div class="t-small">
+          (1) Whether fine-tuned adapters produce better causal reasoning in terms of economic accuracy or logical coherence. Current evaluation is keyword-based on held-out synthetic events, not human-judged economic validity. EconCausal [39] and EconLogicQA [40] evaluation is planned.<br><br>
+          (2) Whether school-specific probability outputs are better calibrated than the base model on resolved real-world prediction markets. Calibration evaluation requires Stage 3 and Polymarket/Metaculus data.<br><br>
+          (3) Whether the end-to-end pipeline generates superior trading performance relative to buy-and-hold, BVAR, or GPT-4o zero-shot baselines. This requires Stage 4 walk-forward backtesting on 2023&#8211;2025 data.<br><br>
+          The current results should be interpreted as input-quality validation for Stage 3, not as evidence of end-to-end system performance.
+        </div>
+      </div>
+    </div>
+    <div class="box-lo" style="flex:0">
+      <div class="t-small" style="text-align:center">Summary: These preliminary results demonstrate that LoRA fine-tuning on 500 synthetic trajectories per school produces meaningfully differentiated economic reasoning agents. The four measured properties (consistency, contamination, parsability, diversity) are necessary preconditions for the downstream Bayesian aggregation stage, not sufficient evidence of end-to-end value.</div>
+    </div>
+    <div class="t-cite">[39] Lee et al., EconCausal, arXiv:2510.07231, 2025 | [40] Quan &amp; Liu, EconLogicQA, Findings of EMNLP 2024</div>
+  </div>
+  <div class="snum">22 / 30</div>
+</div>
+
+<!-- S23 FUTURE PLAN TIMELINE -->
+<div class="slide" id="s23">
+  <div class="slide-hdr"><div class="t-sec">Future Plan I</div><div class="t-title">Implementation Timeline (10 Weeks from Now)</div></div>
+  <div class="body-area" style="justify-content:center">
+    <div style="display:grid;grid-template-columns:9vw 1fr 5.5vw;align-items:center;gap:.5vw .9vw;width:100%">
+
+      <div class="t-small" style="font-weight:700;text-align:right;color:#aaa">Complete</div>
+      <div class="tl-bar-wrap"><div class="tl-bar" style="width:100%"></div><div class="tl-lbl">Episode database (141 events) and LoRA adapters (3 schools, Stage 2)</div></div>
+      <div class="t-small" style="text-align:right"><span class="badge done">Done</span></div>
+
+      <div class="t-small" style="font-weight:700;text-align:right">Phase 1<br>Wks 1&#8211;2</div>
+      <div class="tl-bar-wrap"><div class="tl-bar" style="width:20%;background:#aaa"></div><div class="tl-lbl" style="color:#fff">Stage 1 RAG engine: FAISS index + Mahalanobis pipeline, &#945; tuning on 20-episode validation set</div></div>
+      <div class="t-small" style="text-align:right"><span class="badge plan">Plan</span></div>
+
+      <div class="t-small" style="font-weight:700;text-align:right">Phase 2<br>Wks 2&#8211;4</div>
+      <div class="tl-bar-wrap"><div class="tl-bar" style="width:20%;background:#aaa;margin-left:20%"></div><div class="tl-lbl" style="color:#fff">Stage 3: calibration data collection, Bayesian aggregation, Platt scaling</div></div>
+      <div class="t-small" style="text-align:right"><span class="badge plan">Plan</span></div>
+
+      <div class="t-small" style="font-weight:700;text-align:right">Phase 3<br>Wks 4&#8211;6</div>
+      <div class="tl-bar-wrap"><div class="tl-bar" style="width:20%;background:#aaa;margin-left:40%"></div><div class="tl-lbl" style="color:#fff">Stage 4: fractional Kelly allocation, 8-instrument walk-forward backtest on 2023&#8211;2025</div></div>
+      <div class="t-small" style="text-align:right"><span class="badge plan">Plan</span></div>
+
+      <div class="t-small" style="font-weight:700;text-align:right">Phase 4<br>Wks 6&#8211;8</div>
+      <div class="tl-bar-wrap"><div class="tl-bar" style="width:20%;background:#aaa;margin-left:60%"></div><div class="tl-lbl" style="color:#fff">End-to-end integration: full pipeline run, five ablation experiments, stress testing</div></div>
+      <div class="t-small" style="text-align:right"><span class="badge plan">Plan</span></div>
+
+      <div class="t-small" style="font-weight:700;text-align:right">Phase 5<br>Wks 7&#8211;8</div>
+      <div class="tl-bar-wrap"><div class="tl-bar" style="width:10%;background:#aaa;margin-left:70%"></div><div class="tl-lbl" style="color:#fff">EconCausal [39] + EconLogicQA [40] benchmark evaluation for causal reasoning quality</div></div>
+      <div class="t-small" style="text-align:right"><span class="badge plan">Plan</span></div>
+
+      <div class="t-small" style="font-weight:700;text-align:right">Phase 6<br>Wks 8&#8211;10</div>
+      <div class="tl-bar-wrap"><div class="tl-bar" style="width:20%;background:#aaa;margin-left:80%"></div><div class="tl-lbl" style="color:#fff">Paper writing, revision, and journal submission</div></div>
+      <div class="t-small" style="text-align:right"><span class="badge plan">Plan</span></div>
+
+    </div>
+    <div class="t-small" style="margin-top:.8vh">Note: Stage 2 was completed before Stage 1 retrieval engine because the two components are independent. LoRA adapter training requires only episode narratives as seed content for trajectory generation, whereas the retrieval engine additionally requires the embedding index and Mahalanobis distance infrastructure.</div>
+    <div class="t-cite">[39] Lee et al., 2025 | [40] Quan &amp; Liu, 2024</div>
+  </div>
+  <div class="snum">23 / 30</div>
+</div>
+
+<!-- S24 ABLATION DESIGN -->
+<div class="slide" id="s24">
+  <div class="slide-hdr"><div class="t-sec">Future Plan II</div><div class="t-title">Ablation Design: Isolating Each Component's Contribution</div></div>
+  <div class="body-area">
+    <div style="flex:0">
+      <table class="dt">
+        <tr><th>Ablation Variant</th><th>Component Removed</th><th>Hypothesis Tested</th></tr>
+        <tr><td style="font-family:'Courier New',monospace">&#8722;RAG</td><td>Stage 1 analogy retrieval: agents receive no historical episode context</td><td>Marginal value of historical macro analogies in grounding school-specific causal chains</td></tr>
+        <tr><td style="font-family:'Courier New',monospace">&#8722;Multi-school</td><td>Only the best single school used (expected: Monetarist based on Stage 2 scores)</td><td>Marginal value of school ensemble diversity over best single-school baseline</td></tr>
+        <tr><td style="font-family:'Courier New',monospace">&#8722;Bayesian</td><td>Equal-weight aggregation across three schools; no regime conditioning</td><td>Marginal value of regime-conditional Bayesian weighting over uniform weighting</td></tr>
+        <tr><td style="font-family:'Courier New',monospace">&#8722;Calibration</td><td>Raw aggregated probabilities used with no Platt scaling</td><td>Marginal value of the calibration layer in correcting LLM systematic overconfidence</td></tr>
+        <tr><td style="font-family:'Courier New',monospace">&#8722;Causal schema</td><td>Free-form chain-of-thought with no structured [Output] block requirement</td><td>Marginal value of structured transmission mechanism schema over unstructured generation</td></tr>
+      </table>
+    </div>
+    <div class="col2" style="flex:0;margin-top:.7vh">
+      <div>
+        <div class="t-h3">External Baselines</div>
+        <div class="t-small">All ablations and baselines are evaluated on the same 2023&#8211;2025 out-of-sample walk-forward backtest period.</div>
+        <div style="display:flex;flex-direction:column;gap:.4vh;margin-top:.5vh">
+          <div class="box-fill"><div class="t-small"><strong>Buy-and-hold:</strong> equal-weight static allocation across the eight instruments, rebalanced quarterly.</div></div>
+          <div class="box-fill"><div class="t-small"><strong>Random walk:</strong> random directional allocation with fractional Kelly sizing, providing a noise floor benchmark.</div></div>
+          <div class="box-fill"><div class="t-small"><strong>BVAR:</strong> Bayesian Vector Autoregression over the eight instruments and 35 FRED macro indicators &#8212; a strong classical macro forecasting baseline.</div></div>
+          <div class="box-fill"><div class="t-small"><strong>GPT-4o zero-shot:</strong> direct multi-asset allocation from GPT-4o with the same event and macro context, no fine-tuning, no school structure.</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="t-h3">Statistical Testing</div>
+        <div class="t-small">All pairwise comparisons between Macro-MOSAIC and each baseline or ablation variant use the Ledoit-Wolf Sharpe ratio test [48] with a 95% bootstrap confidence interval (1,000 bootstrap resamples of the out-of-sample period). Multiple comparison correction applied via Bonferroni adjustment across the five ablation variants and four external baselines.</div>
+        <div style="margin-top:.5vh" class="t-small">Primary metric: annualized Sharpe Ratio on the 2023&#8211;2025 out-of-sample period. Secondary metrics: Maximum Drawdown, Calmar Ratio, and directional accuracy of the per-asset allocation signal compared to realized returns at the 1-month horizon.</div>
+        <div style="margin-top:.5vh" class="t-small">The &#8722;Multi-school ablation is of particular theoretical interest: if the best single school (Monetarist, with SFT consistency score 0.528) outperforms the three-school ensemble, the multi-school design rationale would need revision. We consider this an open empirical question requiring Stage 4 results.</div>
+      </div>
+    </div>
+    <div class="t-cite">[48] Ledoit &amp; Wolf, Journal of Empirical Finance, 2008</div>
+  </div>
+  <div class="snum">24 / 30</div>
+</div>
+
+<!-- S25 RISK AND GOVERNANCE -->
+<div class="slide" id="s25">
+  <div class="slide-hdr"><div class="t-sec">Future Plan III</div><div class="t-title">Risk, Governance, and Auditability</div></div>
+  <div class="body-area">
+    <div class="col3">
+      <div class="box-lo">
+        <div class="t-h3">Model Risk</div>
+        <div class="t-small">LoRA adapters are trained on synthetic GPT-4o-generated trajectories, which may inherit GPT-4o biases or errors in school attribution. Mitigations: (1) trajectory quality filtering via consistency score thresholding before inclusion in the fine-tuning corpus; (2) human spot-checking of 50 trajectories per school for school-attribution accuracy; (3) planned evaluation against human-expert economic reasoning on EconLogicQA [40] to assess causal reasoning quality beyond keyword proxies. The keyword-based consistency metric is a necessary but not sufficient measure of reasoning quality.</div>
+      </div>
+      <div class="box-lo">
+        <div class="t-h3">Data and Calibration Risk</div>
+        <div class="t-small">Historical analogy retrieval assumes that past macro episodes provide useful structural information for current events. Regime novelty &#8212; events with no structural precedent in the 1971&#8211;2025 reference set &#8212; may degrade retrieval quality. Prediction market calibration data covers macroeconomic topics but may undersample extreme tail events with low historical frequency. Platt scaling parameters are estimated on finite calibration samples; out-of-sample calibration degradation is a known risk, monitored via rolling Expected Calibration Error plots during the backtest period.</div>
+      </div>
+      <div class="box-lo">
+        <div class="t-h3">Financial and Operational Risk</div>
+        <div class="t-small">The fractional Kelly criterion (f = 0.25) substantially reduces but does not eliminate ruin risk under adverse scenarios. Walk-forward backtesting controls look-ahead bias; survivorship bias is addressed by including delisted instruments where available. No live trading is planned during the research period: all evaluation is on historical data. LLM inference latency (seconds per response) precludes use in high-frequency or real-time execution contexts &#8212; Macro-MOSAIC is designed for event-driven macro analysis at the hourly-to-daily frequency.</div>
+      </div>
+    </div>
+    <div class="t-h3" style="flex:0;margin-top:.6vh">Auditability Design</div>
+    <div class="t-small" style="flex:0">Every Macro-MOSAIC output carries a complete audit trail: Stage 1 provides the top-k retrieved analogies with similarity scores and historical FRED values; Stage 2 provides school-specific [Think] chains and [Output] blocks with explicit causal steps and named transmission mechanisms; Stage 3 provides regime-conditional school weights and calibrated probability distributions with confidence intervals; Stage 4 provides the Kelly calculation inputs (p, b, q per scenario per instrument) and resulting allocation weights. This full trace distinguishes Macro-MOSAIC from black-box prediction systems and supports the regulatory transparency requirements relevant to institutional investment applications (Arner et al. [32]).</div>
+    <div class="t-cite">[32] Arner et al., Northwestern J., 2017 | [40] Quan &amp; Liu, 2024</div>
+  </div>
+  <div class="snum">25 / 30</div>
+</div>
+
+<!-- S26 SUMMARY -->
+<div class="slide" id="s26">
+  <div class="slide-hdr"><div class="t-sec">Summary</div><div class="t-title">Macro-MOSAIC: Contributions and Current Status</div></div>
+  <div class="body-area" style="justify-content:center;gap:.9vh">
+    <div class="col2" style="flex:0">
+      <div>
+        <div class="t-h3" style="margin-bottom:.5vh">Completed Work</div>
+        <div class="box" style="padding:1.4vh 1.4vw">
+          <div class="t-small">
+            <span class="badge done">Done</span><br><br>
+            <strong>Literature survey:</strong> approximately 80 papers (2024&#8211;early 2026), organized by five agent design patterns and five application domains, with gap analysis identifying three specific open problems.<br><br>
+            <strong>Episode database:</strong> 141 macro events (1971&#8211;2025), 35 FRED indicators, 13,571 asset data points, 19 transmission channels, 117 full school interpretations. Validated against landmark events.<br><br>
+            <strong>Stage 2 adapters:</strong> three LoRA adapters on Qwen2.5-7B-Instruct. Austrian +118.8% consistency, Monetarist +129.7% consistency, average +59.3%. Contamination near-eliminated across all schools. [Output] block presence 93&#8211;99%. Inter-school Jaccard diversity 0.853 (p &lt; 0.01).
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="t-h3" style="margin-bottom:.5vh">Planned Work (10 Weeks)</div>
+        <div class="box" style="padding:1.4vh 1.4vw">
+          <div class="t-small">
+            <span class="badge plan">Planned</span><br><br>
+            <strong>Phase 1 (Wks 1&#8211;2):</strong> Stage 1 RAG engine &#8212; FAISS semantic index and Mahalanobis structural retrieval, &#945; parameter tuning on held-out validation set.<br><br>
+            <strong>Phase 2 (Wks 2&#8211;4):</strong> Stage 3 Bayesian aggregation &#8212; regime-conditional school weighting and Platt scaling calibration against resolved Polymarket/Metaculus prediction market outcomes.<br><br>
+            <strong>Phase 3&#8211;4 (Wks 4&#8211;8):</strong> Stage 4 fractional Kelly allocation, 8-instrument walk-forward backtest on 2023&#8211;2025, five ablation variants, four external baselines.<br><br>
+            <strong>Phase 5&#8211;6 (Wks 7&#8211;10):</strong> EconCausal and EconLogicQA reasoning benchmarks, paper writing, submission.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="box" style="flex:0">
+      <div class="t-body" style="text-align:center">Macro-MOSAIC addresses three gaps: multi-school parallel reasoning (G1), macro-episode analogy retrieval (G2), and a verified end-to-end macro-to-allocation pipeline (G3).</div>
+    </div>
+  </div>
+  <div class="snum">26 / 30</div>
+</div>
+
+<!-- S27 REFERENCES 1 -->
+<div class="slide" id="s27">
+  <div class="slide-hdr"><div class="t-sec">References</div><div class="t-title">Bibliography [1]&#8211;[28]</div></div>
+  <div class="body-area">
+    <div class="col2">
+      <div class="t-cite" style="line-height:1.8">
+        [1] M. Wooldridge and N. R. Jennings, "Intelligent agents: Theory and practice," <em>Knowledge Engineering Review</em>, vol. 10, no. 2, pp. 115&#8211;152, 1995.<br>
+        [2] S. Russell and P. Norvig, <em>Artificial Intelligence: A Modern Approach</em>, 3rd ed. Prentice Hall, 2010.<br>
+        [3] J. Wei et al., "Chain-of-thought prompting elicits reasoning in large language models," in <em>NeurIPS</em>, vol. 35, 2022.<br>
+        [4] S. Yao et al., "Tree of thoughts: Deliberate problem solving with large language models," in <em>NeurIPS</em>, vol. 36, 2024.<br>
+        [5] T. Schick et al., "Toolformer: Language models can teach themselves to use tools," in <em>NeurIPS</em>, vol. 36, 2024.<br>
+        [6] L. Wang et al., "A survey on large language model based autonomous agents," <em>Frontiers of Computer Science</em>, vol. 18, no. 6, 2024.<br>
+        [7] M. Dixon, I. Halperin, and P. Bilokon, <em>Machine Learning in Finance</em>. Springer, 2020.<br>
+        [8] X.-Y. Liu et al., "FinRL: Deep reinforcement learning framework to automate trading in quantitative finance," in <em>ICAIF</em>, 2022.<br>
+        [9] A. Lopez-Lira and Y. Tang, "Can ChatGPT forecast stock price movements? Return predictability and large language models," <em>SSRN Electronic Journal</em>, 2023.<br>
+        [10] A. G. Kim, M. Muhn, and V. V. Nikolaev, "Financial statement analysis with large language models," <em>Chicago Booth Working Paper</em> No. 2024-65, 2024.<br>
+        [11] W. Zhang et al., "FinAgent: A multimodal foundation agent for financial trading," in <em>KDD</em>, pp. 4314&#8211;4325, 2024.<br>
+        [12] H. Yang, X.-Y. Liu, and C. D. Wang, "FinGPT: Open-source financial large language models," <em>arXiv</em>:2306.06031, 2023.<br>
+        [13] Y. Yu et al., "FinMem: A performance-enhanced LLM trading agent with layered memory and character design," <em>arXiv</em>:2311.13743, 2023.<br>
+        [14] S. Wang et al., "QuantAgent: Seeking holy grail in trading by self-improving large language model," <em>arXiv</em>:2402.03755, 2024.
+      </div>
+      <div class="t-cite" style="line-height:1.8">
+        [15] Y. Xiao et al., "TradingAgents: Multi-agents LLM financial trading framework," <em>arXiv</em>:2412.20138, 2024.<br>
+        [16] X. Li et al., "HedgeAgents: A balanced-aware multi-agent financial trading system," in <em>WWW</em>, pp. 296&#8211;305, 2025.<br>
+        [17] F. Xing, "Designing heterogeneous LLM agents for financial sentiment analysis," <em>ACM Trans. Manag. Inf. Syst.</em>, vol. 16, no. 1, 2025.<br>
+        [18] Y. Yu et al., "FINCON: A synthesized LLM multi-agent system with conceptual verbal reinforcement for enhanced financial decision making," in <em>NeurIPS</em>, vol. 37, 2024.<br>
+        [19] G. Xiong et al., "FLAG-Trader: Fusion LLM-agent with gradient-based reinforcement learning for financial trading," <em>arXiv</em>:2502.11433, 2025.<br>
+        [20] Z. Jiang et al., "Alpha-R1: Leveraging reasoning models for quantitative investment," <em>arXiv</em>:2512.23515, 2025.<br>
+        [21] Y. Xiao et al., "Trading-R1: Toward unified reasoning and decision making in financial markets via reinforcement learning," <em>arXiv</em>:2509.11420, 2025.<br>
+        [22] X. Qian et al., "Fin-o1: Toward strong, flexible, and systematic thinking for complex financial problems with reasoning models," <em>arXiv</em>, 2025.<br>
+        [23] Multiple Authors, "FinCoT: Chain-of-thought reasoning for expert financial analysis," <em>arXiv</em>:2506.16123, 2025.<br>
+        [24] H. Yang et al., "FinRobot: AI agent for equity research and valuation with large language models," <em>arXiv</em>:2405.14767, 2024.<br>
+        [25] S. An et al., "FinVerse: An autonomous agent system for versatile financial analysis," <em>arXiv</em>:2406.06379, 2024.<br>
+        [26] L. Zhao et al., "ContestTrade: A multi-agent trading system based on internal contest mechanism," <em>arXiv</em>:2508.00554, 2025.<br>
+        [27] W. Hilal, S. A. Gadsden, and J. Yawney, "Financial fraud: A review of anomaly detection techniques and recent advances," <em>Expert Systems with Applications</em>, vol. 193, p. 116429, 2022.<br>
+        [28] X. Dong et al., "Advancing financial fraud detection via LLM-based multi-modal agents," in <em>Findings of EMNLP</em>, 2025.
+      </div>
+    </div>
+  </div>
+  <div class="snum">27 / 30</div>
+</div>
+
+<!-- S28 REFERENCES 2 -->
+<div class="slide" id="s28">
+  <div class="slide-hdr"><div class="t-sec">References</div><div class="t-title">Bibliography [29]&#8211;[49]</div></div>
+  <div class="body-area">
+    <div class="col2">
+      <div class="t-cite" style="line-height:1.8">
+        [29] G. Fatouros et al., "MarketSenseAI 2.0: Enhancing stock analysis through LLM agents," <em>arXiv</em>:2502.00415, 2025.<br>
+        [30] S. Wang et al., "Alpha-GPT: Human-AI interactive alpha mining for quantitative investment," in <em>EMNLP System Demonstrations</em>, pp. 196&#8211;206, 2025.<br>
+        [31] Z. Tang et al., "AlphaAgent: LLM-driven alpha mining with regularized exploration to counteract alpha decay," in <em>KDD</em>, pp. 2813&#8211;2822, 2025.<br>
+        [32] D. W. Arner, J. Barberis, and R. P. Buckley, "FinTech, RegTech, and the reconceptualization of financial regulation," <em>Northwestern J. International Law &amp; Business</em>, vol. 37, no. 3, pp. 371&#8211;413, 2017.<br>
+        [33] Y. Nie et al., "LLM agents in finance: A survey bridging research and practice," in <em>Findings of EMNLP</em>, 2025.<br>
+        [34] X.-Y. Liu et al., "FinRL-Meta: Market environments and benchmarks for data-driven financial reinforcement learning," in <em>NeurIPS</em>, vol. 35, pp. 1835&#8211;1849, 2022.<br>
+        [35] Q. Xie et al., "The FinBen: A holistic financial benchmark for large language models," in <em>NeurIPS Datasets and Benchmarks Track</em>, vol. 37, 2024.<br>
+        [36] P. Islam et al., "FinanceBench: A new benchmark for financial question answering," <em>arXiv</em>:2311.11944, 2023.<br>
+        [37] H. Li et al., "InvestorBench: A benchmark for financial decision-making tasks with LLM-based agents," <em>arXiv</em>:2412.18174, 2024.<br>
+        [38] C. Choi et al., "FinAgentBench: A benchmark dataset for agentic retrieval in financial question answering," <em>arXiv</em>:2508.14052, 2025.
+      </div>
+      <div class="t-cite" style="line-height:1.8">
+        [39] M. Lee et al., "EconCausal: A context-aware causal reasoning benchmark for large language models," <em>arXiv</em>:2510.07231, 2025.<br>
+        [40] T. Quan and Z. Liu, "EconLogicQA: A question-answering benchmark for evaluating large language models in economic sequential reasoning," in <em>Findings of EMNLP</em>, pp. 2273&#8211;2282, 2024.<br>
+        [41] L. Nel, "KalshiBench: Evaluating LLM forecasting calibration on prediction markets," <em>arXiv</em>:2512.16030, 2025.<br>
+        [42] N. Li et al., "EconAgent: Large language model-empowered agents for simulating macroeconomic activities," in <em>ACL</em>, pp. 15523&#8211;15536, 2024.<br>
+        [43] S. Kazinnik and T. Sinclair, "FOMC In Silico: Using LLMs to simulate monetary policy committee deliberations," <em>GWU Center for Economic Research Working Paper</em> 2025-005, 2025.<br>
+        [44] E. Lithgow-Serrano et al., "Financial RAG: Evaluating retrieval-augmented LLMs on institutional investment research tasks," in <em>FinNLP Workshop, EMNLP</em>, 2025.<br>
+        [45] Qwen Team, "Qwen2.5: A party of foundation models," <em>arXiv</em>:2412.15115, 2024.<br>
+        [46] T. Dettmers et al., "QLoRA: Efficient finetuning of quantized LLMs," in <em>NeurIPS</em>, vol. 36, pp. 10088&#8211;10115, 2023.<br>
+        [47] J. C. Platt, "Probabilistic outputs for support vector machines and comparisons to regularized likelihood methods," in <em>Advances in Large Margin Classifiers</em>. MIT Press, 1999, pp. 61&#8211;74.<br>
+        [48] O. Ledoit and M. Wolf, "Robust performance hypothesis testing with the Sharpe ratio," <em>Journal of Empirical Finance</em>, vol. 15, no. 5, pp. 850&#8211;859, 2008.<br>
+        [49] M. H. L&#243;pez de Prado, <em>Advances in Financial Machine Learning</em>. Wiley, 2018.
+      </div>
+    </div>
+  </div>
+  <div class="snum">28 / 30</div>
+</div>
+
+<!-- S29 APPENDIX -->
+<div class="slide" id="s29">
+  <div class="slide-hdr"><div class="t-sec">Appendix</div><div class="t-title">Supplementary Detail: Episode Database Categories and FRED Indicators</div></div>
+  <div class="body-area">
+    <div class="col2">
+      <div>
+        <div class="t-h3">Episode Category Distribution</div>
+        <table class="dt">
+          <tr><th>Category</th><th class="num">Episodes</th><th class="num">Test Set</th></tr>
+          <tr><td>Monetary policy decisions</td><td class="num">~21</td><td class="num">15</td></tr>
+          <tr><td>Geopolitical events</td><td class="num">~17</td><td class="num">12</td></tr>
+          <tr><td>Market events</td><td class="num">~14</td><td class="num">10</td></tr>
+          <tr><td>Inflation data releases</td><td class="num">~14</td><td class="num">10</td></tr>
+          <tr><td>Fiscal policy events</td><td class="num">~14</td><td class="num">10</td></tr>
+          <tr><td>Commodity shocks</td><td class="num">~11</td><td class="num">8</td></tr>
+          <tr><td>Employment data releases</td><td class="num">~11</td><td class="num">8</td></tr>
+          <tr><td>Trade and tariff events</td><td class="num">~10</td><td class="num">7</td></tr>
+          <tr><td>Economic data releases</td><td class="num">~11</td><td class="num">8</td></tr>
+          <tr><td>China-specific events</td><td class="num">~10</td><td class="num">7</td></tr>
+        </table>
+        <div style="margin-top:.5vh" class="t-small">Categories with fewer than five test events were excluded from category-level analysis in Section 4.3.5 of the confirmation report. The test set is stratified to preserve the full-database category proportions.</div>
+      </div>
+      <div>
+        <div class="t-h3">FRED Indicator Groupings (35 Total)</div>
+        <div class="box-fill" style="margin-bottom:.4vh">
+          <div class="t-small"><strong>Interest rates (7):</strong> Federal funds rate, 2Y yield, 10Y yield, 30Y yield, LIBOR/SOFR 3M, corporate spread (IG), corporate spread (HY)</div>
+        </div>
+        <div class="box-fill" style="margin-bottom:.4vh">
+          <div class="t-small"><strong>Inflation and prices (6):</strong> CPI (total), CPI (core), PCE, PCE (core), PPI, breakeven inflation 5Y</div>
+        </div>
+        <div class="box-fill" style="margin-bottom:.4vh">
+          <div class="t-small"><strong>Labor market (5):</strong> unemployment rate, nonfarm payrolls MoM, initial claims, participation rate, quits rate</div>
+        </div>
+        <div class="box-fill" style="margin-bottom:.4vh">
+          <div class="t-small"><strong>Money and credit (5):</strong> M2 YoY, bank credit YoY, commercial paper rate, bank lending standards (net pct), consumer credit growth</div>
+        </div>
+        <div class="box-fill" style="margin-bottom:.4vh">
+          <div class="t-small"><strong>Financial conditions (6):</strong> VIX, Chicago Fed NFCI, TED spread, S&amp;P 500 trailing PE, USD index (DXY), gold price</div>
+        </div>
+        <div class="box-fill" style="margin-bottom:.4vh">
+          <div class="t-small"><strong>Real economy (4):</strong> GDP QoQ, industrial production MoM, retail sales MoM, ISM manufacturing PMI</div>
+        </div>
+        <div class="box-fill">
+          <div class="t-small"><strong>Housing and fiscal (2):</strong> housing starts MoM; federal surplus/deficit as pct of GDP (trailing 12M)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="snum">29 / 30</div>
+</div>
+
+<!-- S30 THANK YOU -->
+<div class="slide" id="s30">
+  <div class="title-wrap" style="align-items:center;text-align:center">
+    <div class="t-title" style="font-size:3.5vw;margin-bottom:1.8vh">Thank You</div>
+    <div class="t-h2" style="font-weight:400;margin-bottom:3vh">Questions and Discussion</div>
+    <hr style="width:40vw;margin:0 auto 3vh">
+    <div class="col3" style="flex:0;width:70vw;margin:0 auto">
+      <div class="box-lo" style="text-align:center;padding:1.8vh 1vw">
+        <div class="t-title" style="font-size:2.6vw">141</div>
+        <div class="t-small">Macro episodes<br>1971&#8211;2025</div>
+      </div>
+      <div class="box" style="text-align:center;padding:1.8vh 1vw">
+        <div class="t-title" style="font-size:2.6vw">+59.3%</div>
+        <div class="t-small">Average school<br>consistency improvement</div>
+      </div>
+      <div class="box-lo" style="text-align:center;padding:1.8vh 1vw">
+        <div class="t-title" style="font-size:2.6vw">0.853</div>
+        <div class="t-small">Inter-school Jaccard<br>diversity (vs. 0.778 base)</div>
+      </div>
+    </div>
+    <div class="t-small" style="margin-top:2.5vh">Futian Jiang &nbsp;|&nbsp; PolyU DSAI &nbsp;|&nbsp; Supervisor: Prof. ZHANG Chengqi</div>
+  </div>
+  <div class="snum">30 / 30</div>
+</div>
+
+</div><!-- #deck -->
+
+<!-- CONTROLS -->
+<div id="ctrl">
+  <button class="btn" onclick="go(-1)">&#9664; Prev</button>
+  <span id="counter">1 / 30</span>
+  <button class="btn" onclick="go(1)">Next &#9654;</button>
+  <button class="btn" style="font-size:.95vw;color:#aaa" onclick="toggleNotes()">Notes [N]</button>
+</div>
+<div id="notes"></div>
+
+<script>
+const TOTAL = 30;
+let cur = 1;
+
+const notes = {
+  1: "开场：介绍Macro-MOSAIC全称。强调这是Confirmation of Registration答辩，展示研究方向和初步结果，而非最终论文答辩。Supervisor是Prof. ZHANG Chengqi。",
+  2: "说明整体结构和时间分配。文献综述8分钟（S3-S8），Gap分析3分钟（S9-S10），系统架构7分钟（S11-S15），结果5分钟（S16-S22），未来计划2分钟（S23-S26）。",
+  3: "基础概念：AI agent定义、感知-推理-行动循环，以及从传统量化模型到LLM agent的三个范式转变。强调金融场景的特殊要求：实时性、可解释性、高容错要求。",
+  4: "数据模态：三大类（数值、文本、替代/视觉）和数据融合挑战。重点提RAG在处理context window限制方面的作用，与Stage 1的双通道检索直接对应。",
+  5: "代理设计前两类型：单Agent（DRL和LLM）和记忆增强型。FinMem三层记忆结构与Macro-MOSAIC Stage 1历史类比检索的设计逻辑直接对应。",
+  6: "代理设计后三类型：工具调用、推理-反思、多代理协作（三个子类型）。Multi-agent debate-driven子类型直接motivate Macro-MOSAIC的三校并行推理设计：不同框架产生不同的因果路径，通过Bayesian聚合综合。",
+  7: "应用域：交易和投资组合管理。高频交易受限于LLM推理延迟——这个限制motivate本研究聚焦宏观事件级别而非高频分析。所有这些系统的共同缺陷：个资产层面，不追踪宏观传导机制。",
+  8: "应用域（续）：风险管理、合规监管，以及三类评估体系。EconCausal [39]和EconLogicQA [40]是本研究计划使用的benchmark，专门针对因果推理质量。",
+  9: "研究Gap：两大阵营各自的局限。Camp A强调个资产层面的信号生成；Camp B做宏观模拟但没有连接到配置信号。关键gap就在两者之间的桥梁。",
+  10: "三个具体Gap，每个都需要清楚引用最相近的prior work并解释为什么不够：G1是FOMC In Silico（单变量视角 vs 结构性理论框架），G2是现有金融RAG（价格模式 vs 宏观情节叙事），G3是缺乏端到端验证。",
+  11: "系统总览：四阶段管道和问题形式化。明确区分已完成（DB和Stage 2）和计划中（Stage 1引擎、Stage 3、Stage 4）的工作。三个经济学派的选择理由：结构性不同、政策话语相关性、充足的NBER语料库。",
+  12: "Stage 1检索：双通道公式是关键技术贡献。Mahalanobis距离的直觉：两个事件叙事上可能不同（Lehman vs SVB）但宏观状态结构上相似（信用收紧环境）。数据库已完成，检索引擎在Phase 1（第1-2周）实施。",
+  13: "Stage 2：三个LoRA适配器的训练配置。关键参数：rank=32、alpha=64、4-bit NF4量化、每校500条合成轨迹、GPU内存小于24GB。校专属词汇设计（must-have/strong-signal/anti-signal）构成评估的核心框架。",
+  14: "Stage 3（计划）：两个独立问题串联解决：(1) 政权条件下哪个学校预测更准——Brier Score权重；(2) LLM系统性过度自信——Platt scaling校准。Calibration数据来自已解决的预测市场问题，不是自评估。",
+  15: "Stage 4（计划）：fractional Kelly（f=0.25）控制方差。8个工具覆盖主要资产类别。走前向回测2023-2025，完全out-of-sample。明确说明：本报告不包含任何回测结果。",
+  16: "情节数据库：141个宏观事件，35维FRED指标，13571个资产反应数据点，19个传导渠道。三个标志性事件验证数据质量（雷曼、新冠、特朗普关税）。数据库构建完成。",
+  17: "训练数据和评估设置：GPT-4o作为教师，1500条合成轨迹（每校500条），结构化输出格式。测试集96个事件按难度分层。四个评估维度清晰定义。",
+  18: "核心结果：奥地利+118.8%，货币主义+129.7%，平均+59.3%。凯恩斯-8.1%需要仔细解释——这是评分方法论的人工因素，底层质量实际上提升了：anti-signal归零、Output块出现率59%→97%。",
+  19: "污染和多样性：污染大幅降低对Stage 3至关重要——污染等于冗余信号，破坏集成学习的diversity前提。Jaccard多样性从0.778提升到0.853（p<0.01），且方差显著下降，说明更一致地维持多样性。",
+  20: "结构完整性和事件难度。Output块出现率是pipeline可靠性的关键指标。非常难事件上改善最大（+0.173），说明学校专属框架对复杂多因素矛盾事件最有价值——恰好是宏观分析的核心应用场景。",
+  21: "按事件类别分析。数据驱动类别改善最大（通胀数据+0.261），因为三个学派的理论框架在数据解读上分歧最大。具体例子：CPI意外加速——货币主义用M2增速滞后18个月解释；奥地利学派用错误投资引发的供给瓶颈解释。地缘政治接近零因为各学派都倾向于供给冲击分析。",
+  22: "证据范围——这张幻灯片非常重要，体现学术诚信。清楚区分已建立的（输入质量验证：一致性、污染、可解析性、多样性）和尚未建立的（因果推理质量、校准准确性、交易绩效）。当前结果是Stage 3的输入质量验证，不是端到端绩效证据。",
+  23: "未来时间线：6个阶段10周。强调Stage 2在Stage 1之前完成是因为两者独立——LoRA适配器训练只需要情节叙事，不需要检索引擎基础设施。这是正当的工作顺序，要提前解释。",
+  24: "消融实验设计：5个变体系统地分解每个组件的价值。-Multi-school变体是理论上最有趣的——如果最好单校（货币主义，一致性0.528）比三校集成更好，多校设计的理论假设需要修订。这是完全开放的实证问题。",
+  25: "风险和治理：模型风险（合成训练数据偏差）、数据和校准风险（预测市场覆盖范围有限，Platt scaling样本限制）、金融和操作风险（fractional Kelly减少但不消除风险）。完整审计链将Macro-MOSAIC与黑箱系统区分开来。",
+  26: "总结：已完成工作和计划工作的清晰区分。回归三个研究gap及Macro-MOSAIC的三个核心设计回应。保持简洁，等待提问。",
+  27: "参考文献页1 [1]-[28]。如果委员会追问某篇文献的细节，可以翻到这里。",
+  28: "参考文献页2 [29]-[49]。包含核心技术参考文献：QLoRA [46], Platt scaling [47], Ledoit-Wolf [48], Kelly criterion [49]。",
+  29: "附录：情节数据库的类别分布和35个FRED指标的详细分组。如果委员会对数据库构建细节有问题可以参考此页。",
+  30: "感谢页。等待委员会提问。三个关键数据：141个事件、+59.3%一致性提升、0.853 Jaccard多样性。"
+};
+
+function go(d) {
+  document.getElementById('s'+cur).classList.remove('active');
+  cur = Math.min(TOTAL, Math.max(1, cur+d));
+  document.getElementById('s'+cur).classList.add('active');
+  document.getElementById('counter').textContent = cur+' / '+TOTAL;
+  const n = document.getElementById('notes');
+  if (n.classList.contains('on')) n.textContent = notes[cur] || '';
+  if (cur === 18) setTimeout(initChart, 100);
+}
+
+function toggleNotes() {
+  const n = document.getElementById('notes');
+  n.classList.toggle('on');
+  if (n.classList.contains('on')) n.textContent = notes[cur] || '';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+  else if (e.key.toLowerCase() === 'n') toggleNotes();
+});
+
+let chartDone = false;
+function initChart() {
+  if (chartDone) return;
+  const el = document.getElementById('cChart');
+  if (!el) return;
+  chartDone = true;
+  new Chart(el, {
+    type: 'bar',
+    data: {
+      labels: ['Keynesian', 'Austrian', 'Monetarist'],
+      datasets: [
+        { label: 'Base model', data: [0.368, 0.146, 0.230],
+          backgroundColor: 'rgba(255,255,255,0.22)', borderColor: '#fff', borderWidth: 1, borderRadius: 2 },
+        { label: 'SFT adapter', data: [0.338, 0.319, 0.528],
+          backgroundColor: 'rgba(255,255,255,0.78)', borderColor: '#fff', borderWidth: 1, borderRadius: 2 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: true,
+      plugins: { legend: { labels: { color: '#fff', font: { family: "'Times New Roman', serif", size: 13 } } } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#fff', font: { family: "'Times New Roman', serif", size: 13 } } },
+        y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#fff', font: { family: "'Times New Roman', serif", size: 13 } },
+             min: 0, max: 0.65, title: { display: true, text: 'Consistency Score', color: '#fff', font: { size: 12 } } }
+      }
+    }
+  });
+}
+</script>
+</body>
+</html>

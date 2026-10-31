@@ -1,0 +1,330 @@
+\documentclass[12pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1.25in]{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{amsmath}
+\usepackage{natbib}
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{setspace}
+
+\linespread{1.5}
+
+\bibliographystyle{plainnat}
+
+\begin{document}
+
+\begin{titlepage}
+\begin{center}
+\vspace*{2cm}
+{\LARGE \textbf{AI AGENTS IN FINANCE: A SURVEY}}
+\vspace{2cm}
+
+{\large by}
+\vspace{1cm}
+
+{\large ZHENG CHEN (BELLA)}
+\vspace{2cm}
+
+{\large Department of Computer Science and Engineering}
+
+{\large The Hong Kong University of Science and Technology}
+\vspace{3cm}
+
+{\large PQE Survey Report}
+\vspace{1cm}
+
+{\large \today}
+\end{center}
+\end{titlepage}
+
+%==============================================================================
+\chapter*{ABSTRACT}
+\addcontentsline{toc}{chapter}{Abstract}
+
+The rapid advancement of large language models (LLMs) and autonomous agent frameworks has catalyzed a new paradigm in computational finance. AI agents---systems capable of perceiving financial environments, reasoning over complex data, and executing actions with varying degrees of autonomy---are being deployed across trading, portfolio management, risk assessment, fraud detection, and financial advisory services. This survey provides a comprehensive review of AI agents in finance, spanning traditional reinforcement learning-based agents and the emerging class of LLM-powered autonomous agents. We propose a taxonomy along two primary dimensions: agent design and financial application domain. For agent design, we categorize existing work by architectural patterns including single-agent systems, multi-agent collaborative frameworks, memory-augmented agents, tool-augmented agents, and reasoning-and-reflection agents. For applications, we cover trading, portfolio management, risk management, financial analysis, and regulatory compliance. We further review data sources and modalities, benchmarks and evaluation methodologies, and identify critical open challenges. This survey covers over 80 papers published from 2024 to early 2026, drawn primarily from top AI venues including NeurIPS, KDD, AAAI, ACL, EMNLP, ICAIF, WWW, SIGIR, and ECIR, aiming to serve as a comprehensive reference for researchers and practitioners.
+
+\newpage
+\tableofcontents
+
+%==============================================================================
+\chapter{Introduction}
+%==============================================================================
+
+The intersection of artificial intelligence and finance has a long history, from early expert systems to statistical arbitrage models. The emergence of LLMs and autonomous agent frameworks has introduced AI systems that can perceive, reason, plan, and act within complex financial environments with increasing autonomy.
+
+An \textit{AI agent} in finance can be broadly defined as a computational system that observes financial data, maintains internal state or memory, reasons about market conditions, and takes actions such as placing trades, generating reports, or flagging risks. This encompasses a wide spectrum, from DRL agents trained to optimize portfolio returns \citep{liu2020finrl,liu2021finrl} to LLM-powered multi-agent frameworks simulating the collaborative dynamics of trading firms \citep{xiao2024tradingagents,yu2024fincon}.
+
+The motivation for this survey arises from several converging trends. The financial services industry has rapidly adopted AI agent technologies. The academic community has produced a growing body of work on LLM-based financial agents across venues from NeurIPS and KDD to ICAIF and ACL. The unique challenges of finance---real-time decision-making, regulatory compliance, and adversarial market conditions---raise questions not addressed by general-purpose agent research.
+
+While several surveys have examined related topics \citep{ding2024llm_trading_survey,nie2025survey,li2024surveyfinance,lee2024surveyfinllm,liu2024surveyfinai,saha2025investmentmgmt}, no existing work provides a unified treatment jointly analyzing agent design patterns and financial applications under a single coherent framework. This survey fills that gap by covering over 80 papers published from 2024 to early 2026.
+
+We frame this survey around the following research questions:
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{RQ1}: What data sources and modalities are used by AI agents in finance?
+    \item \textbf{RQ2}: What agent design patterns have been proposed, and how do they differ?
+    \item \textbf{RQ3}: How are these designs applied across financial domains?
+    \item \textbf{RQ4}: How are financial AI agents evaluated, and what benchmarks exist?
+    \item \textbf{RQ5}: What are the key challenges and future directions?
+\end{itemize}
+
+
+%==============================================================================
+\chapter{Method}
+%==============================================================================
+
+We conducted a systematic literature review following established guidelines \citep{kitchenham2004procedures}. Our process consisted of four phases: identification, screening, eligibility, and analysis.
+
+\section{Search Strategy}
+
+We searched proceedings of NeurIPS, ICML, ICLR, KDD, AAAI, ACL, EMNLP, NAACL, WWW, SIGIR, and ECIR from 2024 to early 2026. We included the ICAIF proceedings, the Journal of Financial Data Science, and arXiv preprints. Our query combined agent-related terms (``agent'', ``autonomous'', ``LLM agent'', ``multi-agent'', ``reinforcement learning agent'') with finance-specific terms (``trading'', ``portfolio'', ``financial'', ``risk management'', ``fraud detection'', ``alpha factor'', ``compliance'').
+
+\section{Inclusion and Exclusion Criteria}
+
+Papers were included if they proposed, developed, or evaluated an AI agent system for a financial application; were written in English; and were published as full papers or substantial preprints. We excluded standalone prediction models without agent architectures, purely NLP work without agentic components, and short abstracts or posters.
+
+\section{Analysis Approach}
+
+For each paper we extracted agent architecture type, financial domain, data modalities, model backbone, evaluation metrics, and performance. We performed quantitative analysis of publication trends and qualitative thematic analysis to identify design patterns and research gaps.
+
+
+%==============================================================================
+\chapter{Background}
+%==============================================================================
+
+\section{Foundations of AI Agents}
+
+An AI agent is a system that perceives its environment, maintains internal state, and takes actions to achieve goals \citep{wooldridge1995intelligent,russell2010artificial}. Modern LLM-based agents formalize the agent loop as observation, reasoning, action, and memory update \citep{wang2024survey_agents,xi2023rise}. Key components include perception, memory \citep{park2023generative}, reasoning via chain-of-thought \citep{wei2022chain} or tree-of-thought \citep{yao2023tree}, tool use \citep{schick2024toolformer}, and planning \citep{huang2024understanding}.
+
+\section{From Quantitative Models to Agents in Finance}
+
+Early quantitative finance relied on statistical models; machine learning brought neural networks for prediction tasks \citep{dixon2020machine}. DRL represented a shift toward agent-based systems, with agents learning trading policies by interacting with simulated environments \citep{hambly2023recent}. The FinRL library \citep{liu2020finrl,liu2021finrl} established the first open-source framework, and FinRL-Meta \citep{liu2022finrlmeta} extended it with near-real market environments.
+
+The latest paradigm involves LLM-powered agents that process unstructured text, reason in natural language, and integrate multiple modalities \citep{yang2023fingpt,zhang2024finagent}. This transition constitutes the central focus of this survey.
+
+\section{Multi-Agent Systems}
+
+Multi-agent systems have a long history in computational finance, from agent-based simulation \citep{lebaron2006agent} to modern LLM frameworks. Recent systems draw inspiration from generative agents \citep{park2023generative} and software development MAS \citep{qian2024chatdev}, adapting these to finance with specialized roles. Market simulation studies have used LLM agents to test financial theories: \citet{lopezlira2025cantrade} showed LLM agents exhibit price discovery and bubbles in simulated markets, while EconAgent \citep{li2023econagent} simulates macroeconomic activities.
+
+
+%==============================================================================
+\chapter{Data Sources and Modalities}
+%==============================================================================
+
+\section{Numerical Market Data}
+
+Nearly all trading agents ingest price data and technical indicators. DRL agents in FinRL \citep{liu2020finrl} use vectorized state representations, while LLM agents like FinMem \citep{yu2023finmem} and FinAgent \citep{zhang2024finagent} convert numerical data into textual prompts. \citet{huang2024drlportfolio} proposed image-based deep neural networks for multi-dimensional time series.
+
+\section{Textual Financial Data}
+
+\textit{News.} TradingAgents \citep{xiao2024tradingagents} employs dedicated news analyst agents. FinGPT \citep{yang2023fingpt} fine-tunes LLMs on news for sentiment. \citet{kirtac2024sentiment} analyzed 965K news articles using LLM-based sentiment for trading signals achieving a Sharpe ratio of 3.05. FinSentGPT \citep{finsentgpt2024} and broader reviews \citep{llmsentiment2024} further validate LLM sentiment capabilities.
+
+\textit{Financial Reports.} \citet{kim2024financial} showed GPT-4 can analyze financial statements rivaling professional analysts. FinMem \citep{yu2023finmem} and TradingGPT \citep{li2023tradinggpt} incorporate filings. \citet{daimi2024sec10k} systematically analyzes 10-K filings using LLMs. ECC Analyzer \citep{ecc2024analyzer} extracts trading signals from earnings calls. \citet{earningscalls2024} uses multi-agent AutoGen for generating analytical reports from earnings calls.
+
+\textit{Social Media.} Multi-agent systems include dedicated sentiment analyst agents for social media feeds \citep{xiao2024tradingagents}. StockAgent \citep{zhang2024stockagent} simulates how social factors shape LLM trading behavior.
+
+\textit{Analyst Reports.} FinAgent \citep{zhang2024finagent} incorporates SeekingAlpha expert guidance. MarketSenseAI \citep{fatouros2025marketsenseai} combines RAG with Chain-of-Agents for processing analyst content.
+
+\section{Visual and Chart Data}
+
+FinAgent \citep{zhang2024finagent} pioneered visual data integration with Kline charts via GPT-4V. MountainLion \citep{wu2025mountainlion} coordinates agents interpreting candlestick charts and trading signal charts. Despite promise, visual financial data remains underexplored.
+
+\section{Alternative Data}
+
+TradingAgents \citep{xiao2024tradingagents} uses insider transactions and institutional holdings. AAPM \citep{cheng2024aapm} fuses LLM-processed news with traditional financial factors. The crypto domain incorporates on-chain data \citep{luo2025cryptoportfolio}. Blockchain-agent integration is surveyed in \citet{blockchain2026agents}.
+
+\section{Data Integration and Retrieval}
+
+Financial agents face temporal misalignment, noise, and context-window limitations. FinSrag \citep{xiao2025finsrag} introduces the first RAG framework with a domain-specific retriever for financial time series. FinSearch \citep{tian2025finsearch} provides multi-step search planning with temporal weighting. FinSphere \citep{han2025finsphere} integrates real-time databases with quantitative tools.
+
+
+%==============================================================================
+\chapter{Agent Design}
+%==============================================================================
+
+This chapter presents a taxonomy of agent design patterns, categorizing by architecture rather than application.
+
+\section{Single-Agent Architectures}
+
+\subsection{DRL-Based Agents}
+
+FinRL \citep{liu2020finrl,liu2021finrl} standardized DRL trading with a three-layer architecture supporting PPO, A2C, DDPG, SAC, and TD3. \citet{zhang2020deep} applied attention-based DRL, and \citet{sun2021reinforcement} surveyed RL for quantitative trading. More recently, \citet{drl2024portfolioselection} used TD3 with Markowitz-enhanced rewards, and \citet{huang2024drlportfolio} proposed image-based DRL for China's stock market. The FinRL Contests \citep{wang2025finrlcontests} benchmark DRL agents across stock and crypto trading. \citet{zheng2024rlhfmm} analyzed RL in high-frequency market making, while \citet{hafsi2024optimalexecution} and \citet{zakaria2025drlorder} apply RL to optimal execution.
+
+\subsection{LLM-Based Single Agents}
+
+FinGPT \citep{yang2023fingpt} provides open-source financial LLMs. \citet{lopez2023can} showed zero-shot LLM predictions can generate profitable signals. AAPM \citep{cheng2024aapm} uses LLM agents for asset pricing.
+
+\section{Memory-Augmented Agents}
+
+FinMem \citep{yu2023finmem} introduced layered memory (working, episodic, semantic) with retrieval based on recency, relevancy, and importance. FinAgent \citep{zhang2024finagent} extended this with dual-level memory and diversified retrieval. TradingGPT \citep{li2023tradinggpt} uses three-layer memory with custom decay functions. These designs enable agents to reason about analogous historical situations.
+
+\section{Tool-Augmented Agents}
+
+FinAgent \citep{zhang2024finagent} integrates trading tools and APIs with LLM reasoning. QuantAgent \citep{wang2024quantagent} uses LLMs for alpha factor generation with backtesting tools in an inner-outer loop. FinRobot \citep{yang2024finrobot} provides a four-layer open-source platform accessing yfinance, FMP, SEC, and Finnhub APIs. FinVerse \citep{an2024finverse} integrates over 600 financial APIs with an embedded code interpreter. FinToolBench \citep{fintoolbench2026} evaluates agents on 760 real-world financial tools.
+
+\section{Reasoning-and-Reflection Agents}
+
+FinAgent \citep{zhang2024finagent} implements dual-level reflection analyzing both individual decisions and overall strategy. \citet{fatemi2024reflection} proposed a multi-agent reflection framework for financial QA achieving 15\% improvement for LLaMA3-8B. Fin-o1 \citep{qian2025fino1} introduces the first financial reasoning benchmark; its 14B model achieves 61\% accuracy competitive with o1 and DeepSeek-R1. FinCoT \citep{fincot2025} grounds chain-of-thought in expert financial workflows. \citet{improvedllmagent2025} adds confidence-based self-correction for financial document QA.
+
+Trading-R1 \citep{xiao2025tradingr1} trains a reasoning LLM through RL with a three-stage curriculum, generating evidence-based investment theses. FLAG-Trader \citep{xiong2025flagtrader} unifies LLMs with gradient-driven RL policy optimization. Alpha-R1 \citep{jiang2025alphar1} applies RL-trained reasoning to alpha factor screening with regime awareness.
+
+\section{Multi-Agent Collaborative Frameworks}
+
+\subsection{Role-Specialized Agent Teams}
+
+TradingAgents \citep{xiao2024tradingagents} features fundamental, sentiment, technical, and news analysts plus risk managers. HedgeAgents \citep{li2025hedgeagents} coordinates a fund manager with hedging experts across asset classes, achieving 400\% return over three years. The orchestration framework of \citet{li2025orchestration} maps algorithmic trading components to nine specialized agents using MCP and A2A protocols. \citet{okpala2025agenticfinancial} builds agentic crews for model risk management with human-in-the-loop coordination.
+
+\subsection{Debate-Driven Agent Architectures}
+
+In TradingAgents \citep{xiao2024tradingagents}, Bull and Bear researchers debate market conditions. AlphaAgents \citep{zhao2025alphaagents} uses round-robin debate among Fundamental, Sentiment, and Valuation agents mimicking an investment committee. \citet{xing2025heterogeneous} applies heterogeneous agent debate to sentiment analysis using Minsky's theory of mind.
+
+\subsection{Information-Distillation and Competition Agents}
+
+FINCON \citep{yu2024fincon} implements information distillation with Conceptual Verbal Reinforcement to avoid the ``telephone effect.'' ContestTrade \citep{zhao2025contesttrade} introduces an internal competition mechanism where only top-ranked agents' outputs are adopted, achieving a Sharpe ratio of 3.12. QuantAgents \citep{li2025quantagents} uses feedback from both real-world performance and simulated trading accuracy.
+
+\subsection{Domain-Specific Multi-Agent Systems}
+
+For crypto, \citet{luo2025cryptoportfolio} coordinates multiple agents with expert training modules. MountainLion \citep{wu2025mountainlion} coordinates specialized agents for chart interpretation in crypto. QuantAgent-HFT \citep{xiong2025quantagenthft} is the first multi-agent LLM framework for high-frequency trading with four specialized agents tested across nine instruments.
+
+\section{Hybrid Agent Designs}
+
+State-of-the-art systems combine multiple patterns. FinAgent \citep{zhang2024finagent} is simultaneously memory-augmented, tool-augmented, reflection-enabled, and multimodal. StockAgent \citep{zhang2024stockagent} combines multi-agent simulation with event-driven market environments. The trend reflects the complexity of finance, but raises coordination overhead concerns \citep{li2025canllmoutperform}.
+
+
+%==============================================================================
+\chapter{Applications}
+%==============================================================================
+
+\section{Trading}
+
+\subsection{Stock Trading}
+
+FinRL \citep{liu2020finrl,liu2021finrl} demonstrated DRL agents outperforming traditional strategies on DJ30 and S\&P 500. FinMem \citep{yu2023finmem} showed layered memory improves trading. FinAgent \citep{zhang2024finagent} achieved 36\% average improvement across six datasets. TradingAgents \citep{xiao2024tradingagents} and FINCON \citep{yu2024fincon} pushed further with multi-agent collaboration. MarketSenseAI \citep{fatouros2025marketsenseai} achieved 125.9\% cumulative returns on S\&P 100 (2023--2024). ContestTrade \citep{zhao2025contesttrade} achieved CR 52.80\%. FLAG-Trader \citep{xiong2025flagtrader} fuses LLM and RL policy. QuantAgents \citep{li2025quantagents} reports 112\% in live A-stock trading. \citet{collaboration2024investment} studies multi-agent collaboration effects on financial analysis quality.
+
+\subsection{Cryptocurrency Trading}
+
+FinAgent \citep{zhang2024finagent} and FinRL \citep{liu2020finrl} include crypto datasets. HedgeAgents \citep{li2025hedgeagents} trades Bitcoin as one asset class. \citet{luo2025cryptoportfolio} manages a top-30 crypto portfolio. MountainLion \citep{wu2025mountainlion} targets crypto with multi-modal agents.
+
+\subsection{High-Frequency and Algorithmic Trading}
+
+LLM agents face latency constraints for HFT. QuantAgent-HFT \citep{xiong2025quantagenthft} is the first multi-agent LLM for HFT across nine instruments. \citet{zheng2024rlhfmm} provides theoretical foundations for RL in HF market making. \citet{wang2025marlmm} studies multi-agent RL for market making without collusion. Optimal execution agents \citep{hafsi2024optimalexecution,zakaria2025drlorder} handle order-level decisions. StockMARL \citep{zou2025stockmarl} uses heterogeneous agent simulation for learning.
+
+\section{Portfolio Management}
+
+FinRL \citep{liu2021finrl} supports portfolio allocation. FINCON \citep{yu2024fincon} compares against Markowitz mean-variance. HedgeAgents \citep{li2025hedgeagents} coordinates multi-asset hedging. AlphaAgents \citep{zhao2025alphaagents} constructs equity portfolios via investment committee debate. The orchestration framework \citep{li2025orchestration} includes dedicated portfolio and risk agents.
+
+\section{Alpha Factor Generation}
+
+QuantAgent \citep{wang2024quantagent} uses inner-outer loop LLM architecture for self-improving alpha discovery. Alpha-GPT \citep{wang2025alphagpt} enables human-AI interactive alpha mining, achieving top-10 out of 41K teams in WorldQuant 2024. Alpha-GPT 2.0 \citep{yuan2024alphagpt2} extends to the full quant pipeline. AlphaAgent \citep{tang2025alphaagent} uses three-agent framework with originality enforcement for decay-resistant factors. Chain-of-Alpha \citep{cao2025chainalpha} employs dual-chain architecture. Alpha-R1 \citep{jiang2025alphar1} applies RL-trained reasoning with regime awareness. QuantaAlpha \citep{han2026quantaalpha} uses evolutionary optimization achieving IC of 0.1501 on CSI 300. \citet{kou2024automate} automates strategy finding across Chinese and US markets. \citet{yu2026hybrid} compares hybrid LLM-GP approaches. FinRLlama \citep{grover2025finrllama} won ICAIF 2024's FinRL Challenge using RLMF.
+
+\section{Risk Management and Fraud Detection}
+
+\subsection{Fraud Detection}
+
+\citet{singh2025fraud} achieves 97.98\% accuracy using RAG-based LLMs for phone call fraud. \citet{park2024anomaly} proposes multi-agent market anomaly detection with specialized analysis agents. Traditional approaches are reviewed in \citet{hilal2022financial}.
+
+\subsection{Credit Risk}
+
+\citet{kim2024financial} demonstrates LLM analysis rivaling analysts. \citet{sanzguerrero2025credit} fine-tunes BERT on loan descriptions for P2P risk. \citet{xia2025creditscoring} combines LLM extraction with FocalPoly loss. \citet{tan2025gpt4credit} fuses GPT-4 with BERT for multi-level credit assessment.
+
+\subsection{Market Risk and Governance}
+
+The risk management team in TradingAgents \citep{xiao2024tradingagents} monitors exposure. \citet{kurshan2025agenticregulator} proposes governance architecture for agentic AI with a case study on emergent spoofing. \citet{okpala2025agenticfinancial} builds model risk management crews. The systemic implications of AI agents in markets are examined in \citet{aiagentsmarkets2026}.
+
+\section{Financial Analysis and Advisory}
+
+\subsection{Report Analysis}
+
+\citet{kim2024financial} showed GPT-4 outperforms median analysts. FinRobot \citep{zhou2024finrobotequity} produces reports comparable to major brokerages via multi-agent Chain-of-Thought. \citet{daimi2024sec10k} systematically analyzes 10-K filings. ECC Analyzer \citep{ecc2024analyzer} extracts signals from earnings calls. \citet{earningscalls2024} generates analytical reports via AutoGen.
+
+\subsection{Sentiment-Driven Analysis}
+
+\citet{xing2025heterogeneous} uses heterogeneous multi-agent debate for sentiment. \citet{kirtac2024sentiment} achieves Sharpe 3.05 from news sentiment. FinGPT \citep{yang2023fingpt} provides the backbone. FinSentGPT \citep{finsentgpt2024} surpasses ML baselines.
+
+\subsection{Robo-Advisory}
+
+\citet{lo2024chatgptretire} identifies challenges for LLM financial advisors including trust and regulation. \citet{takayanagi2025advisor} found LLM-advisors match humans in preference elicitation but struggle with conflicting needs (SIGIR 2025). FinPersona \citep{takayanagi2025finpersona} provides a conversational financial advisor prototype (ECIR 2025). \citet{behavioral2025personalfinance} creates a 19K-sample reasoning dataset for personal finance LLMs.
+
+\section{Regulatory Compliance}
+
+LLM compliance agents interpret regulatory text and flag gaps \citep{arner2017fintech}. \citet{kurshan2025agenticregulator} proposes a modular governance architecture. The orchestration framework \citep{li2025orchestration} includes audit agents. \citet{okpala2025agenticfinancial} addresses model risk management in financial services.
+
+
+%==============================================================================
+\chapter{Benchmarks and Evaluation}
+%==============================================================================
+
+\section{Trading Performance Metrics}
+
+Financial agents use standard metrics: cumulative return (CR), Sharpe ratio (SR), maximum drawdown (MDD), Sortino ratio, and Calmar ratio. FinRL-Meta \citep{liu2022finrlmeta} standardized these for DRL agents. The FinRL Contests \citep{wang2025finrlcontests} provide competitive benchmarks. MarketSim \citep{gu2024marketsim} provides simulation environments.
+
+\section{Financial NLP Benchmarks}
+
+FinBen \citep{xie2024finben} (NeurIPS 2024) provides the most comprehensive benchmark: 36 datasets, 24 tasks, 15+ LLMs. FinanceBench \citep{islam2023financebench} focuses on financial document QA with 10K+ questions. The Open FinLLM Leaderboard \citep{lin2025openfinllm} provides continuous evaluation.
+
+\section{Agent-Level Benchmarks}
+
+FinAgentBench \citep{choi2025finagentbench} provides 26K expert-annotated samples for agentic retrieval in finance. Finance Agent Benchmark \citep{bigeard2025financeagentbench} covers 537 expert questions; the best model (o3) achieved only 46.8\% accuracy. InvestorBench \citep{li2024investorbench} evaluates 13 LLMs as trading agent backbones. StockBench \citep{chen2025stockbench} tests LLMs on real-world profitable trading. FinGAIA \citep{fingaia2025} provides 407 tasks across seven financial sub-domains. FinToolBench \citep{fintoolbench2026} evaluates agents on 760 real financial tools.
+
+\section{Evaluation Challenges}
+
+Backtesting may overestimate performance due to look-ahead bias and inability to account for market impact \citep{liu2022finrlmeta}. \citet{li2025canllmoutperform} questions whether LLM strategies can outperform markets long-term, revealing fragmented evaluation practices. Most agents use proprietary models making reproduction difficult. Financial non-stationarity means historical performance does not guarantee future results.
+
+
+%==============================================================================
+\chapter{Open Challenges and Future Directions}
+%==============================================================================
+
+\section{Hallucination and Reliability}
+
+LLM hallucination is dangerous in finance. Mitigation includes RAG with verified databases, multi-agent verification, and confidence calibration \citep{ji2023survey}. MarketSenseAI \citep{fatouros2025marketsenseai} uses HyDE-enhanced retrieval. FinSrag \citep{xiao2025finsrag} introduces domain-specific retrieval.
+
+\section{Real-Time Deployment}
+
+Current LLM agents face latency challenges. QuantAgent-HFT \citep{xiong2025quantagenthft} attempts to address HFT latency. Hybrid architectures combining fast quantitative models with slower LLM reasoning are a promising direction \citep{xiong2025flagtrader,benhenda2025finrldeepseek}.
+
+\section{Regulatory and Ethical Considerations}
+
+Autonomous agents raise accountability and systemic risk questions \citep{arner2017fintech}. \citet{kurshan2025agenticregulator} identifies emergent spoofing risks. \citet{wang2025marlmm} studies algorithmic collusion in MARL market making. \citet{aiagentsmarkets2026} examines systemic implications.
+
+\section{Multi-Modal Financial Perception}
+
+FinAgent \citep{zhang2024finagent} and MountainLion \citep{wu2025mountainlion} incorporate charts. Future agents may integrate earnings call audio, satellite imagery, and alternative data.
+
+\section{Reasoning-Enhanced Agents}
+
+Reasoning LLMs open new possibilities. Trading-R1 \citep{xiao2025tradingr1} and Alpha-R1 \citep{jiang2025alphar1} apply RL-trained reasoning to finance. Fin-o1 \citep{qian2025fino1} establishes financial reasoning benchmarks. FLAG-Trader \citep{xiong2025flagtrader} fuses LLM reasoning with RL.
+
+\section{Human-Agent Collaboration}
+
+Alpha-GPT \citep{wang2025alphagpt} and Alpha-GPT 2.0 \citep{yuan2024alphagpt2} demonstrate human-in-the-loop alpha mining. \citet{takayanagi2025advisor} studies human-agent interaction in financial advising. \citet{okpala2025agenticfinancial} emphasizes human-in-the-loop for model risk.
+
+\section{Sim-to-Real Transfer and Live Trading}
+
+Most papers report backtested results. QuantAgents \citep{li2025quantagents} reports live A-stock results (112\% return). MarketSim \citep{gu2024marketsim} and \citet{lopezlira2025cantrade} develop improved simulators. \citet{li2025canllmoutperform} questions long-run LLM strategy viability.
+
+\section{Scalability and Generalization}
+
+Most agents are evaluated on limited assets. Whether systems generalize across asset classes, geographies, and market conditions remains largely untested. Comprehensive benchmarks like FinGAIA \citep{fingaia2025} and FinToolBench \citep{fintoolbench2026} begin to address this.
+
+
+%==============================================================================
+\chapter{Conclusion}
+%==============================================================================
+
+This survey has reviewed over 80 papers on AI agents in finance published from 2024 to early 2026, organized along two dimensions: agent design patterns and financial applications.
+
+On agent design, we observe a clear trajectory from single-agent DRL systems to sophisticated multi-agent LLM frameworks incorporating memory, tools, reflection, debate, and competition mechanisms. Each pattern addresses specific limitations: memory enables temporal reasoning, tools provide precise computation, reflection enables self-improvement, debate improves robustness, and competition selects the best-performing agents.
+
+On applications, trading and alpha factor generation dominate, with multi-agent role-based architectures becoming the standard. Risk management, advisory, and compliance are growing but less mature. Key gaps include the need for standardized live-trading evaluation, reliable hallucination mitigation, regulatory frameworks for autonomous agents, and benchmarks capturing full agentic complexity (the best models still achieve under 50\% on expert-level tasks).
+
+Three tensions define the field. First, the gap between backtesting and live-market viability: few papers report live results. Second, autonomy versus governance: more capable agents create emergent risks. Third, benchmark fragmentation: no single evaluation framework captures agentic financial decision-making comprehensively.
+
+The fusion of LLMs with reinforcement learning (Trading-R1, FLAG-Trader, Alpha-R1) and evolutionary optimization for alpha mining (QuantaAlpha, Chain-of-Alpha) represent the most promising emerging directions. By consolidating the current state of knowledge and identifying research gaps, this survey aims to guide future research and development in AI agents for finance.
+
+\bibliography{references}
+
+\end{document}
