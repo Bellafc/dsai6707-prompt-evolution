@@ -143,7 +143,36 @@ def main(argv: list[str] | None = None) -> int:
     pv.add_argument("--size", type=int, default=200, help="GB")
     pv.add_argument("--dc", required=True, help="data center id, e.g. one that has H100/A100 80GB")
 
+    sp = sub.add_parser("spike", help="Task S spikes on dummy data under scratch/")
+    spsub = sp.add_subparsers(dest="spike_cmd", required=True)
+    spsub.add_parser("env")
+    spsub.add_parser("dummy")
+    ss = spsub.add_parser("serve")
+    ss.add_argument("--model", default="Qwen/Qwen3-8B")
+    ss.add_argument("--adapters-dir", default=None)
+    ss.add_argument("--tag", default="S1")
+
+    tr = sub.add_parser("train", help="LoRA SFT of one school adapter (amendment 4 recipe)")
+    tr.add_argument("--school", required=True)
+    tr.add_argument("--data", required=True, help="jsonl of {messages} or {prompt, response}")
+    tr.add_argument("--out", default=None, help="adapter directory (default adapters/<model>/<school>)")
+    tr.add_argument("--base", default=None, help="default: [model] base of configs/exp01.toml")
+    tr.add_argument("--max-steps", type=int, default=-1, help="smoke tests only")
+    tr.add_argument("--bits", type=int, choices=[4, 16], default=16)
+    tr.add_argument("--micro-batch", type=int, default=4)
+
     a = ap.parse_args(argv)
+    if a.cmd == "train":
+        from mosaic.config import adapters_root, load_toml, paths
+        from mosaic.train import train
+        mc = load_toml("configs/exp01.toml")["model"]
+        out = a.out or str(adapters_root(mc, paths()) / a.school)
+        train(base=a.base or mc["base"], data=a.data, out=out, template_kwargs=mc.get("chat_template_kwargs"),
+              max_steps=a.max_steps, bits=a.bits, micro_batch=a.micro_batch)
+        return 0
+    if a.cmd == "spike":
+        from mosaic.spikes import main as spike_main
+        return spike_main(a)
     if a.cmd == "freeze" or (a.cmd == "run" and (a.final or a.allow_rerun)) or \
             (a.cmd in ("judge", "pregen") and a.split == "test"):
         human_gate(a.exp)
