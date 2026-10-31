@@ -105,3 +105,12 @@
 - fix (this PR): `scripts/autoresearch.sh` passes the allow and deny rules of `.claude/settings.json` to
   `claude -p` as `--allowedTools` / `--disallowedTools` (both rule spellings, `src/mosaic/runpod.py`
   `permission_flags`), so they apply whether or not the project file is read; 36 offline tests pass.
+
+### 2026-10-31 18:20 UTC — infra: Task S and Task 2 in parallel (human: run autonomously, parallel OK)
+- CA-MTL-1 (volume `dy1ct9hkm0`) had no H100 or A40 at 18:06, so both pods run without a network volume
+  (200 GB pod volume each), in whatever data center RunPod picks; models are downloaded again.
+- pod start: `ivotx555nzu8ir` (mosaic-S-20261031-1820), task S, NVIDIA H100 80GB HBM3, $3.99/h, `--hours 4`,
+  push branch `agent/task-S-20261031-1820`.
+- pod start: `7bthnznndpeuxu` (mosaic-2-20261031-1820), task 2, NVIDIA A40, $0.59/h, `--hours 6`,
+  push branch `agent/task-2-20261031-1820`.
+- first runs with the permission flags of #4; checked through the heartbeats.
