@@ -15,9 +15,8 @@
 | `ch2_literature_review.md` | 第 2 章「背景與文獻」：學派原典（Keynesian／New Keynesian、Monetarist、Austrian、傳導管道）；金融與總經的 LLM agent（濃縮開題的 survey）；LLM 用於總經；評估與資料洩漏；prompting、LoRA、蒸餾、微調 vs ICL、persona 忠實度；量測推理的三種工具（詞典、LLM 評審、SAE 與 model diffing）；評分規則、校準、合成、一致性、比較檢定；預測市場與人類預測；LLM 預測；類比預測、Mahalanobis／收縮估計、即時資料；分析標準；五個研究缺口 | ≈ 6,200 |
 | `ch2_related_work.md` | 第 2 章末「Related work」：七項判準；對照最接近的系統（TradingAgents／FinCon、EconAgent、FOMC In Silico、Simulated SPF、persona prompting、Halawi／Turtel／Mantic、ForecastBench／KalshiBench、Paleka、History Rhymes、Minder／persona vectors／SAE diffing）；比較表；本論文不主張什麼 | ≈ 3,000 |
 | `ch3_methodology.md` | 第 3 章「研究設計與方法」：RQ 與證據邏輯；問題定式與符號；L0–L5 知識架構、推理證明、分析信心；資料（episode DB、即時狀態、訓練軌跡、96 個 test 事件、市場題庫）；學派 agent（底座、LoRA 配方、A/B/C/D/T/A7/C7 各組、文字指標公式、評審與人工驗證、H1–H4、exp01b）；SAE 工具（S0 關卡、探針集、特徵選取與 feature cards、分數與 DiffMean 基準、Part II、S-H1–3）；類比檢索（exp02）；預測／合成／校準（exp03 H1–H7）、一致性（exp04）、前瞻（exp05）；統計協定；效度威脅；重現性、治理與 AI 使用；設計狀態 | ≈ 8,300 |
-| `references.bib` | 200 筆 BibTeX：第一節是草稿引用的 179 筆，第二節是查證過但尚未引用的 21 筆。每筆 `note` 欄寫明查證的原始來源 | — |
 | `CITATION_VERIFICATION.md` | 逐筆查證紀錄：key、狀態、cluster、原始來源網址、備註；以及查證時發現的更正清單 | — |
-| `references/*.bib` | 同一份書目依主題分成六個檔（預測／市場／校準；可解釋性與評審；微調與 prompting；經濟與金融；統計；開題的金融 agent），LaTeX 用 `\bibliography{references/forecasting_markets_calibration,...}` 或直接用合併版 `references.bib` | — |
+| `references/*.bib` | 同一份書目依主題分成六個檔（預測／市場／校準；可解釋性與評審；微調與 prompting；經濟與金融；統計；開題的金融 agent），共 200 筆（草稿引用 179 筆、查證過但尚未引用 21 筆），每筆 `note` 欄寫明查證的原始來源；LaTeX 用 `\bibliography{references/forecasting_markets_calibration,...}` 或 `cat references/*.bib > references.bib` | — |
 | `LIBRARY.md` | 文獻庫索引：每篇一行（key、作者、年份、標題、出處、查證狀態、連結、`#tags`）。把 `research/thesis_drafts/` 當 Obsidian vault 打開就能用標籤篩選；`.bib` 可直接匯入 Zotero（裝 Better BibTeX 可保留 key） | — |
 
 引用格式用 natbib（`\citep{}`、`\citet{}`、`\citealp{}`），直接可貼進 LaTeX。Markdown 裡的公式用 `$…$`。
@@ -83,7 +82,7 @@ Hambly 2023、Russell & Norvig、Wooldridge & Jennings、Xing 2025）。**沒有
 
 ## 下一步建議
 
-1. 逐段核對後改寫（尤其是對他人論文的描述與每一個數字）；把 `references.bib` 併進論文的 LaTeX 專案。
+1. 逐段核對後改寫（尤其是對他人論文的描述與每一個數字）；把 `references/*.bib` 併進論文的 LaTeX 專案。
 2. 修正 `research/prereg_drafts/exp04_coherence.md` 的 Shi & Zhai 歸屬（見上）。
 3. 和張老師確認系上對 AI 使用聲明的格式；把這份草稿列入聲明。
 4. 第 1 章（動機、與開題的差異）、第 4–6 章的結果與討論、第 7 章限制，由你在實驗完成後撰寫。
