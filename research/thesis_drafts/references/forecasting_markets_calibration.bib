@@ -1,0 +1,606 @@
+% Forecasting, prediction markets, scoring rules, calibration, combination, coherence
+% Every entry carries a `note` with the primary source it was checked against (see ../CITATION_VERIFICATION.md).
+
+@misc{andrews2026dutch,
+  author    = {Isaiah Andrews and Suproteem Sarkar},
+  title     = {Dutch Books for Language Models},
+  year      = {2026},
+  month     = sep,
+  eprint    = {2609.02797},
+  archiveprefix = {arXiv},
+  primaryclass  = {econ.GN},
+  url       = {https://arxiv.org/abs/2609.02797},
+  note      = {arXiv preprint (v1, 2 September 2026); no venue found. Measures incoherence of LLM probability forecasts by the largest guaranteed Dutch-book profit computed with linear programs (a de Finetti-type construction; the profit is zero iff the forecasts are coherent). Closest match found for the ``guaranteed arbitrage equals distance to the coherent set'' statement attributed to ``Shi and Zhai (2026)''. verified: https://arxiv.org/abs/2609.02797, 2026-10-31}
+}
+
+% ---------------------------------------------------------------------------
+% 2. Coherence, projection, combinatorial markets
+% ---------------------------------------------------------------------------
+
+@article{arrow2008promise,
+  author    = {Kenneth J. Arrow and Robert Forsythe and Michael Gorham and Robert Hahn and Robin Hanson and John O. Ledyard and Saul Levmore and Robert Litan and Paul Milgrom and Forrest D. Nelson and George R. Neumann and Marco Ottaviani and Thomas C. Schelling and Robert J. Shiller and Vernon L. Smith and Erik Snowberg and Cass R. Sunstein and Paul C. Tetlock and Philip E. Tetlock and Hal R. Varian and Justin Wolfers and Eric Zitzewitz},
+  title     = {The Promise of Prediction Markets},
+  journal   = {Science},
+  year      = {2008},
+  volume    = {320},
+  number    = {5878},
+  pages     = {877--878},
+  doi       = {10.1126/science.1157679},
+  note      = {verified: Crossref record of the AAAS deposit https://api.crossref.org/works/10.1126/science.1157679 (publisher page returned 403), 2026-10-31}
+}
+
+@article{bates1969combination,
+  author    = {J. M. Bates and C. W. J. Granger},
+  title     = {The Combination of Forecasts},
+  journal   = {Operational Research Quarterly},
+  year      = {1969},
+  volume    = {20},
+  number    = {4},
+  pages     = {451--468},
+  month     = dec,
+  doi       = {10.1057/jors.1969.103},
+  note      = {verified: Crossref record of the publisher deposit https://api.crossref.org/works/10.1057/jors.1969.103 (the deposit uses the journal's current name, Journal of the Operational Research Society; the 1969 issue was published as Operational Research Quarterly), 2026-10-31}
+}
+
+@article{brier1950verification,
+  author    = {Glenn W. Brier},
+  title     = {Verification of Forecasts Expressed in Terms of Probability},
+  journal   = {Monthly Weather Review},
+  year      = {1950},
+  volume    = {78},
+  number    = {1},
+  pages     = {1--3},
+  month     = jan,
+  doi       = {10.1175/1520-0493(1950)078<0001:VOFEIT>2.0.CO;2},
+  note      = {verified: Crossref record of the AMS deposit https://api.crossref.org/works/10.1175/1520-0493(1950)078\%3C0001:VOFEIT\%3E2.0.CO;2 (publisher page returned 403), 2026-10-31}
+}
+
+@article{clemen1989combining,
+  author    = {Robert T. Clemen},
+  title     = {Combining Forecasts: A Review and Annotated Bibliography},
+  journal   = {International Journal of Forecasting},
+  year      = {1989},
+  volume    = {5},
+  number    = {4},
+  pages     = {559--583},
+  doi       = {10.1016/0169-2070(89)90012-5},
+  note      = {verified: Crossref record of the Elsevier deposit https://api.crossref.org/works/10.1016/0169-2070(89)90012-5 (ScienceDirect returned 403), 2026-10-31}
+}
+
+@article{diebold1995comparing,
+  author    = {Francis X. Diebold and Roberto S. Mariano},
+  title     = {Comparing Predictive Accuracy},
+  journal   = {Journal of Business \& Economic Statistics},
+  year      = {1995},
+  volume    = {13},
+  number    = {3},
+  pages     = {253--263},
+  month     = jul,
+  doi       = {10.1080/07350015.1995.10524599},
+  note      = {verified: Crossref record of the Taylor \& Francis deposit https://api.crossref.org/works/10.1080/07350015.1995.10524599 (publisher page returned 403), 2026-10-31}
+}
+
+@techreport{diercks2026kalshi,
+  author      = {Anthony M. Diercks and Jared Dean Katz and Jonathan H. Wright},
+  title       = {Kalshi and the Rise of Macro Markets},
+  institution = {Board of Governors of the Federal Reserve System},
+  type        = {Finance and Economics Discussion Series},
+  number      = {2026-010},
+  address     = {Washington, DC},
+  year        = {2026},
+  month       = feb,
+  doi         = {10.17016/FEDS.2026.010},
+  url         = {https://www.federalreserve.gov/econres/feds/kalshi-and-the-rise-of-macro-markets.htm},
+  note        = {Relevance: evaluates the accuracy of Kalshi macro-market-implied forecasts (CPI, FOMC decisions) against surveys and market-implied forecasts; supports using resolved Kalshi macro markets as the thesis's evaluation benchmark. Official Fed working paper, not peer-reviewed. verified: https://www.federalreserve.gov/econres/feds/kalshi-and-the-rise-of-macro-markets.htm, 2026-10-31}
+}
+
+@book{efron1993bootstrap,
+  author    = {Bradley Efron and Robert J. Tibshirani},
+  title     = {An Introduction to the Bootstrap},
+  publisher = {Chapman \& Hall},
+  address   = {New York},
+  year      = {1993},
+  series    = {Monographs on Statistics and Applied Probability},
+  isbn      = {9780412042317},
+  doi       = {10.1007/978-1-4899-4541-9},
+  note      = {verified: Crossref record https://api.crossref.org/works/10.1007/978-1-4899-4541-9 (Springer US / Chapman and Hall, 1993, print ISBN 9780412042317) and the Routledge page https://www.routledge.com/An-Introduction-to-the-Bootstrap/Efron-Tibshirani/p/book/9780412042317 (Chapman \& Hall; the CRC reissue DOI 10.1201/9780429246593 is dated 1994), 2026-10-31}
+}
+
+% ---------------------------------------------------------------------------
+% 7. Analytic standards, LLM self-knowledge and calibration
+% ---------------------------------------------------------------------------
+
+@article{epstein1969scoring,
+  author    = {Edward S. Epstein},
+  title     = {A Scoring System for Probability Forecasts of Ranked Categories},
+  journal   = {Journal of Applied Meteorology},
+  year      = {1969},
+  volume    = {8},
+  number    = {6},
+  pages     = {985--987},
+  month     = dec,
+  doi       = {10.1175/1520-0450(1969)008<0985:ASSFPF>2.0.CO;2},
+  note      = {verified: Crossref record of the AMS deposit https://api.crossref.org/works/10.1175/1520-0450(1969)008\%3C0985:ASSFPF\%3E2.0.CO;2 (publisher page returned 403), 2026-10-31}
+}
+
+@article{fariaecastro2024artificial,
+  author    = {Miguel Faria-e-Castro and Fernando Leibovici},
+  title     = {Artificial Intelligence and Inflation Forecasts},
+  journal   = {Federal Reserve Bank of St. Louis Review},
+  year      = {2024},
+  volume    = {106},
+  number    = {12},
+  pages     = {1--14},
+  doi       = {10.20955/r.2024.12},
+  url       = {https://www.stlouisfed.org/publications/review/2024/nov/artificial-intelligence-and-inflation-forecasts},
+  note      = {Relevance: LLM (PaLM) conditional inflation forecasts 2019--2023 benchmarked against the Survey of Professional Forecasters; lower MSE at most horizons but slower reversion to the 2\% anchor. verified: the St. Louis Fed Review page (vol. 106, no. 12, pp. 1--14, Fourth Quarter 2024) and Crossref https://api.crossref.org/works/10.20955/r.2024.12, 2026-10-31}
+}
+
+@inproceedings{gebele2026diversity,
+  author    = {Jonas Gebele and Tristan Till and Florian Matthes},
+  title     = {Diversity and Deliberation in Homogeneous {LLM} Prediction Polls},
+  booktitle = {Proceedings of the Second Workshop for REsearch on Agent Language Models ({REALM} 2026)},
+  editor    = {Ehsan Kamalloo and Nicolas Gontier and Nikolai Rozanov and Maryam Hashemzadeh and Akhil Arora},
+  publisher = {Association for Computational Linguistics},
+  address   = {Budapest, Hungary},
+  month     = oct,
+  year      = {2026},
+  pages     = {1229--1235},
+  doi       = {10.18653/2026.realm-1.85},
+  url       = {https://aclanthology.org/2026.realm-1.85/},
+  note      = {Workshop paper (ACL Anthology). Three authors: cite as Gebele, Till and Matthes (2026), not ``Gebele and Matthes''. verified: https://aclanthology.org/2026.realm-1.85/ and https://api.crossref.org/works/10.18653/2026.realm-1.85, 2026-10-31}
+}
+
+@article{gneiting2007strictly,
+  author    = {Tilmann Gneiting and Adrian E. Raftery},
+  title     = {Strictly Proper Scoring Rules, Prediction, and Estimation},
+  journal   = {Journal of the American Statistical Association},
+  year      = {2007},
+  volume    = {102},
+  number    = {477},
+  pages     = {359--378},
+  month     = mar,
+  doi       = {10.1198/016214506000001437},
+  note      = {verified: Crossref record of the Taylor \& Francis deposit https://api.crossref.org/works/10.1198/016214506000001437 (publisher page returned 403), 2026-10-31}
+}
+
+@inproceedings{guo2017calibration,
+  author    = {Chuan Guo and Geoff Pleiss and Yu Sun and Kilian Q. Weinberger},
+  title     = {On Calibration of Modern Neural Networks},
+  booktitle = {Proceedings of the 34th International Conference on Machine Learning},
+  editor    = {Doina Precup and Yee Whye Teh},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {70},
+  pages     = {1321--1330},
+  year      = {2017},
+  publisher = {PMLR},
+  url       = {https://proceedings.mlr.press/v70/guo17a.html},
+  note      = {verified: https://proceedings.mlr.press/v70/guo17a.html, 2026-10-31}
+}
+
+@inproceedings{halawi2024forecasting,
+  author    = {Danny Halawi and Fred Zhang and {Chen Yueh-Han} and Jacob Steinhardt},
+  title     = {Approaching Human-Level Forecasting with Language Models},
+  booktitle = {Advances in Neural Information Processing Systems 37 ({NeurIPS} 2024)},
+  year      = {2024},
+  pages     = {50426--50468},
+  publisher = {Neural Information Processing Systems Foundation},
+  address   = {Vancouver, BC, Canada},
+  doi       = {10.52202/079017-1598},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2024/hash/5a5acfd0876c940d81619c1dc60e7748-Abstract-Conference.html},
+  eprint    = {2402.18563},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.LG},
+  note      = {verified: https://proceedings.neurips.cc/paper\_files/paper/2024/hash/5a5acfd0876c940d81619c1dc60e7748-Abstract-Conference.html (main-track paper, DOI, pages via Crossref) and https://arxiv.org/abs/2402.18563, 2026-10-31}
+}
+
+@article{holm1979simple,
+  author    = {Sture Holm},
+  title     = {A Simple Sequentially Rejective Multiple Test Procedure},
+  journal   = {Scandinavian Journal of Statistics},
+  year      = {1979},
+  volume    = {6},
+  number    = {2},
+  pages     = {65--70},
+  url       = {https://www.jstor.org/stable/4615733},
+  note      = {PARTIAL: the JSTOR page (stable/4615733) and a university-hosted JSTOR copy could not be loaded; volume, issue and pages were read from the OpenAlex record https://api.openalex.org/works/W2121044470 and from the JSTOR cover-sheet text quoted in search results. No DOI (10.2307/4615733 is not registered at Crossref). checked 2026-10-31}
+}
+
+@article{hong2004groups,
+  author    = {Lu Hong and Scott E. Page},
+  title     = {Groups of Diverse Problem Solvers Can Outperform Groups of High-Ability Problem Solvers},
+  journal   = {Proceedings of the National Academy of Sciences},
+  year      = {2004},
+  volume    = {101},
+  number    = {46},
+  pages     = {16385--16389},
+  doi       = {10.1073/pnas.0403723101},
+  note      = {verified: Crossref record of the PNAS deposit https://api.crossref.org/works/10.1073/pnas.0403723101 (publisher page returned 403), 2026-10-31}
+}
+
+@article{jeddi2026crowdsourced,
+  author    = {Younes Jeddi and Jose Segovia-Martin and Emile Servan-Schreiber},
+  title     = {Crowdsourced versus Large Language Models Forecasting: Evidence for the Accuracy--Correlation Effect},
+  journal   = {Philosophical Transactions of the Royal Society B},
+  year      = {2026},
+  volume    = {381},
+  number    = {1948},
+  pages     = {20240456},
+  doi       = {10.1098/rstb.2024.0456},
+  note      = {Relevance: compares human-crowd and LLM-crowd forecasts and documents an accuracy--correlation trade-off in aggregating LLM forecasts, the issue behind pooling three school agents trained from one base model. verified: Crossref record of the Royal Society deposit https://api.crossref.org/works/10.1098/rstb.2024.0456 (published 2026-04-16), 2026-10-31}
+}
+
+@misc{jeen2026training,
+  author    = {Scott Jeen and Matthew Aitchison and {Mantic}},
+  title     = {Training {LLMs} to Predict World Events},
+  howpublished = {Thinking Machines Lab: News (guest post with Mantic)},
+  month     = mar,
+  year      = {2026},
+  url       = {https://thinkingmachines.ai/news/training-llms-to-predict-world-events/},
+  note      = {Blog post dated 19 March 2026; the page's own BibTeX lists the authors as ``Scott Jeen, Matthew Aitchison, and Mantic''. RL fine-tuning of gpt-oss-120b on about 10,000 binary questions with a Brier-score reward on Tinker; evaluated on the Metaculus Q2 2025 AI Benchmark Tournament. verified: https://thinkingmachines.ai/news/training-llms-to-predict-world-events/, 2026-10-31}
+}
+
+@misc{kadavath2022language,
+  author    = {Saurav Kadavath and Tom Conerly and Amanda Askell and Tom Henighan and Dawn Drain and Ethan Perez and Nicholas Schiefer and Zac Hatfield-Dodds and Nova DasSarma and Eli Tran-Johnson and Scott Johnston and Sheer El-Showk and Andy Jones and Nelson Elhage and Tristan Hume and Anna Chen and Yuntao Bai and Sam Bowman and Stanislav Fort and Deep Ganguli and Danny Hernandez and Josh Jacobson and Jackson Kernion and Shauna Kravec and Liane Lovitt and Kamal Ndousse and Catherine Olsson and Sam Ringer and Dario Amodei and Tom Brown and Jack Clark and Nicholas Joseph and Ben Mann and Sam McCandlish and Chris Olah and Jared Kaplan},
+  title     = {Language Models (Mostly) Know What They Know},
+  year      = {2022},
+  eprint    = {2207.05221},
+  archiveprefix = {arXiv},
+  url       = {https://arxiv.org/abs/2207.05221},
+  note      = {arXiv preprint (v1 11 July 2022, v4 21 November 2022); no journal reference listed. verified: https://arxiv.org/abs/2207.05221, 2026-10-31}
+}
+
+@inproceedings{kapoor2024taught,
+  author    = {Sanyam Kapoor and Nate Gruver and Manley Roberts and Katherine Collins and Arka Pal and Umang Bhatt and Adrian Weller and Samuel Dooley and Micah Goldblum and Andrew Gordon Wilson},
+  title     = {Large Language Models Must Be Taught to Know What They Don't Know},
+  booktitle = {Advances in Neural Information Processing Systems 37 ({NeurIPS} 2024)},
+  year      = {2024},
+  pages     = {85932--85972},
+  publisher = {Neural Information Processing Systems Foundation},
+  doi       = {10.52202/079017-2729},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2024/hash/9c20f16b05f5e5e70fa07e2a4364b80e-Abstract-Conference.html},
+  eprint    = {2406.08391},
+  archiveprefix = {arXiv},
+  note      = {Relevance: shows that LoRA fine-tuning on about 1,000 graded examples yields calibrated uncertainty estimates in open-weight LLMs, better than prompting; directly relevant to calibrating the LoRA school adapters. verified: NeurIPS proceedings page and Crossref record https://api.crossref.org/works/10.52202/079017-2729, 2026-10-31}
+}
+
+@inproceedings{karger2025forecastbench,
+  author    = {Ezra Karger and Houtan Bastani and {Chen Yueh-Han} and Zachary Jacobs and Danny Halawi and Fred Zhang and Philip E. Tetlock},
+  title     = {{ForecastBench}: A Dynamic Benchmark of {AI} Forecasting Capabilities},
+  booktitle = {The Thirteenth International Conference on Learning Representations ({ICLR} 2025)},
+  year      = {2025},
+  url       = {https://openreview.net/forum?id=lfPkGWXLLf},
+  eprint    = {2409.19839},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.LG},
+  note      = {verified: https://proceedings.iclr.cc/paper\_files/paper/2025/hash/ea74e45a229dac70b5b63b28d8934db6-Abstract-Conference.html, https://iclr.cc/virtual/2025/poster/28507 (poster) and https://arxiv.org/abs/2409.19839, 2026-10-31}
+}
+
+@inproceedings{kroer2016arbitrage,
+  author    = {Christian Kroer and Miroslav Dud{\'\i}k and S{\'e}bastien Lahaie and Sivaraman Balakrishnan},
+  title     = {Arbitrage-Free Combinatorial Market Making via Integer Programming},
+  booktitle = {Proceedings of the 2016 {ACM} Conference on Economics and Computation ({EC} '16)},
+  year      = {2016},
+  month     = jul,
+  pages     = {161--178},
+  publisher = {ACM},
+  address   = {New York, NY, USA},
+  doi       = {10.1145/2940716.2940767},
+  eprint    = {1606.02825},
+  archiveprefix = {arXiv},
+  note      = {verified: Crossref record of the ACM deposit https://api.crossref.org/works/10.1145/2940716.2940767 (EC '16, Maastricht, 2016-07-21) and https://arxiv.org/abs/1606.02825 (related DOI), 2026-10-31}
+}
+
+% ---------------------------------------------------------------------------
+% 3. Scoring rules, calibration
+% ---------------------------------------------------------------------------
+
+@misc{le2026decomposing,
+  author    = {Nam Anh Le},
+  title     = {Decomposing Crowd Wisdom: Domain-Specific Calibration Dynamics in Prediction Markets},
+  year      = {2026},
+  eprint    = {2602.19520},
+  archiveprefix = {arXiv},
+  primaryclass  = {stat.AP},
+  url       = {https://arxiv.org/abs/2602.19520},
+  note      = {arXiv preprint (v1 23 February 2026, v2 4 August 2026); no venue found. Studies calibration of human-trader prices on Kalshi and Polymarket (353M trades, 429k binary contracts in v2), not LLM forecasts. verified: https://arxiv.org/abs/2602.19520, 2026-10-31}
+}
+
+@article{lichtendahl2013average,
+  author    = {Kenneth C. {Lichtendahl Jr.} and Yael Grushka-Cockayne and Robert L. Winkler},
+  title     = {Is It Better to Average Probabilities or Quantiles?},
+  journal   = {Management Science},
+  year      = {2013},
+  volume    = {59},
+  number    = {7},
+  pages     = {1594--1611},
+  doi       = {10.1287/mnsc.1120.1667},
+  note      = {verified: Crossref record of the INFORMS deposit https://api.crossref.org/works/10.1287/mnsc.1120.1667 (publisher page returned 403), 2026-10-31}
+}
+
+@article{mellers2014psychological,
+  author    = {Barbara Mellers and Lyle Ungar and Jonathan Baron and Jaime Ramos and Burcu Gurcay and Katrina Fincher and Sydney E. Scott and Don Moore and Pavel Atanasov and Samuel A. Swift and Terry Murray and Eric Stone and Philip E. Tetlock},
+  title     = {Psychological Strategies for Winning a Geopolitical Forecasting Tournament},
+  journal   = {Psychological Science},
+  year      = {2014},
+  volume    = {25},
+  number    = {5},
+  pages     = {1106--1115},
+  doi       = {10.1177/0956797614524255},
+  note      = {verified: Crossref record of the SAGE deposit https://api.crossref.org/works/10.1177/0956797614524255 (publisher page returned 403), 2026-10-31}
+}
+
+% ---------------------------------------------------------------------------
+% 6. Statistics: tests, multiple comparisons, bootstrap
+% ---------------------------------------------------------------------------
+
+@article{murphy1973vector,
+  author    = {Allan H. Murphy},
+  title     = {A New Vector Partition of the Probability Score},
+  journal   = {Journal of Applied Meteorology},
+  year      = {1973},
+  volume    = {12},
+  number    = {4},
+  pages     = {595--600},
+  month     = jun,
+  doi       = {10.1175/1520-0450(1973)012<0595:ANVPOT>2.0.CO;2},
+  note      = {verified: Crossref record of the AMS deposit https://api.crossref.org/works/10.1175/1520-0450(1973)012\%3C0595:ANVPOT\%3E2.0.CO;2 (publisher page returned 403), 2026-10-31}
+}
+
+@inproceedings{naeini2015obtaining,
+  author    = {Mahdi Pakdaman Naeini and Gregory Cooper and Milos Hauskrecht},
+  title     = {Obtaining Well Calibrated Probabilities Using {Bayesian} Binning},
+  booktitle = {Proceedings of the {AAAI} Conference on Artificial Intelligence},
+  volume    = {29},
+  number    = {1},
+  year      = {2015},
+  publisher = {AAAI Press},
+  doi       = {10.1609/aaai.v29i1.9602},
+  url       = {https://ojs.aaai.org/index.php/AAAI/article/view/9602},
+  note      = {PARTIAL: page numbers omitted (the AAAI page is behind a bot check and the Crossref deposit carries no pages). verified otherwise via Crossref record of the AAAI deposit https://api.crossref.org/works/10.1609/aaai.v29i1.9602, 2026-10-31}
+}
+
+% ---------------------------------------------------------------------------
+% 4. Forecast combination, diversity
+% ---------------------------------------------------------------------------
+
+@misc{nel2025kalshibench,
+  author    = {Lukas Nel},
+  title     = {Do Large Language Models Know What They Don't Know? {Kalshibench}: A New Benchmark for Evaluating Epistemic Calibration via Prediction Markets},
+  year      = {2025},
+  month     = dec,
+  eprint    = {2512.16030},
+  archiveprefix = {arXiv},
+  url       = {https://arxiv.org/abs/2512.16030},
+  note      = {arXiv preprint (v1, 17 December 2025); no venue found. verified: https://arxiv.org/abs/2512.16030, 2026-10-31}
+}
+
+@techreport{odni2015icd203,
+  author      = {{Office of the Director of National Intelligence}},
+  title       = {Intelligence Community Directive 203: Analytic Standards},
+  institution = {Office of the Director of National Intelligence},
+  address     = {Washington, DC},
+  year        = {2015},
+  month       = jan,
+  url         = {https://www.dni.gov/files/documents/ICD/ICD-203.pdf},
+  note        = {Signed 2 January 2015 by DNI James R. Clapper; supersedes ICD 203 of 21 June 2007. The official PDF (which redirects to https://archive.dni.gov/files/documents/ICD/ICD-203.pdf) carries technical amendments (21 January 2022 and a later one adding annual training) and the standard ``Properly expresses and explains uncertainties associated with major analytic judgments'' with likelihood and confidence-level rules. verified: text extracted from that PDF, 2026-10-31}
+}
+
+@inproceedings{paleka2025consistency,
+  author    = {Daniel Paleka and Abhimanyu Pallavi Sudhir and Alejandro Alvarez and Vineeth Bhat and Adam Shen and Evan Wang and Florian Tram{\`e}r},
+  title     = {Consistency Checks for Language Model Forecasters},
+  booktitle = {The Thirteenth International Conference on Learning Representations ({ICLR} 2025)},
+  year      = {2025},
+  url       = {https://openreview.net/forum?id=r5IXBlTCGc},
+  eprint    = {2412.18544},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.LG},
+  note      = {verified: https://proceedings.iclr.cc/paper\_files/paper/2025/hash/5107a33432b9a5cffafd0a53ef6c6a18-Abstract-Conference.html, https://iclr.cc/virtual/2025/poster/28220 (poster) and https://arxiv.org/abs/2412.18544, 2026-10-31}
+}
+
+@inproceedings{paleka2026pitfalls,
+  author    = {Daniel Paleka and Shashwat Goel and Jonas Geiping and Florian Tram{\`e}r},
+  title     = {Pitfalls in Evaluating Language Model Forecasters},
+  booktitle = {The Fourteenth International Conference on Learning Representations ({ICLR} 2026)},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=z85kARAoyD},
+  eprint    = {2506.00723},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.LG},
+  note      = {verified: https://iclr.cc/virtual/2026/poster/10006489 (ICLR 2026 poster, links to OpenReview z85kARAoyD) and https://arxiv.org/abs/2506.00723, 2026-10-31. This is the 2026 Paleka et al. follow-up; it is not a sequel on consistency checks but on evaluation pitfalls (temporal leakage, extrapolation).}
+}
+
+@incollection{platt2000probabilistic,
+  author    = {John C. Platt},
+  title     = {Probabilistic Outputs for Support Vector Machines and Comparisons to Regularized Likelihood Methods},
+  booktitle = {Advances in Large Margin Classifiers},
+  editor    = {Alexander J. Smola and Peter L. Bartlett and Bernhard Sch{\"o}lkopf and Dale Schuurmans},
+  publisher = {MIT Press},
+  address   = {Cambridge, MA},
+  year      = {2000},
+  note      = {PARTIAL: the MIT Press / MIT Press Direct pages and Google Books refused automated access, so the chapter pages (usually given as 61--74) and the exact editor list could not be read from a publisher page; the book's publication year 2000 and editors come from the MIT Press Direct search listing (``Advances in Large-Margin Classifiers'', Neural Information Processing series) and from Lin, Lin and Weng (Machine Learning 68, 2007). The chapter is commonly cited as Platt (1999) after its 1999 preprint. checked: https://mitpress.mit.edu/9780262194488/advances-in-large-margin-classifiers/ (403), 2026-10-31}
+}
+
+@article{predd2008aggregating,
+  author    = {Joel B. Predd and Daniel N. Osherson and Sanjeev R. Kulkarni and H. Vincent Poor},
+  title     = {Aggregating Probabilistic Forecasts from Incoherent and Abstaining Experts},
+  journal   = {Decision Analysis},
+  year      = {2008},
+  volume    = {5},
+  number    = {4},
+  pages     = {177--189},
+  month     = dec,
+  doi       = {10.1287/deca.1080.0119},
+  note      = {verified: https://pubsonline.informs.org/doi/10.1287/deca.1080.0119 (listing) and Crossref record of the INFORMS deposit https://api.crossref.org/works/10.1287/deca.1080.0119, 2026-10-31}
+}
+
+@article{predd2009coherence,
+  author    = {Joel B. Predd and Robert Seiringer and Elliott H. Lieb and Daniel N. Osherson and H. Vincent Poor and Sanjeev R. Kulkarni},
+  title     = {Probabilistic Coherence and Proper Scoring Rules},
+  journal   = {IEEE Transactions on Information Theory},
+  year      = {2009},
+  volume    = {55},
+  number    = {10},
+  pages     = {4786--4792},
+  month     = oct,
+  doi       = {10.1109/TIT.2009.2027573},
+  eprint    = {0710.3183},
+  archiveprefix = {arXiv},
+  note      = {verified: Crossref record of the IEEE deposit https://api.crossref.org/works/10.1109/TIT.2009.2027573, https://research-explorer.ista.ac.at/record/2388 and https://arxiv.org/abs/0710.3183 (journal ref. ``IEEE T. Inform. Theory 55, 4786 (2009)''), 2026-10-31}
+}
+
+@article{ranjan2010combining,
+  author    = {Roopesh Ranjan and Tilmann Gneiting},
+  title     = {Combining Probability Forecasts},
+  journal   = {Journal of the Royal Statistical Society: Series B (Statistical Methodology)},
+  year      = {2010},
+  volume    = {72},
+  number    = {1},
+  pages     = {71--91},
+  doi       = {10.1111/j.1467-9868.2009.00726.x},
+  note      = {verified: Crossref record of the publisher deposit https://api.crossref.org/works/10.1111/j.1467-9868.2009.00726.x, 2026-10-31}
+}
+
+@article{satopaa2014combining,
+  author    = {Ville A. Satop{\"a}{\"a} and Jonathan Baron and Dean P. Foster and Barbara A. Mellers and Philip E. Tetlock and Lyle H. Ungar},
+  title     = {Combining Multiple Probability Predictions Using a Simple Logit Model},
+  journal   = {International Journal of Forecasting},
+  year      = {2014},
+  volume    = {30},
+  number    = {2},
+  pages     = {344--356},
+  doi       = {10.1016/j.ijforecast.2013.09.009},
+  note      = {verified: Crossref record of the Elsevier deposit https://api.crossref.org/works/10.1016/j.ijforecast.2013.09.009, 2026-10-31}
+}
+
+% ---------------------------------------------------------------------------
+% 5. Prediction markets, forecasting tournaments
+% ---------------------------------------------------------------------------
+
+@article{schoenegger2024wisdom,
+  author    = {Philipp Schoenegger and Indre Tuminauskaite and Peter S. Park and Rafael Valdece Sousa Bastos and Philip E. Tetlock},
+  title     = {Wisdom of the Silicon Crowd: {LLM} Ensemble Prediction Capabilities Rival Human Crowd Accuracy},
+  journal   = {Science Advances},
+  year      = {2024},
+  volume    = {10},
+  number    = {45},
+  pages     = {eadp1528},
+  doi       = {10.1126/sciadv.adp1528},
+  eprint    = {2402.19379},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CY},
+  note      = {verified: Crossref record of the AAAS deposit https://api.crossref.org/works/10.1126/sciadv.adp1528 (published 2024-11-08; five authors in the journal version, the arXiv v6 lists four) and https://arxiv.org/abs/2402.19379, 2026-10-31}
+}
+
+@misc{shi2026combinatorial,
+  author    = {Hongjian Shi and Daojing Zhai},
+  title     = {Combinatorial Arbitrage in Prediction Markets},
+  year      = {2026},
+  month     = oct,
+  eprint    = {2610.23517},
+  archiveprefix = {arXiv},
+  primaryclass  = {q-fin.TR},
+  url       = {https://arxiv.org/abs/2610.23517},
+  note      = {arXiv preprint (v1 16 October 2026, v4 25 October 2026); also SSRN 7587019 (author order Zhai, Shi there); no venue found. Proves that prices outside the convex hull of admissible payoff vectors admit arbitrage and finds optimal arbitrage portfolios by integer programming over 1.9M logical relations on Polymarket. verified: https://arxiv.org/abs/2610.23517, 2026-10-31}
+}
+
+@incollection{snowberg2013prediction,
+  author    = {Erik Snowberg and Justin Wolfers and Eric Zitzewitz},
+  title     = {Prediction Markets for Economic Forecasting},
+  booktitle = {Handbook of Economic Forecasting},
+  editor    = {Graham Elliott and Allan Timmermann},
+  volume    = {2A},
+  publisher = {Elsevier},
+  address   = {Amsterdam},
+  year      = {2013},
+  pages     = {657--687},
+  isbn      = {9780444536839},
+  doi       = {10.1016/B978-0-444-53683-9.00011-6},
+  note      = {verified: Crossref record of the Elsevier deposit https://api.crossref.org/works/10.1016/B978-0-444-53683-9.00011-6 and the Elsevier book page https://shop.elsevier.com/books/handbook-of-economic-forecasting/elliott/978-0-444-53683-9 (Volume 2A, Elliott and Timmermann, 2013), 2026-10-31}
+}
+
+@book{tetlock2005expert,
+  author    = {Philip E. Tetlock},
+  title     = {Expert Political Judgment: How Good Is It? How Can We Know?},
+  publisher = {Princeton University Press},
+  address   = {Princeton, NJ},
+  year      = {2005},
+  note      = {PARTIAL: the publisher page reached (https://press.princeton.edu/books/paperback/9780691175973/expert-political-judgment) is the 2017 edition with a new preface (ISBN 9780691175973; e-edition DOI 10.1515/9781400888818) and says only ``since its original publication''; the 2005 date is confirmed by the Crossref record of the 2006 Journal of Politics review (``Princeton University Press, 2005'') but no 2005-edition publisher page could be loaded. checked 2026-10-31}
+}
+
+@book{tetlock2015superforecasting,
+  author    = {Philip E. Tetlock and Dan Gardner},
+  title     = {Superforecasting: The Art and Science of Prediction},
+  publisher = {Crown},
+  address   = {New York},
+  year      = {2015},
+  note      = {verified: https://www.penguinrandomhouse.com/books/227815/superforecasting-by-philip-e-tetlock-and-dan-gardner/ (``Published by Crown''; first released 29 September 2015; paperback 13 September 2016, ISBN 9780804136716), 2026-10-31}
+}
+
+@inproceedings{tian2023just,
+  author    = {Katherine Tian and Eric Mitchell and Allan Zhou and Archit Sharma and Rafael Rafailov and Huaxiu Yao and Chelsea Finn and Christopher Manning},
+  title     = {Just Ask for Calibration: Strategies for Eliciting Calibrated Confidence Scores from Language Models Fine-Tuned with Human Feedback},
+  booktitle = {Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing ({EMNLP})},
+  editor    = {Houda Bouamor and Juan Pino and Kalika Bali},
+  publisher = {Association for Computational Linguistics},
+  address   = {Singapore},
+  month     = dec,
+  year      = {2023},
+  pages     = {5433--5442},
+  doi       = {10.18653/v1/2023.emnlp-main.330},
+  url       = {https://aclanthology.org/2023.emnlp-main.330/},
+  note      = {verified: https://aclanthology.org/2023.emnlp-main.330/, 2026-10-31}
+}
+
+% ---------------------------------------------------------------------------
+% 8. Discoveries (additional references, each verified the same way)
+% ---------------------------------------------------------------------------
+
+@article{turtel2025outcome,
+  author    = {Benjamin Turtel and Danny Franklin and Kris Skotheim and Luke Hewitt and Philipp Schoenegger},
+  title     = {Outcome-based Reinforcement Learning to Predict the Future},
+  journal   = {Transactions on Machine Learning Research},
+  year      = {2025},
+  month     = dec,
+  url       = {https://openreview.net/forum?id=bbhdeL8EUX},
+  eprint    = {2505.17989},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.LG},
+  note      = {verified: TMLR accepted-papers list https://jmlr.org/tmlr/papers/ (listed under December 2025) and the TMLR-formatted camera-ready https://arxiv.org/pdf/2505.17989v4 whose header reads ``Published in Transactions on Machine Learning Research (11/2025)''; the OpenReview page itself is behind a bot check, 2026-10-31}
+}
+
+@article{wolfers2004prediction,
+  author    = {Justin Wolfers and Eric Zitzewitz},
+  title     = {Prediction Markets},
+  journal   = {Journal of Economic Perspectives},
+  year      = {2004},
+  volume    = {18},
+  number    = {2},
+  pages     = {107--126},
+  doi       = {10.1257/0895330041371321},
+  note      = {verified: https://www.aeaweb.org/articles?id=10.1257/0895330041371321, 2026-10-31}
+}
+
+@inproceedings{xiong2024can,
+  author    = {Miao Xiong and Zhiyuan Hu and Xinyang Lu and Yifei Li and Jie Fu and Junxian He and Bryan Hooi},
+  title     = {Can {LLMs} Express Their Uncertainty? An Empirical Evaluation of Confidence Elicitation in {LLMs}},
+  booktitle = {The Twelfth International Conference on Learning Representations ({ICLR} 2024)},
+  year      = {2024},
+  url       = {https://openreview.net/forum?id=gjeQKFxFpZ},
+  eprint    = {2306.13063},
+  archiveprefix = {arXiv},
+  note      = {Relevance: systematic evaluation (ECE, AUROC) of verbalized and consistency-based confidence elicitation; LLMs are overconfident when stating probabilities, the baseline the thesis's prompting conditions face. verified: https://iclr.cc/virtual/2024/poster/18135 (ICLR 2024 poster; the OpenReview page is behind a bot check), 2026-10-31}
+}
+
+@inproceedings{zhu2024incoherent,
+  author    = {Jian-Qiao Zhu and Thomas L. Griffiths},
+  title     = {Incoherent Probability Judgments in Large Language Models},
+  booktitle = {Proceedings of the 46th Annual Conference of the Cognitive Science Society},
+  editor    = {L. K. Samuelson and S. L. Frank and M. Toneva and A. Mackey and E. Hazeltine},
+  year      = {2024},
+  pages     = {906--913},
+  url       = {https://escholarship.org/uc/item/2r68p98c},
+  eprint    = {2401.16646},
+  archiveprefix = {arXiv},
+  note      = {Relevance: tests LLM probability judgments against probabilistic identities (complement, conjunction, etc.) and finds systematic, human-like incoherence; a precedent for the thesis's CPI month-on-month vs year-on-year coherence checks. verified: eScholarship proceedings PDF (cover sheet: Proceedings of the Annual Meeting of the Cognitive Science Society 46(0), 2024, peer reviewed; pages 906--913), 2026-10-31}
+}
