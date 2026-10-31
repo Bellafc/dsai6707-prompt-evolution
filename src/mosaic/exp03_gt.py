@@ -54,7 +54,26 @@ def in_scope(title: str) -> bool:
 
 
 def out_of_scope(series: dict) -> bool:
-    return bool(OUT_OF_SCOPE.search(series.get("title", "")))
+    """Not one of the draft's series: an explicit whitelist (below) after the title filter."""
+    return series.get("ticker") not in KALSHI_SERIES
+
+
+# Kalshi series ticker -> pmpol indicator series (`pmpol.propositions.indicators.SERIES`). Both the old tickers and
+# their KX-prefixed successors are listed, so a market counts once whichever name it was listed under.
+# Chosen from the 2026-10-31 listing of Economics/Financials series (titles in data/exp03/raw/kalshi_series.json);
+# the title-to-measure mapping is checked against each market's rules in exp03_questions.
+KALSHI_SERIES = {
+    "KXCPI": "us_cpi_mom", "CPI": "us_cpi_mom", "KXECONSTATCPI": "us_cpi_mom",
+    "KXCPICORE": "us_core_cpi_mom", "CPICORE": "us_core_cpi_mom", "KXECONSTATCPICORE": "us_core_cpi_mom",
+    "KXCPIYOY": "us_cpi_yoy", "CPIYOY": "us_cpi_yoy", "KXECONSTATCPIYOY": "us_cpi_yoy",
+    "KXCPICOREYOY": "us_core_cpi_yoy", "CPICOREYOY": "us_core_cpi_yoy", "KXECONSTATCORECPIYOY": "us_core_cpi_yoy",
+    "KXU3": "us_unemployment", "U3": "us_unemployment", "KXECONSTATU3": "us_unemployment",
+    "KXGDP": "us_real_gdp_qoq_saar", "GDP": "us_real_gdp_qoq_saar",
+    "KXFEDDECISION": "fed_change", "FEDDECISION": "fed_change",
+    "KXCBDECISIONEU": "ecb_change", "KXCBDECISIONENGLAND": "boe_change", "KXCBDECISIONJAPAN": "boj_change",
+    "KXCBDECISIONMEXICO": "banxico_change", "KXCBDECISIONCANADA": "boc_change", "KXCBDSWISS": "snb_change",
+    "KXCBDECISIONAUSTRALIA": "rba_change",
+}
 
 
 def kalshi_record(m: dict, series: dict, candles: list[dict]) -> dict | None:

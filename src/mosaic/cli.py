@@ -118,6 +118,11 @@ def main(argv: list[str] | None = None) -> int:
     e3f = e3sub.add_parser("fetch", help="settled macro markets with daily prices before close (network)")
     e3f.add_argument("--venue", choices=["kalshi", "polymarket"], required=True)
     e3f.add_argument("--since", default="2025-05-01")
+    e3sub.add_parser("build", help="question set from the fetched markets: scenario sets, exclusions, counts (offline)")
+    e3p = e3sub.add_parser("pilot", help="format-compliance pilot on <= 10 calibration questions (GPU)")
+    e3p.add_argument("--limit", type=int, default=10)
+    e3p.add_argument("--systems", default="base,K',A',M'", help="comma list of base, K, A, M (adapters), K', A', M'")
+    e3p.add_argument("--backend", choices=["fake"], default=None)
     e3v = e3sub.add_parser("vintages", help="ALFRED values of one series as of given dates (network, cached)")
     e3v.add_argument("--series", required=True)
     e3v.add_argument("--dates", required=True, help="comma list of YYYY-MM-DD")
@@ -210,6 +215,23 @@ def main(argv: list[str] | None = None) -> int:
         if a.e3_cmd == "fetch":
             n = (exp03_gt.fetch_kalshi if a.venue == "kalshi" else exp03_gt.fetch_polymarket)(since=a.since)
             print(f"{a.venue}: {n} new settled markets")
+        if a.e3_cmd == "build":
+            import json
+            from collections import Counter
+            from mosaic import exp03_questions as eq
+            recs = []
+            for f in sorted(exp03_gt.RAW.glob("*_econ.jsonl")):
+                recs += [json.loads(x) for x in f.read_text(encoding="utf-8").splitlines() if x.strip()]
+            qs, ex = eq.build_events(recs)
+            eq.write_jsonl(qs, exp03_gt.RAW.parent / "questions.jsonl")
+            eq.write_jsonl(ex, exp03_gt.RAW.parent / "exclusions.jsonl")
+            print(f"{len(recs)} markets -> {len(qs)} questions, {len(ex)} exclusions")
+            print(json.dumps(eq.counts(qs), indent=1))
+            print(Counter(e["reason"] for e in ex).most_common())
+        if a.e3_cmd == "pilot":
+            import json
+            from mosaic import exp03_run
+            print(json.dumps(exp03_run.pilot(a.systems.split(","), a.limit, a.backend), indent=1))
         if a.e3_cmd == "vintages":
             from mosaic import exp03_context
             for d, v in exp03_context.fetch_asof(a.series, a.dates.split(",")).items():
