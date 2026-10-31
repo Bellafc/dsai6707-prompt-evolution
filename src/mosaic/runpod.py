@@ -34,6 +34,8 @@ SECRETS = {"CLAUDE_CODE_OAUTH_TOKEN": "claude_oauth_token", "GITHUB_TOKEN": "git
 OPTIONAL_SECRETS = {"HF_TOKEN": "hf_token", "JUPYTER_PASSWORD": "jupyter_password"}  # Jupyter runs only if set
 TASK_EXTRA_MODELS = {"S": "Qwen/Qwen3-8B-Base Qwen/Qwen3.5-27B"}  # program.md Task S needs the 27B spike
 MAX_HOURS = 12
+# Cloudflare in front of rest.runpod.io rejects urllib's default "Python-urllib/x.y" agent (error 1010).
+USER_AGENT = "macro-mosaic-orchestrator/1.0"
 
 
 class RunPodError(RuntimeError):
@@ -45,7 +47,7 @@ def request(method: str, path: str, body: dict | None = None, *, key: str | None
     """One REST call. Without a key the request carries no Authorization header, so that the Claude Code agent
     proxy can attach the network secret configured for rest.runpod.io."""
     key = key if key is not None else os.environ.get("RUNPOD_API_KEY")
-    headers = {"Content-Type": "application/json", "Accept": "application/json"}
+    headers = {"Content-Type": "application/json", "Accept": "application/json", "User-Agent": USER_AGENT}
     if key:
         headers["Authorization"] = f"Bearer {key}"
     data = json.dumps(body).encode() if body is not None else None
