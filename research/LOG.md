@@ -73,3 +73,15 @@
   200 GB volume (stopped, not terminated). Possible causes: slow setup, the session not ending, or a failed push.
 - next: the human reads the pod's Logs in the RunPod console (`[bootstrap ...]` lines); then decide whether to
   start it again to push, or terminate it.
+
+### 2026-10-31 13:42 UTC — infra: Task S pod stopped; root cause of both stuck pods
+- pod stop: `3wiqxmzq8f05mg` (task S, H100, $3.99/h) stopped at 13:42 UTC after 5 h 15 min (≈ $21), no branch.
+- cause (from the pod's container log, read by the human): setup finished (models downloaded, 32 tests pass,
+  `claude` logged in with the oauth token, vLLM importable), then `setup/runpod_setup.sh` printed its closing
+  message through an unquoted heredoc. Its backticks ran `mosaic train` (error) and `claude setup-token`, which
+  waited for interactive input forever. Neither pod (task 2, task S) ever reached its agent session; the RunPod
+  secrets and the bootstrap's secret checks worked.
+- fix: quoted heredoc, setup runs with stdin from /dev/null, regression test over all pod shell scripts
+  (`tests/test_runpod.py`); 33 offline tests pass.
+- next: pods clone `main`, so the fix must be merged (or pods started with `--branch`) before the next pod.
+  Models and the venv are cached on volume `dy1ct9hkm0`, so the next setup is short.
