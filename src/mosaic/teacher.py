@@ -38,6 +38,17 @@ batch report flags repeated probability tuples, one dominant confidence level an
 Items version 4: fewer negative-growth backdrops, the curve tied to the policy path and inflation, oil tied to CPI,
 lagged and smoothed series (M2 a year earlier, 4-quarter growth, nominal GDP), and levels the event states imposed on
 the backdrop.
+
+Prompt version 6 (after pilot v5, whose modal probabilities still sat at 0.40-0.55 in 44/55 items and whose confidence
+was "moderate" in 52/55): the last [Think] ends with an explicit evidence judgement ('Evidence: decisive|mixed|weak -
+why'), the most likely scenario's probability must fall in that judgement's band and the confidence level must follow
+it; the validator checks all three.
+
+Prompt version 7 (after the Opus review of pilot v5): rules that the teacher narrated ("nothing contradicts the data",
+"no annualisation needed", "not a liquidity trap") appear only for items they apply to; evidence labels get observable
+tests; a direction only the data support is NEUTRAL; scenarios may not share growth and inflation tags; episodes are
+described only as far as the tool text goes. Items version 5 ties core inflation to the unemployment gap and headline
+CPI to oil.
 """
 
 from __future__ import annotations
@@ -55,8 +66,8 @@ from mosaic.prompts import build_messages, read_prompt
 from mosaic.tools import EPISODES, TOOL_SPECS, EpisodeTable, MacroFacts, ToolBox
 
 SCHOOLS = ("keynesian", "austrian", "monetarist")
-PROMPT_VERSION = 5  # 5: pilot-v4 review fixes; 4: real tools through function calling, [Proof] block
-ITEMS_VERSION = 4  # the item generator (templates, backdrop); imports rebuild items, so this must match
+PROMPT_VERSION = 7  # 7: pilot-v5 review fixes; 6: Evidence line; 5: pilot-v4 review fixes; 4: real tools, [Proof]
+ITEMS_VERSION = 5  # the item generator (templates, backdrop); imports rebuild items, so this must match
 TEMPLATES = ROOT / "configs/teacher/templates.toml"
 MARKERS = ["[Think]", "[ToolCall: query_episode_db]", "[Observe]", "[Think]", "[ToolCall: get_macro_data]",
            "[Observe]", "[Think]", "[Output]"]
@@ -93,19 +104,22 @@ def macro_snapshot(rng: random.Random) -> dict:
     ffr = rng.choice([0.125, 0.5, 1.0, 1.75, 2.5, 3.25, 4.0, 4.75, 5.5])
     growth = round(rng.triangular(-6.0, 6.0, 2.0), 1)
     trend = round(min(4.0, max(-3.0, 0.5 * growth + 1.0 + rng.uniform(-0.8, 0.8))), 1)
-    cpi = round(rng.triangular(-0.5, 8.0, 2.2), 1)
     unemp = round(min(10.0, max(3.3, 4.4 - 0.35 * growth + rng.uniform(-1.0, 1.2))), 1)
+    level = rng.triangular(-0.5, 7.0, 2.0)  # the inflation regime; core follows the gap, headline follows oil
+    core = round(max(-0.3, level + 0.3 * (4.5 - unemp) + rng.uniform(-0.5, 0.5)), 1)
+    oil = int(min(140, max(25, 45 + 8 * level + rng.uniform(-20, 25))))
+    cpi = round(core + 0.04 * (oil - 75) + rng.uniform(-0.3, 0.3), 1)
     two = round(max(0.05, ffr + 0.12 * growth - 0.15 * max(0.0, unemp - 4.5) + rng.uniform(-0.4, 0.4)), 2)
     ten = round(max(0.3, 0.5 * two + 0.5 * (cpi + 1.0) + rng.uniform(-0.8, 1.2)), 2)
     vix = min(60, max(11, round(22 - 2 * growth + rng.uniform(-8, 12))))
-    m2 = round(min(20.0, max(-4.0, cpi + rng.uniform(-4.0, 8.0))), 1)
+    m2 = round(min(20.0, max(-4.0, level + rng.uniform(-4.0, 8.0))), 1)
     return {
         "US policy rate (%)": ffr,
         "US 2y yield (%)": two,
         "US 10y yield (%)": ten,
         "US 2y-10y spread (bp)": round((ten - two) * 100),
         "US CPI inflation y/y (%)": cpi,
-        "US core PCE y/y (%)": round(max(-0.3, cpi - rng.uniform(-0.5, 1.5)), 1),
+        "US core PCE y/y (%)": core,
         "US unemployment rate (%)": unemp,
         "US real GDP growth q/q saar (%)": growth,
         "US real GDP growth 4-quarter average (%)": trend,
@@ -115,7 +129,7 @@ def macro_snapshot(rng: random.Random) -> dict:
         "VIX": vix,
         "US high-yield spread (bp)": round(200 + 15 * vix + rng.uniform(-80, 80)),
         "DXY": rng.randint(85, 115),
-        "WTI oil ($/bbl)": int(min(140, max(25, 45 + 8 * cpi + rng.uniform(-20, 25)))),
+        "WTI oil ($/bbl)": oil,
     }
 
 
@@ -235,9 +249,14 @@ def leaks(text: str) -> list[str]:
 
 
 ANALOG_YEAR = re.compile(r"\b(1[89]\d\d|20[01]\d|202[0-4])\b")
-ASSETS = {"equities": r"equit(?:y|ies)", "government bonds": r"(?:government |sovereign |treasury )?bonds?|treasuries",
-          "US dollar": r"(?:the )?(?:us |u\.s\. )?dollar|usd|dxy", "gold": r"gold", "oil": r"(?:crude )?oil",
-          "credit": r"credit|high[- ]yield"}
+# Asset labels on signal lines; prompt version 5 named the referents ("government bonds (US Treasuries)"), and the
+# teachers then wrote "US Treasuries:" or "Credit (US high yield):", so a US prefix and a parenthesis are accepted.
+_US = r"(?:(?:the |broad )?(?:us |u\.s\. )?)"
+ASSETS = {"equities": _US + r"equit(?:y|ies)", "government bonds":
+          _US + r"(?:(?:government |sovereign |treasury )?bonds?|treasuries)",
+          "US dollar": r"(?:the )?(?:us |u\.s\. )?dollar|usd|dxy", "gold": r"gold", "oil": r"(?:wti |crude )?oil",
+          "credit": _US + r"(?:credit|high[- ]yield)(?: credit| bonds)?"}
+ASSET_TAIL = r"(?:[ \t]*\([^)\n]*\))?"  # an optional "(US high yield)" between the label and the colon
 META = re.compile(r"\b(as instructed|the (?:prompt|instructions)|I (?:must|should|need to) (?:reason|stay|think|write)"
                   r" (?:as|within|in))\b", re.I)
 # Phrases the pilot-v4 teachers echoed from the prompt or the school profile (rejected from prompt version 5 on).
@@ -245,6 +264,9 @@ ECHO = re.compile(r"\bweigh(?:t|s|ing)?\b[^.\n]{0,25}\bthe event\b|\bthe event d
                   r"\b(?:this|the) school(?:'s)?\b|\bschool's rule\b", re.I)
 SCENARIO = re.compile(r"^[ \t]*(S\d+)[^:\n]*:[ \t]*([01](?:\.\d+)?|\.\d+)[ \t]*$", re.M)
 CONF_LEVEL = re.compile(r"^[ \t]*Confidence[ \t]*:[ \t]*(high|moderate|low)\b", re.I | re.M)
+EVIDENCE = re.compile(r"^[ \t]*Evidence[ \t]*:[ \t]*(decisive|mixed|weak)\b", re.I | re.M)
+EVIDENCE_BAND = {"decisive": (0.60, 0.85), "mixed": (0.40, 0.60), "weak": (0.30, 0.45)}
+EVIDENCE_CONF = {"decisive": "high", "mixed": "moderate", "weak": "low"}
 
 
 def _segment(text: str, start: str, after: int = 0) -> str:
@@ -287,7 +309,7 @@ def validate(text: str, item: Item | None = None) -> list[str]:
     elif abs(sum(probs) - 1) > 0.02:
         problems.append(f"scenario probabilities sum to {sum(probs):.2f}")
     for asset, pat in ASSETS.items():
-        m = re.search(rf"^[ \t]*[-*]?[ \t]*(?:{pat})[ \t]*:[ \t]*(LONG|SHORT|NEUTRAL)[ \t]*\([ \t]*conviction[ \t]*"
+        m = re.search(rf"^[ \t]*[-*]?[ \t]*(?:{pat}){ASSET_TAIL}[ \t]*:[ \t]*(LONG|SHORT|NEUTRAL)[ \t]*\([ \t]*conviction[ \t]*"
                       rf"[1-5][ \t]*\)[ \t]*[-\u2013\u2014:]?[ \t]*(.*)$", out, re.I | re.M)
         if not m:
             problems.append(f"signal missing or malformed: {asset}")
@@ -326,7 +348,7 @@ def normalize(text: str) -> str:
     text = re.sub(r"^([ \t]*S\d+[ \t]*)\(([^()\n]*)\)[ \t]*:[ \t]*(growth[^:\n]*?)[ \t]*:[ \t]*([01](?:\.\d+)?|\.\d+)[ \t]*$",
                   r"\1(\2; \3): \4", text, flags=re.I | re.M)
     for pat in ASSETS.values():
-        text = re.sub(rf"^([ \t]*[-*]?[ \t]*(?:{pat})[ \t]*:[ \t]*(?:LONG|SHORT|NEUTRAL)[ \t]*\()[ \t]*"
+        text = re.sub(rf"^([ \t]*[-*]?[ \t]*(?:{pat}){ASSET_TAIL}[ \t]*:[ \t]*(?:LONG|SHORT|NEUTRAL)[ \t]*\()[ \t]*"
                       rf"(?:conviction[ \t]*:?[ \t]*)?([1-5])[ \t]*\)", r"\1conviction \2)", text, flags=re.I | re.M)
     return text
 
@@ -339,7 +361,7 @@ def signal_report(kept: dict[str, list[dict]], dominant: float = 0.7) -> dict:
         for r in recs:
             out = r["messages"][-1]["content"].split("[Output]")[-1]
             for asset, pat in ASSETS.items():
-                m = re.search(rf"^[ \t]*[-*]?[ \t]*(?:{pat})[ \t]*:[ \t]*(LONG|SHORT|NEUTRAL)", out, re.I | re.M)
+                m = re.search(rf"^[ \t]*[-*]?[ \t]*(?:{pat}){ASSET_TAIL}[ \t]*:[ \t]*(LONG|SHORT|NEUTRAL)", out, re.I | re.M)
                 if m:
                     counts[asset][m.group(1).upper()] += 1
         report["shares"][school] = counts
@@ -506,13 +528,30 @@ def teacher_messages_v4(item: Item, cfg: dict) -> list[dict]:
         "that matter for this event, not every concept the school has. Write in the first person as the economist; never "
         "call yourself the school. Never state an indicator value or a historical episode that a tool did not return; "
         "nothing after 2024 exists for you.")
+    text = item.event.text
+    states_level = bool(re.search(r"\d[\d.,]*\s*(?:%|pp|bp|percent|percentage points?)", text))
+    monthly = bool(re.search(r"month on month|monthly|m/m", text, re.I))
+    step3 = ["Start with \"[Think]\": combine the event, the episodes and the data. The data describe the economy "
+             "just before the event; use them as the starting point, never as the event's effect."]
+    if states_level:
+        step3.append("If the data contradict a level the event states, say which you rely on.")
+    if monthly:
+        step3.append("Annualise the monthly figure before comparing it with yearly rates.")
+    step3.append("If the event concerns another economy, say how it reaches US and global assets and which foreign "
+                 "variable you lack, and never judge that economy with US data. Use an indicator only where your chain "
+                 "needs it; never write a sentence about why an indicator or a rule does not apply.")
+    step3.append("End this [Think] with one line 'Evidence: decisive|mixed|weak - why': decisive when the data and at "
+                 "least two returned episodes agree on the most likely path (an event you called small or contained "
+                 "is decisive for its contained path), weak when at most one episode fits or the variable that "
+                 "separates the two most likely scenarios is missing, mixed otherwise. Then write, each tag on its "
+                 "own line:")
     user = (
         f"School: {name}.\n"
         f"How a {name} economist diagnoses: {sch['diagnosis']}\n"
         f"Mechanisms to draw on (pick what fits, do not list them all): {', '.join(sch['concepts'])}.\n"
         f"Typical stance: {sch['signals']}. It is not always bearish; it reads these as good news: "
         f"{'; '.join(sch['good_news'])}.\n\n"
-        f"Event (category: {item.category}): {item.event.text}\n\n"
+        f"Event (category: {item.category}): {text}\n\n"
         "Tools: query_episode_db returns dated historical episodes, all earlier than the event; get_macro_data returns "
         f"US/global indicators known before the event (there are no data for other economies). Indicator names: {names}."
         "\n\n"
@@ -520,32 +559,30 @@ def teacher_messages_v4(item: Item, cfg: dict) -> list[dict]:
         '1. Start with "[Think]" on its own line: is the event good or bad news for growth and for inflation, and how '
         "large is it, judged from what the event says? Then call query_episode_db with a short description of the "
         "situation.\n"
-        '2. Start with "[Think]": which returned episodes fit this event and where they differ (describe them only as '
-        "far as the tool text goes), and which data would decide between the readings. Then call get_macro_data with "
-        "those indicators and every indicator your signals will rely on (for example WTI for oil).\n"
-        '3. Start with "[Think]": combine the event, the episodes and the data. The data predate the event, so never read '
-        "a yield, spread, rate or growth figure as the event's effect. Mention a contradiction only when the event "
-        "states a level the data contradict, and say which you rely on. If the event concerns another economy, say how "
-        "it reaches US and global assets and which foreign variable you lack; never judge another economy with US data. "
-        "Annualise monthly figures before comparing them with yearly rates. Then write, each tag on its own line:\n"
+        '2. Start with "[Think]": which returned episodes fit this event and where they differ, describing them only as '
+        "far as the tool text goes (no figures or outcomes it does not give), and which data would decide between the "
+        "readings. Then call get_macro_data with those indicators and every indicator your signals will rely on (for "
+        "example WTI for oil).\n"
+        "3. " + " ".join(step3) + "\n"
         "[Output]\n"
-        f"Causal chain: event -> ... -> outcome, in {name} terms.\n"
+        "Causal chain: event -> ... -> outcome.\n"
         "Scenarios: 2-4 lines 'S1 (event-specific name; growth up/down/flat, inflation up/down/flat): 0.xx' for the "
-        "US/global economy against a no-event baseline, each scenario differing in direction, no colon inside the "
-        "parentheses, the numbers summing to 1 and set by this event: a small, contained or well-precedented event can "
-        "put 0.6-0.85 on its base case, an ambiguous or large one spreads the mass.\n"
-        "Signals: one line each for equities (broad US index), government bonds (US Treasuries), US dollar (DXY), "
-        "gold, oil and credit (US high yield), as 'asset: LONG|SHORT|NEUTRAL (conviction 1-5) - reason', the reason "
-        "naming what in this event moves the asset and which scenarios carry the call. A call resting on scenarios "
-        "that total under 0.4 is NEUTRAL or conviction 1; a call driven by the data rather than the event says so and "
-        "has conviction 2 or less; a small or remote event gets NEUTRAL. No asset has a default direction.\n"
+        "US/global economy against a no-event baseline (a scenario in which the event fades, reverses or does not "
+        "spill over is growth flat, inflation flat), no two scenarios with the same growth and inflation tags, no colon "
+        "inside the parentheses, the numbers summing to 1, the most likely scenario at 0.60-0.85 if the evidence is "
+        "decisive, 0.40-0.60 if mixed and 0.30-0.45 if weak.\n"
+        "Signals: one line each, labelled exactly equities, government bonds, US dollar, gold, oil, credit (meaning the "
+        "broad US index, US Treasuries, DXY, gold, oil and US high yield), as 'asset: LONG|SHORT|NEUTRAL (conviction "
+        "1-5) - reason', the reason naming what in this event moves the asset and which scenarios carry the call. Each "
+        "signal is the event's effect against the no-event baseline: the data may scale the conviction but never set a "
+        "direction, so a direction only the data support is NEUTRAL; a call resting on scenarios that total under 0.4 "
+        "is NEUTRAL or conviction 1; a small or remote event gets NEUTRAL. No asset has a default direction.\n"
         "[Proof]\n"
         "4-7 lines in reasoning order, each '- Lk [ref]: claim': L1 with an indicator name get_macro_data returned, L2 "
         "with an episode id query_episode_db returned (like EP-1994-02), L3 with the name of the mechanism you apply, "
         "and one L5 with the most likely scenario (S1, S2, ...). At least one line of each kind.\n"
-        "Confidence: high when the data, the episodes and the mechanism agree; low when the deciding link is "
-        "unobserved or the episodes fit poorly; otherwise moderate. Write 'Confidence: high|moderate|low; weakest "
-        "link: ...'.\n\n"
+        "Confidence: high if the evidence is decisive, moderate if mixed, low if weak. Write 'Confidence: "
+        "high|moderate|low; weakest link: ...'.\n\n"
         "Write about what the event says, not about what it omits, and do not mention other schools or these "
         "instructions.")
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
@@ -653,10 +690,61 @@ def check_v4(item: Item, turns: list[dict], episodes: EpisodeTable,
             problems.append(f"repeats a prompt phrase: {', '.join(echoes)}")
         scen = SCENARIO.findall(final[final.rfind("[Output]"):]) if "[Output]" in final else []
         modal = max(scen, key=lambda x: float(x[1]))[0] if scen else None
-        problems += proof_problems(final, refs["L1"], refs["L2"], facts, max_steps=8, modal=modal)
+        problems += proof_problems(final, refs["L1"], refs["L2"], facts, max_steps=10, modal=modal)
+        if prompt_version >= 6:
+            problems += evidence_problems(final, scen)
+        if prompt_version >= 7:
+            problems += v7_problems(item, said, final)
     else:
         problems += proof_problems(final, refs["L1"], refs["L2"], facts)
     return problems, turns
+
+
+def evidence_problems(final: str, scen: list[tuple[str, str]]) -> list[str]:
+    """Prompt version 6: an Evidence line before [Output] whose label fixes the band of the most likely scenario and
+    the confidence level."""
+    head = final[:final.find("[Output]")] if "[Output]" in final else final
+    m = EVIDENCE.search(head)
+    if not m:
+        return ["no Evidence line before [Output]"]
+    label = m.group(1).lower()
+    problems = []
+    lo, hi = EVIDENCE_BAND[label]
+    if scen:
+        top = max(float(p) for _, p in scen)
+        if not lo - 0.02 <= top <= hi + 0.02:
+            problems.append(f"most likely scenario at {top:g}, outside the {label} band {lo:g}-{hi:g}")
+    c = CONF_LEVEL.search(final)
+    if c and c.group(1).lower() != EVIDENCE_CONF[label]:
+        problems.append(f"confidence {c.group(1).lower()} does not follow evidence {label}")
+    return problems
+
+
+ECHO7 = re.compile(r"\bnothing (?:in the data )?(?:to reconcile|to arbitrate|contradicts)\b|\bno conflict to resolve\b|"
+                   r"\bstates no level\b|\balready annuali[sz]ed\b|\bno annuali[sz]ation\b|\bnot a live shock\b|"
+                   r"\bdoes not apply here\b", re.I)
+TAGS = re.compile(r"^[ \t]*S\d+[ \t]*\(([^()\n]*)\)[ \t]*:", re.M)
+
+
+def v7_problems(item: Item, said: str, final: str) -> list[str]:
+    """Prompt version 7: rule narration, the liquidity trap above a 1% policy rate, scenarios sharing tags."""
+    problems = []
+    echoes = sorted({m.group(0).lower() for m in ECHO7.finditer(said)})
+    if echoes:
+        problems.append(f"narrates a rule: {', '.join(echoes)}")
+    rate = item.event.macro_context.get("US policy rate (%)")
+    if isinstance(rate, (int, float)) and rate > 1.0 and re.search(r"liquidity trap", said, re.I):
+        problems.append(f"mentions a liquidity trap at a policy rate of {rate}%")
+    out = final[final.rfind("[Output]"):] if "[Output]" in final else ""
+    tags = []
+    for inner in TAGS.findall(out):
+        g = re.search(r"growth\s+(up|down|flat)", inner, re.I)
+        i = re.search(r"inflation\s+(up|down|flat)", inner, re.I)
+        if g and i:
+            tags.append((g.group(1).lower(), i.group(1).lower()))
+    if len(tags) != len(set(tags)):
+        problems.append("two scenarios share the same growth and inflation tags")
+    return problems
 
 
 def agent_messages(item: Item) -> list[dict]:
@@ -740,7 +828,7 @@ def batch_report(kept: dict[str, list[dict]], phrase_share: float = 0.25) -> dic
     for school, recs in kept.items():
         if not recs:
             continue
-        tops, tuples, conf, grams = [], Counter(), Counter(), Counter()
+        tops, tuples, conf, grams, evid = [], Counter(), Counter(), Counter(), Counter()
         for r in recs:
             said = [m.get("content") or "" for m in r["messages"] if m["role"] == "assistant"]
             final = said[-1]
@@ -750,6 +838,8 @@ def batch_report(kept: dict[str, list[dict]], phrase_share: float = 0.25) -> dic
                 tuples[tuple(sorted(probs, reverse=True))] += 1
             m = CONF_LEVEL.search(final)
             conf[m.group(1).lower() if m else "missing"] += 1
+            e = EVIDENCE.search(final)
+            evid[e.group(1).lower() if e else "none"] += 1
             words = re.findall(r"[a-z][a-z']*", " ".join(said).lower())
             grams.update({tuple(words[i:i + 5]) for i in range(len(words) - 4)})
         n = len(recs)
@@ -759,7 +849,7 @@ def batch_report(kept: dict[str, list[dict]], phrase_share: float = 0.25) -> dic
                   if c / n > phrase_share and sum(w in STRUCTURAL for w in g) <= 2][:10]
         top_level, top_n = conf.most_common(1)[0]
         out["schools"][school] = {"n": n, "modal_in_0.40_0.55": round(mid, 2), "repeated_tuples": repeated,
-                                  "confidence": dict(conf), "common_phrases": common}
+                                  "confidence": dict(conf), "evidence": dict(evid), "common_phrases": common}
         if mid > 0.6:
             out["warnings"].append(f"{school}: most likely scenario at 0.40-0.55 in {mid:.0%} of items")
         if repeated:

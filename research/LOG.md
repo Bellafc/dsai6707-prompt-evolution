@@ -527,3 +527,54 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   modification programme, the SNB floor. Tool: indicator names joined in one string are split (agent spike).
   99 offline tests pass.
 - next: pilot v5 (20 per school), automatic checks against the v4 echo counts, then the Opus review.
+
+## For the human (2026-11-01, teacher terms before the full run)
+- 老師 qwen3.8-max 是透過 token plan 的託管 API 呼叫的。開源權重的 Qwen3.8-Max License 允許微調與衍生作品、沒有禁止拿輸出訓練，
+  營收門檻（MaaS 業者年營收超過 5,000 萬美元）也碰不到；但託管 API 受阿里雲條款約束：Model Studio service-specific terms 第 III 節
+  規定「試用（trial）互動產生的內容只能用來評估模型表現，不得作其他用途，也不得提供給第三方」。請確認 token plan 是付費方案而且
+  條款允許拿輸出訓練模型；確認前，完整的 1,500 條不會開跑（試產只用來評估，不受影響）。若不允許，改用 pod 上的開源老師
+  （Qwen3.8-27B，Apache-2.0；或 Qwen3.8-Flash-Next，qwen-community 授權允許拿輸出訓練），v5 流程不用改。
+  修正案 4 Change 5 已改寫成實際流程，老師一欄留給你勾選。
+
+### 2026-11-01 — D11: pilot v5 (prompt version 5, items version 4)
+- command: `scripts/teacher_api.py research/teacher_runs/pilot-v5 --n 20 … --model qwen3.8-max --workers 12`
+  (60/60 conversations, 431k tokens in, 359k out), `mosaic teacher-import`.
+- result: first import 24/60: 124 "signal missing" because the v5 prompt named the asset referents and the teacher
+  wrote "US Treasuries:" or "Credit (US high yield):"; after the validator accepts those labels, 55/60 kept (K 17,
+  A 19, M 19). Against v4: "weigh the event" 55/60 → 0/60, "this/the school" 47/60 → 1/60, Austrian gold and credit
+  defaults no longer flagged, but the modal scenario still sits at 0.40-0.55 in 44/55 (v4 51/57; mean 0.45 → 0.50) and
+  "Confidence: moderate" in 52/55 (v4 57/57); Keynesian bonds LONG 12/17 and gold LONG 13/17.
+- deviation: planned a proof limit of 8 steps (review) / 8 of 60 v5 proofs had 9-11 steps / yield / the limit stays at
+  10 as in v4, the prompt keeps asking for 4-7.
+- next: Opus review of v5; prompt v6 ties the modal probability and the confidence level to an explicit evidence
+  judgement.
+
+### 2026-11-01 — D11: pilot v6 (prompt version 6: evidence judgement)
+- command: `scripts/teacher_api.py research/teacher_runs/pilot-v6 --n 10 … --model qwen3.8-max` (30/30), import.
+- result: 26/30 kept (K 8, A 8, M 10). Evidence labels: mixed 21, decisive 5, weak 0; confidence follows them
+  (moderate 21, high 5; v5 had 0 high). The modal scenario still sits at 0.40-0.55 in 70-88% per school because the
+  teacher judges most events "mixed". Rejects: 3 without a confidence line, 2 with an L5 off the modal scenario, 2 + 2
+  missing L3 / L5 steps, 1 echo ("the school's").
+- deviation: planned calibration varying with the event / the teacher labels 81% of events "mixed" / the student will
+  learn moderate confidence by default / keep version 6 (the judgement is now explicit and checked), state the
+  teacher's calibration habit as a limitation, and rely on exp03's pooling and temperature scaling for forecast
+  calibration; revisit if the v5/v6 review judges the "mixed" labels unjustified.
+
+### 2026-11-01 — D11: Opus review of pilot v5; teacher prompt version 7, items version 5
+- result: review of the 55 kept v5 conversations (three Opus 5.5 reviewers, cut off by the subscription's spend limit
+  after writing complete files): five shared criteria 4.08 (v4 4.01), grounding 3.84 (v4 3.54), event
+  responsiveness 4.29 (3.96), output consistency 3.71 (3.46). Fixed: the echoes, pre-event misreads, foreign events,
+  gold and credit defaults, minority-scenario calls, velocity. Remaining: templated calibration, rule narration as
+  new boilerplate, new stock diagnoses, the data-driven clause used as a licence, shared scenario tags, inflation
+  independent of the gap, money claims about past episodes from memory.
+- change: prompt version 7 (rules shown only for items they apply to: the contradiction rule for events stating a
+  level, annualisation for monthly figures; "never write a sentence about why an indicator or a rule does not apply";
+  evidence labels with observable tests; a direction only the data support is NEUTRAL; the no-event baseline and
+  distinct scenario tags; episodes described only as far as the tool text goes); profiles (Keynesian liquidity trap
+  only at a policy rate of 1% or less; Austrian natural rate = trend growth of about 2%, no liquidation without a
+  boom; Monetarist fixed 3.5-4.5% band with trend = long-run potential, money demand and velocity defined, the oil
+  sentence removed); validator from version 7 on: narrated rules, a liquidity trap above a 1% policy rate and shared
+  scenario tags are rejected. Items version 5: core PCE follows the unemployment gap, headline CPI follows oil.
+- cost note: one review round (three reviewers on ~57 items) uses about 0.9M Opus tokens of the human's subscription;
+  the human hit the 5-hour and monthly limits twice today. Later rounds: automatic checks first, then one reviewer on a
+  stratified sample.

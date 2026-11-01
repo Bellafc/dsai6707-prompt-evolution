@@ -57,20 +57,41 @@ Confirmation's own recipe (4-bit NF4, r = 32, α = 64, 3 epochs; unreported sett
 metrics are compared with Confirmation Table 4.3, descriptively (no hypothesis). This links Chapter 4 to the
 Confirmation report and replaces the Task 0 parity check that needed the lost adapters.
 
-## Change 5: if the original trajectories are not available (decision D11)
+## Change 5: the original trajectories are not available (decision D11; revised 2026-11-01)
 
-Regenerate 500 trajectories per school from the same 117 seed episodes with the Confirmation's teacher prompts.
-Teacher: GPT-4o if it is still offered, otherwise an open-weight model whose licence (Apache-2.0 or MIT) allows
-training on its outputs. Claude models are excluded (Consumer Terms §3.2). Fixed before generation: format
-validity, a leakage filter (no date after 2025-04-30 and no event later than the seed episode), and a quality
-filter chosen by the author. Arm T then denotes this teacher. The thesis states that the Confirmation's training
-data could not be reused, and Change 4 is dropped.
+The Confirmation's 1,500 GPT-4o trajectories were not kept, so they are regenerated with teacher prompt version 5
+(`src/mosaic/teacher.py`, pilots and reviews in `research/teacher_pilot/`):
+
+- **Items**: 500 per school (seed 0, items version 4), each an abstract event from 107 templates in the 14 categories
+  of Confirmation Sec. 4.2.1 (reconstructed wording, `configs/teacher/templates.toml`) with random slot values and a
+  random, internally consistent US/global backdrop. No real 2023–2026 event is described.
+- **Tools**: the teacher works as the agent with two tools executed by the harness (`src/mosaic/tools.py`):
+  `get_macro_data` returns the item's backdrop, `query_episode_db` returns episodes dated before 2025 from the stand-in
+  table `configs/tools/episodes_standin.toml` (checked by the author before the run). The teacher writes no tool result.
+- **Teacher** (fixed by the author before the full run): ☐ `qwen3.8-max` through the Alibaba Cloud token plan, only
+  if the plan's terms allow using outputs to train models (Model Studio's service-specific terms limit content from
+  *trial* use to evaluating the model); ☐ otherwise an open-weight model served on a pod, e.g. Qwen3.8-27B
+  (Apache-2.0) or Qwen3.8-Flash-Next (qwen-community licence, training on outputs allowed). Claude models are excluded
+  (Consumer Terms §3.2). Arm T denotes the teacher chosen.
+- **Filters fixed before generation** (`teacher.check_v4` for prompt version 5): the protocol (episode tool, then
+  macro tool, then the answer, one call each); tool results identical on re-execution; the Confirmation markers in
+  order; 2–4 scenario probabilities summing to 1; six signals with conviction and reason; leakage (no date after
+  April 2025); no other school named; no echoed instruction phrase; a [Proof] of 4–8 steps typed L1/L2/L3/L5 whose
+  L1/L2 refs were returned by the tools and whose L5 step names the most likely scenario; a confidence line. A
+  deterministic format normalisation (conviction form, scenario layout) runs before the filters; wording is untouched.
+- **Formats**: each kept conversation gives (a) the single-pass text in the Confirmation's format (tool calls and
+  results inline, [Proof] dropped, arm-A system and user messages with the event's macro context), on which **arm C is
+  trained**, and (b) the multi-turn agent conversation used for the C-agent of exp03 and exp07 (not part of exp01).
+
+The thesis states that the Confirmation's training data could not be reused, and Change 4 is dropped.
 
 ## Change 6: seed-episode audit (needed by exp03)
 
 The same adapters forecast in exp03. Trajectories whose seed episode is dated after 2025-04-30 are removed before
 training, because they could carry information from exp03's calibration window. The number removed per school is
-reported.
+reported. With the regenerated data of Change 5 the items are synthetic and the returned episodes end in 2024, so
+the audit checks that no trajectory names a date after April 2025 (the leakage filter) and reports zero removals
+unless that check fails.
 
 ## Unchanged
 
