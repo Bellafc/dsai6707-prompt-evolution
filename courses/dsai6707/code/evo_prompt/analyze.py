@@ -19,7 +19,7 @@ import statistics
 from pathlib import Path
 
 from mosaic.backends import Backend, Cache
-from mosaic.stats import holm
+from mosaic.stats import holm, paired
 
 from .backend import Ledger  # noqa: F401  (kept for API symmetry)
 from .config import CACHE_PATH, HELDOUT_SEED, MODEL, N_HELDOUT, RESULTS_DIR, SEARCH_SEED
@@ -130,6 +130,30 @@ def main(results: Path = RESULTS_DIR) -> None:
         w.writeheader()
         w.writerows(rows)
 
+    with (results / "summary.csv").open("w", newline="") as fh:
+        fields = ["method", "seed", "hv_final", "front_size", "evaluations", "search_fidelity", "search_disagreement",
+                  "search_validity", "search_words", "heldout_fidelity", "heldout_disagreement", "heldout_validity",
+                  "heldout_words"]
+        w = csv.DictWriter(fh, fieldnames=fields)
+        w.writeheader()
+        for (m, s), r in sorted(runs.items()):
+            f = r["final"]
+            if m == "b0":
+                sr, hr = f.get("search", {}), f.get("heldout", {})
+                w.writerow({"method": m, "seed": s, "search_fidelity": sr.get("fidelity"),
+                            "search_disagreement": sr.get("disagreement"), "search_validity": sr.get("validity"),
+                            "search_words": sr.get("words"), "heldout_fidelity": hr.get("fidelity"),
+                            "heldout_disagreement": hr.get("disagreement"), "heldout_validity": hr.get("validity"),
+                            "heldout_words": hr.get("words")})
+                continue
+            k, hr = f.get("knee") or {}, f.get("heldout") or {}
+            w.writerow({"method": m, "seed": s, "hv_final": f["hv_final"], "front_size": f["front_size"],
+                        "evaluations": f["evaluations"], "search_fidelity": k.get("fidelity"),
+                        "search_disagreement": k.get("disagreement"), "search_validity": k.get("validity"),
+                        "search_words": k.get("words"), "heldout_fidelity": hr.get("fidelity"),
+                        "heldout_disagreement": hr.get("disagreement"), "heldout_validity": hr.get("validity"),
+                        "heldout_words": hr.get("words")})
+
     # ---- held-out per event: knees (searched methods) and B0 (three replicates) -----------------------------
     per_event: dict[str, list[list[dict]]] = {}  # method -> seed -> per-event rows
     for m in METHODS:
@@ -163,16 +187,19 @@ def main(results: Path = RESULTS_DIR) -> None:
             a = [r[metric] for r in avg["b0"]]
             b = [r[metric] for r in avg[m]]
             diffs = [y - x for x, y in zip(a, b)]  # method minus B0
+            boot = paired(a, b, n_boot=10000, n_perm=1, seed=0)  # bootstrap CI over events (mosaic.stats)
             tests.append({"comparison": f"{m} - b0", "metric": metric, "mean_diff": sum(diffs) / len(diffs),
-                          "p_raw": sign_flip_exact(diffs)})
+                          "ci_lo": boot["ci_lo"], "ci_hi": boot["ci_hi"], "p_raw": sign_flip_exact(diffs)})
     adj = holm([t["p_raw"] for t in tests])
     for t, p in zip(tests, adj):
         t["p_holm"] = p
         t["mean_diff"] = round(t["mean_diff"], 4)
+        t["ci_lo"] = round(t["ci_lo"], 4)
+        t["ci_hi"] = round(t["ci_hi"], 4)
         t["p_raw"] = round(t["p_raw"], 4)
         t["p_holm"] = round(p, 4)
     with (results / "heldout_tests.csv").open("w", newline="") as fh:
-        w = csv.DictWriter(fh, fieldnames=["comparison", "metric", "mean_diff", "p_raw", "p_holm"])
+        w = csv.DictWriter(fh, fieldnames=["comparison", "metric", "mean_diff", "ci_lo", "ci_hi", "p_raw", "p_holm"])
         w.writeheader()
         for t in tests:
             w.writerow({k: t[k] for k in w.fieldnames})
@@ -205,9 +232,11 @@ def main(results: Path = RESULTS_DIR) -> None:
                      f"{fmt(mean_sd([h['validity'] for h in ho]))} | "
                      f"{fmt(mean_sd([h['words'] for h in ho]), 0)} |")
     lines += ["", "## Paired tests vs B0 on the 10 held-out events (exact sign-flip, Holm over 8 tests)", "",
-              "| Comparison | Metric | Mean difference (method - B0) | p (raw) | p (Holm) |", "|---|---|---|---|---|"]
+              "| Comparison | Metric | Mean difference (method - B0) | 95% bootstrap CI | p (exact, raw) | p (Holm) |",
+              "|---|---|---|---|---|---|"]
     for t in tests:
-        lines.append(f"| {t['comparison']} | {t['metric']} | {t['mean_diff']:+.4f} | {t['p_raw']:.4f} | {t['p_holm']:.4f} |")
+        lines.append(f"| {t['comparison']} | {t['metric']} | {t['mean_diff']:+.4f} | [{t['ci_lo']:+.4f}, {t['ci_hi']:+.4f}] | "
+                     f"{t['p_raw']:.4f} | {t['p_holm']:.4f} |")
     (results / "summary_table.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))
 

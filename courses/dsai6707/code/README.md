@@ -100,9 +100,10 @@ Outputs in `../results/`:
 | File | Content |
 |---|---|
 | `summary_table.md` | search-level and held-out tables, paired tests (mean ± sd over seeds) |
+| `summary.csv` | one row per run (search and held-out metrics) |
 | `summary_search.csv` | one row per search run |
 | `heldout_per_event.csv` | per held-out event, averaged over seeds |
-| `heldout_tests.csv` | exact sign-flip p-values over the 10 events and Holm-adjusted p-values |
+| `heldout_tests.csv` | paired differences from B0, 95% bootstrap CI (`mosaic.stats.paired`), exact sign-flip p-values over the 10 events, Holm-adjusted p-values |
 | `figures/*.png` | `hv_vs_generation.png`, `pareto_fronts.png`, `heldout_bars.png` |
 
 ## 6. Tests

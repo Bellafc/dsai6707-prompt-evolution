@@ -21,13 +21,13 @@
 
 ## Paired tests vs B0 on the 10 held-out events (exact sign-flip, Holm over 8 tests)
 
-| Comparison | Metric | Mean difference (method - B0) | p (raw) | p (Holm) |
-|---|---|---|---|---|
-| nsga2 - b0 | fidelity | +0.0179 | 0.2168 | 1.0000 |
-| nsga2 - b0 | disagreement | +0.0056 | 0.8672 | 1.0000 |
-| ga - b0 | fidelity | +0.0426 | 0.0293 | 0.2051 |
-| ga - b0 | disagreement | -0.0074 | 0.8848 | 1.0000 |
-| random - b0 | fidelity | +0.0262 | 0.0254 | 0.2031 |
-| random - b0 | disagreement | +0.0000 | 0.9805 | 1.0000 |
-| nsga2_rule - b0 | fidelity | +0.0272 | 0.0566 | 0.3398 |
-| nsga2_rule - b0 | disagreement | +0.0204 | 0.5664 | 1.0000 |
+| Comparison | Metric | Mean difference (method - B0) | 95% bootstrap CI | p (exact, raw) | p (Holm) |
+|---|---|---|---|---|---|
+| nsga2 - b0 | fidelity | +0.0179 | [-0.0086, +0.0413] | 0.2168 | 1.0000 |
+| nsga2 - b0 | disagreement | +0.0056 | [-0.0649, +0.0725] | 0.8672 | 1.0000 |
+| ga - b0 | fidelity | +0.0426 | [+0.0133, +0.0734] | 0.0293 | 0.2051 |
+| ga - b0 | disagreement | -0.0074 | [-0.0889, +0.0704] | 0.8848 | 1.0000 |
+| random - b0 | fidelity | +0.0262 | [+0.0084, +0.0437] | 0.0254 | 0.2031 |
+| random - b0 | disagreement | +0.0000 | [-0.0813, +0.0741] | 0.9805 | 1.0000 |
+| nsga2_rule - b0 | fidelity | +0.0272 | [+0.0041, +0.0503] | 0.0566 | 0.3398 |
+| nsga2_rule - b0 | disagreement | +0.0204 | [-0.0518, +0.0852] | 0.5664 | 1.0000 |

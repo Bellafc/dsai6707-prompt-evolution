@@ -38,7 +38,7 @@ The thesis harness from which this project borrows its measurements provides mot
 
 # 2 Related Work
 
-We collected 34 papers from 2024–2026 (`report/references.bib`). Sub-agents checked each against its arXiv or venue page; a few venue details rest on search snippets, and the student must confirm those before submission (see `AI_USE.md`). They are grouped by theme; the classic Promptbreeder and EvoPrompt papers are included because their venue versions are from 2024. The synthesis below is organised by method, not by paper.
+We collected 34 papers from 2024–2026 (`report/references.bib`). On 2026-11-01 every author list and first-submission date was re-checked against its arXiv page. Venue information comes from arXiv comments, the course reference list, or a venue page. The DOIs of the TEVC and CSUR surveys came from search results and must be confirmed on the publisher site before submission (see `AI_USE.md`). They are grouped by theme; the classic Promptbreeder and EvoPrompt papers are included because their venue versions are from 2024. The synthesis below is organised by method, not by paper.
 
 ## 2.1 LLMs as evolutionary variation operators
 
@@ -150,7 +150,7 @@ Each call goes to an OpenAI-compatible endpoint (`qwen3.8-max`, the model used f
 
 ## 4.5 Statistics
 
-Search-level results are mean ± sample standard deviation over three seeds. With three paired seeds the smallest attainable one-sided sign-flip p-value is 1/8, so search-level comparisons are reported descriptively. The inferential test uses the ten held-out events, where the smallest attainable two-sided p-value is 2/1024.
+Search-level results are mean ± sample standard deviation over three seeds. Held-out intervals are 95% percentile bootstrap intervals over the ten events (10,000 resamples, `mosaic.stats.paired`, seed 0). They are not corrected for multiple comparisons; the p-values are exact sign-flip values and are the ones corrected with Holm. With three paired seeds the smallest attainable one-sided sign-flip p-value is 1/8, so search-level comparisons are reported descriptively. The inferential test uses the ten held-out events, where the smallest attainable two-sided p-value is 2/1024.
 
 ## 4.6 Reproduction
 
@@ -191,18 +191,18 @@ Table 3 reports the knee solutions on the ten held-out events. B0 is re-measured
 
 Table 4 gives the paired tests. Each comparison uses the ten held-out events, and Holm correction covers the eight method-versus-B0 tests.
 
-| Comparison | Metric | Mean difference (method − B0) | p (raw) | p (Holm) |
-|---|---|---|---|---|
-| NSGA-II − B0 | fidelity | +0.018 | 0.217 | 1.000 |
-| NSGA-II − B0 | disagreement | +0.006 | 0.867 | 1.000 |
-| GA − B0 | fidelity | +0.043 | 0.029 | 0.205 |
-| GA − B0 | disagreement | −0.007 | 0.885 | 1.000 |
-| Random − B0 | fidelity | +0.026 | 0.025 | 0.203 |
-| Random − B0 | disagreement | +0.000 | 0.981 | 1.000 |
-| NSGA-II rule − B0 | fidelity | +0.027 | 0.057 | 0.340 |
-| NSGA-II rule − B0 | disagreement | +0.020 | 0.566 | 1.000 |
+| Comparison | Metric | Mean difference (method − B0) | 95% bootstrap CI | p (exact, raw) | p (Holm) |
+|---|---|---|---|---|---|
+| NSGA-II + LLM − B0 | fidelity | +0.0179 | [-0.0086, +0.0413] | 0.2168 | 1.0000 |
+| NSGA-II + LLM − B0 | disagreement | +0.0056 | [-0.0649, +0.0725] | 0.8672 | 1.0000 |
+| GA (weighted sum) − B0 | fidelity | +0.0426 | [+0.0133, +0.0734] | 0.0293 | 0.2051 |
+| GA (weighted sum) − B0 | disagreement | -0.0074 | [-0.0889, +0.0704] | 0.8848 | 1.0000 |
+| Random search − B0 | fidelity | +0.0262 | [+0.0084, +0.0437] | 0.0254 | 0.2031 |
+| Random search − B0 | disagreement | +0.0000 | [-0.0813, +0.0741] | 0.9805 | 1.0000 |
+| NSGA-II, rule only − B0 | fidelity | +0.0272 | [+0.0041, +0.0503] | 0.0566 | 0.3398 |
+| NSGA-II, rule only − B0 | disagreement | +0.0204 | [-0.0518, +0.0852] | 0.5664 | 1.0000 |
 
-No comparison is significant after Holm correction (smallest adjusted p = 0.203). Before correction, fidelity gains of the GA and random search reach p ≈ 0.03. ![**Figure 3.** Held-out fidelity and disagreement of B0 and the knee solutions. Bars are the mean over the ten events; error bars are standard errors; dots are individual events.](../results/figures/heldout_bars.png)
+No comparison is significant after Holm correction (smallest adjusted p = 0.203). Before correction, the exact sign-flip p-values for the fidelity gains of the GA and random search are about 0.03. The uncorrected 95% bootstrap intervals exclude zero for the fidelity gains of the GA, random search and the ablation, but the corresponding p-values do not survive the correction across eight tests. We therefore read these fidelity gains as suggestive, not established. ![**Figure 3.** Held-out fidelity and disagreement of B0 and the knee solutions. Bars are the mean over the ten events; error bars are standard errors; dots are individual events.](../results/figures/heldout_bars.png)
 
 Figure 3 shows the per-event values.
 
@@ -243,7 +243,7 @@ We formulated the design of three competing economic-school agents as a constrai
 
 # Appendix A: Use of AI tools
 
-- **Literature review.** Four sub-agents, each covering one theme, searched for 2024–2026 papers and opened the arXiv or venue page of each candidate. Entries in `references.bib` are those the sub-agents reported as verified. Some venue details rest on search snippets, and the student has not yet checked the entries against publisher pages; this must be done before submission (see `AI_USE.md`).
+- **Literature review.** Four sub-agents, each covering one theme, searched for 2024–2026 papers and opened the arXiv or venue page of each candidate. Author lists and first-submission dates of all entries were re-checked against arXiv on 2026-11-01. Venue details come from arXiv comments or the course reference list. The student still has to confirm the DOIs of the two surveys on the publisher sites before submission (see `AI_USE.md`).
 - **Code.** The evo_prompt package, tests and runner were written with an AI coding assistant. They pass 20 offline tests (`python -m pytest -q courses/dsai6707/code`) and the repository's own test suite; the student has not yet reviewed the code line by line.
 - **Analysis and figures.** Written with AI assistance; numbers are generated by the scripts in `code/evo_prompt/` and can be regenerated from `results/`.
 - **Report prose.** This draft was written with AI assistance. The student is responsible for the final wording, the interpretation and the citations.
