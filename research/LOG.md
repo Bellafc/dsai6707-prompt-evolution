@@ -548,3 +548,14 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   10 as in v4, the prompt keeps asking for 4-7.
 - next: Opus review of v5; prompt v6 ties the modal probability and the confidence level to an explicit evidence
   judgement.
+
+### 2026-11-01 — D11: pilot v6 (prompt version 6: evidence judgement)
+- command: `scripts/teacher_api.py research/teacher_runs/pilot-v6 --n 10 … --model qwen3.8-max` (30/30), import.
+- result: 26/30 kept (K 8, A 8, M 10). Evidence labels: mixed 21, decisive 5, weak 0; confidence follows them
+  (moderate 21, high 5; v5 had 0 high). The modal scenario still sits at 0.40-0.55 in 70-88% per school because the
+  teacher judges most events "mixed". Rejects: 3 without a confidence line, 2 with an L5 off the modal scenario, 2 + 2
+  missing L3 / L5 steps, 1 echo ("the school's").
+- deviation: planned calibration varying with the event / the teacher labels 81% of events "mixed" / the student will
+  learn moderate confidence by default / keep version 6 (the judgement is now explicit and checked), state the
+  teacher's calibration habit as a limitation, and rely on exp03's pooling and temperature scaling for forecast
+  calibration; revisit if the v5/v6 review judges the "mixed" labels unjustified.
