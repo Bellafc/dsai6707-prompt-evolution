@@ -26,15 +26,28 @@ from pathlib import Path
 
 
 def call(base_url: str, key: str, body: dict, timeout: float, retries: int = 5) -> dict:
+    """One chat completion, streamed: gateways cut non-streamed replies that take longer than ~30 s (HTTP 502), and
+    a thinking teacher needs minutes. Returns an OpenAI-shaped response with the joined content and the usage."""
     headers = {"Content-Type": "application/json", "User-Agent": "macro-mosaic-teacher/1.0"}
     if key:  # without a key the Claude Code network secret for the API host adds the header
         headers["Authorization"] = f"Bearer {key}"
+    body = dict(body, stream=True, stream_options={"include_usage": True})
     req = urllib.request.Request(base_url.rstrip("/") + "/chat/completions", data=json.dumps(body).encode(),
                                  headers=headers)
     for attempt in range(retries):
         try:
+            parts, usage, model = [], {}, body.get("model", "")
             with urllib.request.urlopen(req, timeout=timeout) as r:
-                return json.loads(r.read())
+                for raw in r:
+                    line = raw.decode("utf-8", errors="replace").strip()
+                    if not line.startswith("data:") or line.endswith("[DONE]"):
+                        continue
+                    chunk = json.loads(line[5:])
+                    usage = chunk.get("usage") or usage
+                    model = chunk.get("model") or model
+                    for ch in chunk.get("choices") or []:
+                        parts.append((ch.get("delta") or {}).get("content") or "")  # reasoning_content is dropped
+            return {"model": model, "usage": usage, "choices": [{"message": {"content": "".join(parts)}}]}
         except urllib.error.HTTPError as e:
             if e.code in (429, 500, 502, 503, 504) and attempt < retries - 1:
                 time.sleep(2 ** attempt * 5)
