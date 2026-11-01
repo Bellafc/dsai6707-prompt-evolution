@@ -98,6 +98,20 @@ events). Then: arm D smoke test (`--arms D --limit 3`), judge pilot (`python -m 
 noise estimate, Task 0 status, judge parse rate, worries), chosen values in `[arms.B]`, commit, and log
 `READY FOR HUMAN: scripts/final.sh exp01`.
 
+## Task T — teacher trajectories, pilot (D11, human decision 2026-11-01; ≤ 3 GPU-hours)
+
+The Confirmation's 1,500 GPT-4o trajectories were not kept; the human chose the largest runnable open-weight Qwen,
+`Qwen/Qwen3.8-Flash-Next-FP8` (licence qwen-community, outputs may be used for training), on a multi-GPU pod. Never use
+a Claude model as teacher. Templates and filters are fixed in `configs/teacher/templates.toml` and
+`src/mosaic/teacher.py` (do not loosen the filters; log anything that looks wrong).
+
+1. `python -m mosaic teacher --n 20 --tp <number of GPUs> --out data/trajectories`. If vLLM cannot load the model (an
+   unsupported architecture), log the error and fall back once to `--model Qwen/Qwen3.8-27B --tp 1` (Apache-2.0).
+   Try `--no-thinking` only if replies keep failing the format check because of reasoning text.
+2. Copy the kept pilot trajectories and `rejects.jsonl` to `research/teacher_pilot/` (versioned, so the human can
+   read them) and log: model, keep rate per school, reject reasons, mean reply length, generation speed.
+3. Hand-off: `READY FOR HUMAN: teacher pilot`. The full run (`--n 500`) waits for the human's review.
+
 ## Task 2 — exp03 data build (P0; CPU + network; may run while waiting for the human)
 
 Follow `research/prereg_drafts/exp03_market_forecasting.md`.

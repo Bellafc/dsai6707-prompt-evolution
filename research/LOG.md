@@ -322,3 +322,26 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   files touched).
 - day total (all pods, 2026-10-31): ≈ $43 (two stuck pods before the heredoc fix ≈ $23, the 14:0x tests < $1,
   Task 2 ≈ $1.2, Task S ≈ $17), plus volume `dy1ct9hkm0` storage.
+
+### 2026-11-01 — infra: teacher pipeline for the SFT trajectories (D11), Task T
+- decision (human): regenerate the trajectories now, with the largest Qwen3.8 that runs. Qwen3.8-2.4T-A95B
+  (~2.5 TB in FP8) does not fit any single RunPod pod, so the teacher is `Qwen/Qwen3.8-Flash-Next-FP8` (180B,
+  licence qwen-community: research use and training on outputs allowed, no MAU/revenue thresholds reached), on
+  2 × H200. A Claude teacher (Opus or Haiku 5.5) was asked for and declined by the orchestrator (Anthropic usage
+  terms; THESIS_DESIGN §4a; amendment 4 Change 5 excludes Claude).
+- change: `configs/teacher/templates.toml` (107 abstract event templates in the 14 categories of Confirmation
+  Sec. 4.2.1, slot lists, school profiles: concepts, mechanisms, stance; the original templates were not kept, so
+  this wording is a reconstruction for the human to review), `src/mosaic/teacher.py` (seeded items with random
+  macro snapshots, teacher prompt, Change 5 filters: marker order, probabilities summing to 1, ≥ 4 signals, no date
+  after April 2025; records in the data contract with the arm-A messages of inference plus the raw event),
+  `mosaic teacher`, `mosaic pod create --gpu-count` and GPU class `141gb`, program.md Task T (pilot of 20 per school,
+  then human review), `tests/test_teacher.py`; 57 offline tests pass.
+- next: Task T pod (2 × H200, `--hours 3`).
+
+## For the human (2026-11-01, teacher)
+- 修正案 4 Change 5 寫的是「Apache-2.0 或 MIT」的老師；Qwen3.8-Flash-Next 是 qwen-community 授權（允許學術使用和拿輸出
+  訓練），正式登記前請把 Change 5 改成實際使用的模型與授權。
+- `configs/prompts/*.system.txt` 和 `user_template.txt` 仍是 PLACEHOLDER 版本。軌跡裡存了原始事件，換上原始 prompt
+  後可以重組訊息，不必重新產生。
+- 107 個事件模板和三個學派的設定是依開題報告第 4.2.1 節重建的，請在完整生成（每學派 500 條）前看一下
+  `configs/teacher/templates.toml` 和試產樣本 `research/teacher_pilot/`。

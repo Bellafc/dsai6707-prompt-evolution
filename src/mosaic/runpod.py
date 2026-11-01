@@ -28,11 +28,13 @@ DEFAULT_IMAGE = "runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404"
 GPU_CLASSES = {  # RunPod gpuTypeIds (enum of the v1 PodCreateInput); RunPod picks by availability
     "80gb": ["NVIDIA H100 80GB HBM3", "NVIDIA H100 PCIe", "NVIDIA A100 80GB PCIe", "NVIDIA A100-SXM4-80GB",
              "NVIDIA H100 NVL"],
+    "141gb": ["NVIDIA H200"],
     "48gb": ["NVIDIA L40S", "NVIDIA RTX 6000 Ada Generation", "NVIDIA RTX A6000", "NVIDIA A40", "NVIDIA L40"],
 }
 SECRETS = {"CLAUDE_CODE_OAUTH_TOKEN": "claude_oauth_token", "GITHUB_TOKEN": "github_token"}
 OPTIONAL_SECRETS = {"HF_TOKEN": "hf_token", "JUPYTER_PASSWORD": "jupyter_password"}  # Jupyter runs only if set
-TASK_EXTRA_MODELS = {"S": "Qwen/Qwen3-8B-Base Qwen/Qwen3.5-27B"}  # program.md Task S needs the 27B spike
+TASK_EXTRA_MODELS = {"S": "Qwen/Qwen3-8B-Base Qwen/Qwen3.5-27B",  # program.md Task S needs the 27B spike
+                     "T": "Qwen/Qwen3.8-Flash-Next-FP8"}  # Task T teacher (Change 5), ~180 GB in FP8
 MAX_HOURS = 12
 # Cloudflare in front of rest.runpod.io rejects urllib's default "Python-urllib/x.y" agent (error 1010).
 USER_AGENT = "macro-mosaic-orchestrator/1.0"
@@ -84,8 +86,9 @@ def start_command() -> list[str]:
 
 
 def create_payload(task: str, *, gpus: list[str], hours: float, branch: str = "main", push_branch: str | None = None,
-                   volume_id: str | None = None, volume_gb: int = 200, data_center: str | None = None,
-                   image: str = DEFAULT_IMAGE, cloud: str = "SECURE", container_disk_gb: int = 80,
+                   gpu_count: int = 1, volume_id: str | None = None, volume_gb: int = 200,
+                   data_center: str | None = None, image: str = DEFAULT_IMAGE, cloud: str = "SECURE",
+                   container_disk_gb: int = 80,
                    with_hf: bool = False, jupyter: bool = False, template_id: str | None = None,
                    extra_models: str | None = None, name: str | None = None, now: datetime | None = None) -> dict:
     if not 0 < hours <= MAX_HOURS:
@@ -107,7 +110,7 @@ def create_payload(task: str, *, gpus: list[str], hours: float, branch: str = "m
     if not template_id:  # a template made in the RunPod console may carry the secret references instead
         env.update({var: "{{ RUNPOD_SECRET_%s }}" % name_ for var, name_ in secrets.items()})
     body = {
-        "name": name or f"mosaic-{task}-{stamp}", "imageName": image, "gpuTypeIds": gpus, "gpuCount": 1,
+        "name": name or f"mosaic-{task}-{stamp}", "imageName": image, "gpuTypeIds": gpus, "gpuCount": gpu_count,
         "cloudType": cloud, "containerDiskInGb": container_disk_gb, "volumeMountPath": "/workspace",
         "ports": ["22/tcp", "8888/http"], "env": env, "dockerStartCmd": start_command(),
     }

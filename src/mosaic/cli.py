@@ -41,8 +41,8 @@ def pod_command(a) -> int:
             print(f"terminated {a.pod_id} (its pod volume is gone; a network volume stays)")
         elif a.pod_cmd == "create":
             gpus = rp.GPU_CLASSES.get(a.gpu) or [g.strip() for g in a.gpu.split(",") if g.strip()]
-            out = rp.create(a.task, gpus=gpus, hours=a.hours, branch=a.branch, push_branch=a.push_branch,
-                            volume_id=a.volume, volume_gb=a.volume_gb, data_center=a.dc,
+            out = rp.create(a.task, gpus=gpus, hours=a.hours, gpu_count=a.gpu_count, branch=a.branch,
+                            push_branch=a.push_branch, volume_id=a.volume, volume_gb=a.volume_gb, data_center=a.dc,
                             image=a.image or rp.DEFAULT_IMAGE, cloud="COMMUNITY" if a.community else "SECURE",
                             with_hf=a.with_hf, jupyter=a.jupyter, template_id=a.template,
                             allow_parallel=a.allow_parallel, dry_run=a.dry_run)
@@ -140,7 +140,8 @@ def main(argv: list[str] | None = None) -> int:
     pc = psub.add_parser("create", help="start one GPU pod for one program.md task")
     pc.add_argument("--task", required=True, help="program.md task id, e.g. S, 0, 1, 2, 5")
     pc.add_argument("--hours", type=float, required=True, help="hard time limit of the agent session (<= 12)")
-    pc.add_argument("--gpu", default="80gb", help="80gb | 48gb | comma list of RunPod gpuTypeIds")
+    pc.add_argument("--gpu", default="80gb", help="80gb | 141gb | 48gb | comma list of RunPod gpuTypeIds")
+    pc.add_argument("--gpu-count", type=int, default=1, help="GPUs in the pod (the human must allow more than 1)")
     pc.add_argument("--volume", default=None, help="network volume id (persistent /workspace); recommended")
     pc.add_argument("--volume-gb", type=int, default=200, help="pod volume size when no network volume is given")
     pc.add_argument("--dc", default=None, help="data center id (must match the network volume's)")
@@ -193,7 +194,39 @@ def main(argv: list[str] | None = None) -> int:
     tr.add_argument("--bits", type=int, choices=[4, 16], default=16)
     tr.add_argument("--micro-batch", type=int, default=4)
 
+    te = sub.add_parser("teacher", help="generate school SFT trajectories with an open-weight teacher (Change 5)")
+    te.add_argument("--n", type=int, required=True, help="trajectories requested per school")
+    te.add_argument("--model", default="Qwen/Qwen3.8-Flash-Next-FP8")
+    te.add_argument("--tp", type=int, default=1, help="tensor-parallel GPUs for vLLM")
+    te.add_argument("--max-model-len", type=int, default=8192)
+    te.add_argument("--max-tokens", type=int, default=2048)
+    te.add_argument("--no-thinking", action="store_true", help="pass enable_thinking=false to the chat template")
+    te.add_argument("--seed", type=int, default=0)
+    te.add_argument("--out", default="data/trajectories")
+    te.add_argument("--fake", action="store_true", help="offline dry run with the fake backend")
+
     a = ap.parse_args(argv)
+    if a.cmd == "teacher":
+        import json
+        from pathlib import Path
+
+        from mosaic import teacher
+        from mosaic.backends import Cache, FakeBackend, VLLMBackend
+        from mosaic.config import ROOT
+
+        cfg = teacher.load_templates()
+        items = teacher.make_items(a.n, seed=a.seed, cfg=cfg)
+        sampling = {"temperature": 0.8, "top_p": 0.95, "max_tokens": a.max_tokens, "seed": a.seed}
+        if a.fake:
+            backend = FakeBackend(sampling)
+        else:
+            backend = VLLMBackend(sampling, Cache(ROOT / "cache/teacher.jsonl"), base_model=a.model, adapters={},
+                                  max_model_len=a.max_model_len,
+                                  chat_template_kwargs={"enable_thinking": False} if a.no_thinking else None,
+                                  engine_kwargs={"tensor_parallel_size": a.tp} if a.tp > 1 else None)
+        counts = teacher.generate(backend, items, cfg, "fake" if a.fake else a.model, Path(a.out))
+        print(json.dumps({"requested_per_school": a.n, **counts}, indent=1))
+        return 0
     if a.cmd == "train":
         from mosaic.config import adapters_root, load_toml, paths
         from mosaic.train import train
