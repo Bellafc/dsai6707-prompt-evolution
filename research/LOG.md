@@ -378,3 +378,16 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   its branch directly (the GitHub API path cannot carry multi-megabyte files such as the full teacher run). Pods keep
   the rule through `runpod.POD_DENY`, passed by `scripts/autoresearch.sh` (`tests/test_runpod.py` checks it);
   ORCHESTRATOR.md rule 6.
+
+### 2026-11-01 — D11: Opus review of the teacher pilot; teacher prompt version 2
+- review: three Claude Opus 5.5 reviewers (evaluation only) scored the 59 kept pilot trajectories 1–5 on school
+  fidelity, causal coherence, event responsiveness, output consistency, factual hygiene. Means K 3.8/3.4/3.2/3.5/3.7,
+  A 4.1/3.5/3.3/2.9/3.8, M 4.5/3.9/3.7/3.6/3.4; all three verdicts "train with changes". Main problems: default
+  bearish signals (equities SHORT 52/59, gold LONG 56/59) also for good news, checklist use of school concepts,
+  backdrop numbers before get_macro_data, US backdrop for foreign events, templated scenarios, vague analogs,
+  implausible backdrops. Summary and per-item scores: `research/teacher_pilot/opus_review.md`, `opus_review/*.json`.
+- change: teacher prompt version 2 (table in opus_review.md): school diagnosis and good-news cases instead of
+  must-use concepts, consistent US/global backdrop, tool-honest order, JSON tool arguments, dated analogs, signals
+  with conviction and reason and no default direction, direction-share report per batch; manifests carry
+  `prompt_version` and imports refuse a mismatch. 63 offline tests pass.
+- next: pilot v2 (20 per school), same Opus review, compare.

@@ -29,7 +29,7 @@ templates = [
   "{cb} adopts explicit yield-curve control on the 10-year bond.",
   "{cb} raises rates by {bp}bp and accelerates quantitative tightening.",
   "{cb} revises its inflation target framework to an average-inflation target.",
-  "{cb} leadership changes and the new chair is seen as markedly more dovish.",
+  "{cb} gets a new head who is seen as markedly more dovish.",
   "{cb} intervenes in the currency market for the first time in a decade.",
 ]
 
@@ -202,6 +202,8 @@ concepts = ["aggregate demand", "the multiplier", "liquidity trap", "output gap"
 mechanisms = ["spending and income multipliers", "confidence and investment", "fiscal transfers to households",
               "interest rates on demand when not at the zero bound"]
 signals = "favours fiscal or monetary support in downturns; reads demand shortfalls as the main risk"
+diagnosis = "Read the output gap first: unemployment against a natural rate of about 4.5% and inflation against a 2% target. A negative gap calls for support; a positive gap (low unemployment, high inflation) means overheating and calls for restraint. A supply shock is a supply shock first; its demand effects come second."
+good_news = ["a demand recovery or fiscal support that closes a negative output gap", "a positive supply shock (cheaper energy, productivity gains)", "a peace deal or trade opening that lifts confidence and investment", "easing that arrives while the gap is negative"]
 
 [school.austrian]
 concepts = ["malinvestment", "credit-fuelled boom and bust", "time preference", "the structure of production",
@@ -209,6 +211,8 @@ concepts = ["malinvestment", "credit-fuelled boom and bust", "time preference", 
 mechanisms = ["artificially low rates misallocate capital", "credit expansion lengthens production",
               "intervention delays the correction", "new money benefits first recipients"]
 signals = "sceptical of stimulus; favours hard assets and expects corrections after credit booms"
+diagnosis = "Ask first whether the event adds or removes intervention, credit expansion or price distortion. Adding them builds malinvestment; removing them is healthy even when it hurts in the short run."
+good_news = ["deregulation, tariff removal or other removal of intervention", "rate normalisation that ends artificially cheap credit", "growth funded by genuine saving or productivity gains", "a correction that is allowed to clear without a bailout"]
 
 [school.monetarist]
 concepts = ["money supply (M2)", "the quantity theory of money", "velocity", "rules over discretion",
@@ -216,3 +220,5 @@ concepts = ["money supply (M2)", "the quantity theory of money", "velocity", "ru
 mechanisms = ["money growth to nominal spending", "money growth to inflation with lags",
               "credibility and expectations", "real balances"]
 signals = "reads inflation and nominal GDP through money growth; favours rule-based policy"
+diagnosis = "Compare money growth with real growth and the inflation target before anything else. A supply shock changes relative prices and only becomes inflation if money growth accommodates it."
+good_news = ["money growth back in line with real growth and the target", "a credible, rule-based policy change", "a supply shock that money growth does not accommodate", "disinflation without a collapse in money or velocity"]
