@@ -215,7 +215,46 @@ def main(argv: list[str] | None = None) -> int:
     ti.add_argument("--results", default=None, help="default: <jobs>/results.jsonl")
     ti.add_argument("--out", default="data/trajectories")
 
+    ag = sub.add_parser("agent-spike", help="Qwen3-8B as a framework agent with the real L1/L2 tools (Task A)")
+    ag.add_argument("--n", type=int, default=10, help="template events per school")
+    ag.add_argument("--seed", type=int, default=7, help="item seed (the teacher's training items use 0)")
+    ag.add_argument("--model", default="Qwen/Qwen3-8B")
+    ag.add_argument("--thinking", action="store_true", help="thinking mode on (default: enable_thinking=false)")
+    ag.add_argument("--max-rounds", type=int, default=4)
+    ag.add_argument("--max-tokens", type=int, default=3072)
+    ag.add_argument("--out", default="runs/agent-spike")
+    ag.add_argument("--fake", action="store_true", help="offline dry run (the fake backend calls no tools)")
+
     a = ap.parse_args(argv)
+    if a.cmd == "agent-spike":
+        import json
+        import time
+        from pathlib import Path
+
+        from mosaic.agent import run_agents, score, spike_jobs
+        from mosaic.backends import Cache, FakeBackend, VLLMBackend
+        from mosaic.config import ROOT
+
+        sampling = {"temperature": 0.7, "top_p": 0.9, "max_tokens": a.max_tokens, "seed": a.seed}
+        if a.fake:
+            backend = FakeBackend(sampling)
+        else:
+            backend = VLLMBackend(sampling, Cache(ROOT / "cache/agent.jsonl"), base_model=a.model, adapters={},
+                                  chat_template_kwargs={"enable_thinking": bool(a.thinking)})
+        pairs = spike_jobs(a.n, a.seed)
+        t0 = time.time()
+        run_agents(backend, [j for _, j in pairs], max_rounds=a.max_rounds)
+        summary = {"model": a.model, "thinking": bool(a.thinking), "seconds": round(time.time() - t0, 1),
+                   **score(pairs)}
+        out = Path(a.out) / ("thinking" if a.thinking else "non-thinking")
+        out.mkdir(parents=True, exist_ok=True)
+        (out / "summary.json").write_text(json.dumps(summary, indent=1) + "\n")
+        with (out / "conversations.jsonl").open("w", encoding="utf-8") as f:
+            for it, j in pairs:
+                f.write(json.dumps({"tag": j.tag, "event": it.event.text, "messages": j.messages, "turns": j.turns},
+                                   ensure_ascii=False) + "\n")
+        print(json.dumps({k: v for k, v in summary.items() if k != "rows"}, indent=1))
+        return 0
     if a.cmd in ("teacher-export", "teacher-import"):
         import json
         from pathlib import Path

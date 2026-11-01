@@ -45,6 +45,7 @@ class Request:
     messages: list[dict]
     adapter: str | None = None  # school name for arm C, else None
     tag: str = ""  # free text, e.g. "A|keynesian|evt-12"
+    tools: list[dict] | None = None  # tool specs for an agent turn (rendered by the chat template), else None
 
 
 class Cache:
@@ -78,8 +79,10 @@ class Backend:
         self.cache = cache
 
     def key(self, r: Request) -> str:
-        return stable_hash({"model": self.model_id, "adapter": r.adapter, "messages": r.messages,
-                            "sampling": self.sampling})
+        k = {"model": self.model_id, "adapter": r.adapter, "messages": r.messages, "sampling": self.sampling}
+        if r.tools:
+            k["tools"] = r.tools
+        return stable_hash(k)
 
     def generate(self, reqs: list[Request]) -> list[dict]:
         """[{text, cached, usage, seconds}] in request order."""
@@ -152,6 +155,8 @@ class VLLMBackend(Backend):
 
     def key(self, r: Request) -> str:
         k = {"model": self.model_id, "adapter": r.adapter, "messages": r.messages, "sampling": self.sampling}
+        if r.tools:
+            k["tools"] = r.tools
         if r.adapter:
             k["adapter_sha256"] = self.adapter_sha.get(r.adapter)
         if self.chat_template_kwargs:
@@ -176,15 +181,17 @@ class VLLMBackend(Backend):
         sp = SamplingParams(temperature=self.sampling.get("temperature", 0.7), top_p=self.sampling.get("top_p", 0.9),
                             max_tokens=self.sampling.get("max_tokens", 2048), seed=self.sampling.get("seed", 0))
         out: list[dict | None] = [None] * len(reqs)
-        groups: dict[str | None, list[int]] = {}
-        for i, r in enumerate(reqs):
-            groups.setdefault(r.adapter, []).append(i)
-        for adapter, idx in groups.items():
+        groups: dict[tuple, list[int]] = {}
+        for i, r in enumerate(reqs):  # one llm.chat call per (adapter, tool set)
+            groups.setdefault((r.adapter, json.dumps(r.tools, sort_keys=True) if r.tools else ""), []).append(i)
+        for (adapter, _), idx in groups.items():
             lora = None
             if adapter:
                 lora = LoRARequest(adapter, sorted(self.adapters).index(adapter) + 1, self.adapters[adapter])
             t0 = time.time()
             kw = {"chat_template_kwargs": self.chat_template_kwargs} if self.chat_template_kwargs else {}
+            if reqs[idx[0]].tools:
+                kw["tools"] = reqs[idx[0]].tools
             res = llm.chat([reqs[i].messages for i in idx], sp, lora_request=lora, use_tqdm=True, **kw)
             dt = (time.time() - t0) / max(1, len(idx))
             for i, r in zip(idx, res):
