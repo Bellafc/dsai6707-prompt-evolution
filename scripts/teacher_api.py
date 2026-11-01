@@ -26,9 +26,11 @@ from pathlib import Path
 
 
 def call(base_url: str, key: str, body: dict, timeout: float, retries: int = 5) -> dict:
+    headers = {"Content-Type": "application/json", "User-Agent": "macro-mosaic-teacher/1.0"}
+    if key:  # without a key the Claude Code network secret for the API host adds the header
+        headers["Authorization"] = f"Bearer {key}"
     req = urllib.request.Request(base_url.rstrip("/") + "/chat/completions", data=json.dumps(body).encode(),
-                                 headers={"Content-Type": "application/json", "Authorization": f"Bearer {key}",
-                                          "User-Agent": "macro-mosaic-teacher/1.0"})
+                                 headers=headers)
     for attempt in range(retries):
         try:
             with urllib.request.urlopen(req, timeout=timeout) as r:
@@ -52,6 +54,8 @@ def main() -> int:
     ap.add_argument("--base-url", required=True, help="OpenAI-compatible endpoint ending in /v1 (or similar)")
     ap.add_argument("--model", required=True, help="the provider's model id; overrides the one in requests.jsonl")
     ap.add_argument("--key-env", default="TEACHER_API_KEY", help="environment variable that holds the API key")
+    ap.add_argument("--network-secret", action="store_true",
+                    help="send no key: a Claude Code cloud session adds it from a network secret for the API host")
     ap.add_argument("--workers", type=int, default=16, help="requests in flight at once")
     ap.add_argument("--timeout", type=float, default=600)
     ap.add_argument("--limit", type=int, default=0, help="only the first N requests (0 = all)")
@@ -61,8 +65,8 @@ def main() -> int:
     if a.model.lower().startswith(("claude", "anthropic")):
         sys.exit("Claude models are not allowed as teacher (amendment 4 Change 5)")
     key = os.environ.get(a.key_env)
-    if not key:
-        sys.exit(f"set {a.key_env} to your API key first")
+    if not key and not a.network_secret:
+        sys.exit(f"set {a.key_env} to your API key first (or pass --network-secret in a Claude Code cloud session)")
     if not (a.jobs / "requests.jsonl").exists():
         if not a.n:
             sys.exit(f"{a.jobs}/requests.jsonl not found: pass --n to create it")
