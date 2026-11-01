@@ -527,3 +527,11 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   modification programme, the SNB floor. Tool: indicator names joined in one string are split (agent spike).
   99 offline tests pass.
 - next: pilot v5 (20 per school), automatic checks against the v4 echo counts, then the Opus review.
+
+## For the human (2026-11-01, teacher terms before the full run)
+- 老師 qwen3.8-max 是透過 token plan 的託管 API 呼叫的。開源權重的 Qwen3.8-Max License 允許微調與衍生作品、沒有禁止拿輸出訓練，
+  營收門檻（MaaS 業者年營收超過 5,000 萬美元）也碰不到；但託管 API 受阿里雲條款約束：Model Studio service-specific terms 第 III 節
+  規定「試用（trial）互動產生的內容只能用來評估模型表現，不得作其他用途，也不得提供給第三方」。請確認 token plan 是付費方案而且
+  條款允許拿輸出訓練模型；確認前，完整的 1,500 條不會開跑（試產只用來評估，不受影響）。若不允許，改用 pod 上的開源老師
+  （Qwen3.8-27B，Apache-2.0；或 Qwen3.8-Flash-Next，qwen-community 授權允許拿輸出訓練），v5 流程不用改。
+  修正案 4 Change 5 已改寫成實際流程，老師一欄留給你勾選。
