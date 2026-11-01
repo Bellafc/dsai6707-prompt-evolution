@@ -50,6 +50,7 @@ you (cloud session) ──REST──▶ RunPod pod ──▶ scripts/pod_bootstr
 |---|---|---|---|
 | S spikes (serving, `mosaic train`, SAE check, Qwen3.5-27B LoRA) | 80gb | 4 | nothing from the human |
 | 2 exp03 data build (CPU and network) | 48gb (cheapest) | 6 | — |
+| T teacher pilot (Qwen3.8-Flash-Next-FP8, ~180 GB): `--gpu 141gb --gpu-count 2 --volume-gb 400` | 2 × H200 (or 4 × 80gb) | 3 | human allowed multi-GPU (2026-11-01) |
 | 0 adapters + parity | 48gb or 80gb | 3 | assets on the volume, backlog row `train` = go |
 | 1 exp01 dev loop | 48gb | 6 | Task 0 done |
 | 5 exp06 instrument | 48gb | 6 | Task 0 done |
