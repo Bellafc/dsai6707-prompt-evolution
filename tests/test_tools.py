@@ -61,3 +61,8 @@ def test_parse_qwen_tool_calls():
     assert calls[0] == {"name": "get_macro_data", "arguments": {"indicators": ["VIX"]}}
     assert calls[1]["name"] == "query_episode_db" and "error" in calls[2]
     assert parse_tool_calls("no calls") == ("no calls", [])
+
+
+def test_indicator_names_joined_in_one_string_are_split():
+    r = box().execute("get_macro_data", {"indicators": ["US policy rate (%), VIX, US CPI inflation y/y (%)"]})
+    assert r.refs == ("US policy rate (%)", "VIX", "US CPI inflation y/y (%)")

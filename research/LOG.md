@@ -506,3 +506,24 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   you want a lenient variant to separate "wrong form" from "wrong content".
 - The pod GPU showed 100 % utilisation and 558 MiB in use before I started anything (another process on the card?);
   the timings above may be slightly inflated.
+
+### 2026-11-01 — D11: Opus review of pilot v4; teacher prompt version 5, items version 4
+- result: review of the 57 kept v4 conversations (`research/teacher_pilot/opus_review.md`, three Opus 5.5 reviewers,
+  evaluation only): five shared criteria 4.01 (v2 4.12, v1 3.61), school fidelity 4.61, grounding 3.54 (new), verdict
+  "with changes" from all three. Tool honesty is fixed by construction; new problems: the step-3 echo "weigh the
+  event" (52/57 by regex), "this/the school" (44/57), pre-event data read as effects, S1 at 0.40-0.50 and repeated
+  tuples, "Confidence: moderate" 57/57, residual credit SHORT and gold or bond defaults, signals on minority
+  scenarios, the US backdrop used for foreign events, implausible backdrops.
+- change: prompt version 5 (no echoed instructions; data declared pre-event; contradictions only against levels the
+  event states; scenario, confidence and asset-referent definitions; minority-scenario and backdrop-only calls capped;
+  foreign events not judged with US data; indicators behind the signals requested); school profiles (Keynesian terms
+  defined, the quotable supply-shock line rewritten; Austrian stance made conditional on real rates and money
+  creation, natural-rate comparison; Monetarist 3.5-4.5% band, implied velocity, supply-shock argument restricted);
+  validator from version 5 on: echo phrases rejected, at most 8 proof steps, an L5 step must name the most likely
+  scenario; batch report: modal-probability band, repeated tuples, confidence levels, shared 5-word phrases,
+  direction warning at 65%. Items version 4: growth draws skewed positive (37% negative, was ~50%), curve tied to the
+  policy path and inflation, oil tied to CPI, three lagged or smoothed series, event-stated US levels imposed.
+  Episode table +7 (86): money-fund and stablecoin runs, PBoC reserve-requirement cuts, HOLC and the 2009
+  modification programme, the SNB floor. Tool: indicator names joined in one string are split (agent spike).
+  99 offline tests pass.
+- next: pilot v5 (20 per school), automatic checks against the v4 echo counts, then the Opus review.

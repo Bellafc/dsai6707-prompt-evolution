@@ -82,10 +82,14 @@ class MacroFacts:
     def lookup(self, names: list[str]) -> ToolResult:
         found: dict[str, object] = {}
         unknown = []
-        for name in names:
-            key = self.resolve(str(name))
+        flat = []
+        for name in names:  # "A, B, C" in one string (seen in the agent spike) is read as three names
+            name = str(name)
+            flat += [x.strip() for x in name.split(",") if x.strip()] if "," in name and not self.resolve(name) else [name]
+        for name in flat:
+            key = self.resolve(name)
             if key is None:
-                unknown.append(str(name))
+                unknown.append(name)
             else:
                 found[key] = self.values[key]
         lines = [f"L1 indicators (known at {self.as_of or 'the analysis date'}):"]
