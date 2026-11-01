@@ -101,8 +101,9 @@ weigh the scenario distribution (S1-only reasons fell from ~90% to under 10%); t
 information") and the 0.55/0.25/0.20 tuple are gone; good news gets risk-on calls.
 
 **Problems found by all three reviewers** (the prompt-v5 work list):
-1. A new prompt echo: step 3's "say so in one sentence and weigh the event more" gives "I weigh the event" in 54/57,
-   mostly on manufactured tensions; "this school" in ~50/57; school-profile sentences quoted near-verbatim.
+1. A new prompt echo: step 3's "say so in one sentence and weigh the event more" gives "weigh the event" (or "the
+   event dominates") in 52/57 by a regex count, mostly on manufactured tensions; "this/the school" in 44/57;
+   school-profile sentences quoted near-verbatim.
 2. Pre-event backdrop values read as the event's effects (the curve as "the market's verdict" on the event).
 3. Templated calibration: S1 at 0.40–0.50 in most items, repeated probability tuples (0.45/0.30/0.25), "Confidence:
    moderate" in 57/57.
