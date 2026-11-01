@@ -107,7 +107,7 @@ autoencoder (exp06), a leakage-free history long enough for exp03, and LoRA tool
 | Qwen2.5-7B-Instruct (Confirmation) | Optional reproduction arms A7/C7 (amendment 4, Change 4) | Continuity with Confirmation Table 4.3, only if the original trajectories exist |
 | **Qwen3.5-27B** (2026-02-24, Apache-2.0) + school LoRA | exp01b (RQ1 on a stronger 2026 base) and the exp06 replication; exp03 secondary subset (≥ 2026-03) and exp05 (D7) | The only 2026 model with a public SAE trained on the post-trained model itself (64 layers); bf16 LoRA ≈ 56 GB (80 GB card); hybrid Gated DeltaNet needs spike S4 |
 | Qwen3.6-27B, Qwen3.8-27B, Gemma 4 31B (Google, 2026-03-31, Apache-2.0) | exp05 prompted references (optional); Gemma 4 31B as an optional cross-family check of H1 (P2) | Newer or comparable, but no public SAE and little or no leakage-free history; Gemma 4 31B bf16 LoRA exceeds 80 GB |
-| Gemma 3 (2025-03) + Gemma Scope 2 (Google, 2025-12: SAEs for PT and IT models, transcoders) | Fallback for exp06 if the Qwen-Scope base-model SAEs fail gate S0 | The most mature open SAE suite (SAELens, Neuronpedia) |
+| Gemma 3 (2025-03) + Gemma Scope 2 (Google, 2025-12: SAEs for PT and IT models, transcoders) | Not used: no substitute SAE suite and no SAE training (human, 2026-11-01); if Qwen-Scope fails gate S0, exp06 reports the failure as a limitation | The most mature open SAE suite (SAELens, Neuronpedia) |
 | Qwen-Scope SAEs (Qwen, 2026-05) | exp06 instrument (Part I reader) and mechanism (Part II) | Residual stream, every layer, TopK (L0 50 / 100), 64K–80K features; "qwen" licence, research use |
 | Decision models (TypeSafe Jev; open Vega, Kev incl. Kev-27B on Qwen3.8; Ollama `/v1/systemone`) | Measurement only (D8): a second, open, reproducible judge (score type, per-level probabilities); a decision head over scenario bins in exp05 only | Per-option probabilities with a fitted temperature; vendor calibration claims must be verified (pmpol survey §13); Jev is closed; Kev fine-tuning needs ~1,000 labels; Qwen3.5/3.8 bases know 2025–26, so not for historical exp03 |
 | Claude Opus 5.5 | Arm D (frontier reference), the exp01 judge, exp06 feature labels | Evaluation and analysis only. Not a teacher: the Consumer Terms (§3.2) bar using the service to train models |
@@ -204,7 +204,8 @@ those decisions say.
 - **D8** Decision models as measurement tools (second judge Kev-27B; decision head in exp05): yes/no.
 - **D9** Who reviews the L3 school entries (`kb/L3/schools.yaml`, two-person rule) before freeze.
 - **D10** exp06 scope: Parts I and II (default; Part I registered with the exp01 freeze) or Part I only;
-  Part III (ablation, steering, data audit) optional.
+  Part III (ablation, steering, data audit) optional. Decided 2026-11-01: public Qwen-Scope SAEs only, no SAE
+  training or substitute suite; a failed gate S0 is reported as a limitation, not worked around.
 - **D11** Training data: the original 1,500 GPT-4o trajectories if they were kept (preferred), otherwise
   regenerated (GPT-4o if still offered, or an open-weight teacher whose licence allows training on its outputs);
   and whether to run the Qwen2.5-7B reproduction arms A7/C7.

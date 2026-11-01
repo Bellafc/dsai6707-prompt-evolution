@@ -589,3 +589,10 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   Fed cut, a PMI collapse, CRE losses), with one remote-event LONG at conviction 1 that the rule says should be NEUTRAL.
 - decision: prompt version 7 is the candidate for the full run. The full run waits for the human's confirmation of
   the teacher's terms; if the teacher changes, a short pilot and one compact review are repeated with the new teacher.
+
+### 2026-11-01 — decision (human): no SAE training; do not persist when public SAEs fit badly
+- decision: exp06 uses the public Qwen-Scope SAEs only. No SAE is trained, continued or fine-tuned and no other suite
+  (Gemma Scope 2) is substituted; if gate S0 fails for a state at every scanned layer, that state's SAE analysis is
+  dropped and reported as a limitation, with Part I (reader) and the non-SAE baselines carrying the analysis. S0 and
+  the layer scan get one pod session (6 GPU-hours) at most.
+- change: exp06 draft (S0 fallback replaced), THESIS_DESIGN §4a (Gemma row) and §8 (D10), program.md Task 5.
