@@ -21,8 +21,7 @@ from pathlib import Path
 from mosaic.backends import Backend, Cache
 from mosaic.stats import holm, paired
 
-from .backend import Ledger  # noqa: F401  (kept for API symmetry)
-from .config import CACHE_PATH, HELDOUT_SEED, MODEL, N_HELDOUT, RESULTS_DIR, SEARCH_SEED
+from .config import CACHE_PATH, HELDOUT_SEED, MODEL, N_HELDOUT, RESULTS_DIR
 from .evaluate import Evaluator
 from .genome import SchoolGene, PromptSet, b0
 from .moo import knee

@@ -4,9 +4,9 @@ from evo_prompt.algorithms import Search
 from evo_prompt.backend import Ledger, OfflineBackend
 from evo_prompt.evaluate import Evaluator
 from evo_prompt.genome import b0
+from evo_prompt.moo import dominates
 from evo_prompt.runner import events, sampling
 from mosaic.backends import Cache
-from mosaic.teacher import make_items  # noqa: F401
 
 
 def _setup(tmp_path, seed=1):
@@ -65,8 +65,8 @@ def test_search_is_deterministic_given_seed(tmp_path):
 def test_archive_members_are_feasible_and_front_nondominated(tmp_path):
     s = _run("nsga2", tmp_path, seed=2)
     assert all(i.ev.feasible for i in s.archive.values())
-    objs = [f.ev.objectives for f in s.front()]
-    for a in objs:
-        for b in objs:
-            if a != b:
-                assert not all(x <= y for x, y in zip(b, a)) or b == a
+    front = [(f.ev.objectives, 0.0) for f in s.front()]
+    for i, a in enumerate(front):
+        for j, b in enumerate(front):
+            if i != j:
+                assert not dominates(b, a), "a front member dominates another"

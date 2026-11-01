@@ -1,7 +1,6 @@
 import random
 
-from evo_prompt.config import REF_POINT  # noqa: F401  (import check)
-from evo_prompt.genome import SCHOOLS, PromptSet, SchoolGene, b0, concept_pool, decode, sentences
+from evo_prompt.genome import SCHOOLS, b0, concept_pool, decode, sentences
 from evo_prompt.operators import apply_edit, crossover, mutate_one, perturb_all, plan_llm_edit, rule_op
 from evo_prompt.evaluate import Evaluation
 from mosaic.teacher import make_items
