@@ -559,3 +559,22 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   learn moderate confidence by default / keep version 6 (the judgement is now explicit and checked), state the
   teacher's calibration habit as a limitation, and rely on exp03's pooling and temperature scaling for forecast
   calibration; revisit if the v5/v6 review judges the "mixed" labels unjustified.
+
+### 2026-11-01 — D11: Opus review of pilot v5; teacher prompt version 7, items version 5
+- result: review of the 55 kept v5 conversations (three Opus 5.5 reviewers, cut off by the subscription's spend limit
+  after writing complete files): five shared criteria 4.08 (v4 4.01), grounding 3.84 (v4 3.54), event
+  responsiveness 4.29 (3.96), output consistency 3.71 (3.46). Fixed: the echoes, pre-event misreads, foreign events,
+  gold and credit defaults, minority-scenario calls, velocity. Remaining: templated calibration, rule narration as
+  new boilerplate, new stock diagnoses, the data-driven clause used as a licence, shared scenario tags, inflation
+  independent of the gap, money claims about past episodes from memory.
+- change: prompt version 7 (rules shown only for items they apply to: the contradiction rule for events stating a
+  level, annualisation for monthly figures; "never write a sentence about why an indicator or a rule does not apply";
+  evidence labels with observable tests; a direction only the data support is NEUTRAL; the no-event baseline and
+  distinct scenario tags; episodes described only as far as the tool text goes); profiles (Keynesian liquidity trap
+  only at a policy rate of 1% or less; Austrian natural rate = trend growth of about 2%, no liquidation without a
+  boom; Monetarist fixed 3.5-4.5% band with trend = long-run potential, money demand and velocity defined, the oil
+  sentence removed); validator from version 7 on: narrated rules, a liquidity trap above a 1% policy rate and shared
+  scenario tags are rejected. Items version 5: core PCE follows the unemployment gap, headline CPI follows oil.
+- cost note: one review round (three reviewers on ~57 items) uses about 0.9M Opus tokens of the human's subscription;
+  the human hit the 5-hour and monthly limits twice today. Later rounds: automatic checks first, then one reviewer on a
+  stratified sample.

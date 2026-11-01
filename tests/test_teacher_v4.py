@@ -21,7 +21,7 @@ Evidence: mixed - the data show slack, but the episodes differ from the event in
 [Output]
 Causal chain: shock -> lower spending -> lower income -> wider slack -> lower rates
 Scenarios:
-S1 (slow growth; growth down, inflation down): 0.47
+S1 (slow growth; growth down, inflation flat): 0.47
 S2 (recession; growth down, inflation down): 0.33
 S3 (quick rebound; growth up, inflation up): 0.20
 Signals:
@@ -269,3 +269,36 @@ def test_v6_evidence_line_fixes_the_modal_band_and_the_confidence():
     probs = teacher.check_v4(item, turns, eps)[0]
     assert "most likely scenario at 0.47, outside the decisive band 0.6-0.85" in probs
     assert "confidence moderate does not follow evidence decisive" in probs
+
+
+def test_v7_rules_are_conditional_and_checked():
+    cfg = teacher.load_templates()
+    items = teacher.make_items(40)
+    monthly = next(it for it in items if "month on month" in it.event.text)
+    plain = next(it for it in items if not any(ch.isdigit() for ch in it.event.text))
+    assert "Annualise" in teacher.teacher_messages_v4(monthly, cfg)[1]["content"]
+    plain_prompt = teacher.teacher_messages_v4(plain, cfg)[1]["content"]
+    assert "Annualise" not in plain_prompt and "contradict a level" not in plain_prompt
+    item = teacher.make_items(1)[0]
+    job = {"body": {"model": "x", "messages": teacher.teacher_messages_v4(item, cfg), "tools": teacher.TOOL_SPECS},
+           "backdrop": item.event.macro_context}
+    eps = EpisodeTable.load()
+    same = FINAL.replace("S1 (slow growth; growth down, inflation flat)", "S1 (slow growth; growth down, inflation down)")
+    turns, _ = api.converse(job, fake_send(same))
+    assert "two scenarios share the same growth and inflation tags" in teacher.check_v4(item, turns, eps)[0]
+    narr = FINAL.replace("The data confirm slack", "Nothing in the data contradicts the event; the data confirm slack")
+    turns, _ = api.converse(job, fake_send(narr))
+    assert any(p.startswith("narrates a rule") for p in teacher.check_v4(item, turns, eps)[0])
+    trap = FINAL.replace("The data confirm slack", "This is not a liquidity trap; the data confirm slack")
+    turns, _ = api.converse(job, fake_send(trap))
+    rate = item.event.macro_context["US policy rate (%)"]
+    assert (any("liquidity trap" in p for p in teacher.check_v4(item, turns, eps)[0])) == (rate > 1.0)
+
+
+def test_items_v5_tie_core_inflation_to_the_gap():
+    items = teacher.make_items(300)
+    tight = [it.event.macro_context["US core PCE y/y (%)"] for it in items
+             if it.event.macro_context["US unemployment rate (%)"] <= 3.8]
+    slack = [it.event.macro_context["US core PCE y/y (%)"] for it in items
+             if it.event.macro_context["US unemployment rate (%)"] >= 6.0]
+    assert sum(tight) / len(tight) > sum(slack) / len(slack) + 0.5
