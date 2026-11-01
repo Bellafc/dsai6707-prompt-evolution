@@ -578,3 +578,14 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
 - cost note: one review round (three reviewers on ~57 items) uses about 0.9M Opus tokens of the human's subscription;
   the human hit the 5-hour and monthly limits twice today. Later rounds: automatic checks first, then one reviewer on a
   stratified sample.
+
+### 2026-11-01 — D11: pilot v7 (prompt version 7, items version 5)
+- command: `scripts/teacher_api.py research/teacher_runs/pilot-v7 --n 10 … --model qwen3.8-max` (30/30), import.
+- result: 29/30 kept (K 10, A 9, M 10); the one reject repeats "the school's". Calibration moved for two schools:
+  Keynesian and Monetarist evidence decisive 5 / mixed 5, confidence high 5 / moderate 5, modal at 0.40-0.55 in 50%
+  (v6 88% and 70%); Austrian still mixed 7/9, modal at 0.40-0.55 in 89%, one tuple used three times. Direction
+  warnings: Keynesian bonds LONG 9/10 and gold LONG 7/10, Monetarist bonds LONG 7/10; read item by item, the bond
+  calls cite event channels (bank-run flight to safety, SPR disinflation, a below-consensus CPI, EM capital flight, a
+  Fed cut, a PMI collapse, CRE losses), with one remote-event LONG at conviction 1 that the rule says should be NEUTRAL.
+- decision: prompt version 7 is the candidate for the full run. The full run waits for the human's confirmation of
+  the teacher's terms; if the teacher changes, a short pilot and one compact review are repeated with the new teacher.
