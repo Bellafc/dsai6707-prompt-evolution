@@ -433,3 +433,22 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   exp02 and exp06 drafts. exp01 and its registration are untouched.
 - next: decisions 1–7 of the design note; then the tool layer, the exp07 draft and exp03 H8 before the 11-25
   registration.
+
+### 2026-11-01 — D11/RQ2: tool layer and teacher prompt version 4 (real tools)
+- change: `src/mosaic/tools.py`: `get_macro_data` (L1) and `query_episode_db` (L2) over
+  `configs/tools/episodes_standin.toml` (79 named, dated, pre-2025 episodes, qualitative accounts without statistics,
+  idf-weighted retrieval; a stand-in for the episode database, human check pending). Teacher prompt version 4: the
+  backdrop reaches the teacher only through get_macro_data (function calling), the final message adds a [Proof]
+  block typed by layer and checked against the refs the tools returned, plus a confidence line. Items version 3
+  recentres the backdrop (unemployment above 4.5% in 50% of draws, was 72%; CPI skewed towards 2%). School diagnoses
+  carry the review fixes (real rates, the zero bound, trend money growth). `scripts/teacher_api.py` runs the tool
+  loop with streamed tool calls. One run gives two formats: the Confirmation single-pass text for exp01 arm C
+  (flattened, proof dropped) and the multi-turn agent conversation for C-agent.
+- command: `scripts/teacher_api.py … --n 20 --model qwen3.8-max --network-secret --limit 1` (smoke test)
+- result: function calling works on the token plan (6.0k tokens in, 5.5k out for one conversation); the teacher used
+  both tools in order and the trajectory passed every check after two fixes: scenario lines written "S1 (…): p 0.50"
+  are normalised, and proof steps citing several refs ("- L1 [A] with [B]: …") are accepted. Its first [Think] still
+  said "the event gives no bp", so step 1 no longer lists size units. The smoke run is not part of the pilot.
+- deviation: planned get_rules (L0) as a tool (design note §3) / L0 stays in the task prompt / none for RQ2, which
+  names L1 and L2 only; exp03 already passes the scenario set / keep, note it in the design note.
+- next: pilot v4 (20 per school) and the Opus review.

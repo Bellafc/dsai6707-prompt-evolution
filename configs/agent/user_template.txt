@@ -1,0 +1,4 @@
+Event ({event_id}, category: {category}):
+{event_text}
+
+Analyse this event with your tools and end with the [Output] and [Proof] blocks.

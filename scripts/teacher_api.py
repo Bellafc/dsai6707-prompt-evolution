@@ -9,6 +9,11 @@ With --n and no <jobs>/requests.jsonl yet, it first writes the requests (n per s
 finished request to <jobs>/results.jsonl; re-running skips requests that already have a result, so an interrupted run
 resumes. Then commit <jobs>/manifest.json and <jobs>/results.jsonl; the orchestrator imports them with
 `mosaic teacher-import`, which applies the Change 5 filters. Claude models are not allowed as teacher.
+
+Version 4 requests (prompt version 4, real tools) are conversations: the runner sends the tool specs, executes each
+tool call the teacher makes with `mosaic.tools` (the item's backdrop for get_macro_data, the episode table for
+query_episode_db), returns the result as a tool message and asks again, up to --max-rounds replies. The result line
+holds the turns after the prompt.
 """
 
 from __future__ import annotations
@@ -36,7 +41,7 @@ def call(base_url: str, key: str, body: dict, timeout: float, retries: int = 5) 
                                  headers=headers)
     for attempt in range(retries):
         try:
-            parts, usage, model = [], {}, body.get("model", "")
+            parts, usage, model, calls = [], {}, body.get("model", ""), {}
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 for raw in r:
                     line = raw.decode("utf-8", errors="replace").strip()
@@ -46,8 +51,13 @@ def call(base_url: str, key: str, body: dict, timeout: float, retries: int = 5) 
                     usage = chunk.get("usage") or usage
                     model = chunk.get("model") or model
                     for ch in chunk.get("choices") or []:
-                        parts.append((ch.get("delta") or {}).get("content") or "")  # reasoning_content is dropped
-            return {"model": model, "usage": usage, "choices": [{"message": {"content": "".join(parts)}}]}
+                        delta = ch.get("delta") or {}
+                        parts.append(delta.get("content") or "")  # reasoning_content is dropped
+                        merge_tool_deltas(calls, delta.get("tool_calls") or [])
+            msg = {"content": "".join(parts)}
+            if calls:
+                msg["tool_calls"] = [calls[i] for i in sorted(calls)]
+            return {"model": model, "usage": usage, "choices": [{"message": msg}]}
         except urllib.error.HTTPError as e:
             if e.code in (429, 500, 502, 503, 504) and attempt < retries - 1:
                 time.sleep(2 ** attempt * 5)
@@ -59,6 +69,48 @@ def call(base_url: str, key: str, body: dict, timeout: float, retries: int = 5) 
                 continue
             raise
     raise RuntimeError("unreachable")
+
+
+def merge_tool_deltas(calls: dict, deltas: list[dict]) -> None:
+    """Accumulate streamed tool-call fragments (OpenAI format: id and name once, arguments in pieces) by index."""
+    for d in deltas:
+        c = calls.setdefault(d.get("index", 0), {"id": "", "type": "function",
+                                                 "function": {"name": "", "arguments": ""}})
+        c["id"] = d.get("id") or c["id"]
+        fn = d.get("function") or {}
+        c["function"]["name"] = fn.get("name") or c["function"]["name"]
+        c["function"]["arguments"] += fn.get("arguments") or ""
+
+
+def converse(job: dict, send, max_rounds: int = 4) -> tuple[list[dict], dict]:
+    """Run one version-4 job: send(body) -> OpenAI-shaped response; every tool call is executed locally and returned
+    as a tool message. Returns (turns after the prompt, summed usage)."""
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+    from mosaic.tools import EpisodeTable, MacroFacts, ToolBox  # standard library only
+
+    box = ToolBox(MacroFacts(job["backdrop"]), EpisodeTable.load())
+    body = dict(job["body"])
+    msgs, turns, usage, model = list(body["messages"]), [], {}, body.get("model", "")
+    for _ in range(max_rounds):
+        resp = send(dict(body, messages=msgs))
+        model = resp.get("model") or model
+        for k, v in (resp.get("usage") or {}).items():
+            if isinstance(v, int):
+                usage[k] = usage.get(k, 0) + v
+        msg = resp["choices"][0]["message"]
+        turn = {"role": "assistant", "content": msg.get("content") or ""}
+        if msg.get("tool_calls"):
+            turn["tool_calls"] = msg["tool_calls"]
+        turns.append(turn)
+        msgs.append(turn)
+        if not msg.get("tool_calls"):
+            break
+        for c in msg["tool_calls"]:
+            res = box.execute(c["function"]["name"], c["function"].get("arguments") or "{}")
+            tool = {"role": "tool", "tool_call_id": c.get("id", ""), "name": c["function"]["name"], "content": res.text}
+            turns.append(tool)
+            msgs.append(tool)
+    return turns, {"model": model, **usage}
 
 
 def main() -> int:
@@ -74,6 +126,8 @@ def main() -> int:
     ap.add_argument("--limit", type=int, default=0, help="only the first N requests (0 = all)")
     ap.add_argument("--n", type=int, default=0, help="write the requests first: trajectories per school")
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--max-rounds", type=int, default=4, help="version 4: teacher replies per conversation")
+    ap.add_argument("--extra", default="", help='extra JSON merged into every request body, e.g. \'{"enable_thinking": true}\'')
     a = ap.parse_args()
     if a.model.lower().startswith(("claude", "anthropic")):
         sys.exit("Claude models are not allowed as teacher (amendment 4 Change 5)")
@@ -97,13 +151,21 @@ def main() -> int:
     lock = threading.Lock()
     tokens = [0, 0]
 
+    extra = json.loads(a.extra) if a.extra else {}
+
     def one(job: dict) -> str:
-        body = dict(job["body"], model=a.model)
-        resp = call(a.base_url, key, body, a.timeout)
-        msg = resp["choices"][0]["message"]
-        usage = resp.get("usage") or {}
-        line = {"custom_id": job["custom_id"], "model": resp.get("model", a.model),
-                "content": msg.get("content") or "", "usage": usage}
+        body = dict(job["body"], model=a.model, **extra)
+        if job.get("protocol", 3) >= 4:
+            turns, info = converse(dict(job, body=body), lambda b: call(a.base_url, key, b, a.timeout), a.max_rounds)
+            model = info.pop("model", a.model)
+            usage = info
+            line = {"custom_id": job["custom_id"], "model": model, "turns": turns, "usage": usage}
+        else:
+            resp = call(a.base_url, key, body, a.timeout)
+            msg = resp["choices"][0]["message"]
+            usage = resp.get("usage") or {}
+            line = {"custom_id": job["custom_id"], "model": resp.get("model", a.model),
+                    "content": msg.get("content") or "", "usage": usage}
         with lock:
             with out.open("a", encoding="utf-8") as f:
                 f.write(json.dumps(line, ensure_ascii=False) + "\n")
