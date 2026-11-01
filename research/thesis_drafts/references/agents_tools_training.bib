@@ -1,0 +1,355 @@
+% Tool-using agents and agent training. Cluster G, verified 2026-11-01 against primary sources by a research sub-agent
+% (log: verification/cluster_G_verification.md). Every entry's note names its primary source.
+
+@inproceedings{yao2023react,
+  author    = {Shunyu Yao and Jeffrey Zhao and Dian Yu and Nan Du and Izhak Shafran and Karthik Narasimhan and Yuan Cao},
+  title     = {{ReAct}: Synergizing Reasoning and Acting in Language Models},
+  booktitle = {International Conference on Learning Representations ({ICLR})},
+  year      = {2023},
+  url       = {https://openreview.net/forum?id=WE_vluYUL-X},
+  eprint    = {2210.03629},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CL},
+  note      = {verified: https://iclr.cc/virtual/2023/poster/11003 (ICLR 2023 poster, marked top-5 percent paper; links to OpenReview WE\_vluYUL-X) and https://arxiv.org/abs/2210.03629 (v3 is the ICLR camera-ready), 2026-11-01}
+}
+
+@inproceedings{schick2023toolformer,
+  author    = {Timo Schick and Jane Dwivedi-Yu and Roberto Dess{\`i} and Roberta Raileanu and Maria Lomeli and Eric Hambro and Luke Zettlemoyer and Nicola Cancedda and Thomas Scialom},
+  title     = {{Toolformer}: Language Models Can Teach Themselves to Use Tools},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor    = {A. Oh and T. Naumann and A. Globerson and K. Saenko and M. Hardt and S. Levine},
+  volume    = {36},
+  pages     = {68539--68551},
+  publisher = {Curran Associates, Inc.},
+  year      = {2023},
+  doi       = {10.52202/075280-2997},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2023/hash/d842425e4bf79ba039352da0f658a906-Abstract-Conference.html},
+  eprint    = {2302.04761},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CL},
+  note      = {verified: https://proceedings.neurips.cc/paper\_files/paper/2023/hash/d842425e4bf79ba039352da0f658a906-Abstract-Conference.html (+ its Bibtex file; Crossref deposit of the DOI agrees) and https://arxiv.org/abs/2302.04761, 2026-11-01. The NeurIPS version has nine authors (adds Eric Hambro); arXiv v1 lists eight. NeurIPS prints Dessi without the accent}
+}
+
+@misc{chen2023fireact,
+  author    = {Baian Chen and Chang Shu and Ehsan Shareghi and Nigel Collier and Karthik Narasimhan and Shunyu Yao},
+  title     = {{FireAct}: Toward Language Agent Fine-tuning},
+  year      = {2023},
+  howpublished = {arXiv preprint arXiv:2310.05915},
+  url       = {https://arxiv.org/abs/2310.05915},
+  eprint    = {2310.05915},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CL},
+  note      = {verified: https://arxiv.org/abs/2310.05915 (v1 of 9 Oct 2023 is the only version, no journal reference), 2026-11-01. No peer-reviewed version found. Appendix A.7 reports fine-tuning with and without masking the observations in HotpotQA trajectories}
+}
+
+@inproceedings{zeng2024agenttuning,
+  author    = {Aohan Zeng and Mingdao Liu and Rui Lu and Bowen Wang and Xiao Liu and Yuxiao Dong and Jie Tang},
+  title     = {{AgentTuning}: Enabling Generalized Agent Abilities for {LLMs}},
+  booktitle = {Findings of the Association for Computational Linguistics: {ACL} 2024},
+  editor    = {Lun-Wei Ku and Andre Martins and Vivek Srikumar},
+  month     = aug,
+  year      = {2024},
+  address   = {Bangkok, Thailand},
+  publisher = {Association for Computational Linguistics},
+  pages     = {3053--3077},
+  doi       = {10.18653/v1/2024.findings-acl.181},
+  url       = {https://aclanthology.org/2024.findings-acl.181/},
+  eprint    = {2310.12823},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CL},
+  note      = {verified: https://aclanthology.org/2024.findings-acl.181/ (+ its .bib export and PDF) and https://arxiv.org/abs/2310.12823, 2026-11-01. Section 2.2.3: the loss is computed only on the model's output}
+}
+
+@inproceedings{chen2024agentflan,
+  author    = {Zehui Chen and Kuikun Liu and Qiuchen Wang and Wenwei Zhang and Jiangning Liu and Dahua Lin and Kai Chen and Feng Zhao},
+  title     = {{Agent-FLAN}: Designing Data and Methods of Effective Agent Tuning for Large Language Models},
+  booktitle = {Findings of the Association for Computational Linguistics: {ACL} 2024},
+  editor    = {Lun-Wei Ku and Andre Martins and Vivek Srikumar},
+  month     = aug,
+  year      = {2024},
+  address   = {Bangkok, Thailand},
+  publisher = {Association for Computational Linguistics},
+  pages     = {9354--9366},
+  doi       = {10.18653/v1/2024.findings-acl.557},
+  url       = {https://aclanthology.org/2024.findings-acl.557/},
+  eprint    = {2403.12881},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CL},
+  note      = {verified: https://aclanthology.org/2024.findings-acl.557/ (+ its .bib export) and https://arxiv.org/abs/2403.12881, 2026-11-01}
+}
+
+@inproceedings{qin2024toolllm,
+  author    = {Yujia Qin and Shihao Liang and Yining Ye and Kunlun Zhu and Lan Yan and Yaxi Lu and Yankai Lin and Xin Cong and Xiangru Tang and Bill Qian and Sihan Zhao and Lauren Hong and Runchu Tian and Ruobing Xie and Jie Zhou and Mark Gerstein and Dahai Li and Zhiyuan Liu and Maosong Sun},
+  title     = {{ToolLLM}: Facilitating Large Language Models to Master 16000+ Real-world {APIs}},
+  booktitle = {International Conference on Learning Representations ({ICLR})},
+  year      = {2024},
+  pages     = {9695--9717},
+  editor    = {B. Kim and Y. Yue and S. Chaudhuri and K. Fragkiadaki and M. Khan and Y. Sun},
+  url       = {https://proceedings.iclr.cc/paper_files/paper/2024/hash/28e50ee5b72e90b50e7196fde8ea260e-Abstract-Conference.html},
+  eprint    = {2307.16789},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.AI},
+  note      = {verified: https://proceedings.iclr.cc/paper\_files/paper/2024/hash/28e50ee5b72e90b50e7196fde8ea260e-Abstract-Conference.html (+ its Bibtex file), https://iclr.cc/virtual/2024/poster/18267 (spotlight poster, OpenReview dHng2O0Jjr) and https://arxiv.org/abs/2307.16789, 2026-11-01}
+}
+
+@inproceedings{patil2025bfcl,
+  author    = {Shishir G. Patil and Huanzhi Mao and Fanjia Yan and Charlie Cheng-Jie Ji and Vishnu Suresh and Ion Stoica and Joseph E. Gonzalez},
+  title     = {The {Berkeley} Function Calling Leaderboard ({BFCL}): From Tool Use to Agentic Evaluation of Large Language Models},
+  booktitle = {Proceedings of the 42nd International Conference on Machine Learning},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {267},
+  pages     = {48371--48392},
+  editor    = {Aarti Singh and Maryam Fazel and Daniel Hsu and Simon Lacoste-Julien and Felix Berkenkamp and Tegan Maharaj and Kiri Wagstaff and Jerry Zhu},
+  publisher = {PMLR},
+  month     = jul,
+  year      = {2025},
+  url       = {https://proceedings.mlr.press/v267/patil25a.html},
+  note      = {verified: https://proceedings.mlr.press/v267/patil25a.html (page and its BibTeX; links to OpenReview 2GmDdhBdDk), 2026-11-01. No arXiv version exists (arXiv title search returned none)}
+}
+
+@inproceedings{yao2025taubench,
+  author    = {Shunyu Yao and Noah Shinn and Pedram Razavi and Karthik Narasimhan},
+  title     = {{$\tau$-bench}: A Benchmark for Tool-Agent-User Interaction in Real-World Domains},
+  booktitle = {International Conference on Learning Representations ({ICLR})},
+  year      = {2025},
+  pages     = {9965--10017},
+  editor    = {Y. Yue and A. Garg and N. Peng and F. Sha and R. Yu},
+  url       = {https://proceedings.iclr.cc/paper_files/paper/2025/hash/1b126cc38b8638e07bef37e7b2bb72bf-Abstract-Conference.html},
+  eprint    = {2406.12045},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.AI},
+  note      = {verified: https://proceedings.iclr.cc/paper\_files/paper/2025/hash/1b126cc38b8638e07bef37e7b2bb72bf-Abstract-Conference.html (+ its Bibtex file), https://iclr.cc/virtual/2025/poster/28170 (poster, OpenReview roNSXZpUDN) and https://arxiv.org/abs/2406.12045, 2026-11-01. The ICLR title underlines T, A, U; markup dropped here}
+}
+
+@inproceedings{zhang2024toolbehonest,
+  author    = {Yuxiang Zhang and Jing Chen and Junjie Wang and Yaxin Liu and Cheng Yang and Chufan Shi and Xinyu Zhu and Zihao Lin and Hanwen Wan and Yujiu Yang and Tetsuya Sakai and Tian Feng and Hayato Yamana},
+  title     = {{ToolBeHonest}: A Multi-level Hallucination Diagnostic Benchmark for Tool-Augmented Large Language Models},
+  booktitle = {Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing},
+  editor    = {Yaser Al-Onaizan and Mohit Bansal and Yun-Nung Chen},
+  month     = nov,
+  year      = {2024},
+  address   = {Miami, Florida, USA},
+  publisher = {Association for Computational Linguistics},
+  pages     = {11388--11422},
+  doi       = {10.18653/v1/2024.emnlp-main.637},
+  url       = {https://aclanthology.org/2024.emnlp-main.637/},
+  eprint    = {2406.20015},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CL},
+  note      = {verified: https://aclanthology.org/2024.emnlp-main.637/ (+ its .bib export) and https://arxiv.org/abs/2406.20015, 2026-11-01}
+}
+
+@inproceedings{lewis2020retrieval,
+  author    = {Patrick Lewis and Ethan Perez and Aleksandra Piktus and Fabio Petroni and Vladimir Karpukhin and Naman Goyal and Heinrich K{\"u}ttler and Mike Lewis and Wen-tau Yih and Tim Rockt{\"a}schel and Sebastian Riedel and Douwe Kiela},
+  title     = {Retrieval-Augmented Generation for Knowledge-Intensive {NLP} Tasks},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor    = {H. Larochelle and M. Ranzato and R. Hadsell and M.F. Balcan and H. Lin},
+  volume    = {33},
+  pages     = {9459--9474},
+  publisher = {Curran Associates, Inc.},
+  year      = {2020},
+  url       = {https://proceedings.neurips.cc/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html},
+  eprint    = {2005.11401},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CL},
+  note      = {verified: https://proceedings.neurips.cc/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html (+ its Bibtex file) and https://arxiv.org/abs/2005.11401, 2026-11-01. No DOI on the proceedings page or in Crossref}
+}
+
+@inproceedings{zelikman2022star,
+  author    = {Eric Zelikman and Yuhuai Wu and Jesse Mu and Noah Goodman},
+  title     = {{STaR}: Bootstrapping Reasoning With Reasoning},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor    = {S. Koyejo and S. Mohamed and A. Agarwal and D. Belgrave and K. Cho and A. Oh},
+  volume    = {35},
+  pages     = {15476--15488},
+  publisher = {Curran Associates, Inc.},
+  year      = {2022},
+  doi       = {10.52202/068431-1126},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2022/hash/639a9a172c044fbb64175b5fad42e9a5-Abstract-Conference.html},
+  eprint    = {2203.14465},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.LG},
+  note      = {verified: https://proceedings.neurips.cc/paper\_files/paper/2022/hash/639a9a172c044fbb64175b5fad42e9a5-Abstract-Conference.html (+ its Bibtex file; Crossref deposit of the DOI agrees) and https://arxiv.org/abs/2203.14465, 2026-11-01}
+}
+
+@misc{yuan2023scaling,
+  author    = {Zheng Yuan and Hongyi Yuan and Chengpeng Li and Guanting Dong and Keming Lu and Chuanqi Tan and Chang Zhou and Jingren Zhou},
+  title     = {Scaling Relationship on Learning Mathematical Reasoning with Large Language Models},
+  year      = {2023},
+  howpublished = {arXiv preprint arXiv:2308.01825},
+  url       = {https://arxiv.org/abs/2308.01825},
+  eprint    = {2308.01825},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CL},
+  note      = {verified: https://arxiv.org/abs/2308.01825 (v2 of 13 Sep 2023, comment: Working in Progress; no journal reference), 2026-11-01. No peer-reviewed version found. Proposes Rejection sampling Fine-Tuning (RFT)}
+}
+
+@article{singh2024beyond,
+  author    = {Avi Singh and John D. Co-Reyes and Rishabh Agarwal and Ankesh Anand and Piyush Patil and Xavier Garcia and Peter J. Liu and James Harrison and Jaehoon Lee and Kelvin Xu and Aaron Parisi and Abhishek Kumar and Alex Alemi and Alex Rizkowsky and Azade Nova and Ben Adlam and Bernd Bohnet and Gamaleldin Elsayed and Hanie Sedghi and Igor Mordatch and Isabelle Simpson and Izzeddin Gur and Jasper Snoek and Jeffrey Pennington and Jiri Hron and Kathleen Kenealy and Kevin Swersky and Kshiteej Mahajan and Laura Culp and Lechao Xiao and Maxwell L. Bileschi and Noah Constant and Roman Novak and Rosanne Liu and Tris Warkentin and Yundi Qian and Yamini Bansal and Ethan Dyer and Behnam Neyshabur and Jascha Sohl-Dickstein and Noah Fiedel},
+  title     = {Beyond Human Data: Scaling Self-Training for Problem-Solving with Language Models},
+  journal   = {Transactions on Machine Learning Research},
+  issn      = {2835-8856},
+  month     = apr,
+  year      = {2024},
+  url       = {https://openreview.net/forum?id=lNAyUngGFK},
+  eprint    = {2312.06585},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.LG},
+  note      = {verified: https://jmlr.org/tmlr/papers/ (entry dated April 2024, Expert Certification, OpenReview lNAyUngGFK, and its bib file) and the camera-ready PDF https://arxiv.org/pdf/2312.06585v4 (footer: Published in Transactions on Machine Learning Research (04/2024)), 2026-11-01. Author list follows the camera-ready PDF (41 names); the TMLR metadata omits Yundi Qian}
+}
+
+@misc{shao2024deepseekmath,
+  author    = {Zhihong Shao and Peiyi Wang and Qihao Zhu and Runxin Xu and Junxiao Song and Xiao Bi and Haowei Zhang and Mingchuan Zhang and Y. K. Li and Y. Wu and Daya Guo},
+  title     = {{DeepSeekMath}: Pushing the Limits of Mathematical Reasoning in Open Language Models},
+  year      = {2024},
+  howpublished = {arXiv preprint arXiv:2402.03300},
+  url       = {https://arxiv.org/abs/2402.03300},
+  eprint    = {2402.03300},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CL},
+  note      = {verified: https://arxiv.org/abs/2402.03300 (v3 of 27 Apr 2024; no journal reference), 2026-11-01. No peer-reviewed version found. Introduces Group Relative Policy Optimization (GRPO)}
+}
+
+@article{guo2025deepseekr1,
+  author    = {Daya Guo and Dejian Yang and Haowei Zhang and Junxiao Song and Peiyi Wang and Qihao Zhu and Runxin Xu and Ruoyu Zhang and Shirong Ma and Xiao Bi and Xiaokang Zhang and Xingkai Yu and Yu Wu and Z. F. Wu and Zhibin Gou and Zhihong Shao and Zhuoshu Li and Ziyi Gao and Aixin Liu and Bing Xue and Bingxuan Wang and Bochao Wu and Bei Feng and Chengda Lu and Chenggang Zhao and Chengqi Deng and Chong Ruan and Damai Dai and Deli Chen and Dongjie Ji and Erhang Li and Fangyun Lin and Fucong Dai and Fuli Luo and Guangbo Hao and Guanting Chen and Guowei Li and H. Zhang and Hanwei Xu and Honghui Ding and Huazuo Gao and Hui Qu and Hui Li and Jianzhong Guo and Jiashi Li and Jingchang Chen and Jingyang Yuan and Jinhao Tu and Junjie Qiu and Junlong Li and J. L. Cai and Jiaqi Ni and Jian Liang and Jin Chen and Kai Dong and Kai Hu and Kaichao You and Kaige Gao and Kang Guan and Kexin Huang and Kuai Yu and Lean Wang and Lecong Zhang and Liang Zhao and Litong Wang and Liyue Zhang and Lei Xu and Leyi Xia and Mingchuan Zhang and Minghua Zhang and Minghui Tang and Mingxu Zhou and Meng Li and Miaojun Wang and Mingming Li and Ning Tian and Panpan Huang and Peng Zhang and Qiancheng Wang and Qinyu Chen and Qiushi Du and Ruiqi Ge and Ruisong Zhang and Ruizhe Pan and Runji Wang and R. J. Chen and R. L. Jin and Ruyi Chen and Shanghao Lu and Shangyan Zhou and Shanhuang Chen and Shengfeng Ye and Shiyu Wang and Shuiping Yu and Shunfeng Zhou and Shuting Pan and S. S. Li and Shuang Zhou and Shaoqing Wu and Tao Yun and Tian Pei and Tianyu Sun and T. Wang and Wangding Zeng and Wen Liu and Wenfeng Liang and Wenjun Gao and Wenqin Yu and Wentao Zhang and W. L. Xiao and Wei An and Xiaodong Liu and Xiaohan Wang and Xiaokang Chen and Xiaotao Nie and Xin Cheng and Xin Liu and Xin Xie and Xingchao Liu and Xinyu Yang and Xinyuan Li and Xuecheng Su and Xuheng Lin and X. Q. Li and Xiangyue Jin and Xiaojin Shen and Xiaosha Chen and Xiaowen Sun and Xiaoxiang Wang and Xinnan Song and Xinyi Zhou and Xianzu Wang and Xinxia Shan and Y. K. Li and Y. Q. Wang and Y. X. Wei and Yang Zhang and Yanhong Xu and Yao Li and Yao Zhao and Yaofeng Sun and Yaohui Wang and Yi Yu and Yichao Zhang and Yifan Shi and Yiliang Xiong and Ying He and Yishi Piao and Yisong Wang and Yixuan Tan and Yiyang Ma and Yiyuan Liu and Yongqiang Guo and Yuan Ou and Yuduan Wang and Yue Gong and Yuheng Zou and Yujia He and Yunfan Xiong and Yuxiang Luo and Yuxiang You and Yuxuan Liu and Yuyang Zhou and Y. X. Zhu and Yanping Huang and Yaohui Li and Yi Zheng and Yuchen Zhu and Yunxian Ma and Ying Tang and Yukun Zha and Yuting Yan and Z. Z. Ren and Zehui Ren and Zhangli Sha and Zhe Fu and Zhean Xu and Zhenda Xie and Zhengyan Zhang and Zhewen Hao and Zhicheng Ma and Zhigang Yan and Zhiyu Wu and Zihui Gu and Zijia Zhu and Zijun Liu and Zilin Li and Ziwei Xie and Ziyang Song and Zizheng Pan and Zhen Huang and Zhipeng Xu and Zhongyu Zhang and Zhen Zhang},
+  title     = {{DeepSeek-R1} incentivizes reasoning in {LLMs} through reinforcement learning},
+  journal   = {Nature},
+  volume    = {645},
+  number    = {8081},
+  pages     = {633--638},
+  month     = sep,
+  year      = {2025},
+  doi       = {10.1038/s41586-025-09422-z},
+  url       = {https://doi.org/10.1038/s41586-025-09422-z},
+  eprint    = {2501.12948},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CL},
+  note      = {verified: Crossref record of the Springer Nature deposit https://api.crossref.org/works/10.1038/s41586-025-09422-z (194 authors, published online 2025-09-17), PubMed Central copy https://pmc.ncbi.nlm.nih.gov/articles/PMC12443585/ and https://arxiv.org/abs/2501.12948 (journal-ref Nature volume 645, pages 633-638), 2026-11-01. The Nature byline has no group author; the arXiv version lists DeepSeek-AI first and has the title DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning}
+}
+
+@inproceedings{lambert2025tulu3,
+  author    = {Nathan Lambert and Jacob Morrison and Valentina Pyatkin and Shengyi Huang and Hamish Ivison and Faeze Brahman and Lester James V. Miranda and Alisa Liu and Nouha Dziri and Xinxi Lyu and Yuling Gu and Saumya Malik and Victoria Graf and Jena D. Hwang and Jiangjiang Yang and Ronan Le Bras and Oyvind Tafjord and Chris Wilhelm and Luca Soldaini and Noah A. Smith and Yizhong Wang and Pradeep Dasigi and Hannaneh Hajishirzi},
+  title     = {{T{\"u}lu 3}: Pushing Frontiers in Open Language Model Post-Training},
+  booktitle = {Conference on Language Modeling ({COLM})},
+  address   = {Montreal, Canada},
+  month     = oct,
+  year      = {2025},
+  url       = {https://openreview.net/forum?id=i1uGbfHHpH},
+  eprint    = {2411.15124},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CL},
+  note      = {verified: https://colmweb.org/2025/AcceptedPapers.html (COLM 2025 accepted paper, OpenReview i1uGbfHHpH; conference Montreal, 7-10 Oct 2025 per https://colmweb.org/2025/) and https://arxiv.org/abs/2411.15124 (v5 PDF byline and abstract), 2026-11-01. Author names as printed in the PDF; the COLM list gives Lester James Validad Miranda and Christopher Wilhelm, arXiv metadata gives Shane Lyu for Xinxi Lyu. Its abstract names the RL method Reinforcement Learning with Verifiable Rewards (RLVR)}
+}
+
+@inproceedings{jin2025searchr1,
+  author    = {Bowen Jin and Hansi Zeng and Zhenrui Yue and Jinsung Yoon and Sercan {\"O}. Ar{\i}k and Dong Wang and Hamed Zamani and Jiawei Han},
+  title     = {{Search-R1}: Training {LLMs} to Reason and Leverage Search Engines with Reinforcement Learning},
+  booktitle = {Conference on Language Modeling ({COLM})},
+  address   = {Montreal, Canada},
+  month     = oct,
+  year      = {2025},
+  url       = {https://openreview.net/forum?id=Rwhi91ideu},
+  eprint    = {2503.09516},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CL},
+  note      = {verified: https://colmweb.org/2025/AcceptedPapers.html (COLM 2025 accepted paper, OpenReview Rwhi91ideu) and the camera-ready PDF https://arxiv.org/pdf/2503.09516v5 (header: Published as a conference paper at COLM 2025), 2026-11-01. Uses retrieved-token masking in RL training}
+}
+
+@inproceedings{qian2025toolrl,
+  author    = {Cheng Qian and Emre Can Acikgoz and Qi He and Hongru Wang and Xiusi Chen and Dilek Hakkani-T{\"u}r and Gokhan Tur and Heng Ji},
+  title     = {{ToolRL}: Reward is All Tool Learning Needs},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor    = {D. Belgrave and C. Zhang and H. Lin and R. Pascanu and P. Koniusz and M. Ghassemi and N. Chen},
+  volume    = {38},
+  publisher = {Curran Associates, Inc.},
+  year      = {2025},
+  doi       = {10.52202/085713-3524},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2025/hash/97c5b2707228e7e3fb67e4ecc2e0e607-Abstract-Conference.html},
+  eprint    = {2504.13958},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.LG},
+  note      = {verified: https://papers.neurips.cc/paper\_files/paper/2025/hash/97c5b2707228e7e3fb67e4ecc2e0e607-Abstract-Conference.html (main conference track, + its Bibtex file), https://api.crossref.org/works/10.52202/085713-3524 and https://arxiv.org/abs/2504.13958, 2026-11-01. Pages left out: the NeurIPS Bibtex gives 105523-105553, the Crossref deposit 116896-116926}
+}
+
+@inproceedings{sheng2025hybridflow,
+  author    = {Guangming Sheng and Chi Zhang and Zilingfeng Ye and Xibin Wu and Wang Zhang and Ru Zhang and Yanghua Peng and Haibin Lin and Chuan Wu},
+  title     = {{HybridFlow}: A Flexible and Efficient {RLHF} Framework},
+  booktitle = {Proceedings of the Twentieth European Conference on Computer Systems ({EuroSys} '25)},
+  pages     = {1279--1297},
+  publisher = {ACM},
+  address   = {Rotterdam, Netherlands},
+  month     = mar,
+  year      = {2025},
+  isbn      = {979-8-4007-1196-1},
+  doi       = {10.1145/3689031.3696075},
+  url       = {https://doi.org/10.1145/3689031.3696075},
+  eprint    = {2409.19256},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.LG},
+  note      = {verified: Crossref record of the ACM deposit https://api.crossref.org/works/10.1145/3689031.3696075 (pages, event, date 2025-03-30) and https://arxiv.org/abs/2409.19256 (PDF carries the ACM rights block with DOI and ISBN), 2026-11-01. ACM DL returned 403. The paper of the verl library (github.com/volcengine/verl)}
+}
+
+@inproceedings{gou2024tora,
+  author    = {Zhibin Gou and Zhihong Shao and Yeyun Gong and Yelong Shen and Yujiu Yang and Minlie Huang and Nan Duan and Weizhu Chen},
+  title     = {{ToRA}: A Tool-Integrated Reasoning Agent for Mathematical Problem Solving},
+  booktitle = {International Conference on Learning Representations ({ICLR})},
+  year      = {2024},
+  pages     = {48362--48395},
+  editor    = {B. Kim and Y. Yue and S. Chaudhuri and K. Fragkiadaki and M. Khan and Y. Sun},
+  url       = {https://proceedings.iclr.cc/paper_files/paper/2024/hash/d3cf1559a8795eb1ed2b3ad52409ac7d-Abstract-Conference.html},
+  eprint    = {2309.17452},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CL},
+  note      = {verified: https://proceedings.iclr.cc/paper\_files/paper/2024/hash/d3cf1559a8795eb1ed2b3ad52409ac7d-Abstract-Conference.html (+ its Bibtex file), https://iclr.cc/virtual/2024/poster/19091 (poster, OpenReview Ep0TtjVoap) and https://arxiv.org/abs/2309.17452, 2026-11-01. Eq. 4: imitation-learning loss on rationales and actions conditioned on earlier tool outputs}
+}
+
+@inproceedings{patil2024gorilla,
+  author    = {Shishir G. Patil and Tianjun Zhang and Xin Wang and Joseph E. Gonzalez},
+  title     = {{Gorilla}: Large Language Model Connected with Massive {APIs}},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor    = {A. Globerson and L. Mackey and D. Belgrave and A. Fan and U. Paquet and J. Tomczak and C. Zhang},
+  volume    = {37},
+  pages     = {126544--126565},
+  publisher = {Curran Associates, Inc.},
+  year      = {2024},
+  doi       = {10.52202/079017-4020},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2024/hash/e4c61f578ff07830f5c37378dd3ecb0d-Abstract-Conference.html},
+  eprint    = {2305.15334},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CL},
+  note      = {verified: https://proceedings.neurips.cc/paper\_files/paper/2024/hash/e4c61f578ff07830f5c37378dd3ecb0d-Abstract-Conference.html (main conference track, + its Bibtex file; Crossref deposit agrees), the proceedings PDF and https://arxiv.org/abs/2305.15334, 2026-11-01. Introduces AST sub-tree matching to evaluate API calls and measure hallucination}
+}
+
+@article{qin2025tool,
+  author    = {Yujia Qin and Shengding Hu and Yankai Lin and Weize Chen and Ning Ding and Ganqu Cui and Zheni Zeng and Xuanhe Zhou and Yufei Huang and Chaojun Xiao and Chi Han and Yi Ren Fung and Yusheng Su and Huadong Wang and Cheng Qian and Runchu Tian and Kunlun Zhu and Shihao Liang and Xingyu Shen and Bokai Xu and Zhen Zhang and Yining Ye and Bowen Li and Ziwei Tang and Jing Yi and Yuzhang Zhu and Zhenning Dai and Lan Yan and Xin Cong and Yaxi Lu and Weilin Zhao and Yuxiang Huang and Junxi Yan and Xu Han and Xian Sun and Dahai Li and Jason Phang and Cheng Yang and Tongshuang Wu and Heng Ji and Guoliang Li and Zhiyuan Liu and Maosong Sun},
+  title     = {Tool Learning with Foundation Models},
+  journal   = {{ACM} Computing Surveys},
+  volume    = {57},
+  number    = {4},
+  pages     = {1--40},
+  month     = apr,
+  year      = {2025},
+  doi       = {10.1145/3704435},
+  url       = {https://doi.org/10.1145/3704435},
+  eprint    = {2304.08354},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CL},
+  note      = {verified: Crossref record of the ACM deposit https://api.crossref.org/works/10.1145/3704435 (43 authors, issue 4 dated 2025-04-30, online 2024-12-24) and https://arxiv.org/abs/2304.08354, 2026-11-01. ACM DL returned 403, so the article number was not read. The journal version has 43 authors (adds Xuanhe Zhou and Guoliang Li); arXiv v3 lists 41}
+}
+
+@article{wang2024survey,
+  author    = {Lei Wang and Chen Ma and Xueyang Feng and Zeyu Zhang and Hao Yang and Jingsen Zhang and Zhiyuan Chen and Jiakai Tang and Xu Chen and Yankai Lin and Wayne Xin Zhao and Zhewei Wei and Jirong Wen},
+  title     = {A Survey on Large Language Model based Autonomous Agents},
+  journal   = {Frontiers of Computer Science},
+  volume    = {18},
+  number    = {6},
+  pages     = {186345},
+  month     = dec,
+  year      = {2024},
+  doi       = {10.1007/s11704-024-40231-1},
+  url       = {https://doi.org/10.1007/s11704-024-40231-1},
+  eprint    = {2308.11432},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.AI},
+  note      = {verified: Crossref record of the Springer deposit https://api.crossref.org/works/10.1007/s11704-024-40231-1 (article 186345, issue 6 dated 2024-12, online 2024-03-22) and https://arxiv.org/abs/2308.11432 (DOI field matches), 2026-11-01. Springer page redirected to a login service and was not read}
+}

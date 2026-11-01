@@ -1,0 +1,809 @@
+% Fine-tuning vs prompting, distillation, personas, ensembles, model reports
+% Every entry carries a `note` with the primary source it was checked against (see ../CITATION_VERIFICATION.md).
+
+@article{argyle2023out,
+  author    = {Lisa P. Argyle and Ethan C. Busby and Nancy Fulda and Joshua R. Gubler and Christopher Rytting and David Wingate},
+  title     = {Out of One, Many: Using Language Models to Simulate Human Samples},
+  journal   = {Political Analysis},
+  volume    = {31},
+  number    = {3},
+  pages     = {337--351},
+  year      = {2023},
+  doi       = {10.1017/pan.2023.2},
+  url       = {https://doi.org/10.1017/pan.2023.2},
+  eprint    = {2209.06899},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  note      = {verified: https://www.cambridge.org/core/journals/political-analysis/article/out-of-one-many-using-language-models-to-simulate-human-samples/035D7C8A55B237942FB6DBAD7CAA4E49 and https://arxiv.org/abs/2209.06899, 2026-10-31}
+}
+
+% ---------- 20. Whose opinions ----------
+
+@inproceedings{brown2020language,
+  author    = {Tom B. Brown and Benjamin Mann and Nick Ryder and Melanie Subbiah and Jared Kaplan and Prafulla Dhariwal and Arvind Neelakantan and Pranav Shyam and Girish Sastry and Amanda Askell and Sandhini Agarwal and Ariel Herbert-Voss and Gretchen Krueger and Tom Henighan and Rewon Child and Aditya Ramesh and Daniel M. Ziegler and Jeffrey Wu and Clemens Winter and Christopher Hesse and Mark Chen and Eric Sigler and Mateusz Litwin and Scott Gray and Benjamin Chess and Jack Clark and Christopher Berner and Sam McCandlish and Alec Radford and Ilya Sutskever and Dario Amodei},
+  title     = {Language Models are Few-Shot Learners},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor    = {H. Larochelle and M. Ranzato and R. Hadsell and M.F. Balcan and H. Lin},
+  volume    = {33},
+  pages     = {1877--1901},
+  publisher = {Curran Associates, Inc.},
+  year      = {2020},
+  url       = {https://proceedings.neurips.cc/paper/2020/hash/1457c0d6bfcb4967418bfb8ac142f64a-Abstract.html},
+  eprint    = {2005.14165},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://proceedings.neurips.cc/paper/2020/hash/1457c0d6bfcb4967418bfb8ac142f64a-Abstract.html (+ Bibtex file) and https://arxiv.org/abs/2005.14165, 2026-10-31}
+}
+
+% ---------- 6. InstructGPT ----------
+
+@inproceedings{chan2024chateval,
+  author    = {Chi-Min Chan and Weize Chen and Yusheng Su and Jianxuan Yu and Wei Xue and Shanghang Zhang and Jie Fu and Zhiyuan Liu},
+  title     = {{ChatEval}: Towards Better {LLM}-based Evaluators through Multi-Agent Debate},
+  booktitle = {International Conference on Learning Representations ({ICLR})},
+  year      = {2024},
+  url       = {https://openreview.net/forum?id=FQepisCUWu},
+  eprint    = {2308.07201},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://iclr.cc/virtual/2024/poster/19065 (ICLR 2024 poster, OpenReview id FQepisCUWu), https://proceedings.iclr.cc/paper_files/paper/2024/hash/25cc3adf8c85f7c70989cb8a97a691a7-Abstract-Conference.html and https://arxiv.org/abs/2308.07201, 2026-10-31}
+}
+
+% ---------- 25. Adaptive mixtures of local experts ----------
+
+@inproceedings{dettmers2023qlora,
+  author    = {Tim Dettmers and Artidoro Pagnoni and Ari Holtzman and Luke Zettlemoyer},
+  title     = {{QLoRA}: Efficient Finetuning of Quantized {LLMs}},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor    = {A. Oh and T. Naumann and A. Globerson and K. Saenko and M. Hardt and S. Levine},
+  volume    = {36},
+  pages     = {10088--10115},
+  publisher = {Curran Associates, Inc.},
+  year      = {2023},
+  doi       = {10.52202/075280-0441},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2023/hash/1feb87871436031bdc0f2beaa62a049b-Abstract.html},
+  eprint    = {2305.14314},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  note      = {verified: https://proceedings.neurips.cc/paper_files/paper/2023/hash/1feb87871436031bdc0f2beaa62a049b-Abstract.html (+ its Bibtex file) and https://arxiv.org/abs/2305.14314, 2026-10-31}
+}
+
+% ---------- 3. Chain of thought ----------
+
+@inproceedings{dietterich2000ensemble,
+  author    = {Thomas G. Dietterich},
+  title     = {Ensemble Methods in Machine Learning},
+  booktitle = {Multiple Classifier Systems ({MCS} 2000)},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {1857},
+  pages     = {1--15},
+  publisher = {Springer},
+  address   = {Berlin, Heidelberg},
+  year      = {2000},
+  doi       = {10.1007/3-540-45014-9_1},
+  url       = {https://doi.org/10.1007/3-540-45014-9_1},
+  note      = {verified: https://link.springer.com/chapter/10.1007/3-540-45014-9_1 and Crossref https://api.crossref.org/works/10.1007/3-540-45014-9_1; volume editors not shown on the chapter page and therefore omitted, 2026-10-31}
+}
+
+% ---------- 29. Qwen technical reports and Qwen3.5 release ----------
+
+@inproceedings{dong2024survey,
+  author    = {Qingxiu Dong and Lei Li and Damai Dai and Ce Zheng and Jingyuan Ma and Rui Li and Heming Xia and Jingjing Xu and Zhiyong Wu and Baobao Chang and Xu Sun and Lei Li and Zhifang Sui},
+  title     = {A Survey on In-context Learning},
+  booktitle = {Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing},
+  editor    = {Yaser Al-Onaizan and Mohit Bansal and Yun-Nung Chen},
+  month     = nov,
+  year      = {2024},
+  address   = {Miami, Florida, USA},
+  publisher = {Association for Computational Linguistics},
+  pages     = {1107--1128},
+  doi       = {10.18653/v1/2024.emnlp-main.64},
+  url       = {https://aclanthology.org/2024.emnlp-main.64/},
+  eprint    = {2301.00234},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://aclanthology.org/2024.emnlp-main.64/ (13 authors; two different people named Lei Li) and https://arxiv.org/abs/2301.00234, 2026-10-31}
+}
+
+% ---------- 37. In-context impersonation ----------
+
+@inproceedings{du2024improving,
+  author    = {Yilun Du and Shuang Li and Antonio Torralba and Joshua B. Tenenbaum and Igor Mordatch},
+  title     = {Improving Factuality and Reasoning in Language Models through Multiagent Debate},
+  booktitle = {Proceedings of the 41st International Conference on Machine Learning},
+  editor    = {Ruslan Salakhutdinov and Zico Kolter and Katherine Heller and Adrian Weller and Nuria Oliver and Jonathan Scarlett and Felix Berkenkamp},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {235},
+  pages     = {11733--11763},
+  publisher = {PMLR},
+  year      = {2024},
+  url       = {https://proceedings.mlr.press/v235/du24e.html},
+  eprint    = {2305.14325},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://proceedings.mlr.press/v235/du24e.html and https://arxiv.org/abs/2305.14325, 2026-10-31}
+}
+
+% ---------- 23. Divergent thinking through MAD ----------
+
+@misc{gemma2025gemma3,
+  author    = {{Gemma Team}},
+  title     = {{Gemma 3} Technical Report},
+  year      = {2025},
+  eprint    = {2503.19786},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  howpublished = {arXiv preprint arXiv:2503.19786},
+  url       = {https://arxiv.org/abs/2503.19786},
+  note      = {verified: https://arxiv.org/abs/2503.19786 (submitted 25 Mar 2025; arXiv lists ``Gemma Team'' with 214 named authors, first author Aishwarya Kamath; team form follows the developers' own citation), 2026-10-31}
+}
+
+@misc{gemma2026gemma4,
+  author    = {{Gemma Team}},
+  title     = {{Gemma 4} Technical Report},
+  year      = {2026},
+  eprint    = {2607.02770},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  howpublished = {arXiv preprint arXiv:2607.02770},
+  url       = {https://arxiv.org/abs/2607.02770},
+  note      = {verified: https://arxiv.org/abs/2607.02770 (v1 2 Jul 2026, v2 24 Jul 2026; ``Gemma Team'', first named author Sherif El Abd) and the Gemma 4 model card https://ai.google.dev/gemma/docs/core/model_card_4 (Google DeepMind; sizes E2B, E4B, 12B, 26B A4B, 31B; last updated 2026-07-30; its citation block is author={Gemma Team}, year 2026, eprint 2607.02770), 2026-10-31}
+}
+
+% ---------- 31. LIMA ----------
+
+@inproceedings{gudibande2024false,
+  author    = {Arnav Gudibande and Eric Wallace and Charlie Snell and Xinyang Geng and Hao Liu and Pieter Abbeel and Sergey Levine and Dawn Song},
+  title     = {The False Promise of Imitating Proprietary Language Models},
+  booktitle = {International Conference on Learning Representations ({ICLR})},
+  year      = {2024},
+  url       = {https://openreview.net/forum?id=Kz3yckpCN5},
+  eprint    = {2305.15717},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://iclr.cc/virtual/2024/poster/18877 (ICLR 2024 spotlight poster, OpenReview id Kz3yckpCN5), https://proceedings.iclr.cc/paper_files/paper/2024/hash/4db16435e3a5a2ef3fc39b8f0d12498d-Abstract-Conference.html and https://arxiv.org/abs/2305.15717 (arXiv title says ``Proprietary LLMs''), 2026-10-31}
+}
+
+% ---------- 15. Few-shot fine-tuning vs ICL ----------
+
+@misc{hinton2015distilling,
+  author    = {Geoffrey Hinton and Oriol Vinyals and Jeff Dean},
+  title     = {Distilling the Knowledge in a Neural Network},
+  year      = {2015},
+  eprint    = {1503.02531},
+  archivePrefix = {arXiv},
+  primaryClass  = {stat.ML},
+  howpublished = {arXiv preprint arXiv:1503.02531; presented at the NIPS 2014 Deep Learning Workshop},
+  url       = {https://arxiv.org/abs/1503.02531},
+  note      = {verified: https://arxiv.org/abs/1503.02531 (Comments field: ``NIPS 2014 Deep Learning Workshop''), 2026-10-31}
+}
+
+% ---------- 8. Symbolic knowledge distillation ----------
+
+@inproceedings{ho2023large,
+  author    = {Namgyu Ho and Laura Schmid and Se-Young Yun},
+  title     = {Large Language Models Are Reasoning Teachers},
+  booktitle = {Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  editor    = {Anna Rogers and Jordan Boyd-Graber and Naoaki Okazaki},
+  month     = jul,
+  year      = {2023},
+  address   = {Toronto, Canada},
+  publisher = {Association for Computational Linguistics},
+  pages     = {14852--14882},
+  doi       = {10.18653/v1/2023.acl-long.830},
+  url       = {https://aclanthology.org/2023.acl-long.830/},
+  eprint    = {2212.10071},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://aclanthology.org/2023.acl-long.830/ and https://arxiv.org/abs/2212.10071, 2026-10-31}
+}
+
+% ---------- 10. Teaching small LMs to reason ----------
+
+@inproceedings{hsieh2023distilling,
+  author    = {Cheng-Yu Hsieh and Chun-Liang Li and Chih-Kuan Yeh and Hootan Nakhost and Yasuhisa Fujii and Alexander Ratner and Ranjay Krishna and Chen-Yu Lee and Tomas Pfister},
+  title     = {Distilling Step-by-Step! Outperforming Larger Language Models with Less Training Data and Smaller Model Sizes},
+  booktitle = {Findings of the Association for Computational Linguistics: {ACL} 2023},
+  editor    = {Anna Rogers and Jordan Boyd-Graber and Naoaki Okazaki},
+  month     = jul,
+  year      = {2023},
+  address   = {Toronto, Canada},
+  publisher = {Association for Computational Linguistics},
+  pages     = {8003--8017},
+  doi       = {10.18653/v1/2023.findings-acl.507},
+  url       = {https://aclanthology.org/2023.findings-acl.507/},
+  eprint    = {2305.02301},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://aclanthology.org/2023.findings-acl.507/ and https://arxiv.org/abs/2305.02301 (Anthology spells ``Chih-kuan Yeh'' and ``Alex Ratner''; arXiv forms used here), 2026-10-31}
+}
+
+% ---------- 12. Self-Instruct ----------
+
+@inproceedings{hu2022lora,
+  author    = {Edward J. Hu and Yelong Shen and Phillip Wallis and Zeyuan Allen-Zhu and Yuanzhi Li and Shean Wang and Lu Wang and Weizhu Chen},
+  title     = {{LoRA}: Low-Rank Adaptation of Large Language Models},
+  booktitle = {International Conference on Learning Representations ({ICLR})},
+  year      = {2022},
+  url       = {https://openreview.net/forum?id=nZeVKeeFYf9},
+  eprint    = {2106.09685},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://iclr.cc/virtual/2022/poster/6319 (ICLR 2022 poster, OpenReview id nZeVKeeFYf9) and https://arxiv.org/abs/2106.09685, 2026-10-31}
+}
+
+% ---------- 2. QLoRA ----------
+
+@inproceedings{hu2024quantifying,
+  author    = {Tiancheng Hu and Nigel Collier},
+  title     = {Quantifying the Persona Effect in {LLM} Simulations},
+  booktitle = {Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  editor    = {Lun-Wei Ku and Andre Martins and Vivek Srikumar},
+  month     = aug,
+  year      = {2024},
+  address   = {Bangkok, Thailand},
+  publisher = {Association for Computational Linguistics},
+  pages     = {10289--10307},
+  doi       = {10.18653/v1/2024.acl-long.554},
+  url       = {https://aclanthology.org/2024.acl-long.554/},
+  eprint    = {2402.10811},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://aclanthology.org/2024.acl-long.554/ and https://arxiv.org/abs/2402.10811, 2026-10-31}
+}
+
+% D5. Supervised fine-tuning of an LLM into ideological viewpoints (LeftWingGPT / RightWingGPT / DepolarizingGPT).
+
+@article{jacobs1991adaptive,
+  author    = {Robert A. Jacobs and Michael I. Jordan and Steven J. Nowlan and Geoffrey E. Hinton},
+  title     = {Adaptive Mixtures of Local Experts},
+  journal   = {Neural Computation},
+  volume    = {3},
+  number    = {1},
+  pages     = {79--87},
+  year      = {1991},
+  publisher = {MIT Press},
+  doi       = {10.1162/neco.1991.3.1.79},
+  url       = {https://doi.org/10.1162/neco.1991.3.1.79},
+  note      = {verified: Crossref DOI record https://api.crossref.org/works/10.1162/neco.1991.3.1.79 (direct.mit.edu returned 403), 2026-10-31}
+}
+
+% ---------- 26. Sparsely-gated MoE ----------
+
+@inproceedings{kojima2022large,
+  author    = {Takeshi Kojima and Shixiang Shane Gu and Machel Reid and Yutaka Matsuo and Yusuke Iwasawa},
+  title     = {Large Language Models are Zero-Shot Reasoners},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor    = {S. Koyejo and S. Mohamed and A. Agarwal and D. Belgrave and K. Cho and A. Oh},
+  volume    = {35},
+  pages     = {22199--22213},
+  publisher = {Curran Associates, Inc.},
+  year      = {2022},
+  doi       = {10.52202/068431-1613},
+  url       = {https://proceedings.neurips.cc/paper/2022/hash/8bb0d291acd4acf06ef112099c16f326-Abstract-Conference.html},
+  eprint    = {2205.11916},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://proceedings.neurips.cc/paper/2022/hash/8bb0d291acd4acf06ef112099c16f326-Abstract-Conference.html (+ Bibtex file) and https://arxiv.org/abs/2205.11916, 2026-10-31}
+}
+
+% ---------- 5. GPT-3 ----------
+
+@inproceedings{krogh1994neural,
+  author    = {Anders Krogh and Jesper Vedelsby},
+  title     = {Neural Network Ensembles, Cross Validation, and Active Learning},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor    = {G. Tesauro and D. Touretzky and T. Leen},
+  volume    = {7},
+  pages     = {231--238},
+  publisher = {MIT Press},
+  year      = {1994},
+  url       = {https://proceedings.neurips.cc/paper/1994/hash/b8c37e33defde51cf91e1e03e51657da-Abstract.html},
+  note      = {verified: https://proceedings.neurips.cc/paper/1994/hash/b8c37e33defde51cf91e1e03e51657da-Abstract.html (+ Bibtex file and Metadata.json for pages); NIPS 1994 conference, the printed NIPS 7 volume appeared in 1995, 2026-10-31}
+}
+
+% ---------- 28. Dietterich, ensemble methods ----------
+
+@inproceedings{kwon2023efficient,
+  author    = {Woosuk Kwon and Zhuohan Li and Siyuan Zhuang and Ying Sheng and Lianmin Zheng and Cody Hao Yu and Joseph E. Gonzalez and Hao Zhang and Ion Stoica},
+  title     = {Efficient Memory Management for Large Language Model Serving with {PagedAttention}},
+  booktitle = {Proceedings of the 29th Symposium on Operating Systems Principles ({SOSP} '23)},
+  publisher = {ACM},
+  address   = {New York, NY, USA},
+  pages     = {611--626},
+  year      = {2023},
+  doi       = {10.1145/3600006.3613165},
+  url       = {https://doi.org/10.1145/3600006.3613165},
+  eprint    = {2309.06180},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  note      = {verified: Crossref DOI record https://api.crossref.org/works/10.1145/3600006.3613165 (dl.acm.org returned 403) and https://arxiv.org/abs/2309.06180, 2026-10-31}
+}
+
+% ---------- 35. PEFT and TRL libraries (web) ----------
+
+@inproceedings{lester2021power,
+  author    = {Brian Lester and Rami Al-Rfou and Noah Constant},
+  title     = {The Power of Scale for Parameter-Efficient Prompt Tuning},
+  booktitle = {Proceedings of the 2021 Conference on Empirical Methods in Natural Language Processing},
+  editor    = {Marie-Francine Moens and Xuanjing Huang and Lucia Specia and Scott Wen-tau Yih},
+  month     = nov,
+  year      = {2021},
+  address   = {Online and Punta Cana, Dominican Republic},
+  publisher = {Association for Computational Linguistics},
+  pages     = {3045--3059},
+  doi       = {10.18653/v1/2021.emnlp-main.243},
+  url       = {https://aclanthology.org/2021.emnlp-main.243/},
+  eprint    = {2104.08691},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://aclanthology.org/2021.emnlp-main.243/ and https://arxiv.org/abs/2104.08691, 2026-10-31}
+}
+
+% ---------- 33. Test-time compute scaling ----------
+
+@inproceedings{liang2024encouraging,
+  author    = {Tian Liang and Zhiwei He and Wenxiang Jiao and Xing Wang and Yan Wang and Rui Wang and Yujiu Yang and Shuming Shi and Zhaopeng Tu},
+  title     = {Encouraging Divergent Thinking in Large Language Models through Multi-Agent Debate},
+  booktitle = {Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing},
+  editor    = {Yaser Al-Onaizan and Mohit Bansal and Yun-Nung Chen},
+  month     = nov,
+  year      = {2024},
+  address   = {Miami, Florida, USA},
+  publisher = {Association for Computational Linguistics},
+  pages     = {17889--17904},
+  doi       = {10.18653/v1/2024.emnlp-main.992},
+  url       = {https://aclanthology.org/2024.emnlp-main.992/},
+  eprint    = {2305.19118},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://aclanthology.org/2024.emnlp-main.992/ and https://arxiv.org/abs/2305.19118, 2026-10-31}
+}
+
+% ---------- 24. ChatEval ----------
+
+@inproceedings{lin2024unlocking,
+  author    = {Bill Yuchen Lin and Abhilasha Ravichander and Ximing Lu and Nouha Dziri and Melanie Sclar and Khyathi Chandu and Chandra Bhagavatula and Yejin Choi},
+  title     = {The Unlocking Spell on Base {LLMs}: Rethinking Alignment via In-Context Learning},
+  booktitle = {International Conference on Learning Representations ({ICLR})},
+  year      = {2024},
+  url       = {https://openreview.net/forum?id=wxJ0eXwwda},
+  eprint    = {2312.01552},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://iclr.cc/virtual/2024/poster/17473 (ICLR 2024 poster, OpenReview id wxJ0eXwwda) and https://arxiv.org/abs/2312.01552, 2026-10-31}
+}
+
+% D2. Direct ICL-vs-instruction-fine-tuning comparison; ICL alignment plateaus after 10-30 demonstrations.
+
+@inproceedings{magister2023teaching,
+  author    = {Lucie Charlotte Magister and Jonathan Mallinson and Jakub Adamek and Eric Malmi and Aliaksei Severyn},
+  title     = {Teaching Small Language Models to Reason},
+  booktitle = {Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers)},
+  editor    = {Anna Rogers and Jordan Boyd-Graber and Naoaki Okazaki},
+  month     = jul,
+  year      = {2023},
+  address   = {Toronto, Canada},
+  publisher = {Association for Computational Linguistics},
+  pages     = {1773--1781},
+  doi       = {10.18653/v1/2023.acl-short.151},
+  url       = {https://aclanthology.org/2023.acl-short.151/},
+  eprint    = {2212.08410},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://aclanthology.org/2023.acl-short.151/ and https://arxiv.org/abs/2212.08410, 2026-10-31}
+}
+
+% ---------- 11. Distilling step-by-step ----------
+
+@misc{mangrulkar2022peft,
+  author    = {Sourab Mangrulkar and Sylvain Gugger and Lysandre Debut and Younes Belkada and Sayak Paul and Benjamin Bossan and Marian Tietz},
+  title     = {{PEFT}: State-of-the-art Parameter-Efficient Fine-Tuning Methods},
+  year      = {2022},
+  howpublished = {GitHub repository, \url{https://github.com/huggingface/peft}},
+  note      = {verified: https://github.com/huggingface/peft (README citation block), 2026-10-31}
+}
+
+@inproceedings{mosbach2023fewshot,
+  author    = {Marius Mosbach and Tiago Pimentel and Shauli Ravfogel and Dietrich Klakow and Yanai Elazar},
+  title     = {Few-shot Fine-tuning vs. In-context Learning: A Fair Comparison and Evaluation},
+  booktitle = {Findings of the Association for Computational Linguistics: {ACL} 2023},
+  editor    = {Anna Rogers and Jordan Boyd-Graber and Naoaki Okazaki},
+  month     = jul,
+  year      = {2023},
+  address   = {Toronto, Canada},
+  publisher = {Association for Computational Linguistics},
+  pages     = {12284--12314},
+  doi       = {10.18653/v1/2023.findings-acl.779},
+  url       = {https://aclanthology.org/2023.findings-acl.779/},
+  eprint    = {2305.16938},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://aclanthology.org/2023.findings-acl.779/ and https://arxiv.org/abs/2305.16938, 2026-10-31}
+}
+
+% ---------- 16. Orca ----------
+
+@misc{mukherjee2023orca,
+  author    = {Subhabrata Mukherjee and Arindam Mitra and Ganesh Jawahar and Sahaj Agarwal and Hamid Palangi and Ahmed Awadallah},
+  title     = {{Orca}: Progressive Learning from Complex Explanation Traces of {GPT-4}},
+  year      = {2023},
+  eprint    = {2306.02707},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  howpublished = {arXiv preprint arXiv:2306.02707},
+  url       = {https://arxiv.org/abs/2306.02707},
+  note      = {verified: https://arxiv.org/abs/2306.02707, 2026-10-31}
+}
+
+% ---------- 17. Survey on KD of LLMs ----------
+
+@inproceedings{ouyang2022training,
+  author    = {Long Ouyang and Jeff Wu and Xu Jiang and Diogo Almeida and Carroll L. Wainwright and Pamela Mishkin and Chong Zhang and Sandhini Agarwal and Katarina Slama and Alex Ray and John Schulman and Jacob Hilton and Fraser Kelton and Luke Miller and Maddie Simens and Amanda Askell and Peter Welinder and Paul Christiano and Jan Leike and Ryan Lowe},
+  title     = {Training Language Models to Follow Instructions with Human Feedback},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor    = {S. Koyejo and S. Mohamed and A. Agarwal and D. Belgrave and K. Cho and A. Oh},
+  volume    = {35},
+  pages     = {27730--27744},
+  publisher = {Curran Associates, Inc.},
+  year      = {2022},
+  doi       = {10.52202/068431-2011},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2022/hash/b1efde53be364a73914f58805a001731-Abstract-Conference.html},
+  eprint    = {2203.02155},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://proceedings.neurips.cc/paper_files/paper/2022/hash/b1efde53be364a73914f58805a001731-Abstract-Conference.html (+ Bibtex file) and https://arxiv.org/abs/2203.02155, 2026-10-31}
+}
+
+% ---------- 7. Knowledge distillation ----------
+
+@inproceedings{park2023generative,
+  author    = {Joon Sung Park and Joseph C. O'Brien and Carrie J. Cai and Meredith Ringel Morris and Percy Liang and Michael S. Bernstein},
+  title     = {Generative Agents: Interactive Simulacra of Human Behavior},
+  booktitle = {Proceedings of the 36th Annual {ACM} Symposium on User Interface Software and Technology ({UIST} '23)},
+  publisher = {ACM},
+  address   = {New York, NY, USA},
+  pages     = {1--22},
+  year      = {2023},
+  doi       = {10.1145/3586183.3606763},
+  url       = {https://doi.org/10.1145/3586183.3606763},
+  eprint    = {2304.03442},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.HC},
+  note      = {verified: Crossref DOI record https://api.crossref.org/works/10.1145/3586183.3606763 (dl.acm.org returned 403) and https://arxiv.org/abs/2304.03442; ACM article number not confirmed, 2026-10-31}
+}
+
+% ---------- 22. Multiagent debate (Du et al.) ----------
+
+@misc{qwen2026omni,
+  author    = {{Qwen Team}},
+  title     = {{Qwen3.5-Omni} Technical Report},
+  year      = {2026},
+  eprint    = {2604.15804},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  howpublished = {arXiv preprint arXiv:2604.15804},
+  url       = {https://arxiv.org/abs/2604.15804},
+  note      = {verified: https://arxiv.org/abs/2604.15804 (v1 17 Apr 2026, v2 21 Apr 2026). This is the report for the Omni (audio-visual) model, not for the Qwen3.5 text series; only cite if the Omni model is used, 2026-10-31}
+}
+
+% ---------- 30. Gemma technical reports ----------
+
+@misc{qwen2026qwen35,
+  author    = {{Qwen Team}},
+  title     = {{Qwen3.5}: Towards Native Multimodal Agents},
+  howpublished = {Qwen blog, \url{https://qwen.ai/blog?id=qwen3.5}},
+  month     = feb,
+  year      = {2026},
+  url       = {https://qwen.ai/blog?id=qwen3.5},
+  note      = {verified: official citation block on the model cards https://huggingface.co/Qwen/Qwen3.5-27B and https://huggingface.co/Qwen/Qwen3.5-397B-A17B and in https://github.com/QwenLM/Qwen3.5 (release news: Qwen3.5-397B-A17B 2026-02-16; Qwen3.5-122B-A10B/35B-A3B/27B 2026-02-24; 9B/4B/2B/0.8B 2026-03-02). No Qwen3.5 (text) technical report exists on arXiv as of 2026-10-31; Qwen3.5-27B model card: https://huggingface.co/Qwen/Qwen3.5-27B (Apache-2.0), 2026-10-31}
+}
+
+@inproceedings{ren2024learning,
+  author    = {Mengjie Ren and Boxi Cao and Hongyu Lin and Cao Liu and Xianpei Han and Ke Zeng and Guanglu Wan and Xunliang Cai and Le Sun},
+  title     = {Learning or Self-aligning? Rethinking Instruction Fine-tuning},
+  booktitle = {Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  editor    = {Lun-Wei Ku and Andre Martins and Vivek Srikumar},
+  month     = aug,
+  year      = {2024},
+  address   = {Bangkok, Thailand},
+  publisher = {Association for Computational Linguistics},
+  pages     = {6090--6105},
+  doi       = {10.18653/v1/2024.acl-long.330},
+  url       = {https://aclanthology.org/2024.acl-long.330/},
+  eprint    = {2402.18243},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://aclanthology.org/2024.acl-long.330/ and https://arxiv.org/abs/2402.18243 (Anthology BibTeX lists the 7th author as ``Guanglu, Wan''; arXiv form Guanglu Wan used), 2026-10-31}
+}
+
+% D4. How much persona conditioning actually explains/changes LLM outputs (mixed-effects analysis).
+
+@article{rozado2024political,
+  author    = {David Rozado},
+  title     = {The political preferences of {LLMs}},
+  journal   = {PLOS ONE},
+  volume    = {19},
+  number    = {7},
+  pages     = {e0306621},
+  year      = {2024},
+  doi       = {10.1371/journal.pone.0306621},
+  url       = {https://doi.org/10.1371/journal.pone.0306621},
+  note      = {verified: https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0306621 (published 31 July 2024), 2026-10-31}
+}
+
+% D6. Role-conditioned instruction tuning (RoleLLaMA) vs role prompting (RoleGPT) with a role-play benchmark.
+
+@inproceedings{salewski2023incontext,
+  author    = {Leonard Salewski and Stephan Alaniz and Isabel Rio-Torto and Eric Schulz and Zeynep Akata},
+  title     = {In-Context Impersonation Reveals Large Language Models' Strengths and Biases},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor    = {A. Oh and T. Naumann and A. Globerson and K. Saenko and M. Hardt and S. Levine},
+  volume    = {36},
+  pages     = {72044--72057},
+  publisher = {Curran Associates, Inc.},
+  year      = {2023},
+  doi       = {10.52202/075280-3152},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2023/hash/e3fe7b34ba4f378df39cb12a97193f41-Abstract.html},
+  eprint    = {2305.14930},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  note      = {verified: https://proceedings.neurips.cc/paper_files/paper/2023/hash/e3fe7b34ba4f378df39cb12a97193f41-Abstract.html (+ Bibtex file) and https://arxiv.org/abs/2305.14930 (NeurIPS 2023 spotlight), 2026-10-31}
+}
+
+% ---------- 38. Personas in system prompts ----------
+
+@inproceedings{santurkar2023whose,
+  author    = {Shibani Santurkar and Esin Durmus and Faisal Ladhak and Cinoo Lee and Percy Liang and Tatsunori Hashimoto},
+  title     = {Whose Opinions Do Language Models Reflect?},
+  booktitle = {Proceedings of the 40th International Conference on Machine Learning},
+  editor    = {Andreas Krause and Emma Brunskill and Kyunghyun Cho and Barbara Engelhardt and Sivan Sabato and Jonathan Scarlett},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {202},
+  pages     = {29971--30004},
+  publisher = {PMLR},
+  year      = {2023},
+  url       = {https://proceedings.mlr.press/v202/santurkar23a.html},
+  eprint    = {2303.17548},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://proceedings.mlr.press/v202/santurkar23a.html and https://arxiv.org/abs/2303.17548, 2026-10-31}
+}
+
+% ---------- 21. Generative agents ----------
+
+@article{shanahan2023role,
+  author    = {Murray Shanahan and Kyle McDonell and Laria Reynolds},
+  title     = {Role play with large language models},
+  journal   = {Nature},
+  volume    = {623},
+  number    = {7987},
+  pages     = {493--498},
+  year      = {2023},
+  doi       = {10.1038/s41586-023-06647-8},
+  url       = {https://doi.org/10.1038/s41586-023-06647-8},
+  eprint    = {2305.16367},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: Crossref DOI record https://api.crossref.org/works/10.1038/s41586-023-06647-8 (nature.com redirected to a cookie wall) and https://arxiv.org/abs/2305.16367, 2026-10-31}
+}
+
+% ---------- 19. Out of one, many ----------
+
+@inproceedings{shazeer2017outrageously,
+  author    = {Noam Shazeer and Azalia Mirhoseini and Krzysztof Maziarz and Andy Davis and Quoc Le and Geoffrey Hinton and Jeff Dean},
+  title     = {Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer},
+  booktitle = {International Conference on Learning Representations ({ICLR})},
+  year      = {2017},
+  url       = {https://openreview.net/forum?id=B1ckMDqlg},
+  eprint    = {1701.06538},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  note      = {verified: https://arxiv.org/abs/1701.06538 (title, authors) and https://research.google/pubs/outrageously-large-neural-networks-the-sparsely-gated-mixture-of-experts-layer/ (venue ICLR 2017); OpenReview itself was behind a browser check, 2026-10-31}
+}
+
+% ---------- 27. Krogh & Vedelsby (ambiguity decomposition) ----------
+
+@inproceedings{snell2025scaling,
+  author    = {Charlie Snell and Jaehoon Lee and Kelvin Xu and Aviral Kumar},
+  title     = {Scaling {LLM} Test-Time Compute Optimally Can be More Effective than Scaling Parameters for Reasoning},
+  booktitle = {International Conference on Learning Representations ({ICLR})},
+  year      = {2025},
+  url       = {https://openreview.net/forum?id=4FWAwZtd2n},
+  eprint    = {2408.03314},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  note      = {verified: https://proceedings.iclr.cc/paper_files/paper/2025/hash/1b623663fd9b874366f3ce019fdfdd44-Abstract-Conference.html, https://iclr.cc/virtual/2025/oral/31924 (ICLR 2025 oral) and https://arxiv.org/abs/2408.03314 (arXiv title ends ``...than Scaling Model Parameters''), 2026-10-31}
+}
+
+% ---------- 34. vLLM / PagedAttention ----------
+
+@misc{taori2023stanford,
+  author    = {Rohan Taori and Ishaan Gulrajani and Tianyi Zhang and Yann Dubois and Xuechen Li and Carlos Guestrin and Percy Liang and Tatsunori B. Hashimoto},
+  title     = {Stanford {Alpaca}: An Instruction-following {LLaMA} Model},
+  year      = {2023},
+  howpublished = {GitHub repository, \url{https://github.com/tatsu-lab/stanford_alpaca}},
+  note      = {verified: https://github.com/tatsu-lab/stanford_alpaca (README citation block) and the release post https://crfm.stanford.edu/2023/03/13/alpaca.html (13 March 2023), 2026-10-31}
+}
+
+% ---------- 14. False promise of imitation ----------
+
+@misc{vonwerra2020trl,
+  author    = {Leandro von Werra and Younes Belkada and Lewis Tunstall and Edward Beeching and Tristan Thrush and Nathan Lambert and Shengyi Huang and Kashif Rasul and Quentin Gallou{\'e}dec},
+  title     = {{TRL}: Transformers Reinforcement Learning},
+  year      = {2020},
+  howpublished = {GitHub repository, \url{https://github.com/huggingface/trl}},
+  note      = {verified: https://github.com/huggingface/trl (README citation block, Apache-2.0), 2026-10-31}
+}
+
+% ---------- 36. Survey on in-context learning ----------
+
+@inproceedings{wang2023selfinstruct,
+  author    = {Yizhong Wang and Yeganeh Kordi and Swaroop Mishra and Alisa Liu and Noah A. Smith and Daniel Khashabi and Hannaneh Hajishirzi},
+  title     = {{Self-Instruct}: Aligning Language Models with Self-Generated Instructions},
+  booktitle = {Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+  editor    = {Anna Rogers and Jordan Boyd-Graber and Naoaki Okazaki},
+  month     = jul,
+  year      = {2023},
+  address   = {Toronto, Canada},
+  publisher = {Association for Computational Linguistics},
+  pages     = {13484--13508},
+  doi       = {10.18653/v1/2023.acl-long.754},
+  url       = {https://aclanthology.org/2023.acl-long.754/},
+  eprint    = {2212.10560},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://aclanthology.org/2023.acl-long.754/ and https://arxiv.org/abs/2212.10560, 2026-10-31}
+}
+
+% ---------- 13. Stanford Alpaca (web) ----------
+
+@inproceedings{wang2024rolellm,
+  author    = {Noah Wang and Z.Y. Peng and Haoran Que and Jiaheng Liu and Wangchunshu Zhou and Yuhan Wu and Hongcheng Guo and Ruitong Gan and Zehao Ni and Jian Yang and Man Zhang and Zhaoxiang Zhang and Wanli Ouyang and Ke Xu and Wenhao Huang and Jie Fu and Junran Peng},
+  title     = {{RoleLLM}: Benchmarking, Eliciting, and Enhancing Role-Playing Abilities of Large Language Models},
+  booktitle = {Findings of the Association for Computational Linguistics: {ACL} 2024},
+  editor    = {Lun-Wei Ku and Andre Martins and Vivek Srikumar},
+  month     = aug,
+  year      = {2024},
+  address   = {Bangkok, Thailand},
+  publisher = {Association for Computational Linguistics},
+  pages     = {14743--14777},
+  doi       = {10.18653/v1/2024.findings-acl.878},
+  url       = {https://aclanthology.org/2024.findings-acl.878/},
+  eprint    = {2310.00746},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://aclanthology.org/2024.findings-acl.878/ (author names as published; arXiv lists Zekun Moore Wang, Zhongyuan Peng, Stephen W. Huang) and https://arxiv.org/abs/2310.00746, 2026-10-31}
+}
+
+@inproceedings{wei2022chain,
+  author    = {Jason Wei and Xuezhi Wang and Dale Schuurmans and Maarten Bosma and Brian Ichter and Fei Xia and Ed Chi and Quoc V. Le and Denny Zhou},
+  title     = {Chain-of-Thought Prompting Elicits Reasoning in Large Language Models},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor    = {S. Koyejo and S. Mohamed and A. Agarwal and D. Belgrave and K. Cho and A. Oh},
+  volume    = {35},
+  pages     = {24824--24837},
+  publisher = {Curran Associates, Inc.},
+  year      = {2022},
+  doi       = {10.52202/068431-1800},
+  url       = {https://proceedings.neurips.cc/paper/2022/hash/9d5609613524ecf4f15af0f7b31abca4-Abstract-Conference.html},
+  eprint    = {2201.11903},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://proceedings.neurips.cc/paper/2022/hash/9d5609613524ecf4f15af0f7b31abca4-Abstract-Conference.html (+ Bibtex file) and https://arxiv.org/abs/2201.11903, 2026-10-31}
+}
+
+% ---------- 4. Zero-shot CoT ----------
+
+@inproceedings{west2022symbolic,
+  author    = {Peter West and Chandra Bhagavatula and Jack Hessel and Jena D. Hwang and Liwei Jiang and Ronan {Le Bras} and Ximing Lu and Sean Welleck and Yejin Choi},
+  title     = {Symbolic Knowledge Distillation: from General Language Models to Commonsense Models},
+  booktitle = {Proceedings of the 2022 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies},
+  editor    = {Marine Carpuat and Marie-Catherine de Marneffe and Ivan Vladimir Meza Ruiz},
+  month     = jul,
+  year      = {2022},
+  address   = {Seattle, United States},
+  publisher = {Association for Computational Linguistics},
+  pages     = {4602--4625},
+  doi       = {10.18653/v1/2022.naacl-main.341},
+  url       = {https://aclanthology.org/2022.naacl-main.341/},
+  eprint    = {2110.07178},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://aclanthology.org/2022.naacl-main.341/ and https://arxiv.org/abs/2110.07178, 2026-10-31}
+}
+
+% ---------- 9. LLMs are reasoning teachers ----------
+
+@misc{xu2024survey,
+  author    = {Xiaohan Xu and Ming Li and Chongyang Tao and Tao Shen and Reynold Cheng and Jinyang Li and Can Xu and Dacheng Tao and Tianyi Zhou},
+  title     = {A Survey on Knowledge Distillation of Large Language Models},
+  year      = {2024},
+  eprint    = {2402.13116},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  howpublished = {arXiv preprint arXiv:2402.13116},
+  url       = {https://arxiv.org/abs/2402.13116},
+  note      = {verified: https://arxiv.org/abs/2402.13116 (v4, 21 Oct 2024), 2026-10-31}
+}
+
+% ---------- 18. Role play with LLMs ----------
+
+@misc{yang2024qwen25,
+  author    = {{Qwen} and An Yang and Baosong Yang and Beichen Zhang and Binyuan Hui and Bo Zheng and Bowen Yu and Chengyuan Li and Dayiheng Liu and Fei Huang and Haoran Wei and Huan Lin and Jian Yang and Jianhong Tu and Jianwei Zhang and Jianxin Yang and Jiaxi Yang and Jingren Zhou and Junyang Lin and Kai Dang and Keming Lu and Keqin Bao and Kexin Yang and Le Yu and Mei Li and Mingfeng Xue and Pei Zhang and Qin Zhu and Rui Men and Runji Lin and Tianhao Li and Tianyi Tang and Tingyu Xia and Xingzhang Ren and Xuancheng Ren and Yang Fan and Yang Su and Yichang Zhang and Yu Wan and Yuqiong Liu and Zeyu Cui and Zhenru Zhang and Zihan Qiu},
+  title     = {{Qwen2.5} Technical Report},
+  year      = {2024},
+  eprint    = {2412.15115},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  howpublished = {arXiv preprint arXiv:2412.15115},
+  url       = {https://arxiv.org/abs/2412.15115},
+  note      = {verified: https://arxiv.org/abs/2412.15115 (collaboration ``Qwen'' plus 42 named authors; v1 19 Dec 2024, v2 3 Jan 2025; year 2024 = first posting, as in the QwenLM README citation) and https://github.com/QwenLM/Qwen2.5 (README citation), 2026-10-31}
+}
+
+@misc{yang2025qwen3,
+  author    = {An Yang and Anfeng Li and Baosong Yang and Beichen Zhang and Binyuan Hui and Bo Zheng and Bowen Yu and Chang Gao and Chengen Huang and Chenxu Lv and Chujie Zheng and Dayiheng Liu and Fan Zhou and Fei Huang and Feng Hu and Hao Ge and Haoran Wei and Huan Lin and Jialong Tang and Jian Yang and Jianhong Tu and Jianwei Zhang and Jianxin Yang and Jiaxi Yang and Jing Zhou and Jingren Zhou and Junyang Lin and Kai Dang and Keqin Bao and Kexin Yang and Le Yu and Lianghao Deng and Mei Li and Mingfeng Xue and Mingze Li and Pei Zhang and Peng Wang and Qin Zhu and Rui Men and Ruize Gao and Shixuan Liu and Shuang Luo and Tianhao Li and Tianyi Tang and Wenbiao Yin and Xingzhang Ren and Xinyu Wang and Xinyu Zhang and Xuancheng Ren and Yang Fan and Yang Su and Yichang Zhang and Yinger Zhang and Yu Wan and Yuqiong Liu and Zekun Wang and Zeyu Cui and Zhenru Zhang and Zhipeng Zhou and Zihan Qiu},
+  title     = {{Qwen3} Technical Report},
+  year      = {2025},
+  eprint    = {2505.09388},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  howpublished = {arXiv preprint arXiv:2505.09388},
+  url       = {https://arxiv.org/abs/2505.09388},
+  note      = {verified: https://arxiv.org/abs/2505.09388 (60 named authors, submitted 14 May 2025) and https://github.com/QwenLM/Qwen3 (README citation), 2026-10-31}
+}
+
+@inproceedings{zhao2025incontext,
+  author    = {Hao Zhao and Maksym Andriushchenko and Francesco Croce and Nicolas Flammarion},
+  title     = {Is In-Context Learning Sufficient for Instruction Following in {LLMs}?},
+  booktitle = {International Conference on Learning Representations ({ICLR})},
+  year      = {2025},
+  url       = {https://openreview.net/forum?id=STEEDDv3zI},
+  eprint    = {2405.19874},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://iclr.cc/virtual/2025/poster/29602 (ICLR 2025 poster, OpenReview id STEEDDv3zI) and https://arxiv.org/abs/2405.19874, 2026-10-31}
+}
+
+% D3. Knowledge-intervention study of what instruction fine-tuning teaches (format/style vs world knowledge).
+
+@inproceedings{zheng2024helpful,
+  author    = {Mingqian Zheng and Jiaxin Pei and Lajanugen Logeswaran and Moontae Lee and David Jurgens},
+  title     = {When ``A Helpful Assistant'' Is Not Really Helpful: Personas in System Prompts Do Not Improve Performances of Large Language Models},
+  booktitle = {Findings of the Association for Computational Linguistics: {EMNLP} 2024},
+  editor    = {Yaser Al-Onaizan and Mohit Bansal and Yun-Nung Chen},
+  month     = nov,
+  year      = {2024},
+  address   = {Miami, Florida, USA},
+  publisher = {Association for Computational Linguistics},
+  pages     = {15126--15154},
+  doi       = {10.18653/v1/2024.findings-emnlp.888},
+  url       = {https://aclanthology.org/2024.findings-emnlp.888/},
+  eprint    = {2311.10054},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://aclanthology.org/2024.findings-emnlp.888/ and https://arxiv.org/abs/2311.10054 (the earlier arXiv title ``Is `A Helpful Assistant' the Best Role...'' was replaced; venue is Findings of EMNLP 2024, not NAACL 2025), 2026-10-31}
+}
+
+% ====================== DISCOVERIES (6) ======================
+
+% D1. Alignment via ICL; evidence that SFT/RLHF mostly changes stylistic tokens ("superficial alignment").
+
+@inproceedings{zhou2023lima,
+  author    = {Chunting Zhou and Pengfei Liu and Puxin Xu and Srinivasan Iyer and Jiao Sun and Yuning Mao and Xuezhe Ma and Avia Efrat and Ping Yu and Lili Yu and Susan Zhang and Gargi Ghosh and Mike Lewis and Luke Zettlemoyer and Omer Levy},
+  title     = {{LIMA}: Less Is More for Alignment},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor    = {A. Oh and T. Naumann and A. Globerson and K. Saenko and M. Hardt and S. Levine},
+  volume    = {36},
+  pages     = {55006--55021},
+  publisher = {Curran Associates, Inc.},
+  year      = {2023},
+  doi       = {10.52202/075280-2400},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2023/hash/ac662d74829e4407ce1d126477f4a03a-Abstract.html},
+  eprint    = {2305.11206},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CL},
+  note      = {verified: https://proceedings.neurips.cc/paper_files/paper/2023/hash/ac662d74829e4407ce1d126477f4a03a-Abstract.html (+ Bibtex file) and https://arxiv.org/abs/2305.11206, 2026-10-31}
+}
+
+% ---------- 32. Prompt tuning ----------
