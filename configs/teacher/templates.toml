@@ -1,0 +1,218 @@
+# Teacher pipeline for the school SFT trajectories (amendment 4 draft, Change 5: the Confirmation's 1,500 GPT-4o
+# trajectories were not kept). Rebuilt from Confirmation Sec. 4.2.1: 107 abstract event templates in 14 categories,
+# each instantiated with a randomised macro snapshot, so the corpus carries no instance-level information about real
+# 2023-2026 events. Template wording is the orchestrator's reconstruction (the original templates were not kept);
+# the human reviews it before the full run. Slots in {braces} are filled from [slots].
+
+[slots]
+cb = ["the Federal Reserve", "the ECB", "the Bank of England", "the Bank of Japan", "the Bank of Canada", "the RBA"]
+bp = ["25", "50", "75", "100"]
+pct_small = ["0.2", "0.3", "0.4", "0.5", "0.6"]
+pct_mid = ["1.5", "2.0", "2.5", "3.0", "4.0"]
+pct_big = ["5", "8", "10", "15", "20", "25"]
+usd_bn = ["150", "300", "500", "800", "1,200"]
+jobs_k = ["-120", "-40", "35", "90", "180", "260", "340"]
+country = ["a G7 economy", "a large euro-area member", "a major oil exporter", "a large Asian manufacturing economy", "a Latin American economy"]
+em = ["a large emerging market", "a frontier economy", "a commodity-exporting emerging market", "an emerging market with a dollar peg"]
+commodity = ["crude oil", "natural gas", "copper", "wheat", "gold", "lithium"]
+sector = ["technology", "commercial real estate", "regional banking", "autos", "semiconductors", "energy"]
+direction = ["above", "below"]
+
+[[category]]
+name = "monetary policy"
+templates = [
+  "{cb} raises its policy rate by {bp}bp, more than markets priced.",
+  "{cb} cuts its policy rate by {bp}bp in an unscheduled meeting.",
+  "{cb} holds rates but signals that the next move is a hike.",
+  "{cb} announces it will end balance-sheet reduction and resume asset purchases of {usd_bn}bn.",
+  "{cb} cuts rates by {bp}bp while inflation is still {pct_mid}pp above target.",
+  "{cb} adopts explicit yield-curve control on the 10-year bond.",
+  "{cb} raises rates by {bp}bp and accelerates quantitative tightening.",
+  "{cb} revises its inflation target framework to an average-inflation target.",
+  "{cb} leadership changes and the new chair is seen as markedly more dovish.",
+  "{cb} intervenes in the currency market for the first time in a decade.",
+]
+
+[[category]]
+name = "fiscal policy"
+templates = [
+  "The government of {country} announces a debt-financed stimulus worth {pct_mid}% of GDP.",
+  "{country} passes a fiscal consolidation package cutting the deficit by {pct_mid}% of GDP.",
+  "A sovereign rating agency downgrades {country} by one notch citing fiscal deficits.",
+  "{country} announces large infrastructure spending of {usd_bn}bn over five years.",
+  "{country} cuts corporate taxes by {pct_big} percentage points.",
+  "A government shutdown in {country} lasts several weeks over a budget dispute.",
+  "{country} introduces universal cash transfers worth {pct_small}% of GDP per month.",
+  "{country} breaches its legal debt ceiling and delays some payments.",
+]
+
+[[category]]
+name = "inflation data"
+templates = [
+  "Headline CPI rises {pct_small}% month on month, {direction} consensus.",
+  "Core inflation accelerates for the third consecutive month, {direction} the central bank's forecast.",
+  "Producer prices jump {pct_mid}% year on year on input-cost pressures.",
+  "Inflation expectations in consumer surveys rise to a multi-year high.",
+  "Headline CPI turns negative year on year for the first time in years.",
+  "Services inflation stays sticky while goods prices fall.",
+  "Wage growth reaches {pct_big}% year on year in a tight labour market.",
+  "A large statistical revision lowers past inflation by {pct_small}pp.",
+]
+
+[[category]]
+name = "employment data"
+templates = [
+  "Monthly payrolls change by {jobs_k}k, far {direction} consensus.",
+  "The unemployment rate rises by {pct_small}pp in one month.",
+  "Initial jobless claims surge to their highest level in two years.",
+  "Labour-force participation falls sharply while the unemployment rate is stable.",
+  "Job openings drop by a quarter within six months.",
+  "Average hourly earnings rise {pct_small}% month on month, {direction} expectations.",
+  "A benchmark revision removes several hundred thousand jobs from past payrolls.",
+  "Layoff announcements spread from {sector} to the wider economy.",
+]
+
+[[category]]
+name = "geopolitical shocks"
+templates = [
+  "Armed conflict breaks out on the border of {country} and a neighbour.",
+  "A major shipping strait is closed to commercial traffic for weeks.",
+  "Broad financial sanctions are imposed on {country}.",
+  "A coup removes the government of a major commodity producer.",
+  "Elections in {country} bring a party promising to leave a monetary union.",
+  "A cyber attack disables payment systems in {country} for three days.",
+  "Diplomatic talks between two major powers collapse, raising the risk of a blockade.",
+  "A peace agreement unexpectedly ends a long regional war.",
+]
+
+[[category]]
+name = "trade and tariffs"
+templates = [
+  "The United States announces across-the-board tariffs of {pct_big}% on imports.",
+  "{country} retaliates with tariffs on agricultural and industrial imports.",
+  "A major free-trade agreement is signed among Pacific economies.",
+  "Export controls are placed on advanced {sector} equipment.",
+  "A trade truce suspends tariffs for ninety days.",
+  "Tariffs on {commodity} imports are raised to {pct_big}%.",
+  "{country} devalues its currency after a trade dispute escalates.",
+  "Global trade volumes fall {pct_mid}% quarter on quarter.",
+]
+
+[[category]]
+name = "commodity shocks"
+templates = [
+  "{commodity} prices rise {pct_big}% in a week on supply disruptions.",
+  "{commodity} prices fall {pct_big}% as an oversupplied market unwinds.",
+  "An oil producers' cartel announces an unexpected output cut.",
+  "A drought cuts global grain harvests sharply.",
+  "European natural gas storage falls to critical levels before winter.",
+  "A major mine closure removes a large share of global {commodity} supply.",
+  "Strategic petroleum reserves are released in a coordinated action.",
+  "Freight rates triple as port congestion spreads.",
+]
+
+[[category]]
+name = "market events"
+templates = [
+  "Equity indices fall {pct_big}% in two sessions without clear news.",
+  "The 10-year government bond yield rises {bp}bp in a single day.",
+  "Volatility indices spike above 40 as liquidity dries up.",
+  "A large hedge fund fails and forced selling spreads across assets.",
+  "The yield curve inverts to its deepest level in decades.",
+  "The dollar rises {pct_mid}% in a month against major currencies.",
+  "A speculative bubble in {sector} stocks bursts.",
+  "Corporate credit spreads widen by {bp}bp in a week.",
+]
+
+[[category]]
+name = "economic data surprises"
+templates = [
+  "Quarterly GDP growth comes in {direction} consensus by a wide margin.",
+  "Retail sales fall {pct_small}% month on month after a strong prior month.",
+  "Manufacturing PMI drops below 45 for the first time in years.",
+  "Consumer confidence falls to a record low.",
+  "Industrial production surges on a rebound in {sector}.",
+  "Productivity growth jumps to {pct_mid}% year on year.",
+  "The trade deficit widens to a record on strong imports.",
+  "Gross domestic income and GDP diverge by a record margin.",
+]
+
+[[category]]
+name = "China-specific"
+templates = [
+  "The People's Bank of China cuts reserve requirements by {pct_small}pp.",
+  "A large Chinese property developer defaults on offshore bonds.",
+  "China announces a stimulus programme worth {usd_bn}bn focused on infrastructure.",
+  "The renminbi weakens sharply after a change in the daily fixing.",
+  "Chinese exports fall {pct_big}% year on year.",
+  "China restricts exports of a critical mineral.",
+  "Chinese local-government financing vehicles miss payments.",
+]
+
+[[category]]
+name = "emerging market crises"
+templates = [
+  "{em} abandons its currency peg after reserves run low.",
+  "{em} defaults on its external debt.",
+  "Capital flight from {em} forces emergency rate hikes of {bp}bp.",
+  "{em} requests an IMF programme.",
+  "Hyperinflation fears mount in {em} as money printing accelerates.",
+  "{em} imposes capital controls.",
+  "Contagion spreads from one emerging market to several others.",
+]
+
+[[category]]
+name = "housing"
+templates = [
+  "House prices fall {pct_big}% from their peak in {country}.",
+  "Mortgage rates rise to their highest level in two decades.",
+  "Housing starts collapse {pct_big}% year on year.",
+  "A government launches a large mortgage-relief programme.",
+  "Rents rise sharply while house prices stagnate.",
+  "Commercial property valuations are written down {pct_big}%.",
+]
+
+[[category]]
+name = "banking stress"
+templates = [
+  "A mid-sized bank fails after a run on uninsured deposits.",
+  "Regulators guarantee all deposits at several failed banks.",
+  "A global systemically important bank posts large losses and its shares halve.",
+  "Interbank funding spreads widen to crisis levels.",
+  "Bank lending standards tighten sharply in a loan-officer survey.",
+  "A large bank merger is arranged by regulators over a weekend.",
+  "Losses on {sector} loans force several banks to raise capital.",
+]
+
+[[category]]
+name = "black swan"
+templates = [
+  "A new pandemic leads to lockdowns in several large economies.",
+  "A major earthquake destroys industrial capacity in {country}.",
+  "A solar storm disrupts power grids across a continent.",
+  "A large stablecoin collapses and redemptions freeze.",
+  "A breakthrough technology promises a large jump in productivity.",
+  "A major exchange suffers a multi-day outage during market stress.",
+]
+
+# What makes the schools differ (Confirmation Sec. 4.2.1: concepts, transmission mechanisms, asset signals).
+[school.keynesian]
+concepts = ["aggregate demand", "the multiplier", "liquidity trap", "output gap", "sticky wages and prices",
+            "animal spirits", "paradox of thrift", "counter-cyclical fiscal policy"]
+mechanisms = ["spending and income multipliers", "confidence and investment", "fiscal transfers to households",
+              "interest rates on demand when not at the zero bound"]
+signals = "favours fiscal or monetary support in downturns; reads demand shortfalls as the main risk"
+
+[school.austrian]
+concepts = ["malinvestment", "credit-fuelled boom and bust", "time preference", "the structure of production",
+            "distorted interest rates", "sound money", "Cantillon effects", "the necessary liquidation"]
+mechanisms = ["artificially low rates misallocate capital", "credit expansion lengthens production",
+              "intervention delays the correction", "new money benefits first recipients"]
+signals = "sceptical of stimulus; favours hard assets and expects corrections after credit booms"
+
+[school.monetarist]
+concepts = ["money supply (M2)", "the quantity theory of money", "velocity", "rules over discretion",
+            "long and variable lags", "the natural rate of unemployment", "expectations", "inflation as a monetary phenomenon"]
+mechanisms = ["money growth to nominal spending", "money growth to inflation with lags",
+              "credibility and expectations", "real balances"]
+signals = "reads inflation and nominal GDP through money growth; favours rule-based policy"
