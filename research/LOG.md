@@ -535,3 +535,16 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   條款允許拿輸出訓練模型；確認前，完整的 1,500 條不會開跑（試產只用來評估，不受影響）。若不允許，改用 pod 上的開源老師
   （Qwen3.8-27B，Apache-2.0；或 Qwen3.8-Flash-Next，qwen-community 授權允許拿輸出訓練），v5 流程不用改。
   修正案 4 Change 5 已改寫成實際流程，老師一欄留給你勾選。
+
+### 2026-11-01 — D11: pilot v5 (prompt version 5, items version 4)
+- command: `scripts/teacher_api.py research/teacher_runs/pilot-v5 --n 20 … --model qwen3.8-max --workers 12`
+  (60/60 conversations, 431k tokens in, 359k out), `mosaic teacher-import`.
+- result: first import 24/60: 124 "signal missing" because the v5 prompt named the asset referents and the teacher
+  wrote "US Treasuries:" or "Credit (US high yield):"; after the validator accepts those labels, 55/60 kept (K 17,
+  A 19, M 19). Against v4: "weigh the event" 55/60 → 0/60, "this/the school" 47/60 → 1/60, Austrian gold and credit
+  defaults no longer flagged, but the modal scenario still sits at 0.40-0.55 in 44/55 (v4 51/57; mean 0.45 → 0.50) and
+  "Confidence: moderate" in 52/55 (v4 57/57); Keynesian bonds LONG 12/17 and gold LONG 13/17.
+- deviation: planned a proof limit of 8 steps (review) / 8 of 60 v5 proofs had 9-11 steps / yield / the limit stays at
+  10 as in v4, the prompt keeps asking for 4-7.
+- next: Opus review of v5; prompt v6 ties the modal probability and the confidence level to an explicit evidence
+  judgement.

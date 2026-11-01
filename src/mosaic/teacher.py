@@ -235,9 +235,14 @@ def leaks(text: str) -> list[str]:
 
 
 ANALOG_YEAR = re.compile(r"\b(1[89]\d\d|20[01]\d|202[0-4])\b")
-ASSETS = {"equities": r"equit(?:y|ies)", "government bonds": r"(?:government |sovereign |treasury )?bonds?|treasuries",
-          "US dollar": r"(?:the )?(?:us |u\.s\. )?dollar|usd|dxy", "gold": r"gold", "oil": r"(?:crude )?oil",
-          "credit": r"credit|high[- ]yield"}
+# Asset labels on signal lines; prompt version 5 named the referents ("government bonds (US Treasuries)"), and the
+# teachers then wrote "US Treasuries:" or "Credit (US high yield):", so a US prefix and a parenthesis are accepted.
+_US = r"(?:(?:the |broad )?(?:us |u\.s\. )?)"
+ASSETS = {"equities": _US + r"equit(?:y|ies)", "government bonds":
+          _US + r"(?:(?:government |sovereign |treasury )?bonds?|treasuries)",
+          "US dollar": r"(?:the )?(?:us |u\.s\. )?dollar|usd|dxy", "gold": r"gold", "oil": r"(?:wti |crude )?oil",
+          "credit": _US + r"(?:credit|high[- ]yield)(?: credit| bonds)?"}
+ASSET_TAIL = r"(?:[ \t]*\([^)\n]*\))?"  # an optional "(US high yield)" between the label and the colon
 META = re.compile(r"\b(as instructed|the (?:prompt|instructions)|I (?:must|should|need to) (?:reason|stay|think|write)"
                   r" (?:as|within|in))\b", re.I)
 # Phrases the pilot-v4 teachers echoed from the prompt or the school profile (rejected from prompt version 5 on).
@@ -287,7 +292,7 @@ def validate(text: str, item: Item | None = None) -> list[str]:
     elif abs(sum(probs) - 1) > 0.02:
         problems.append(f"scenario probabilities sum to {sum(probs):.2f}")
     for asset, pat in ASSETS.items():
-        m = re.search(rf"^[ \t]*[-*]?[ \t]*(?:{pat})[ \t]*:[ \t]*(LONG|SHORT|NEUTRAL)[ \t]*\([ \t]*conviction[ \t]*"
+        m = re.search(rf"^[ \t]*[-*]?[ \t]*(?:{pat}){ASSET_TAIL}[ \t]*:[ \t]*(LONG|SHORT|NEUTRAL)[ \t]*\([ \t]*conviction[ \t]*"
                       rf"[1-5][ \t]*\)[ \t]*[-\u2013\u2014:]?[ \t]*(.*)$", out, re.I | re.M)
         if not m:
             problems.append(f"signal missing or malformed: {asset}")
@@ -326,7 +331,7 @@ def normalize(text: str) -> str:
     text = re.sub(r"^([ \t]*S\d+[ \t]*)\(([^()\n]*)\)[ \t]*:[ \t]*(growth[^:\n]*?)[ \t]*:[ \t]*([01](?:\.\d+)?|\.\d+)[ \t]*$",
                   r"\1(\2; \3): \4", text, flags=re.I | re.M)
     for pat in ASSETS.values():
-        text = re.sub(rf"^([ \t]*[-*]?[ \t]*(?:{pat})[ \t]*:[ \t]*(?:LONG|SHORT|NEUTRAL)[ \t]*\()[ \t]*"
+        text = re.sub(rf"^([ \t]*[-*]?[ \t]*(?:{pat}){ASSET_TAIL}[ \t]*:[ \t]*(?:LONG|SHORT|NEUTRAL)[ \t]*\()[ \t]*"
                       rf"(?:conviction[ \t]*:?[ \t]*)?([1-5])[ \t]*\)", r"\1conviction \2)", text, flags=re.I | re.M)
     return text
 
@@ -339,7 +344,7 @@ def signal_report(kept: dict[str, list[dict]], dominant: float = 0.7) -> dict:
         for r in recs:
             out = r["messages"][-1]["content"].split("[Output]")[-1]
             for asset, pat in ASSETS.items():
-                m = re.search(rf"^[ \t]*[-*]?[ \t]*(?:{pat})[ \t]*:[ \t]*(LONG|SHORT|NEUTRAL)", out, re.I | re.M)
+                m = re.search(rf"^[ \t]*[-*]?[ \t]*(?:{pat}){ASSET_TAIL}[ \t]*:[ \t]*(LONG|SHORT|NEUTRAL)", out, re.I | re.M)
                 if m:
                     counts[asset][m.group(1).upper()] += 1
         report["shares"][school] = counts
@@ -653,7 +658,7 @@ def check_v4(item: Item, turns: list[dict], episodes: EpisodeTable,
             problems.append(f"repeats a prompt phrase: {', '.join(echoes)}")
         scen = SCENARIO.findall(final[final.rfind("[Output]"):]) if "[Output]" in final else []
         modal = max(scen, key=lambda x: float(x[1]))[0] if scen else None
-        problems += proof_problems(final, refs["L1"], refs["L2"], facts, max_steps=8, modal=modal)
+        problems += proof_problems(final, refs["L1"], refs["L2"], facts, max_steps=10, modal=modal)
     else:
         problems += proof_problems(final, refs["L1"], refs["L2"], facts)
     return problems, turns

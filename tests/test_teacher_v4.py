@@ -219,10 +219,10 @@ def test_v5_rejects_echoes_long_proofs_and_an_l5_off_the_modal_scenario():
     tail = FINAL.replace("- L5 [S1]: slow growth is the most likely outcome.", "- L5 [S3]: a rebound is possible.")
     turns, _ = api.converse(job, fake_send(tail))
     assert "no L5 step names the most likely scenario S1" in teacher.check_v4(item, turns, eps)[0]
-    extra = "\n".join(f"- L3 [{{school}} multiplier]: extra step {i}." for i in range(5))
+    extra = "\n".join(f"- L3 [{{school}} multiplier]: extra step {i}." for i in range(7))
     long_proof = FINAL.replace("- L5 [S1]:", extra + "\n- L5 [S1]:")
     turns, _ = api.converse(job, fake_send(long_proof))
-    assert "9 proof steps (4-8 accepted)" in teacher.check_v4(item, turns, eps)[0]
+    assert "11 proof steps (4-10 accepted)" in teacher.check_v4(item, turns, eps)[0]
 
 
 def test_batch_report_flags_templated_calibration_and_shared_phrases(tmp_path):
