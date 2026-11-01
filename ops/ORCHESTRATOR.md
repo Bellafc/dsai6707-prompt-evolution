@@ -30,6 +30,9 @@ you (cloud session) ──REST──▶ RunPod pod ──▶ scripts/pod_bootstr
    the human.
 5. **Logs.** Each pod start and stop gets one entry in `research/LOG.md` (pod id, task, GPU, hours, branch),
    committed and pushed on your session branch like any other change.
+6. **Pushing.** You push your session branch with `git push` (human decision 2026-11-01; `Bash(git push*)` left
+   `.claude/settings.json`). Pods still cannot push: `runpod.POD_DENY` is passed to their sessions by
+   `scripts/autoresearch.sh`, and only `scripts/pod_bootstrap.sh` pushes their `agent/...` branch.
 
 ## Commands (run `pip install -e .` once per session)
 

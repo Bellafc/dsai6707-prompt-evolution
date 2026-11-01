@@ -24,7 +24,6 @@
       "Bash(jq *)"
     ],
     "deny": [
-      "Bash(git push*)",
       "Bash(mosaic freeze*)",
       "Bash(rm -rf *)",
       "Edit(prereg/**)",

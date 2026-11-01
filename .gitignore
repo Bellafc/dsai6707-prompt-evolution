@@ -11,3 +11,6 @@ logs/
 vendor/
 configs/paths.toml
 scratch/
+# teacher runs: requests and raw replies are large and reproducible from manifest.json; the kept trajectories go to data/
+research/teacher_runs/*/requests.jsonl
+research/teacher_runs/*/results.jsonl

@@ -356,3 +356,25 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   tests pass.
 - next: the human runs the pilot (`--n 20`) and commits `research/teacher_runs/pilot/{manifest.json,results.jsonl}`;
   the orchestrator imports, checks keep rates and writes the samples for review.
+
+### 2026-11-01 — D11: teacher pilot through the hosted API (qwen3.8-max)
+- command: `python3 scripts/teacher_api.py research/teacher_runs/pilot --n 20 --network-secret --base-url
+  https://token-plan.maas.qianwenaiapi.com/compatible-mode/v1 --model qwen3.8-max --workers 16` (key from the
+  environment's network secret), then `mosaic teacher-import --jobs research/teacher_runs/pilot --out
+  data/trajectories/pilot`.
+- fixes on the way: non-streamed requests were cut by a gateway after ~30 s (HTTP 502) and retried forever, so the
+  runner now streams (#11); 3 of 60 streams were reset mid-reply and succeeded on the resumed re-run. The leakage
+  filter rejected "before 2025" / "pre-2025", the boundary the teacher prompt itself asks for; it now ignores a 2025
+  directly preceded by before / pre- / prior to / earlier than (test added). A later 2025 date is still rejected.
+- result: 60/60 replies, ~2 min each with ~4,200 reasoning tokens (dropped); 59/60 kept (1 missing block marker);
+  keynesian 19, austrian 20, monetarist 20. Every kept trajectory uses its own school's core terms and none uses the
+  other schools' signature term (aggregate demand / malinvestment / money supply). Years ≥ 2023 appear only as the
+  "before 2025" boundary or pre-2025 analogs. Tokens 38k in, 311k out (250k reasoning). Samples for review:
+  `research/teacher_pilot/samples.md`.
+- next: human review of the samples and the templates, then the full run (`--n 500`, ~1,500 requests).
+
+### 2026-11-01 — infra: the orchestrator pushes with git (human decision)
+- change: `Bash(git push*)` removed from the deny list of `.claude/settings.json`, so the orchestrator session pushes
+  its branch directly (the GitHub API path cannot carry multi-megabyte files such as the full teacher run). Pods keep
+  the rule through `runpod.POD_DENY`, passed by `scripts/autoresearch.sh` (`tests/test_runpod.py` checks it);
+  ORCHESTRATOR.md rule 6.

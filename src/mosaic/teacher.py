@@ -130,6 +130,7 @@ def teacher_messages(item: Item, cfg: dict) -> list[dict]:
 PROB = re.compile(r"^\s*S\d+[^:\n]*:\s*([01](?:\.\d+)?|\.\d+)\s*$", re.M)
 SIGNAL = re.compile(r"\b(LONG|SHORT|NEUTRAL)\b")
 YEAR = re.compile(r"\b(20[2-9]\d)\b")
+BEFORE = re.compile(r"(before|pre-?|prior to|earlier than)\s*$", re.I)
 
 
 def leaks(text: str) -> list[str]:
@@ -140,6 +141,8 @@ def leaks(text: str) -> list[str]:
         if y > LEAK_CUTOFF[0]:
             found.append(m.group(0))
         elif y == LEAK_CUTOFF[0]:
+            if BEFORE.search(text[max(0, m.start() - 12):m.start()]):
+                continue  # "before 2025", "pre-2025": the boundary the prompt itself asks for, not a later date
             window = text[max(0, m.start() - 12):m.end() + 12].lower()
             months = [v for k, v in MONTHS.items() if k in window or k[:3] + " " in window]
             if not months or max(months) > LEAK_CUTOFF[1]:
