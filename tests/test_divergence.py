@@ -59,3 +59,22 @@ def test_analyze_writes_the_matrix(tmp_path):
     assert s["pairs_with_positions"] == 15 and s["dispersion"]["events"] == 2
     assert set(s["space"]["coordinates_2d"]) == set(divergence.profiles())
     assert s["space"]["ols_disagreement_on_axes"]["pairs"] == 15
+
+
+def test_position_test_is_exact_and_one_sided():
+    pos = {n: {"state_market": i, "orthodoxy": 0} for i, n in enumerate("abcde")}
+    names = list(pos)
+    # disagreement equal to the distance on state_market: the true labelling is the best one
+    pairs = {f"{a}|{b}": {"disagreement": abs(pos[a]["state_market"] - pos[b]["state_market"])}
+             for i, a in enumerate(names) for b in names[i + 1:]}
+    t = divergence.position_test(pairs, names, pos)
+    assert t["state_market"]["rho"] == 1.0 and t["state_market"]["permutations"] == 120
+    assert t["state_market"]["p_one_sided"] == round(2 / 120, 3)  # the identity and its mirror image tie
+    assert "orthodoxy" not in t  # a constant axis has no rank correlation
+
+
+def test_per_asset_counts_different_calls():
+    base = {x: 0 for x in divergence.ASSETS}
+    runs = {"a": {"e1": {"signals": dict(base)}}, "b": {"e1": {"signals": {**base, "gold": 1}}}}
+    out = divergence.per_asset(runs, ["a", "b"])
+    assert out["gold"] == 1.0 and out["oil"] == 0.0

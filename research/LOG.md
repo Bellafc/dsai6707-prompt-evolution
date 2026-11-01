@@ -624,3 +624,15 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
 - change: design-note decision 2 closed by the rule; of the scan's four cheap uses, the error correlation per H8 pool
   (exp03 draft, descriptive), the Gordon & Dahl counter-hypothesis with the base-model tilt (matrix write-up) and the
   claimed-cutoff limitation are adopted; graded counterfactual edits in exp07 are not (more runs).
+
+### 2026-11-01 — disagreement matrix (six frameworks × 30 events, qwen3.8-max, evaluation only)
+- command: `scripts/teacher_api.py research/divergence … --model qwen3.8-max` (240/240 after two retry passes),
+  `mosaic.divergence.analyze` (now with an exact permutation test and a per-asset breakdown).
+- result (`research/divergence/RESULTS.md`): the three schools disagree about twice the noise floor (signal
+  disagreement 0.21–0.28 vs 0.12–0.14); New Keynesian duplicates Keynesian (0.14, at noise); New Classical is the most
+  distinct framework (left out under D13, Ch. 7). Literature positions do not predict disagreement (ρ = +0.28, exact
+  p = 0.19 over 720 relabellings; R² = 0.05), as Gordon & Dahl (2013) would expect. Disagreement sits on oil, gold,
+  the dollar and bonds, not on equities and credit. MDS: two dimensions carry 69% (exploratory reading: mechanism,
+  not political position).
+- deviation: the design planned the test on two-coder positions; it ran on the single draft coding. Impact: the
+  ρ and p may change. Proposal: rerun `analyze` after the two coders, report the permutation p only.

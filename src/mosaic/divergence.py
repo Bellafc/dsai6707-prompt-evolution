@@ -157,6 +157,47 @@ def spearman(x: list[float], y: list[float]) -> float | None:
     return round(num / den, 3) if den else None
 
 
+def position_test(pairs: dict, names: list[str], pos: dict, measure: str = "disagreement") -> dict:
+    """Spearman between literature distance and measured disagreement, per axis and summed, with an exact one-sided
+    permutation p-value over relabellings of the frameworks (a Mantel-type test: pairs share frameworks, so they are not
+    independent and the usual Spearman p-value would be too small)."""
+    from itertools import permutations
+
+    named = [n for n in names if n in pos]
+    combos = list(combinations(named, 2))
+    if len(named) < 4 or len(named) > 8:
+        return {}
+    y = [(pairs.get(f"{a}|{b}") or pairs.get(f"{b}|{a}"))[measure] for a, b in combos]
+    out = {}
+    for label, axes in (("both", ("state_market", "orthodoxy")), ("state_market", ("state_market",)),
+                        ("orthodoxy", ("orthodoxy",))):
+        def theory(lab):
+            return [sum(abs(pos[lab[a]][d] - pos[lab[b]][d]) for d in axes) for a, b in combos]
+        rho = spearman(theory({n: n for n in named}), y)
+        if rho is None:
+            continue
+        hits = total = 0
+        for perm in permutations(named):
+            r = spearman(theory(dict(zip(named, perm))), y)
+            total += 1
+            hits += r is not None and r >= rho - 1e-12
+        out[label] = {"rho": rho, "p_one_sided": round(hits / total, 3), "permutations": total}
+    return out
+
+
+def per_asset(runs: dict[str, dict], names: list[str]) -> dict:
+    """Share of events on which two frameworks make a different call, per asset, averaged over all pairs."""
+    out = {}
+    for x in ASSETS:
+        vals = []
+        for a, b in combinations(names, 2):
+            common = set(runs[a]) & set(runs[b])
+            if common:
+                vals.append(sum(runs[a][e]["signals"][x] != runs[b][e]["signals"][x] for e in common) / len(common))
+        out[x] = round(sum(vals) / len(vals), 3) if vals else None
+    return out
+
+
 def space(pairs: dict, names: list[str], pos: dict) -> dict:
     """How many dimensions the measured disagreement needs, and whether both literature axes explain it.
 
@@ -235,6 +276,10 @@ def analyze(jobs_dir: Path) -> dict:
                "dispersion_schools_only": dispersion({n: runs[(n, 0)] for n in names
                                                       if n in ("keynesian", "austrian", "monetarist")}),
                "position_vs_disagreement_spearman": spearman(theory, measured), "pairs_with_positions": len(theory),
+               "position_test": position_test(pairs, names, pos),
+               "per_asset_all": per_asset({n: runs[(n, 0)] for n in names}, names),
+               "per_asset_schools_only": per_asset({n: runs[(n, 0)] for n in names},
+                                                   [n for n in names if n in ("keynesian", "austrian", "monetarist")]),
                "space": space(pairs, names, pos)}
     (jobs_dir / "matrix.json").write_text(json.dumps(summary, indent=1) + "\n")
     lines = ["# Disagreement matrix", "", f"Parsed {summary['parsed']} analyses, {failed} unparsable.", "",
@@ -257,6 +302,12 @@ def analyze(jobs_dir: Path) -> dict:
               f"{summary['dispersion_schools_only']}.",
               f"Literature distance (state-market + orthodoxy) vs measured disagreement, Spearman over "
               f"{summary['pairs_with_positions']} pairs: {summary['position_vs_disagreement_spearman']}."]
+    if summary["position_test"]:
+        lines += ["Exact permutation test (frameworks relabelled, one-sided): " + "; ".join(
+            f"{k} rho {v['rho']:+.3f}, p {v['p_one_sided']:.3f}" for k, v in summary["position_test"].items())
+            + f" ({next(iter(summary['position_test'].values()))['permutations']} permutations)."]
+    lines += ["", f"Different calls per asset, mean over pairs: all frameworks {summary['per_asset_all']}; "
+              f"three schools {summary['per_asset_schools_only']}."]
     sp = summary["space"]
     if sp:
         lines += ["", f"Multidimensional scaling: variance share by dimension {sp['variance_share_by_dimension']}; "

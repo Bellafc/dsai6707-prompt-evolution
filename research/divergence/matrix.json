@@ -1,0 +1,239 @@
+{
+ "parsed": 239,
+ "failed": 1,
+ "pairs": {
+  "keynesian|austrian": {
+   "n": 30,
+   "disagreement": 0.422,
+   "signals": 0.283,
+   "opposite": 0.144,
+   "macro": 0.542
+  },
+  "keynesian|monetarist": {
+   "n": 30,
+   "disagreement": 0.389,
+   "signals": 0.264,
+   "opposite": 0.139,
+   "macro": 0.587
+  },
+  "keynesian|new_keynesian": {
+   "n": 30,
+   "disagreement": 0.228,
+   "signals": 0.142,
+   "opposite": 0.056,
+   "macro": 0.497
+  },
+  "keynesian|new_classical": {
+   "n": 30,
+   "disagreement": 0.383,
+   "signals": 0.228,
+   "opposite": 0.072,
+   "macro": 0.662
+  },
+  "keynesian|post_keynesian": {
+   "n": 30,
+   "disagreement": 0.278,
+   "signals": 0.172,
+   "opposite": 0.067,
+   "macro": 0.503
+  },
+  "austrian|monetarist": {
+   "n": 30,
+   "disagreement": 0.328,
+   "signals": 0.208,
+   "opposite": 0.089,
+   "macro": 0.575
+  },
+  "austrian|new_keynesian": {
+   "n": 30,
+   "disagreement": 0.433,
+   "signals": 0.308,
+   "opposite": 0.183,
+   "macro": 0.638
+  },
+  "austrian|new_classical": {
+   "n": 30,
+   "disagreement": 0.467,
+   "signals": 0.294,
+   "opposite": 0.122,
+   "macro": 0.567
+  },
+  "austrian|post_keynesian": {
+   "n": 30,
+   "disagreement": 0.356,
+   "signals": 0.233,
+   "opposite": 0.111,
+   "macro": 0.492
+  },
+  "monetarist|new_keynesian": {
+   "n": 30,
+   "disagreement": 0.389,
+   "signals": 0.278,
+   "opposite": 0.167,
+   "macro": 0.657
+  },
+  "monetarist|new_classical": {
+   "n": 30,
+   "disagreement": 0.411,
+   "signals": 0.269,
+   "opposite": 0.128,
+   "macro": 0.668
+  },
+  "monetarist|post_keynesian": {
+   "n": 30,
+   "disagreement": 0.394,
+   "signals": 0.264,
+   "opposite": 0.133,
+   "macro": 0.587
+  },
+  "new_keynesian|new_classical": {
+   "n": 30,
+   "disagreement": 0.411,
+   "signals": 0.253,
+   "opposite": 0.094,
+   "macro": 0.675
+  },
+  "new_keynesian|post_keynesian": {
+   "n": 30,
+   "disagreement": 0.272,
+   "signals": 0.186,
+   "opposite": 0.1,
+   "macro": 0.49
+  },
+  "new_classical|post_keynesian": {
+   "n": 30,
+   "disagreement": 0.433,
+   "signals": 0.278,
+   "opposite": 0.122,
+   "macro": 0.618
+  }
+ },
+ "noise": {
+  "keynesian": {
+   "n": 29,
+   "disagreement": 0.207,
+   "signals": 0.124,
+   "opposite": 0.04,
+   "macro": 0.41
+  },
+  "new_keynesian": {
+   "n": 30,
+   "disagreement": 0.211,
+   "signals": 0.144,
+   "opposite": 0.078,
+   "macro": 0.427
+  }
+ },
+ "nearest": {
+  "keynesian": [
+   0.142,
+   "new_keynesian"
+  ],
+  "austrian": [
+   0.208,
+   "monetarist"
+  ],
+  "monetarist": [
+   0.208,
+   "austrian"
+  ],
+  "new_keynesian": [
+   0.142,
+   "keynesian"
+  ],
+  "new_classical": [
+   0.228,
+   "keynesian"
+  ],
+  "post_keynesian": [
+   0.172,
+   "keynesian"
+  ]
+ },
+ "dispersion": {
+  "events": 30,
+  "growth": 0.212,
+  "inflation": 0.24
+ },
+ "dispersion_schools_only": {
+  "events": 30,
+  "growth": 0.175,
+  "inflation": 0.191
+ },
+ "position_vs_disagreement_spearman": 0.277,
+ "pairs_with_positions": 15,
+ "position_test": {
+  "both": {
+   "rho": 0.277,
+   "p_one_sided": 0.193,
+   "permutations": 720
+  },
+  "state_market": {
+   "rho": 0.133,
+   "p_one_sided": 0.328,
+   "permutations": 720
+  },
+  "orthodoxy": {
+   "rho": 0.309,
+   "p_one_sided": 0.156,
+   "permutations": 720
+  }
+ },
+ "per_asset_all": {
+  "equities": 0.289,
+  "government bonds": 0.369,
+  "US dollar": 0.502,
+  "gold": 0.518,
+  "oil": 0.316,
+  "credit": 0.244
+ },
+ "per_asset_schools_only": {
+  "equities": 0.278,
+  "government bonds": 0.367,
+  "US dollar": 0.522,
+  "gold": 0.467,
+  "oil": 0.422,
+  "credit": 0.222
+ },
+ "space": {
+  "variance_share_by_dimension": [
+   0.375,
+   0.316,
+   0.16,
+   0.081
+  ],
+  "coordinates_2d": {
+   "keynesian": [
+    -0.146,
+    -0.04
+   ],
+   "austrian": [
+    0.234,
+    -0.077
+   ],
+   "monetarist": [
+    0.171,
+    0.041
+   ],
+   "new_keynesian": [
+    -0.152,
+    -0.074
+   ],
+   "new_classical": [
+    -0.049,
+    0.284
+   ],
+   "post_keynesian": [
+    -0.059,
+    -0.134
+   ]
+  },
+  "ols_disagreement_on_axes": {
+   "intercept": 0.34,
+   "state_market": 0.011,
+   "orthodoxy": 0.005,
+   "r2": 0.048,
+   "pairs": 15
+  }
+ }
+}
