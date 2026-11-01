@@ -62,6 +62,35 @@ L5 ─────────────────► per-framework distribu
 | exp03 (draft, register by 11-25) | main stage of the new design: tool-using agents per framework; H-new **diversity sources**: trained schools vs prompted schools vs quantitative L3 frameworks vs personas vs multi-model (Qwen, DeepSeek, GLM) vs sampling, equal ensemble size; H6/H7 as drafted | before 11-25 |
 | exp04 | coherence constraints come from the proposition ontology (L0) | unchanged |
 
+## 4b. Interpretability: three views that check each other
+
+The ontology gives every claim a type (layer, source, time). That makes three kinds of interpretability measurable
+on the same objects, and their agreement is itself a result.
+
+| View | Question | Instrument | Ontology hook |
+|---|---|---|---|
+| **What the agent says** (epistemic) | Can a reader audit why it forecasts what it forecasts? | the L5 proof: layered steps with refs, competing readings, analytic confidence (pmpol `Proof`, `confidence.assess`) | proof validity (`Proof.check`, grounded) and exp03 H7 (low confidence ⇒ larger error) |
+| **How sure, in a calibrated, typed way** (decision models: Jev, open Vega/Kev) | Can each judgement be read off with a usable probability instead of sampled text? | System One decision models answer typed questions (`choice`, `score`, `noul`) with per-option probabilities in one forward pass | (a) second, open, reproducible **judge** of school fidelity (exp01 secondary outcome, decision D8), validated against Opus and the two human raters; (b) **proof-step typer**: which layer each step belongs to and which L3 entry field it invokes (drivers / frictions / policy / signals), so ungrounded or mistyped steps are caught automatically; (c) **decision head** over scenario bins (exp05 only) |
+| **What the model computes** (mechanistic, SAE, exp06) | Does the model use the school's concepts, or only its words? | Qwen-Scope SAEs on Qwen3-8B (spike S3: reader passes at layers 18 and 27; chat model at 27; layer 9 fails CE) | feature cards map features to the fields of each L3 entry; **new: proof faithfulness**, i.e. when a step claims an L3 mechanism (e.g. the fiscal multiplier), are that field's features active on those tokens? Internal contamination = other frameworks' features on the same tokens |
+
+Two tests only real tools make possible:
+- **Counterfactual tool results.** Re-run an agent with one L1 value or one L2 episode changed. A grounded agent
+  changes the dependent steps and the forecast; one that ignores its tools does not. This is a behavioural
+  faithfulness test of the proof, and SAE activations show where in the model the change enters.
+- **Proof vs inside vs judge.** For each trajectory: proof says framework X; SAE shows X's features (or not); the
+  decision-model judge and Opus score fidelity. Agreement across the three answers the examiner question "is it
+  reasoning or vocabulary?" with three independent instruments instead of one.
+
+Rules carried over from pmpol: decision-model outputs and machine feature labels are L5 proposals with probability,
+model and commit; they never approve a fact. Vendor calibration claims are measured (ECE, reliability), not quoted.
+Leakage: Vega (Qwen3.5-0.8B base) and Kev-27B (Qwen3.8) know 2025–26, so they read text (judge, typer) but never
+forecast the exp03 test window; forecasting with them is exp05 (prospective) only.
+
+Cost: SAE work is exp06 as planned (Task 5, after the adapters) plus the faithfulness analysis on tagged proof
+steps; decision models run on a pod (ollajev, Vega 0.8B/4B on CPU or GPU, Kev-27B on one 80 GB card), Jev hosted
+as an upper-bound reference only. Gold labels come from exp01's two human raters (judge) and ~300 hand-typed proof
+steps (typer); Kev fine-tuning (~1,000 labels) is optional.
+
 ## 5. Cost and risks
 
 - **Effort**: tool layer and multi-turn format ≈ 2–3 days of agent work; teacher v4 + pilot + review ≈ 1 day;
@@ -78,3 +107,5 @@ L5 ─────────────────► per-framework distribu
 2. Which extra L3 frameworks: prompted schools (which), pmpol's quantitative frameworks, or both?
 3. Real tools for the teacher data now (v4), with the episode table as a stand-in until the episode DB is uploaded?
 4. exp01: keep single-pass (recommended) or amend to the agent loop?
+5. D8: decision models as measurement tools (judge, proof-step typer; decision head in exp05)?
+6. D10: exp06 Parts I + II, plus the proof-faithfulness analysis and the counterfactual-tool test?
