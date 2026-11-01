@@ -1,0 +1,9 @@
+comparison,metric,n_events,excluded_events,mean_diff,p_exact
+nsga2 - b0,fidelity,9,syn-k0007,0.0128,0.3828
+nsga2 - b0,disagreement,9,syn-k0007,0.0041,0.918
+ga - b0,fidelity,9,syn-k0007,0.0384,0.0586
+ga - b0,disagreement,9,syn-k0007,-0.0267,0.5586
+random - b0,fidelity,9,syn-k0007,0.0224,0.0508
+random - b0,disagreement,9,syn-k0007,0.0,0.9883
+nsga2_rule - b0,fidelity,9,syn-k0007,0.0249,0.1094
+nsga2_rule - b0,disagreement,9,syn-k0007,0.0124,0.7422

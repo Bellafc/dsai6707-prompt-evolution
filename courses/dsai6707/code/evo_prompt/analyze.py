@@ -21,7 +21,7 @@ from pathlib import Path
 from mosaic.backends import Backend, Cache
 from mosaic.stats import holm, paired
 
-from .config import CACHE_PATH, HELDOUT_SEED, MODEL, N_HELDOUT, RESULTS_DIR
+from .config import CACHE_PATH, HELDOUT_SEED, MODEL, N_HELDOUT, N_SEARCH, RESULTS_DIR, SEARCH_SEED
 from .evaluate import Evaluator
 from .genome import SchoolGene, PromptSet, b0
 from .moo import knee
@@ -202,6 +202,21 @@ def main(results: Path = RESULTS_DIR) -> None:
         w.writeheader()
         for t in tests:
             w.writerow({k: t[k] for k in w.fieldnames})
+
+    # ---- sensitivity: drop held-out events whose text duplicates a search event -----------------------------
+    search_texts = {e.text for e in events(N_SEARCH, SEARCH_SEED)}
+    dup_ids = [e.id for e in held if e.text in search_texts]
+    keep_ids = [e.id for e in held if e.id not in dup_ids]
+    with (results / "heldout_sensitivity.csv").open("w", newline="") as fh:
+        w = csv.writer(fh)
+        w.writerow(["comparison", "metric", "n_events", "excluded_events", "mean_diff", "p_exact"])
+        for m in METHODS:
+            for metric in ("fidelity", "disagreement"):
+                mv = {r["event"]: r[metric] for r in avg[m]}
+                bv = {r["event"]: r[metric] for r in avg["b0"]}
+                diffs = [mv[e] - bv[e] for e in keep_ids]
+                w.writerow([f"{m} - b0", metric, len(keep_ids), ";".join(dup_ids),
+                            round(sum(diffs) / len(diffs), 4), round(sign_flip_exact(diffs), 4)])
 
     # ---- markdown summary -----------------------------------------------------------------------------------
     lines = ["# Summary (3 seeds per search method; B0 over 3 sampling replicates)", "",
