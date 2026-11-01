@@ -152,6 +152,9 @@ def redact(p: dict) -> dict:
     return q
 
 
+POD_DENY = ["Bash(git push*)"]  # pods push only through scripts/pod_bootstrap.sh; the orchestrator may push (human, 2026-11-01)
+
+
 def permission_flags(settings_path: str = ".claude/settings.json") -> list[str]:
     """The project's permission rules as `claude` command-line flags for the pod's unattended session. On the pods
     the allow list in .claude/settings.json was not applied (every Bash call "requires approval", and `-p` cannot
@@ -166,7 +169,8 @@ def permission_flags(settings_path: str = ".claude/settings.json") -> list[str]:
                 out.append(r[:-2].rstrip() + ":*)")  # legacy prefix syntax: Bash(git add:*)
         return out
 
-    return ["--allowedTools", *spell(perms.get("allow", [])), "--disallowedTools", *spell(perms.get("deny", []))]
+    deny = [*perms.get("deny", []), *(r for r in POD_DENY if r not in perms.get("deny", []))]
+    return ["--allowedTools", *spell(perms.get("allow", [])), "--disallowedTools", *spell(deny)]
 
 
 def summary(p: dict) -> str:

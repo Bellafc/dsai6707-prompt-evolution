@@ -372,3 +372,9 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   "before 2025" boundary or pre-2025 analogs. Tokens 38k in, 311k out (250k reasoning). Samples for review:
   `research/teacher_pilot/samples.md`.
 - next: human review of the samples and the templates, then the full run (`--n 500`, ~1,500 requests).
+
+### 2026-11-01 — infra: the orchestrator pushes with git (human decision)
+- change: `Bash(git push*)` removed from the deny list of `.claude/settings.json`, so the orchestrator session pushes
+  its branch directly (the GitHub API path cannot carry multi-megabyte files such as the full teacher run). Pods keep
+  the rule through `runpod.POD_DENY`, passed by `scripts/autoresearch.sh` (`tests/test_runpod.py` checks it);
+  ORCHESTRATOR.md rule 6.

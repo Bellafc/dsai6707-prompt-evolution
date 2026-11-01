@@ -6,7 +6,7 @@
 #   3. one auto-research session for program.md task $MOSAIC_TASK, killed after $MOSAIC_MAX_HOURS hours
 #   4. commits whatever is left and pushes to $MOSAIC_PUSH_BRANCH (an agent/... branch; the human merges)
 #   5. stops the pod (the network volume keeps models, caches and data)
-# The agent itself cannot push (git push is denied in .claude/settings.json); only this script does, at the end.
+# The agent itself cannot push (git push is in runpod.POD_DENY, passed by scripts/autoresearch.sh); only this script does.
 set -uo pipefail
 cd "$(dirname "$0")/.."
 POD="${RUNPOD_POD_ID:-local}"
