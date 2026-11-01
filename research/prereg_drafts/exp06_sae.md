@@ -1,6 +1,6 @@
 # DRAFT pre-registration — exp06: What does fine-tuning change inside the model? (sparse autoencoders)
 
-Status: **DRAFT, P1** (decision D10). Thesis chapter 4 (RQ1, mechanism). Part I must be registered **before the
+Status: **DRAFT, P1** (decision D10). Thesis chapter 4 (RQ1, mechanism); the proof-faithfulness analysis on agent proofs serves RQ2 (exp07). Part I must be registered **before the
 exp01 freeze**, because it re-scores exp01's test outputs with a new instrument; its feature lists are chosen on
 probe and dev data only. Part II is registered at the same time and run after the exp01 final run.
 

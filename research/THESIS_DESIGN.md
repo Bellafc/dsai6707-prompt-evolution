@@ -1,6 +1,7 @@
 # Thesis design (source of truth for priorities and dates)
 
-MPhil, PolyU DSAI. Author: Futian Jiang. Chief supervisor: Prof. ZHANG Chengqi. Last revised 2026-10-31.
+MPhil, PolyU DSAI. Author: Futian Jiang. Chief supervisor: Prof. ZHANG Chengqi. Last revised 2026-11-01 (RQs:
+three angles on one design, adopted by the human the same day).
 The human-facing version (Traditional Chinese, with rationale) is `research/DESIGN_DOC_zh.md` (snapshot of the
 Claude Docs document); Confirmation-era material and context are in `docs/project/`.
 
@@ -22,23 +23,37 @@ Claude Docs document); Confirmation-era material and context are in `docs/projec
 **Working title**: *Macro-MOSAIC: Multi-School Language-Model Reasoning for Macroeconomic Event Analysis and
 Forecasting* (the Confirmation title ended "…and Cross-Asset Allocation"; see decision D2).
 
-| RQ | Question | Evidence | Chapter |
-|---|---|---|---|
-| RQ1 | Does parameter-efficient fine-tuning instill distinct, theory-consistent school reasoning beyond the best prompting baseline (including the model's own thinking mode); what changes inside the model; and does the advantage survive a stronger 2026 base? | exp01 (Qwen3-8B; A/B/C, D, T; keyword metrics + validated judge); exp06 (sparse-autoencoder instrument and mechanism); exp01b (Qwen3.5-27B, D7) | 4 |
-| RQ2 | Do macro-state analogies predict asset reactions better than narrative or naive similarity? | exp02 (expanding-window retrieval on the episode DB) | 5 |
-| RQ3 | Do pooled school forecasts beat single schools and prompted schools on real, post-cutoff macro outcomes; are they calibrated and coherent; and is disagreement among schools (contested L3 frameworks) informative? | exp03 (resolved markets 2025–26, H1–H7), exp04 (coherence), exp05 (live, optional) | 6 |
+**Overarching question** (adopted 2026-11-01; rationale in `research/DESIGN_ontology_agents.md` §2): *Can
+language-model agents reason through explicitly contested economic theories in a way that is theory-driven inside
+the model, auditable in what they say, and calibrated in how sure they are?* The three RQs ask it from three angles
+over one factorial design: prompted vs fine-tuned (vs trained beyond SFT) × single pass vs ontology agent with real
+L0–L2 tools and a layered proof (design note §4a). RQ1 reads the rows, RQ2 the columns, RQ3 every cell as a
+forecaster. The three trained schools are the deep case.
+
+| RQ | Angle | Question | Evidence | Chapter |
+|---|---|---|---|---|
+| RQ1 | Inside the model: what it computes | Does fine-tuning instil a contested economic framework beyond the best prompting baseline, and does it change what the model computes (the framework's concepts) or only what it writes (its vocabulary)? | exp01 (registered, unchanged: Qwen3-8B; A/B/C, D, T; best prompting incl. the model's own thinking mode; keyword metrics + validated judge + two human raters); exp06 (SAE instrument and mechanism); exp01b (does the advantage survive a stronger 2026 base; Qwen3.5-27B, D7); agent arms C-agent, C-agent+RFT (fidelity and SAE, exploratory) | 4 |
+| RQ2 | What the agent says: auditable reasoning | When framework agents must fetch point-in-time facts (L1) and historical base rates (L2) through real tools and justify each forecast with a layered proof, is their reasoning auditable and faithful: are the proofs valid and traceable to L0–L4, do the conclusions follow the evidence when it changes, and are the mechanisms a proof claims active inside the model? | exp02 (the L2 tool: macro-state analogies vs narrative and naive similarity, expanding window on the episode DB); exp07 (new: proof validity and grounding, tool-call validity, counterfactual tool results, proof-step typing, SAE proof faithfulness; dev and pre-2025 events only) | 5 |
+| RQ3 | How sure: calibrated forecasts | Do probability forecasts pooled across contested frameworks beat single frameworks and other sources of ensemble diversity (personas, multiple models, repeated sampling) on real post-cutoff macro outcomes; are they calibrated and coherent; and do their uncertainty signals (disagreement among frameworks, analytic confidence) predict error? | exp03 (resolved markets 2025–26, H1–H7 + H8 diversity sources; the agent arms as forecasters), exp04 (coherence), exp05 (live, optional) | 6 |
+
+Decision models (D8) are instruments for all three angles, not a fourth question: judge (RQ1), proof-step typer
+(RQ2), decision head (RQ3, exp05 only). The examiner question "reasoning or vocabulary?" gets three independent
+instruments: the proof, the decision-model and Opus judges, and SAE features.
 
 Contributions (claim wording must stay at this strength):
 1. A point-in-time macro episode database and a leakage-controlled forecasting benchmark built from resolved
-   prediction markets (data and evaluation methodology).
+   prediction markets (data and evaluation methodology; serves all three RQs).
 2. Evidence on fine-tuning versus prompting for theory-specific reasoning, with a validated LLM judge and a
    sparse-autoencoder analysis of what fine-tuning changes inside the model (school concepts versus vocabulary;
-   internal cross-school contamination), with features mapped to the L3 school entries.
-3. An analogy-retrieval method with a principled covariance estimate and a time-respecting evaluation.
-4. Evidence on whether heterogeneous reasoning agents should be pooled, with coherence-aware aggregation.
+   internal cross-school contamination), with features mapped to the L3 school entries (RQ1).
+3. An analogy-retrieval method with a principled covariance estimate and a time-respecting evaluation, used as the
+   agents' L2 tool (RQ2).
+4. Evidence on whether heterogeneous reasoning agents should be pooled, with coherence-aware aggregation, and on
+   whether theoretical diversity is a better source of ensemble diversity than personas, models or sampling (RQ3).
 5. An epistemically layered design (pmpol's L0–L5 ontology): contested theories are L3 frameworks kept as separate
-   agents and shown side by side; every forecast carries a proof back to L0–L4 and an analytic-confidence grade,
-   and both disagreement and confidence are tested as predictors of error (exp03 H6–H7).
+   agents and shown side by side; agents fetch L0–L2 through tools; every forecast carries a proof back to L0–L4
+   and an analytic-confidence grade; proofs are tested for faithfulness (exp07), and both disagreement and
+   confidence are tested as predictors of error (exp03 H6–H7) (RQ2, RQ3).
 
 ### 2a. Knowledge layers (the thesis's epistemic architecture)
 
@@ -51,6 +66,8 @@ Contributions (claim wording must stay at this strength):
 | L4 market observations | Kalshi / Polymarket prices | benchmark only; never a model input |
 | L5 inferences | school distributions, pools | must carry a proof; ICD 203 likelihood words; analytic confidence = weakest link |
 
+Under RQ2 the agents reach L0–L2 through tools: `get_rules` (L0), `get_macro_data` (L1, vintages known at t) and
+`query_episode_db` (L2, the exp02 retriever); the harness injects tool results, the model never writes them.
 The pooled forecast is an L5 summary and never replaces the per-school views in any output. pmpol's `proof.py` and
 `confidence.py` (vendor/) are reused, credited as team code. exp06 adds an internal view of L3: SAE features that
 separate the schools are labelled and mapped to the fields of each L3 entry (drivers, frictions, policy, signals),
@@ -59,15 +76,18 @@ giving "feature cards" that show which school concepts a model activates while i
 ## 3. Chapter map
 
 1 Introduction · 2 Background and literature (Confirmation survey + forecasting, prediction-market calibration,
-coherence, distillation, analog forecasting) · 3 Data (episode DB, point-in-time states, market question set) ·
-4 School agents (Stage 2, RQ1) · 5 Analogy retrieval (Stage 1, RQ2) · 6 From reasoning to calibrated forecasts
-(Stage 3, RQ3) · 7 Discussion (limitations, allocation as application, AI use, PhD directions) · 8 Conclusion ·
+coherence, distillation, analog forecasting, tool-using agents) · 3 Data and tools (episode DB, point-in-time
+states, market question set, the L0–L2 tools) · 4 Instilling frameworks: school agents and what changes inside the
+model (Stage 2, RQ1) · 5 Grounded, auditable agents: real tools, layered proofs, analogy retrieval (Stage 1) and
+faithfulness (RQ2) · 6 From reasoning to calibrated forecasts (Stage 3, RQ3) · 7 Discussion (limitations,
+allocation as application, AI use, PhD directions) · 8 Conclusion ·
 Appendices: prompts, lexicons, judge rubric, pre-registrations and amendments, reproducibility, AI-use statement.
 
 ## 4. Changes from the Confirmation plan (to be explained in the thesis, Ch. 1 and 7)
 
 | Confirmation plan | Now | Why |
 |---|---|---|
+| One RQ per pipeline stage (school reasoning, analogy retrieval, pooled forecasts) | Three angles on one design: inside the model (RQ1), what the agent says (RQ2), how sure (RQ3); analogy retrieval becomes the agents' L2 tool (2026-11-01) | Wider claim (contested frameworks as a transferable principle, per the Confirmation framing guidance); the teacher reviews found the tool calls self-simulated, and real tools make faithfulness testable; one design read three ways keeps the chapters one study |
 | Stage 4 Kelly allocation + 2023–2025 walk-forward backtest as main evidence | Application discussion / optional demo (D2) | 2023–24 lies inside the models' pretraining period (look-ahead); few events → no power; resolved-market evaluation answers the same question cleanly |
 | Stage 3 regime-conditional weights calibrated on Polymarket/Metaculus geopolitical questions | Pooling + skill weights + temperature scaling + coherence projection, calibrated on resolved **macro** markets | Regime cells would be nearly empty in a leakage-free window; same-domain calibration data |
 | Keyword metrics only | Keyword metrics + LLM judge validated by two human raters | Examiner question: does vocabulary equal reasoning? |
@@ -152,8 +172,15 @@ autoencoder (exp06), a leakage-free history long enough for exp03, and LoRA tool
 | What happens inside the model when it argues as a school? | exp06 feature cards mapped to the L3 entries; internal contamination (S-H3) |
 | How much should a reader trust one forecast? Is it interpretable? | Proof per forecast (L0–L4 trail) + analytic confidence, validated by exp03 H7 |
 | What do you do when the schools disagree? | L3 rule (side by side, not adopted); exp03 H6 tests disagreement as an uncertainty signal |
+| Is the agent's explanation faithful, or a story written after the fact? | exp07: counterfactual tool results (behaviour), SAE proof faithfulness (inside), proof validity (`Proof.check`, grounding) |
+| Is theoretical diversity better than other sources of diversity (personas, models, sampling)? | exp03 H8, equal ensemble size |
 
 ## 8. Decisions pending (human)
+
+Adopted 2026-11-01: the three RQs of §2 (design note decision 8). Still open in `research/DESIGN_ontology_agents.md`
+§6: decisions 1–7 (agent architecture for exp03, extra L3 frameworks, real tools for the v4 training data, exp01
+format, D8, D10 scope, agent training depth). RQ2 and RQ3 need real L0–L2 tools at inference and exp03 H8 whatever
+those decisions say.
 
 - **D1** Target submission date and exact Normal Period end (default 2027-06-15).
 - **D2** Stage 4: future work (default) vs small descriptive demo on 2025–26 events; thesis title follows.

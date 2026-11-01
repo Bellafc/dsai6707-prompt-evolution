@@ -1,10 +1,10 @@
-<!-- Snapshot of the Claude Docs design document "Macro-MOSAIC 畢業論文設計" (https://claude.ai/artifact/53m7SsccYQaQqwo9Bdw85Z), exported 2026-10-31 (rev 38). research/THESIS_DESIGN.md stays the source of truth; when one changes, update the other. -->
+<!-- Snapshot of the Claude Docs design document "Macro-MOSAIC 畢業論文設計" (https://claude.ai/artifact/53m7SsccYQaQqwo9Bdw85Z), exported 2026-10-31 (rev 38); RQ sections synced with it on 2026-11-01 (rev 44). research/THESIS_DESIGN.md stays the source of truth; when one changes, update the other. -->
 
 # Macro-MOSAIC 畢業論文設計
 
 Oct 30, 2026 · @Bella
 
-建議 Jun 15, 2027 送審，最晚 Feb 15, 2027 交 GSB/2B。論文收斂成三個研究問題，主要證據從 2023–25 回測改成模型訓練之後才結算的 2025–26 總經預測市場。知識架構沿用 pmpol 的 L0–L5 分層：三個學派是 L3，每個預測都附推理證明和分析信心。開題的 Qwen2.5 adapter 沒有保存，所以改在 Qwen3-8B 上重新訓練，並新增用 SAE 看模型內部的 exp06。現在就能用 Claude Code 指揮 RunPod 開始試跑；有 11 件事要你和張老師決定。
+建議 Jun 15, 2027 送審，最晚 Feb 15, 2027 交 GSB/2B。論文收斂成三個研究問題（2026-11-01 改成同一個設計的三個角度：模型內部、agent 說了什麼、有多確定），主要證據從 2023–25 回測改成模型訓練之後才結算的 2025–26 總經預測市場。知識架構沿用 pmpol 的 L0–L5 分層：三個學派是 L3，每個預測都附推理證明和分析信心。開題的 Qwen2.5 adapter 沒有保存，所以改在 Qwen3-8B 上重新訓練，並新增用 SAE 看模型內部的 exp06。現在就能用 Claude Code 指揮 RunPod 開始試跑；有 11 件事要你和張老師決定。
 
 ## 畢業要求對設計的限制
 
@@ -46,21 +46,23 @@ exp01 和 exp03 是關鍵路徑：它們 12 月底前完成，才趕得上 IJCAI
 
 ## 論文架構
 
-論文收斂成三個研究問題，每個對應一個事先登記的實驗和一章。Stage 1–3 都還在，Stage 4 移到討論。暫定題目：*Macro-MOSAIC: Multi-School Language-Model Reasoning for Macroeconomic Event Analysis and Forecasting*。
+2026-11-01 確定的總問題：**語言模型 agent 能不能依照明確、彼此競爭的經濟理論推理，同時做到模型內部真的照理論運作、說出來的推理可以稽核、給出的機率值得信任**？三個研究問題從三個角度回答，共用同一個實驗設計（prompt／微調 × 單次生成／用真工具並附分層證明的本體論 agent）：RQ1 比較框架怎麼教進去，RQ2 比較有沒有真工具和證明，RQ3 把每一種組合都當成預測者來比。三個學派是深入研究的主要案例。Stage 1–3 都還在，Stage 4 移到討論。暫定題目：*Macro-MOSAIC: Multi-School Language-Model Reasoning for Macroeconomic Event Analysis and Forecasting*（要不要跟著改屬於 D2）。
 
-| RQ | 問題 | 證據 | 章 | 優先級 |
-| --- | --- | --- | --- | --- |
-| RQ1 | 微調能不能比最強的 prompting（few-shot CoT）更好地教會模型學派化推理？ | exp01 | 4 | P0 |
-| RQ2 | 用總經狀態找的歷史類比，預測資產反應是否比敘事相似度更準？ | exp02 | 5 | P1 |
-| RQ3 | 多學派合成的機率預測，在模型沒看過的真實結果上，是否勝過單一學派和 prompt 學派？是否校準、一致？ | exp03、exp04、exp05（可選） | 6 | P0／P1／P2 |
+| RQ | 角度 | 問題 | 證據 | 章 | 優先級 |
+| --- | --- | --- | --- | --- | --- |
+| RQ1 | 腦中在算什麼 | 微調能不能比最強的 prompting（few-shot CoT，含模型自己的 thinking 模式）更好地教會模型一個學派的框架？改變的是模型內部的概念，還是只有寫出來的用詞？ | exp01（已登記，不動）、exp06（SAE）、exp01b（27B 複驗） | 4 | P0／P1 |
+| RQ2 | 它說了什麼 | agent 必須用真工具查時點事實（L1）和歷史基準率（L2），並為每個預測寫分層證明時，它的推理能不能稽核、是不是忠實？證明是否有效、能否追溯到 L0–L4；引用的證據一改，結論會不會跟著改；證明裡宣稱的機制，模型內部有沒有真的激活？ | exp02（L2 工具的驗證）、exp07（新：證明有效性、反事實工具、證明步驟分類、SAE 證明忠實度） | 5 | P1 |
+| RQ3 | 它有多確定 | 把多個彼此競爭的框架的機率預測合起來，在模型訓練之後才結算的真實總經結果上，是否勝過單一框架和其他多樣性來源（人設、多模型、重複抽樣）？是否校準、一致？框架之間的分歧和分析信心，能不能事先指出哪些預測容易出錯？ | exp03（H1–H7，加 H8 多樣性來源）、exp04、exp05（可選） | 6 | P0／P1／P2 |
+
+決策模型（D8）是三個角度共用的量測工具，不另立問題：RQ1 當評審、RQ2 分類證明步驟、RQ3 在 exp05 當決策頭。口試必問的「這是推理還是詞彙？」，由證明、評審（決策模型和 Opus）、SAE 特徵三種獨立的工具回答。
 
 章節：
 
 1. 緒論：問題、三個 RQ、貢獻、和開題計畫的差異
-2. 背景與文獻：開題的 80 篇綜述，補上 LLM 預測、預測市場校準、一致性、知識蒸餾、歷史類比預測
-3. 資料：episode 資料庫、當時已知的總經狀態、預測市場題庫
-4. 學派 agent（Stage 2，RQ1）
-5. 歷史類比檢索（Stage 1，RQ2）
+2. 背景與文獻：開題的 80 篇綜述，補上 LLM 預測、預測市場校準、一致性、知識蒸餾、歷史類比預測、會用工具的 agent
+3. 資料與工具：episode 資料庫、當時已知的總經狀態、預測市場題庫、L0–L2 工具
+4. 把框架教進模型：學派 agent 和模型內部的改變（Stage 2，RQ1）
+5. 有根據、可稽核的 agent：真工具、分層證明、歷史類比檢索（Stage 1）、忠實度檢驗（RQ2）
 6. 從推理到校準的預測（Stage 3，RQ3）
 7. 討論：限制、配置應用（Stage 4）、AI 使用、PhD 方向
 8. 結論
@@ -69,10 +71,11 @@ exp01 和 exp03 是關鍵路徑：它們 12 月底前完成，才趕得上 IJCAI
 
 貢獻（措辭維持在這個強度，避免開題時被指出的過度宣稱）：
 
-1. 一份「當時已知」的總經事件資料庫，和一套用已結算預測市場建的、控制偷看的預測評估方法
-2. 微調與 prompting 在理論專屬推理上的對照證據，並附經人工驗證的 LLM 評審
-3. 一種用有統計依據的共變異數估計、且按時間順序評估的類比檢索方法
-4. 異質推理 agent 該不該合成的證據，以及考慮一致性的合成方法
+1. 一份「當時已知」的總經事件資料庫，和一套用已結算預測市場建的、控制偷看的預測評估方法（三個 RQ 共用）
+2. 微調與 prompting 在理論專屬推理上的對照證據，並附經人工驗證的 LLM 評審和 SAE 分析（RQ1）
+3. 一種用有統計依據的共變異數估計、且按時間順序評估的類比檢索方法，當作 agent 的 L2 工具（RQ2）
+4. 異質推理 agent 該不該合成的證據、考慮一致性的合成方法，以及理論多樣性是否比人設、多模型、重複抽樣更好的證據（RQ3）
+5. 依知識層級組織的設計（見下一節）：agent 用工具取得 L0–L2，每個預測附回溯到 L0–L4 的證明和分析信心，並檢驗證明是否忠實（RQ2、RQ3）
 
 ## 本體論分層：論文的知識架構
 
@@ -133,7 +136,7 @@ SAE 研究近年有不少負面結果（[Kantamneni 等，ICML 2025](https://arx
 
 ## 各實驗設計
 
-七個實驗都先在 dev 或校準資料上做；保留集只在你登記、凍結之後跑一次。exp01 已登記，其餘是草稿，完整規格在 repo 的 [prereg](https://github.com/Bellafc/macro-mosaic/tree/main/prereg) 和 [prereg\_drafts](https://github.com/Bellafc/macro-mosaic/tree/main/research/prereg_drafts)。
+八個實驗都先在 dev 或校準資料上做；保留集只在你登記、凍結之後跑一次。exp01 已登記，其餘是草稿，完整規格在 repo 的 [prereg](https://github.com/Bellafc/macro-mosaic/tree/main/prereg) 和 [prereg\_drafts](https://github.com/Bellafc/macro-mosaic/tree/main/research/prereg_drafts)。
 
 | 實驗 | 資料 | 保留集 | 主要假設 | 誰做 | 截止 |
 | --- | --- | --- | --- | --- | --- |
@@ -141,8 +144,9 @@ SAE 研究近年有不少負面結果（[Kantamneni 等，ICML 2025](https://arx
 | exp01 的 D 組（Opus 5.5） | 96 個 test 事件，只產生、不評分（修正案 3） | — | 參考組，不做假設檢定 | 你在自己電腦上跑，不需 GPU | 原始 prompt 和 test 事件一到就能跑 |
 | exp06 SAE 機制分析 | exp01 各組的輸出；探針文本（訓練軌跡、不含關鍵字的改寫） | 96 個 test 事件 | 概念特徵分數和評審相關；LoRA 的概念特徵高於 few-shot；LoRA 內部的他學派特徵較少 | agent 做 S0 關卡和選特徵，你登記並跑 test | 量尺 12/4；機制 1/17 |
 | exp01b 前沿複驗（Qwen3.5-27B） | 同 exp01，底座換成 Qwen3.5-27B；用它的對話版 SAE 複驗 exp06 | 96 個 test 事件 | 同 exp01 的 H1；另報告兩種底座的差距 | agent 做可行性測試和 dev，你跑 test | 測試 11/2；決定 11/20；結果 1/24 |
-| exp03 已結算總經市場 | Kalshi 經濟類 2025-05 起，加上當時已公布的總經資料（ALFRED 歷史版本） | 2026 年結算的事件 | 等權合成的 RPS 低於最佳單一學派；另檢定微調學派勝過 prompt 學派、分歧和信心能否預示誤差 | agent 建資料，你登記並跑 test | 登記 11/25；結果 12/20 |
-| exp02 歷史類比檢索 | 141 個事件，只用當時已知的資料；敘事改成只寫觸發當下（避免事後描述洩漏結果） | 2005 年以後的事件 | Mahalanobis 勝過 Euclidean（History Rhymes 的做法） | agent 做 dev，你跑 test | 1/31 |
+| exp03 已結算總經市場 | Kalshi 經濟類 2025-05 起，加上當時已公布的總經資料（ALFRED 歷史版本） | 2026 年結算的事件 | 等權合成的 RPS 低於最佳單一學派；另檢定微調學派勝過 prompt 學派、分歧和信心能否預示誤差，以及理論多樣性是否勝過人設、多模型、重複抽樣（H8） | agent 建資料，你登記並跑 test | 登記 11/25；結果 12/20 |
+| exp02 歷史類比檢索（agent 的 L2 工具） | 141 個事件，只用當時已知的資料；敘事改成只寫觸發當下（避免事後描述洩漏結果） | 2005 年以後的事件 | Mahalanobis 勝過 Euclidean（History Rhymes 的做法） | agent 做 dev，你跑 test | 1/31 |
+| exp07 有根據的 agent 是否忠實（新，RQ2） | 開發集和 2025 年以前的歷史事件；A-agent、C-agent 的工具軌跡 | 不需要：不用結果資料，也不碰 exp03 測試期 | 證明有效、能追溯到 L0–L4；改掉一個工具結果（L1 數據或 L2 類比）時，相關步驟和預測會跟著改；證明宣稱的機制在模型內部有對應的特徵 | agent 做，你登記 | 跑之前登記（P1） |
 | exp04 一致性 | exp03 的 CPI 月增／年增、FOMC 題 | 2026 年的事件 | 合成比單一學派更一致；投影到一致集合後分數變好 | agent → 你 | 2/7 |
 | exp05 即時前瞻（可選） | 每週對還沒結算的市場預測，含 Opus 5.5，以及只用 prompt 的 Qwen3.8-27B、Gemma 4 31B | 全部 | 描述性（樣本小） | 你 12/1 決定做不做 | 3/31 |
 
@@ -150,7 +154,7 @@ SAE 研究近年有不少負面結果（[Kantamneni 等，ICML 2025](https://arx
 
 ## 口試問題對照
 
-外審最可能問的 19 個問題，現在每一個都有對應的實驗或明說的限制。第一題就是開題時教授問過的。
+外審最可能問的 21 個問題，現在每一個都有對應的實驗或明說的限制。第一題就是開題時教授問過的。
 
 | 可能的問題 | 答案在哪裡 |
 | --- | --- |
@@ -163,6 +167,8 @@ SAE 研究近年有不少負面結果（[Kantamneni 等，ICML 2025](https://arx
 | 模型扮演一個學派時，內部發生了什麼？ | exp06 的特徵卡片（對到 L3 條目）；內部污染（S-H3） |
 | 為什麼要好幾個學派？合成有用嗎？ | exp03 H1、exp04 H1 |
 | 學派意見相反時怎麼辦？ | 本體論 L3 規則：並列、不選邊；exp03 H6 檢驗分歧能否預示誤差 |
+| agent 的解釋是真的照著推理，還是事後編的故事？ | exp07：反事實工具結果（行為）、SAE 證明忠實度（模型內部）、證明有效性（Proof.check） |
+| 理論多樣性比其他多樣性來源（人設、多模型、重複抽樣）好嗎？ | exp03 H8，集成大小相同 |
 | 單一個預測可以信多少？看得懂它怎麼來的嗎？ | 每個預測的推理證明（回溯到 L0–L4）和分析信心；exp03 H7 檢驗信心是否有用 |
 | 模型會不會早就看過答案？ | 只用模型釋出後才結算的市場（Qwen3-8B：2025-05 起）；只用當時已知的資料；訓練種子事件的日期稽核；可選的 exp05 |
 | 結果在統計上可靠嗎？ | 事先登記、以事件為單位重抽樣、Holm 校正 |
