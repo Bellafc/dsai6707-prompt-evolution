@@ -1,6 +1,6 @@
 ---
 title: "Evolving a Set of Competing Economic-School Prompts: NSGA-II with LLM-Guided Mutation"
-author: "[Student name], DSAI6707 Advanced Computational Intelligence, PolyU"
+author: "Alexander JIANG, Futian (25084392R), DSAI6707 Advanced Computational Intelligence, PolyU"
 date: "November 2026"
 bibliography: references.bib
 link-citations: true

@@ -1,7 +1,7 @@
 # DSAI6707 project submission: index
 
 Project: Multi-objective evolution of a prompt set for three competing economic-school LLM agents (NSGA-II with LLM-guided mutation).
-Student: [name] | Course: DSAI6707 Advanced Computational Intelligence
+Student: Alexander JIANG, Futian (25084392R) | Course: DSAI6707 Advanced Computational Intelligence
 
 | Required deliverable (README §2 / Project PDF §7) | Path in this archive |
 |---|---|
