@@ -179,3 +179,29 @@ def test_scenario_placeholder_and_multi_ref_proof_steps():
     ungrounded = FINAL.replace("- L1 [{ind}]:", "- L1 [{ind}] and [VIX]:")  # VIX was not requested
     turns, _ = api.converse(job, fake_send(ungrounded))
     assert "proof cites an indicator the tool did not return: VIX" in teacher.check_v4(item, turns, EpisodeTable.load())[0]
+
+
+def test_proof_refs_joined_in_one_bracket_are_split():
+    item = teacher.make_items(1)[0]
+    job = {"body": {"model": "x", "messages": teacher.teacher_messages_v4(item, teacher.load_templates()),
+                    "tools": teacher.TOOL_SPECS}, "backdrop": item.event.macro_context}
+    joined = FINAL.replace("- L1 [{ind}]:", "- L1 [{ind}, US CPI inflation y/y (%)]:")
+    turns, _ = api.converse(job, fake_send(joined))
+    assert teacher.check_v4(item, turns, EpisodeTable.load())[0] == []
+    turns, _ = api.converse(job, fake_send(FINAL.replace("- L1 [{ind}]:", "- L1 [{ind}, VIX]:")))
+    assert "proof cites an indicator the tool did not return: VIX" in teacher.check_v4(item, turns, EpisodeTable.load())[0]
+
+
+def test_proof_ref_variants_and_scenario_layout_seen_in_pilot_v4():
+    assert teacher.normalize("S1 (contained recap): growth down, inflation flat: 0.38") == \
+        "S1 (contained recap; growth down, inflation flat): 0.38"
+    item = teacher.make_items(1)[0]
+    job = {"body": {"model": "x", "messages": teacher.teacher_messages_v4(item, teacher.load_templates()),
+                    "tools": teacher.TOOL_SPECS}, "backdrop": item.event.macro_context}
+    variants = ["- L1 [{ind} 5.1 vs US CPI inflation y/y (%) 3.2]:", "- L1 [{ind} / US CPI inflation y/y (%)]:",
+                "- L1 {ind}:"]
+    for v in variants:
+        turns, _ = api.converse(job, fake_send(FINAL.replace("- L1 [{ind}]:", v)))
+        assert teacher.check_v4(item, turns, EpisodeTable.load())[0] == [], v
+    turns, _ = api.converse(job, fake_send(FINAL.replace("- L1 [{ind}]:", "- L1 [US 2s10s spread (bp)]:")))
+    assert any("2s10s" in p for p in teacher.check_v4(item, turns, EpisodeTable.load())[0])

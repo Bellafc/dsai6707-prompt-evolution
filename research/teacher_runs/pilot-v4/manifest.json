@@ -1,0 +1,12 @@
+{
+ "n_per_school": 20,
+ "seed": 0,
+ "model": "qwen3.8-max",
+ "requests": 60,
+ "prompt_version": 4,
+ "items_version": 3,
+ "episodes": {
+  "source": "stand-in table v1 (orchestrator draft, human check pending)",
+  "sha256": "058b9fc78b1c0335eb8ade255d960decd8db67cfc32f4ac7976b08a7fdf1a82c"
+ }
+}

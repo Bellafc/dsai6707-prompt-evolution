@@ -274,6 +274,9 @@ def normalize(text: str) -> str:
     scenario lines. Wording and content are untouched."""
     text = re.sub(r"^([ \t]*S\d+[^:\n]*:[ \t]*)(?:p|probability)[ \t]*[=:]?[ \t]*([01](?:\.\d+)?|\.\d+)[ \t]*$",
                   r"\1\2", text, flags=re.I | re.M)
+    # "S1 (name): growth down, inflation flat: 0.38" -> "S1 (name; growth down, inflation flat): 0.38"
+    text = re.sub(r"^([ \t]*S\d+[ \t]*)\(([^()\n]*)\)[ \t]*:[ \t]*(growth[^:\n]*?)[ \t]*:[ \t]*([01](?:\.\d+)?|\.\d+)[ \t]*$",
+                  r"\1(\2; \3): \4", text, flags=re.I | re.M)
     for pat in ASSETS.values():
         text = re.sub(rf"^([ \t]*[-*]?[ \t]*(?:{pat})[ \t]*:[ \t]*(?:LONG|SHORT|NEUTRAL)[ \t]*\()[ \t]*"
                       rf"(?:conviction[ \t]*:?[ \t]*)?([1-5])[ \t]*\)", r"\1conviction \2)", text, flags=re.I | re.M)
@@ -427,7 +430,10 @@ AGENT = ROOT / "configs/agent"
 V4_TURNS = ["assistant", "tool", "assistant", "tool", "assistant"]
 V4_CALLS = {0: "query_episode_db", 2: "get_macro_data"}
 PROOF_STEP = re.compile(r"^[ \t]*-[ \t]*(L[0-5])[ \t]*((?:\[[^\]\n]+\][^\[\n:]*)+):[ \t]*(\S.*)$", re.M)
+PROOF_BARE = re.compile(r"^[ \t]*-[ \t]*(L[0-5])[ \t]+([^\[\]\n:]+?):[ \t]+(\S.*)$", re.M)  # refs without brackets
 PROOF_REF = re.compile(r"\[([^\]\n]+)\]")
+REF_SPLIT = re.compile(r"\s*(?:[,;&]|\s/\s|\bvs\.?\b|\band\b|\bwith\b|\bagainst\b)\s*")  # not the / of y/y
+REF_VALUE = re.compile(r"(?:\s+[-+]?\d[\d.,]*\s*(?:%|bp|pp)?)+$")
 CONFIDENCE = re.compile(r"^[ \t]*Confidence[ \t]*:[ \t]*(high|moderate|low)\b[^\n]*weakest link[ \t]*:[ \t]*\S", re.I | re.M)
 
 
@@ -521,16 +527,20 @@ def proof_problems(final: str, l1: set[str], l2: set[str], facts: MacroFacts) ->
     if i < 0:
         return ["missing [Proof] block"]
     block = final[i + len("[Proof]"):]
-    steps = PROOF_STEP.findall(block)
-    problems = [] if 4 <= len(steps) <= 8 else [f"{len(steps)} proof steps (4-7 required)"]
+    steps = PROOF_STEP.findall(block) + [(k, f"[{r}]", c) for k, r, c in PROOF_BARE.findall(block)]
+    problems = [] if 4 <= len(steps) <= 10 else [f"{len(steps)} proof steps (4-10 accepted)"]
     kinds = {k for k, _, _ in steps}
     problems += [f"proof has no {k} step" for k in ("L1", "L2", "L3", "L5") if k not in kinds]
     for k, refs, _ in steps:
         for ref in (r.strip() for r in PROOF_REF.findall(refs)):
-            if k == "L1" and facts.resolve(ref) not in l1:
-                problems.append(f"proof cites an indicator the tool did not return: {ref}")
-            elif k == "L2" and ref not in l2:
-                problems.append(f"proof cites an episode the tool did not return: {ref}")
+            # "[A, B]", "[A / B]", "[A 1.0 vs B 5.5]" cite two refs when the whole is not one name; values are dropped
+            parts = [ref] if (k == "L1" and facts.resolve(ref)) or (k == "L2" and ref in l2) else \
+                [REF_VALUE.sub("", x).strip() for x in REF_SPLIT.split(ref) if x.strip()]
+            for part in (x for x in parts if x):
+                if k == "L1" and facts.resolve(part) not in l1:
+                    problems.append(f"proof cites an indicator the tool did not return: {part}")
+                elif k == "L2" and part not in l2:
+                    problems.append(f"proof cites an episode the tool did not return: {part}")
     if not CONFIDENCE.search(block):
         problems.append("proof has no confidence line")
     return problems

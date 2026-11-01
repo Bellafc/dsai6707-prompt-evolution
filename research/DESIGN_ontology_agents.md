@@ -54,10 +54,14 @@ the cut-off date) and RQ2 still rests on exp07 and exp02.
 
 The three trained schools stay the deep case; the ontology makes them one instance of a general architecture.
 
+Implementation note (2026-11-01): L0 is passed in the task prompt (exp03 already passes the scenario set), not
+through a `get_rules` tool; RQ2 names the L1 and L2 tools only. The tools are in `src/mosaic/tools.py`, the L2 stand-in
+table in `configs/tools/episodes_standin.toml`.
+
 ## 3. Architecture
 
 ```
-L0 rules ─────────► get_rules(event)        release grids, FOMC step sizes, resolution rules (pmpol propositions)
+L0 rules ─────────► in the task prompt       release grids, FOMC step sizes, resolution rules (pmpol propositions)
 L1 facts (as of t) ► get_macro_data(names)  ALFRED vintages known at t (exp03_context, pmpol known_at)
 L2 base rates ─────► query_episode_db(q)    analog episodes (Stage 1 / exp02), historical distributions
 L3 frameworks ─────► one agent per framework: 3 trained schools (LoRA) + prompted frameworks (below)
