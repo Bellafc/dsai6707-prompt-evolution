@@ -205,7 +205,29 @@ def main(argv: list[str] | None = None) -> int:
     te.add_argument("--out", default="data/trajectories")
     te.add_argument("--fake", action="store_true", help="offline dry run with the fake backend")
 
+    tx = sub.add_parser("teacher-export", help="teacher requests for a hosted API run by the human (Batch format)")
+    tx.add_argument("--n", type=int, required=True, help="trajectories requested per school")
+    tx.add_argument("--seed", type=int, default=0)
+    tx.add_argument("--model", default="qwen3.8-max", help="model id written into the requests (overridable later)")
+    tx.add_argument("--out", required=True, help="jobs directory, e.g. research/teacher_jobs/pilot")
+    ti = sub.add_parser("teacher-import", help="validate a hosted-API run and write the training files")
+    ti.add_argument("--jobs", required=True, help="jobs directory with manifest.json")
+    ti.add_argument("--results", default=None, help="default: <jobs>/results.jsonl")
+    ti.add_argument("--out", default="data/trajectories")
+
     a = ap.parse_args(argv)
+    if a.cmd in ("teacher-export", "teacher-import"):
+        import json
+        from pathlib import Path
+
+        from mosaic import teacher
+
+        if a.cmd == "teacher-export":
+            print(f"{teacher.export_jobs(a.n, a.seed, a.model, Path(a.out))} requests written to {a.out}")
+        else:
+            res = Path(a.results) if a.results else Path(a.jobs) / "results.jsonl"
+            print(json.dumps(teacher.import_results(Path(a.jobs), res, Path(a.out)), indent=1))
+        return 0
     if a.cmd == "teacher":
         import json
         from pathlib import Path

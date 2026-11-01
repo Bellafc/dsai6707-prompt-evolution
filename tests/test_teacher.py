@@ -82,3 +82,29 @@ def test_generate_writes_the_data_contract_with_inference_prompts(tmp_path):
     assert rec["messages"][:2] == inference  # training prompt == arm A/C prompt at inference
     rej = json.loads((tmp_path / "rejects.jsonl").read_text().splitlines()[0])
     assert any("leakage" in p for p in rej["problems"])
+
+
+def test_export_and_import_round_trip_for_a_hosted_api_run(tmp_path):
+    jobs, out = tmp_path / "jobs", tmp_path / "out"
+    assert teacher.export_jobs(3, 0, "qwen-test", jobs) == 9
+    reqs = [json.loads(x) for x in (jobs / "requests.jsonl").read_text().splitlines()]
+    assert reqs[0]["url"] == "/v1/chat/completions" and reqs[0]["body"]["model"] == "qwen-test"
+    lines = [{"custom_id": r["custom_id"], "model": "qwen-test", "content": GOOD} for r in reqs[:-2]]
+    lines.append({"custom_id": reqs[-2]["custom_id"],  # OpenAI Batch output shape, with a reasoning block
+                  "response": {"body": {"model": "qwen-test", "choices": [{"message": {"content": "<think>x</think>"
+                                                                                       + GOOD}}]}}})
+    (jobs / "results.jsonl").write_text("".join(json.dumps(x) + "\n" for x in lines))
+    counts = teacher.import_results(jobs, jobs / "results.jsonl", out)
+    assert counts["missing"] == 1 and counts["rejected"] == 1 and sum(counts[s] for s in teacher.SCHOOLS) == 8
+    assert json.loads((out / "austrian.jsonl").read_text().splitlines()[0])["teacher"] == "qwen-test"
+
+
+def test_import_refuses_a_claude_teacher(tmp_path):
+    import pytest
+
+    jobs = tmp_path / "jobs"
+    teacher.export_jobs(1, 0, "qwen-test", jobs)
+    (jobs / "results.jsonl").write_text(json.dumps({"custom_id": "keynesian|syn-k0000", "model": "claude-x",
+                                                    "content": GOOD}) + "\n")
+    with pytest.raises(SystemExit, match="Claude"):
+        teacher.import_results(jobs, jobs / "results.jsonl", tmp_path / "out")

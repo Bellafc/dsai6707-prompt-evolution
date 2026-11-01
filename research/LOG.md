@@ -345,3 +345,14 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   後可以重組訊息，不必重新產生。
 - 107 個事件模板和三個學派的設定是依開題報告第 4.2.1 節重建的，請在完整生成（每學派 500 條）前看一下
   `configs/teacher/templates.toml` 和試產樣本 `research/teacher_pilot/`。
+
+### 2026-11-01 — infra: teacher run through a hosted API, by the human
+- decision (human): no 2 × H200 pod for the teacher; the human runs it through a hosted OpenAI-compatible API on
+  their own account (cheaper than renting GPUs for one batch), then commits the results.
+- change: `scripts/teacher_api.py` (standard library only: writes the requests itself with `--n`, sends them with
+  `--workers` in parallel, resumable, refuses Claude model ids), `mosaic teacher-export` / `teacher-import`
+  (`export_jobs`, `import_results`: OpenAI Batch request format; replies validated with the same Change 5 filters,
+  reasoning blocks stripped, Claude teachers refused). End-to-end checked against a local stub API; 59 offline
+  tests pass.
+- next: the human runs the pilot (`--n 20`) and commits `research/teacher_runs/pilot/{manifest.json,results.jsonl}`;
+  the orchestrator imports, checks keep rates and writes the samples for review.
