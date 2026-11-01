@@ -64,6 +64,8 @@ def test_validate_and_leakage_filter():
     assert any("sum to" in p for p in teacher.validate(GOOD.replace("S3 (stagflation): 0.2", "S3 (x): 0.4")))
     assert teacher.leaks("as in March 2025 and in 2019") == []
     assert teacher.leaks("since June 2025") and teacher.leaks("by 2026") and teacher.leaks("in 2025 overall")
+    assert teacher.leaks("analog episodes before 2025, pre-2025 cycles, prior to 2025") == []  # the boundary itself
+    assert teacher.leaks("before 2026") and teacher.leaks("after 2025")
 
 
 def test_generate_writes_the_data_contract_with_inference_prompts(tmp_path):
