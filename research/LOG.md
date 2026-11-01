@@ -469,3 +469,19 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   size, H8 (pool-eq beats each of them), agent arms as secondary systems with a cut-off date (2026-12-10).
 - decision needed (human): the personas' wording, the two extra open models and their licences, F-H1 to F-H4 and the
   counterfactual shifts; both drafts are registered by the human.
+
+### 2026-11-01 — merge of the reference session; deviation protocol; two deviations logged
+- change: the reference session's branch (`claude/fervent-pascal-hzleuz`: AI-assisted Ch. 2–3 drafts, verified
+  bibliographies, `research/thesis_drafts/`) merged into the session branch (ledger conflict resolved by keeping all
+  rows in date order); that session now works only on references. The deviation protocol the human asked for ("runs
+  will differ from the plan; adjust promptly") is now THESIS_DESIGN §6, program.md rule 14 (with a `deviation:` line
+  in the log format) and ORCHESTRATOR rule 7. THESIS_DESIGN §5 gains the tool layer, teacher v4, Task A, exp07, the
+  H8 pools and the 12-10 agent-arm cut-off.
+- deviation: exp03 counts / the 2026-10-31 Task 2 entry says 149 questions, 58 calibration and 91 test, while the
+  committed `research/exp03_data_card.md` sums to 51 and 98 (total 149 in both) / affects the calibration-size
+  statements (design note §4a, now "51 by the data card") and the exp03 registration / recount with `mosaic exp03
+  card` on the next pod that mounts the network volume (the data live there) and correct whichever is wrong.
+- deviation: Task S hand-off (2026-10-31) said `mosaic doctor` found the original prompts in place, but
+  `configs/prompts/*.txt` still start with the PLACEHOLDER line / the arm A/C prompts are missing, so the v4 records
+  carry placeholder system prompts / the records are rebuilt from the stored conversations once the human commits the
+  originals (`mosaic teacher-import` again); `mosaic doctor`'s placeholder check should be verified on the next pod.

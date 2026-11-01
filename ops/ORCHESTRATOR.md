@@ -33,6 +33,11 @@ you (cloud session) ──REST──▶ RunPod pod ──▶ scripts/pod_bootstr
 6. **Pushing.** You push your session branch with `git push` (human decision 2026-11-01; `Bash(git push*)` left
    `.claude/settings.json`). Pods still cannot push: `runpod.POD_DENY` is passed to their sessions by
    `scripts/autoresearch.sh`, and only `scripts/pod_bootstrap.sh` pushes their `agent/...` branch.
+7. **Plan vs. reality.** When you summarise a pod's branch, read its `deviation:` lines and check its results
+   against the plan (THESIS_DESIGN §5, the drafts, the backlog). Bring each deviation that needs the human to the
+   human in the same turn, with a recommendation, and apply the agreed adjustment in one pull request across
+   THESIS_DESIGN, the backlog, the drafts, the design note and both versions of the Chinese design document.
+   Registered experiments change only through amendments the human registers (THESIS_DESIGN §6).
 
 ## Commands (run `pip install -e .` once per session)
 
