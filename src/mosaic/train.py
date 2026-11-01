@@ -7,6 +7,11 @@ reply plus the end-of-turn token. Labels are -100 on the prompt, so loss is on a
 exactly the token sequence that inference continues from.
 
 PEFT + the transformers Trainer are used (TRL's SFTTrainer adds nothing once masking is explicit).
+
+Agent records (C-agent; a `tools` field and several assistant turns) give one example per assistant turn: the prompt
+is what the agent loop (`mosaic.agent`) sends at that turn, i.e. the conversation so far rendered with the tools and
+`add_generation_prompt=True`; the completion is the turn as the Qwen chat template writes it (content, then a
+<tool_call> block per call) plus the end token. Tool results only ever appear in prompts, so they carry no loss.
 """
 
 from __future__ import annotations
@@ -45,18 +50,90 @@ def encode_example(tok, messages: list[dict], *, max_len: int = RECIPE["max_len"
     return {"input_ids": ids, "labels": [IGNORE] * len(prompt_ids) + list(comp_ids), "attention_mask": [1] * len(ids)}
 
 
-def load_conversations(path: str | Path) -> list[list[dict]]:
+def render_assistant(turn: dict) -> str:
+    """An assistant turn as the Qwen3 chat template writes it: the content, then one <tool_call> block per call
+    (a newline between blocks, and after non-empty content)."""
+    content = turn.get("content") or ""
+    out = content
+    for i, c in enumerate(turn.get("tool_calls") or []):
+        fn = c.get("function", c)
+        args = fn.get("arguments", {})
+        args = args if isinstance(args, str) else json.dumps(args, ensure_ascii=False)
+        if i > 0 or content:
+            out += "\n"
+        out += '<tool_call>\n{"name": "' + fn["name"] + '", "arguments": ' + args + '}\n</tool_call>'
+    return out
+
+
+def _ids(x) -> list[int]:
+    if isinstance(x, dict) or hasattr(x, "input_ids"):  # transformers 5 may return a mapping
+        x = x["input_ids"]
+    return list(x)
+
+
+def encode_agent_example(tok, messages: list[dict], *, tools: list[dict], max_len: int = RECIPE["max_len"],
+                         template_kwargs: dict | None = None, end_token: str | None = None,
+                         check_template: bool = False) -> list[dict]:
+    """One {input_ids, labels, attention_mask} per assistant turn (see the module docstring), or [] if any of them is
+    longer than max_len (the conversation is dropped whole). With check_template, the turn rendered by the tokenizer's
+    own template must end with the completion built here, so a template the renderer does not match fails loudly."""
+    end = end_token if end_token is not None else tok.eos_token
+    kw = dict(template_kwargs or {})
+    out = []
+    for k, m in enumerate(messages):
+        if m["role"] != "assistant":
+            continue
+        prompt_ids = _ids(tok.apply_chat_template(messages[:k], tools=tools, add_generation_prompt=True,
+                                                  tokenize=True, **kw))
+        completion = render_assistant(m)
+        if check_template:
+            full = tok.apply_chat_template(messages[:k + 1], tools=tools, tokenize=False, **kw)
+            if not full.rstrip().endswith((completion + end).rstrip()):
+                raise ValueError(f"the chat template renders assistant turn {k} differently from render_assistant")
+        comp_ids = _ids(tok(completion + end, add_special_tokens=False))
+        ids = prompt_ids + comp_ids
+        if len(ids) > max_len:
+            return []
+        out.append({"input_ids": ids, "labels": [IGNORE] * len(prompt_ids) + comp_ids, "attention_mask": [1] * len(ids)})
+    return out
+
+
+def load_records(path: str | Path) -> list[dict]:
+    """Training records: {"messages": [...], "tools": [...] (agent format only)}."""
     out = []
     with open(path, encoding="utf-8") as f:
         for line in f:
             if not line.strip():
                 continue
             r = json.loads(line)
-            if "messages" in r:
-                out.append(r["messages"])
-            else:
-                out.append([{"role": "user", "content": r["prompt"]}, {"role": "assistant", "content": r["response"]}])
+            if "messages" not in r:
+                r = {"messages": [{"role": "user", "content": r["prompt"]},
+                                  {"role": "assistant", "content": r["response"]}]}
+            out.append(r)
     return out
+
+
+def load_conversations(path: str | Path) -> list[list[dict]]:
+    return [r["messages"] for r in load_records(path)]
+
+
+def encode_records(tok, records: list[dict], *, max_len: int, template_kwargs: dict | None,
+                   check_template: bool = False) -> tuple[list[dict], int]:
+    """(examples, conversations dropped as too long). Agent records give one example per assistant turn."""
+    rows, dropped = [], 0
+    for i, r in enumerate(records):
+        if r.get("tools"):
+            ex = encode_agent_example(tok, r["messages"], tools=r["tools"], max_len=max_len,
+                                      template_kwargs=template_kwargs, check_template=check_template and i < 3)
+            rows += ex
+            dropped += not ex
+        else:
+            e = encode_example(tok, r["messages"], max_len=max_len, template_kwargs=template_kwargs)
+            if e:
+                rows.append(e)
+            else:
+                dropped += 1
+    return rows, dropped
 
 
 def collate(batch: list[dict], pad_id: int) -> dict:
@@ -81,9 +158,9 @@ def train(*, base: str, data: str, out: str, template_kwargs: dict | None = None
     from transformers import (AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments)
 
     tok = AutoTokenizer.from_pretrained(base)
-    convs = load_conversations(data)
-    rows = [e for e in (encode_example(tok, c, max_len=max_len, template_kwargs=template_kwargs) for c in convs) if e]
-    dropped = len(convs) - len(rows)
+    records = load_records(data)
+    rows, dropped = encode_records(tok, records, max_len=max_len, template_kwargs=template_kwargs,
+                                   check_template=True)
     if not rows:
         raise SystemExit("no trainable examples")
     kw: dict = {"dtype": torch.bfloat16}
@@ -115,7 +192,8 @@ def train(*, base: str, data: str, out: str, template_kwargs: dict | None = None
     res = trainer.train()
     secs = time.time() - t0
     model.save_pretrained(out)
-    info = {"base": base, "data": str(data), "examples": len(rows), "dropped_too_long": dropped,
+    info = {"base": base, "data": str(data), "conversations": len(records), "examples": len(rows),
+            "dropped_too_long": dropped,
             "steps": trainer.state.global_step, "train_loss": res.training_loss, "seconds": round(secs, 1),
             "peak_mem_gib": round(torch.cuda.max_memory_allocated() / 2**30, 1), "bits": bits,
             "template_kwargs": template_kwargs or {}, "recipe": RECIPE}
