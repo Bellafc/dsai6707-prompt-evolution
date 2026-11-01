@@ -1,5 +1,7 @@
 <!--
-AI-ASSISTED DRAFT. Written by Claude (Claude Code session, 2026-10-31) at the author's request. Logged in
+AI-ASSISTED DRAFT. Written by Claude (Claude Code session, 2026-10-31; revised 2026-11-01 for the three research
+questions adopted that day: Sections 2.1, 2.3.4, 2.4.6, 2.5.4, 2.6.3, 2.9 and 2.10 are new or rewritten) at the
+author's request. Logged in
 research/AI_USE_LEDGER.md. PolyU's Student Guide on the Use of GenAI requires AI-generated material to be
 identified and the student to be accountable; THESIS_DESIGN §6 says thesis prose is the author's. Treat this
 file as a scaffold: read every paragraph against the cited paper, then rewrite it in your own words. Every
@@ -7,25 +9,45 @@ citation key refers to research/thesis_drafts/references/*.bib; CITATION_VERIFIC
 the primary source it was checked against and its status (no key in this file is unverified; eleven entries
 carried over from the Confirmation bibliography are marked as not re-fetched). Where this chapter condenses the
 Confirmation report's survey (Chapter 2 of the report), the Confirmation is the source and its citations are
-reused. Descriptions of papers are from their abstracts and primary pages as read on 2026-10-31; re-read a paper
-before quoting any number from it.
+reused. Descriptions of papers are from their abstracts and primary pages as read on 2026-10-31 and 2026-11-01;
+re-read a paper before quoting any number from it.
 -->
 
 # Chapter 2. Background and literature
 
 ## 2.1 Scope and organisation
 
-The thesis sits at the meeting point of four literatures that rarely cite one another: the history and
-methodology of macroeconomic thought, which supplies the three "schools" the system reasons with; the
-engineering of large language models (LLMs) as agents and the methods for adapting them to a task or a persona;
-the statistics of probabilistic forecasting, its scoring, calibration, combination and coherence; and the
-evaluation of forecasts against prediction markets and human forecasters. A fifth, younger literature on the
-interpretability of language models supplies the instrument with which Chapter 4 looks inside the school
-agents. This chapter reviews each in turn, at the depth the design decisions of Chapter 3 require, and closes
-with the gaps the thesis addresses. The survey of LLM agents in finance written for the Confirmation of
-Registration (its Chapter 2) is condensed in Section 2.3; the reader is referred to it for the full taxonomy of
-agent architectures and application domains. Section 2.x (Related work) then positions the thesis against the
-closest individual systems.
+The thesis asks whether language-model agents can reason through explicitly contested economic theories in a way
+that is theory-driven inside the model, auditable in what they say and calibrated in how sure they are. Each of
+these three angles draws on literatures that rarely cite one another. The history and methodology of
+macroeconomic thought supplies the contested frameworks themselves (Section 2.2). The engineering of large
+language models (LLMs) as agents supplies the architecture: agents in finance and economics, and tool use and
+grounding (Section 2.3); and the methods for instilling a framework, from prompting and fine-tuning to training
+agents on their own verified behaviour (Section 2.4). The measurement of reasoning, from lexicons and LLM judges
+to sparse autoencoders, and the literature on whether a model's explanations are faithful to its computation,
+supply the instruments of the first two angles (Section 2.5). The statistics of probabilistic forecasting,
+including the sources of diversity that make combination work, and the evaluation of forecasts against prediction
+markets and human forecasters supply the third (Sections 2.6 and 2.7). Analogue forecasting with point-in-time
+data supplies the agents' base-rate evidence (Section 2.8), and knowledge engineering, data provenance and the
+analytic standards of intelligence analysis supply the knowledge-layer ontology that types every input and output
+(Section 2.9). Table 2.1 maps the sections to the research questions. The chapter reviews each literature at the
+depth the design decisions of Chapter 3 require and closes with the gaps the thesis addresses (Section 2.10). The
+survey of LLM agents in finance written for the Confirmation of Registration (its Chapter 2) is condensed in
+Section 2.3; the reader is referred to it for the full taxonomy of agent architectures and application domains.
+Section 2.x (Related work) then positions the thesis against the closest individual systems.
+
+**Table 2.1.** Where each research question draws on this chapter.
+
+| Section | RQ1: inside the model | RQ2: what the agent says | RQ3: how sure |
+|---|---|---|---|
+| 2.2 Schools as contested frameworks | the frameworks instilled | the L3 entries that proofs cite | the members of the pool |
+| 2.3 Agents; tool use and grounding | | real tools, attribution (2.3.4) | leakage in evaluation (2.3.3) |
+| 2.4 Instilling a reasoning style | prompting versus fine-tuning (2.4.1 to 2.4.5) | training agents beyond imitation (2.4.6) | |
+| 2.5 Measuring reasoning; faithfulness | lexicons, judges, sparse autoencoders (2.5.1 to 2.5.3) | faithfulness (2.5.4) | |
+| 2.6 Scoring, calibration, combination, coherence | | | sources of diversity (2.6.3), coherence (2.6.4) |
+| 2.7 Markets and forecasters as benchmarks | | | the benchmark and its pitfalls |
+| 2.8 Analogues and point-in-time data | | the L1 and L2 tools | the information set |
+| 2.9 Knowledge layers, provenance, analytic standards | | proofs as provenance records | analytic confidence |
 
 ## 2.2 Schools of macroeconomic thought as contested frameworks
 
@@ -147,12 +169,33 @@ period \citep{lopezlira2025memorization}. The thesis therefore takes its outcome
 different literature, the forecasting of resolvable questions on prediction markets (Section 2.7), and ties the
 evaluation window to the release date of the model under test.
 
+### 2.3.4 Tool use and grounding
+
+The agents reviewed so far mostly read what the prompt gives them. A second line of work lets the model act.
+ReAct interleaves reasoning traces with actions that query an external source, and reads the results back before
+continuing \citep{yao2023react}. Toolformer trains a model to decide for itself which application programming
+interface to call, with which arguments, and how to use the result \citep{schick2023toolformer}.
+Retrieval-augmented generation conditions generation on documents retrieved from a non-parametric memory rather
+than on the model's parameters alone \citep{lewis2020retrieval}. Tool use has since been scaled to thousands of
+real interfaces with instruction-tuning data built for them \citep{qin2024toolllm} and surveyed as a field of its
+own \citep{qin2025tool,wang2024survey}, and benchmarks have turned it into a measurable skill: whether a function
+call is well formed and correct can be checked by matching its abstract syntax tree rather than its text
+\citep{patil2024gorilla,patil2025bfcl}, and agents that complete a task once often fail on a repeat of the same
+task, so that reliability has to be measured over repeated trials \citep{yao2025taubench}. Two findings shape the
+thesis. Tool-augmented models hallucinate, and their main failure is misjudging whether a task can be solved with
+the tools at hand \citep{zhang2024toolbehonest}. And an answer that cites
+sources is not thereby supported by them, so attribution must itself be evaluated, statement by statement,
+against the source cited \citep{rashkin2023measuring,gao2023enabling}. The Confirmation's school agents had tools
+in name only: their trajectories contained tool calls whose results the model wrote itself. The thesis gives the
+agents real tools whose results are typed facts of the knowledge layers (Section 2.9), and evaluates their
+citations of those results (Chapter 5).
+
 ## 2.4 Adapting language models to a reasoning style
 
 The school agents must reason *as* a school. There are two broad ways to make a language model do this:
 condition it at inference time (prompting) or change its weights (fine-tuning). The literature on each is
 large; this section reviews what is known about their relative merits for instilling a style of reasoning, as
-opposed to a task skill.
+opposed to a task skill, and then a third way, training an agent on its own verified behaviour (Section 2.4.6).
 
 ### 2.4.1 Prompting: demonstrations, chains of thought and roles
 
@@ -167,7 +210,7 @@ best understood as role-players sampling from a space of characters the training
 an extended, hidden chain of thought before its answer; Qwen3 unifies thinking and non-thinking modes in one
 model with a controllable thinking budget \citep{yang2025qwen3}. For the thesis this matters in two ways. The
 strongest prompting baseline must include demonstrations, a chain of thought and the model's own thinking
-mode, or the comparison with fine-tuning is unfair (Section 3.5.3). And the role-play framing predicts a
+mode, or the comparison with fine-tuning is unfair (Section 3.7.1). And the role-play framing predicts a
 specific failure: a model told to "be an Austrian economist" will produce the *surface* of the role as its
 corpus represents it, which for a thinly represented school may be little more than a few catchwords.
 
@@ -178,7 +221,7 @@ matrices, which reduces trainable parameters by orders of magnitude without loss
 \citep{hu2022lora}; QLoRA trains such adapters on a 4-bit quantised base, bringing a 7B model within a single
 consumer GPU \citep{dettmers2023qlora}. Adapters can be served alongside the base model and switched per
 request, which is what makes "one adapter per school" cheap at inference. The Confirmation trained its
-adapters with QLoRA; the thesis trains them in bf16 (Section 3.5.2), because the quantisation step is no longer
+adapters with QLoRA; the thesis trains them in bf16 (Section 3.6.3), because the quantisation step is no longer
 needed on the hardware used and because 4-bit training is not recommended for the larger model of exp01b.
 
 ### 2.4.3 Distillation from a teacher's reasoning traces
@@ -235,12 +278,40 @@ persona of a special kind, one defined by a set of causal mechanisms rather than
 fidelity at the level of mechanisms (the judge's fidelity and purity scales, the L3 entries) and of concepts
 (the keyword-free probe set).
 
+### 2.4.6 Training agents: from imitation to verifiable rewards
+
+Agent behaviour can itself be distilled. Fine-tuning a small model on the trajectories of a stronger agent, its
+thoughts, actions and observations, makes it a better agent \citep{chen2023fireact}, and mixing such trajectories
+with general instruction data adds agent ability without losing general ability \citep{zeng2024agenttuning}; the
+loss is usually computed on the model's own outputs only, so that tool results are context rather than targets
+\citep{zeng2024agenttuning,gou2024tora}. The design of the corpus matters: agent data entangle format-following
+with reasoning, and agent fine-tuning can introduce hallucinations, which negative training examples reduce
+\citep{chen2024agentflan}. Beyond imitation, a model can be trained on its own successful behaviour. STaR samples
+rationales, keeps those that reach the correct answer, fine-tunes on them and iterates \citep{zelikman2022star};
+rejection-sampling fine-tuning collects the correct reasoning paths of a supervised model as new training data
+\citep{yuan2023scaling}, and tool-integrated reasoning agents keep the sampled trajectories that are valid
+\citep{gou2024tora}; and self-training with samples filtered by binary feedback, framed as
+expectation-maximisation, can surpass fine-tuning on human-written data \citep{singh2024beyond}. Reinforcement
+learning with rewards that can be computed by rule, named reinforcement learning with verifiable rewards
+\citep{lambert2025tulu3}, became the main method for training reasoning models after group-relative policy
+optimisation, a variant of proximal policy optimisation that needs less memory \citep{shao2024deepseekmath}, and
+after reinforcement learning alone, without human-labelled reasoning trajectories, was shown to elicit reasoning
+\citep{guo2025deepseekr1}.
+Multi-turn versions train agents to search or call tools inside their reasoning
+\citep{jin2025searchr1,qian2025toolrl}, with retrieved content masked from the policy loss \citep{jin2025searchr1},
+and outcome-based versions with a proper scoring rule as the reward train forecasters (Section 2.7.3). This
+literature defines the third row of the thesis's factorial design (Chapter 3): agents trained beyond imitation,
+with filters and rewards that are rule-based or come from realised outcomes. It also sets the limit: published
+reinforcement-learning forecasters used tens of thousands of resolved questions, which the macroeconomic domain
+cannot supply, so rejection sampling with verifiable filters is the main extension and reinforcement learning a
+stretch.
+
 ## 2.5 Measuring reasoning in generated text
 
 ### 2.5.1 Lexical measures
 
 The Confirmation measured school fidelity with lexicons: must-have concepts, strong-signal terms and
-anti-signal terms from competing schools (Section 3.5.4). Lexical measures are transparent, cheap and
+anti-signal terms from competing schools (Section 3.7.2). Lexical measures are transparent, cheap and
 reproducible, and they capture exactly the "surface" that imitation learning is known to transfer. Their
 weakness is the one the panel named: a response can use a school's words without reasoning in its mechanisms,
 and can reason in its mechanisms without its words. The thesis keeps the lexical measure as the registered
@@ -258,7 +329,7 @@ Language-model evaluators recognise and prefer their own generations \citep{pani
 must not score the frontier reference arm, which is the same model. And a judge is a measurement instrument
 whose validity must be established, not assumed: the thesis validates it against two human raters on a blinded
 sample with chance-corrected agreement \citep{cohen1968weighted,landis1977measurement} and accepts a scale only
-if the raters agree with each other and the judge agrees with them (Section 3.5.5).
+if the raters agree with each other and the judge agrees with them (Section 3.7.3).
 
 ### 2.5.3 Reading representations: sparse autoencoders and model diffing
 
@@ -289,6 +360,48 @@ training examples responsible \citep{chen2026persona}; and representation engine
 show that such directions are causally usable \citep{zou2023representation,turner2024steering,
 rimsky2024steering}. No study has yet applied these tools to ask what fine-tuning changes when the quantity instilled is a theoretical perspective rather than a character trait, or compared the representational effect of fine-tuning with that of few-shot prompting on the same outputs. Chapter 4 does both, with features mapped to the fields of each
 school's knowledge-base entry.
+
+### 2.5.4 Faithfulness: does the explanation reflect the computation?
+
+An instrument that reads a model's explanation measures what the model says, not necessarily what it did. The
+distinction is established in interpretability: an explanation is *plausible* if it convinces a reader and
+*faithful* if it accurately represents the reasoning process behind the prediction, and the two must be evaluated
+separately \citep{jacovi2020towards}. For language models the evidence is sobering. Chains of thought can
+systematically misrepresent the true reason for a prediction: features that bias the answer, such as the order of
+multiple-choice options, change predictions without being mentioned in the explanation \citep{turpin2023language},
+and unfaithful reasoning also occurs on naturally worded prompts with no injected bias \citep{arcuschin2026chain}.
+Interventions on the chain itself, truncating it, inserting mistakes or paraphrasing it, show that models differ
+widely in how much their answers depend on what they wrote, and that larger, more capable models tend to produce
+less faithful reasoning on most tasks studied \citep{lanham2023measuring}; and reasoning models trained with
+reinforcement learning verbalise the hints they use only in a minority of cases \citep{chen2025reasoning}.
+Faithfulness tests for natural-language explanations therefore intervene. One test inserts new reasons into the
+input that flip the prediction and checks whether the explanation mentions them; another rebuilds the input from
+the reasons an explanation states and checks whether the prediction stays the same
+\citep{atanasova2023faithfulness}. Others intervene on the concepts an explanation claims were influential, using
+realistic counterfactual inputs to compare the claimed with the actual influence \citep{matton2025walk}, or remove
+parts of the context to find which of them caused a generated statement \citep{cohenwang2024contextcite}; applied
+to language-model agents, controlled interventions on the experience an agent is given show that agents can
+disregard condensed evidence even when it is the only evidence they have \citep{zhao2026agents}. Such
+output-level tests have been argued to measure the self-consistency of a model's outputs rather than faithfulness
+to its inner workings \citep{parcalabescu2024measuring}. A complementary line constrains the format so
+that the explanation is the computation: faithful chain of thought translates a question into a symbolic program
+that a deterministic solver executes \citep{lyu2023faithful}, and entailment trees make an explanation a chain of
+premises and intermediate conclusions that can be checked step by step \citep{dalvi2021explaining}. Step-level
+evaluation has its own instruments: automatic scores of each step's correctness and informativeness
+\citep{golovneva2023roscoe,prasad2023receval}, and reward models trained on human labels of each step, which on
+competition mathematics supervised reasoning better than labels of the final answer alone \citep{lightman2024lets}.
+Inside the model, causal interventions on activations test whether a component carries the information an
+explanation attributes to it: causal tracing locates where factual associations are stored
+\citep{meng2022locating}; the results of activation patching depend on methodological choices such as the metric
+and the corruption method \citep{zhang2024towards}; interchange interventions test whether a network implements a
+hypothesised high-level causal model \citep{geiger2021causal}; and attribution graphs, computed on an interpretable
+replacement model trained to approximate the original and checked by interventions, trace the features through
+which a model computes a particular output \citep{ameisen2025circuit}. Built for each step of a chain of thought,
+such graphs carry a signal of reasoning errors, and intervening on individual features can correct a faulty step
+\citep{zhao2026verifying}. The thesis's agents write typed proofs
+rather than free text, which makes three of these tests applicable together (Chapter 5): step-level checks of each
+proof against the tool results it cites, interventions on the tool results themselves, and a check of the claimed
+mechanisms against the sparse-autoencoder features of Section 2.5.3.
 
 ## 2.6 Probabilistic forecasting: scoring, calibration, combination and coherence
 
@@ -327,10 +440,43 @@ a logit-space aggregation with extremisation. Whether to average probabilities o
 question \citep{lichtendahl2013average}. The *reason* combination works is diversity of errors: in the ambiguity
 decomposition the ensemble's error equals the average member error minus the members' disagreement
 \citep{krogh1994neural}, so an ensemble helps only to the extent that its members err differently \citep{dietterich2000ensemble}; a group of diverse problem solvers can outperform a group of individually better ones \citep{hong2004groups}; and the same accuracy-correlation trade-off limits the gains from pooling crowds of language models, whose errors are more correlated than those of human crowds \citep{jeddi2026crowdsourced}. Mixtures of experts turn the same principle into an architecture in which
-specialised sub-models are gated per input \citep{jacobs1991adaptive,shazeer2017outrageously}. The thesis's
-hypothesis that pooling three schools beats the best school (exp03, H1) is this argument applied to
-theoretical rather than statistical diversity; its hypothesis that disagreement predicts error (H6) tests the
-decomposition's other half, that disagreement is informative about difficulty.
+specialised sub-models are gated per input \citep{jacobs1991adaptive,shazeer2017outrageously}.
+
+Diversity can be produced in many ways, and they differ in cost. Machine-learning ensembles obtain it from
+different data, features, initialisations or architectures \citep{brown2005diversity}. Although diversity and
+accuracy are provably linked in special cases, measures of diversity have proved of doubtful use for building
+classifier ensembles in practice \citep{kuncheva2003measures}; and diversity turns out to be a hidden dimension of
+the bias-variance decomposition of an ensemble's loss, for a wide range of losses \citep{wood2023unified}, whose
+squared-error case is the "diversity prediction theorem" of the social-science literature \citep{page2007difference}.
+Independently trained networks give well-calibrated predictive uncertainty when they are ensembled
+\citep{lakshminarayanan2017simple}. For human crowds, simple averaging is robust: even when judgements are biased
+and correlated, one would need almost certainly to pick a highly skilled judge before an individual could be
+expected to beat the crowd's average \citep{davisstober2014crowd}. Small crowds of knowledgeable judges, or judges
+weighted by their contribution to the crowd's accuracy, can do better still \citep{mannes2014wisdom,budescu2015identifying},
+and the best composition of a forecasting group depends on its size: in small groups the most accurate type of
+forecaster should be in the majority, in large groups the type whose members are least correlated with one another
+\citep{lamberson2012optimal}.
+
+For language models there are cheap sources of diversity: repeated sampling of one model, aggregated by vote
+\citep{wang2023selfconsistency} and scaled to many samples \citep{li2024more}; different models, combined by
+ranking and fusion \citep{jiang2023llmblender} or in layers of agents \citep{wang2025mixture}; several personas
+inside one model, a synergy that emerged only in the most capable model tested \citep{wang2024unleashing}; and
+debate \citep{du2024improving,liang2024encouraging}. Their limit is correlated error. Different language models
+share many of their errors, and larger, more accurate models have highly correlated errors even across
+architectures and providers \citep{kim2025correlated}; crowds of language models are more correlated than human
+crowds \citep{jeddi2026crowdsourced}; and persona prompts shift model predictions only modestly
+\citep{hu2024quantifying} and yield homogeneous macroeconomic forecasts \citep{iadisernia2025prompting}.
+Disagreement is also a signal in its own right. Among professional macroeconomic forecasters, aggregate forecast
+uncertainty can be expressed as their disagreement plus the perceived variability of future aggregate shocks, so
+that whether disagreement is a good proxy for uncertainty depends on the stability of the forecasting environment
+\citep{lahiri2010measuring}. Among repeated samples of a language model, disagreement measured over meanings rather
+than words flags confabulated answers \citep{farquhar2024detecting}, and the consistency of the samples gives
+confidence estimates with lower calibration error than post-hoc methods \citep{lyu2025calibrating}. The thesis's
+hypothesis that pooling three schools beats the best school (exp03, H1) is the diversity argument applied to
+theoretical rather than statistical diversity; its hypothesis that theoretical diversity beats personas, multiple
+models and repeated sampling at equal ensemble size (H8) asks whether that source is worth its cost; and its
+hypothesis that disagreement predicts error (H6) asks whether disagreement among contested frameworks is the kind
+of signal that disagreement among forecasters and among samples has been shown to be.
 
 ### 2.6.4 Coherence
 
@@ -396,8 +542,8 @@ even strong forecasters violate them. On the training side, \citet{turtel2025out
 learning with a proper-scoring reward to about one hundred thousand resolved questions and matched frontier models with a 14-billion-parameter model; a report from Mantic and Thinking Machines Lab applied the same recipe, a Brier-score reward, to a 120-billion-parameter open-weight model and evaluated it in a Metaculus tournament \citep{jeen2026training}. Benchmarks that use prediction-market prices directly to measure language-model calibration followed \citep{nel2025kalshibench}. Two cautions apply to all of this work. \citet{paleka2026pitfalls} catalogue the pitfalls of evaluating language-model forecasters, above all the many forms of temporal leakage from training data and retrieval, and the difficulty of extrapolating from benchmark scores to real forecasting; and polls of several instances of one model are not a crowd in the human sense, because their forecasts are correlated, so that diversity has to be designed in rather than assumed \citep{gebele2026diversity,jeddi2026crowdsourced}. Three gaps remain for the thesis. These evaluations use
 heterogeneous binary questions, whereas macroeconomic releases have ordered, arithmetically related outcome
 spaces. They evaluate frontier or forecasting-optimised models, not models conditioned on a theory. And they
-supply the model with news, so that the forecast's provenance is as opaque as the news; the thesis supplies
-point-in-time statistics and analogues only, and records the provenance in a proof.
+supply the model with news, so that the forecast's provenance is as opaque as the news; the thesis's agents
+fetch point-in-time statistics and analogues through tools, and record the provenance in a proof.
 
 ## 2.8 Analogue forecasting and point-in-time data
 
@@ -427,39 +573,89 @@ re-estimates it in an expanding window so that no retrieval uses later data.
 Macroeconomic data are revised, often substantially, and a forecast evaluated with revised data overstates what
 could have been known. Real-time data sets record each value as it was published on each date
 \citep{croushore2001realtime}, and the literature on their use shows that revisions change the apparent
-performance of forecasting models and policy rules \citep{croushore2011frontiers}. The ALFRED archive supplies
+performance of forecasting models and policy rules \citep{croushore2011frontiers}; in particular, measures of
+forecast error can be deceptively lower when forecasts are evaluated with latest-available rather than real-time
+data \citep{stark2002forecasting}. The ALFRED archive supplies
 vintages for the FRED series used here. The thesis uses point-in-time states for retrieval and as model inputs,
 keeps revised states only for an ablation, and extends the same discipline to text through trigger-only episode
 descriptions (Section 3.4.1).
 
-## 2.9 Auditable reasoning and analytic standards
+## 2.9 Knowledge layers, provenance and analytic standards
 
-The requirement that every forecast carry a visible trail to its evidence, and a confidence grade separate
-from its probability, comes from the analytic standards of the United States Intelligence Community
-\citep{odni2015icd203}, which prescribe standard likelihood language and the separate expression of
-confidence, and from structured analytic techniques such as the analysis of competing hypotheses
-\citep{heuer1999psychology}. In the language-model literature the nearest practices are chain-of-thought
-rationales, which the model generates and nobody checks, and retrieval-augmented generation, which attaches
-sources without grading them. The research group's pmpol system implements the standards as a knowledge-layer
-ontology with proof objects and analytic-confidence grades; the thesis adopts them (Section 3.3) and, in a
-step the standards themselves do not take, tests whether the confidence grade and the schools' disagreement
-predict forecast error (exp03, H6 and H7).
+The architecture that keeps the thesis's evidence typed comes from three traditions outside machine learning.
+*Ontologies*, in knowledge engineering, are explicit specifications of a conceptualisation, the kinds of entity a
+system reasons about and the relations among them \citep{gruber1993translation}, and the definition was refined to a formal, explicit specification of a shared conceptualisation
+\citep{studer1998knowledge}, whose terms have since been analysed formally \citep{guarino2009what}. The thesis's
+knowledge layers are an ontology in this sense, but of an unusual kind: they classify facts not by subject but by
+epistemic status, that is, by how a fact is known (a rule, an observation as published, a base rate, a contested
+theory, a market price, a system inference) and therefore how it may be used in inference. Work that grounds
+language models in structured knowledge, chiefly knowledge graphs \citep{pan2024unifying}, including agents that search a graph for
+reasoning paths whose knowledge can be traced \citep{sun2024thinkongraph}, has concentrated on factual content; the thesis uses the structure for a different purpose, to keep contested theories apart from
+facts.
+
+*Provenance* records where a datum came from and how it was derived. Database research distinguishes the source
+records that justify a result from the locations a value was copied from \citep{buneman2001why}, and the W3C
+provenance model standardises the description of entities, the activities that generated them and the
+derivations among them \citep{lebo2013prov}. *Time* is part of provenance for economic data: temporal databases
+distinguish the time at which a fact holds from the time at which it was recorded
+\citep{snodgrass1985taxonomy,jensen1999temporal}, and the thesis maps a statistic's reference period and its vintage
+onto these two axes (Section 2.8.3). The thesis's proof objects are provenance records of this kind, with each step
+typed by layer, referenced to its source and dated.
+
+*Analytic standards* govern how intelligence analysts express what they conclude and how sure they are. The United
+States Intelligence Community's standards prescribe standard likelihood language and the separate expression of
+confidence in a judgement \citep{odni2015icd203}, a line that goes back to Kent's proposal to tie words of
+estimative probability to numerical ranges \citep{kent1964words}. Sources and information are graded on separate axes, the reliability of the source and the credibility of the
+information, in the grading system of NATO doctrine, sometimes called the Admiralty Code \citep{ukmod2023jdp200};
+experiments with intelligence analysts find that their trust in a report depends more on the source's reliability
+than on the information's credibility \citep{kelly2025effect}, and information-evaluation methods of this kind have
+been criticised for masking rather than guiding the analyst's subjectivity \citep{irwin2019improving}. Structured
+techniques such as the analysis of competing hypotheses require alternatives to be listed and tested against the
+evidence \citep{heuer1999psychology}. Decision scientists have argued that analysts should assess and express uncertainty explicitly rather than try to
+eliminate it \citep{friedman2012assessing}, and that the intelligence community should monitor the accuracy of its
+forecasts quantitatively \citep{dhami2015improving}. The structure of an argument as a claim supported by data
+through a warrant, open to qualification and rebuttal \citep{toulmin1958uses}, is the informal model behind a
+proof step that cites its evidence and its rule.
+
+In the language-model literature the nearest practices are chain-of-thought rationales, which the model generates
+and nobody checks (Section 2.5.4), and retrieval-augmented generation, which attaches sources without grading them
+(Section 2.3.4). The research group's pmpol system implements the three traditions together, as a knowledge-layer
+ontology with typed knowledge-base entries, proof objects that can be exported as provenance records, and
+analytic-confidence grades. The thesis adopts them (Section 3.3), gives its agents tools that return only typed
+facts (Section 3.5), tests whether their proofs are valid and faithful (Chapter 5) and, in a step the standards
+themselves do not take, tests whether the confidence grade and the frameworks' disagreement predict forecast error
+(exp03, H6 and H7).
 
 ## 2.10 Summary of gaps
 
-Five gaps emerge from this review and define the thesis.
+The review leaves gaps under each of the thesis's three angles.
+
+*Inside the model (RQ1).*
 
 1. Language models applied to the macroeconomy are not conditioned on an explicit theory, and no study has
    compared fine-tuning with the strongest prompting baselines as ways of instilling one, or measured the
    result with instruments that distinguish a theory's concepts from its vocabulary (Sections 2.3.2, 2.4, 2.5).
 2. What fine-tuning changes inside a model, relative to prompting, has not been described with the tools of
    model diffing for any theoretical perspective (Section 2.5.3).
-3. Analogue retrieval for macroeconomic events has not been tested with a covariance-aware metric, point-in-time
-   states and a time-respecting protocol (Section 2.8).
-4. Probabilistic forecasts of macroeconomic releases by language models have not been evaluated on a window
+
+*What the agent says (RQ2).*
+
+3. Agents that reason about the economy have not been given tools that return typed, point-in-time facts and
+   base rates, nor been required to justify each forecast with a proof that can be checked against those results
+   (Sections 2.3.4, 2.9).
+4. The faithfulness of such proofs has not been tested by intervening on the evidence the agent received, nor
+   checked against the mechanisms active inside the model (Section 2.5.4).
+5. Analogue retrieval for macroeconomic events, the base-rate evidence such an agent would cite, has not been
+   tested with a covariance-aware metric, point-in-time states and a time-respecting protocol (Section 2.8).
+
+*How sure (RQ3).*
+
+6. Probabilistic forecasts of macroeconomic releases by language models have not been evaluated on a window
    provably outside the model's training data, against the market, with ordered scores, calibration and
    arithmetic coherence (Sections 2.6, 2.7).
-5. Whether the disagreement among contested frameworks, and a graded analytic confidence, carry information
+7. Whether diversity of theory is a better source of ensemble diversity than personas, multiple models or
+   repeated sampling has not been tested (Section 2.6.3).
+8. Whether the disagreement among contested frameworks, and a graded analytic confidence, carry information
    about forecast error has not been tested (Sections 2.6.3, 2.9).
 
 Chapter 3 sets out the design that addresses them, and the Related Work section positions the thesis against
