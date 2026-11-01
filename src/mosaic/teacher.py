@@ -183,16 +183,23 @@ def record(item: Item, reply: str, teacher: str) -> dict:
 
 
 def generate(backend, items: list[Item], cfg: dict, teacher: str, out_dir: Path) -> dict:
-    """Ask the teacher for every item, keep valid replies, write <school>.jsonl and rejects.jsonl; return counts."""
+    """Ask the teacher (a local backend) for every item and keep the valid replies (see `collect`)."""
     from mosaic.backends import Request
 
     reqs = [Request(messages=teacher_messages(it, cfg), tag=f"teacher|{it.school}|{it.event.id}") for it in items]
     outs = backend.generate(reqs)
+    return collect(items, [o.get("text", "") for o in outs], teacher, out_dir)
+
+
+def collect(items: list[Item], replies: list[str], teacher: str, out_dir: Path) -> dict:
+    """Keep valid replies, write <school>.jsonl and rejects.jsonl to out_dir; return counts per school."""
+    from mosaic.backends import split_reasoning
+
     out_dir.mkdir(parents=True, exist_ok=True)
     kept: dict[str, list[dict]] = {s: [] for s in SCHOOLS}
     rejects = []
-    for it, o in zip(items, outs):
-        reply = o.get("text", "")
+    for it, reply in zip(items, replies):
+        reply = split_reasoning(reply or "")[1] if "<think>" in (reply or "") else (reply or "")
         problems = validate(reply)
         if problems:
             rejects.append({"school": it.school, "event_id": it.event.id, "template_id": it.template_id,
@@ -206,4 +213,51 @@ def generate(backend, items: list[Item], cfg: dict, teacher: str, out_dir: Path)
         f.writelines(json.dumps(r, ensure_ascii=False) + "\n" for r in rejects)
     counts = {s: len(v) for s, v in kept.items()}
     counts["rejected"] = len(rejects)
+    return counts
+
+
+# A run through a hosted API, done by the human outside this repository: `export_jobs` writes the requests in the
+# OpenAI Batch format (also read by scripts/teacher_api.py), `import_results` validates the replies with the same
+# filters and writes the training files. The items are rebuilt from (n, seed) in manifest.json, so the jobs file is
+# the only thing that travels.
+
+def export_jobs(n_per_school: int, seed: int, model: str, out_dir: Path, max_tokens: int = 2048,
+                cfg: dict | None = None) -> int:
+    cfg = cfg or load_templates()
+    items = make_items(n_per_school, seed=seed, cfg=cfg)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    with (out_dir / "requests.jsonl").open("w", encoding="utf-8") as f:
+        for it in items:
+            body = {"model": model, "messages": teacher_messages(it, cfg), "temperature": 0.8, "top_p": 0.95,
+                    "max_tokens": max_tokens}
+            f.write(json.dumps({"custom_id": f"{it.school}|{it.event.id}", "method": "POST",
+                                "url": "/v1/chat/completions", "body": body}, ensure_ascii=False) + "\n")
+    (out_dir / "manifest.json").write_text(json.dumps({"n_per_school": n_per_school, "seed": seed, "model": model,
+                                                       "requests": len(items)}, indent=1) + "\n")
+    return len(items)
+
+
+def reply_of(line: dict) -> tuple[str, str, str]:
+    """(custom_id, reply text, model) from an OpenAI Batch output line or a scripts/teacher_api.py line."""
+    body = (line.get("response") or {}).get("body") or line
+    msg = ((body.get("choices") or [{}])[0].get("message") or {})
+    return line.get("custom_id", ""), msg.get("content") or line.get("content") or "", body.get("model", "")
+
+
+def import_results(jobs_dir: Path, results: Path, out_dir: Path) -> dict:
+    man = json.loads((jobs_dir / "manifest.json").read_text())
+    items = make_items(man["n_per_school"], seed=man["seed"])
+    got = {}
+    models = set()
+    for raw in results.read_text(encoding="utf-8").splitlines():
+        if raw.strip():
+            cid, text, model = reply_of(json.loads(raw))
+            got[cid] = text
+            if model:
+                models.add(model)
+    teacher = ", ".join(sorted(models)) or man["model"]
+    if any(m.lower().startswith(("claude", "anthropic")) for m in models | {man["model"]}):
+        raise SystemExit("Claude models are excluded as teacher (amendment 4 Change 5, THESIS_DESIGN 4a)")
+    counts = collect(items, [got.get(f"{it.school}|{it.event.id}", "") for it in items], teacher, out_dir)
+    counts["missing"] = sum(f"{it.school}|{it.event.id}" not in got for it in items)
     return counts
