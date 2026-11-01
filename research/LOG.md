@@ -433,3 +433,55 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   exp02 and exp06 drafts. exp01 and its registration are untouched.
 - next: decisions 1–7 of the design note; then the tool layer, the exp07 draft and exp03 H8 before the 11-25
   registration.
+
+### 2026-11-01 — D11/RQ2: tool layer and teacher prompt version 4 (real tools)
+- change: `src/mosaic/tools.py`: `get_macro_data` (L1) and `query_episode_db` (L2) over
+  `configs/tools/episodes_standin.toml` (79 named, dated, pre-2025 episodes, qualitative accounts without statistics,
+  idf-weighted retrieval; a stand-in for the episode database, human check pending). Teacher prompt version 4: the
+  backdrop reaches the teacher only through get_macro_data (function calling), the final message adds a [Proof]
+  block typed by layer and checked against the refs the tools returned, plus a confidence line. Items version 3
+  recentres the backdrop (unemployment above 4.5% in 50% of draws, was 72%; CPI skewed towards 2%). School diagnoses
+  carry the review fixes (real rates, the zero bound, trend money growth). `scripts/teacher_api.py` runs the tool
+  loop with streamed tool calls. One run gives two formats: the Confirmation single-pass text for exp01 arm C
+  (flattened, proof dropped) and the multi-turn agent conversation for C-agent.
+- command: `scripts/teacher_api.py … --n 20 --model qwen3.8-max --network-secret --limit 1` (smoke test)
+- result: function calling works on the token plan (6.0k tokens in, 5.5k out for one conversation); the teacher used
+  both tools in order and the trajectory passed every check after two fixes: scenario lines written "S1 (…): p 0.50"
+  are normalised, and proof steps citing several refs ("- L1 [A] with [B]: …") are accepted. Its first [Think] still
+  said "the event gives no bp", so step 1 no longer lists size units. The smoke run is not part of the pilot.
+- deviation: planned get_rules (L0) as a tool (design note §3) / L0 stays in the task prompt / none for RQ2, which
+  names L1 and L2 only; exp03 already passes the scenario set / keep, note it in the design note.
+- next: pilot v4 (20 per school) and the Opus review.
+
+### 2026-11-01 05:16 UTC — infra: Task A pod (agent spike)
+- pod `tmd8qxb4j16eh3` (`mosaic-A-20261101-0516`), NVIDIA A40 48 GB, $0.59/h, `--hours 2` (watchdog at 4 h), branch
+  `claude/vibrant-tesla-rqvzo1`, pushes to `agent/task-A-20261101-0516`, heartbeat `agent/log-tmd8qxb4j16eh3`.
+- no network volume: CA-MTL-1 (where `dy1ct9hkm0` lives) listed no GPU in stock, so the pod has its own 60 GB volume,
+  downloads Qwen3-8B itself and is terminated (not only stopped) after its push, so no storage cost remains.
+- deviation: planned the network volume / none in stock in CA-MTL-1 / about 10 min more setup per pod / pods without the
+  volume until stock returns; consider a second volume in a data center with stock if this persists.
+
+### 2026-11-01 — drafts: exp07 (RQ2) and exp03 H8 plus agent arms (RQ3)
+- change: new `research/prereg_drafts/exp07_faithfulness.md` (systems A-agent, C-agent, C-agent+RFT; E-dev seed 7,
+  E-test fixed at registration, E-hist if the episode database arrives; M1 validity and grounding, M2 counterfactual
+  sensitivity with cited vs placebo indicators, M3 SAE faithfulness, a validated proof-step typer; F-H1 to F-H4 with
+  Holm). exp03 draft: pool-persona, pool-models (open models released before 2025-05), pool-sample at equal ensemble
+  size, H8 (pool-eq beats each of them), agent arms as secondary systems with a cut-off date (2026-12-10).
+- decision needed (human): the personas' wording, the two extra open models and their licences, F-H1 to F-H4 and the
+  counterfactual shifts; both drafts are registered by the human.
+
+### 2026-11-01 — merge of the reference session; deviation protocol; two deviations logged
+- change: the reference session's branch (`claude/fervent-pascal-hzleuz`: AI-assisted Ch. 2–3 drafts, verified
+  bibliographies, `research/thesis_drafts/`) merged into the session branch (ledger conflict resolved by keeping all
+  rows in date order); that session now works only on references. The deviation protocol the human asked for ("runs
+  will differ from the plan; adjust promptly") is now THESIS_DESIGN §6, program.md rule 14 (with a `deviation:` line
+  in the log format) and ORCHESTRATOR rule 7. THESIS_DESIGN §5 gains the tool layer, teacher v4, Task A, exp07, the
+  H8 pools and the 12-10 agent-arm cut-off.
+- deviation: exp03 counts / the 2026-10-31 Task 2 entry says 149 questions, 58 calibration and 91 test, while the
+  committed `research/exp03_data_card.md` sums to 51 and 98 (total 149 in both) / affects the calibration-size
+  statements (design note §4a, now "51 by the data card") and the exp03 registration / recount with `mosaic exp03
+  card` on the next pod that mounts the network volume (the data live there) and correct whichever is wrong.
+- deviation: Task S hand-off (2026-10-31) said `mosaic doctor` found the original prompts in place, but
+  `configs/prompts/*.txt` still start with the PLACEHOLDER line / the arm A/C prompts are missing, so the v4 records
+  carry placeholder system prompts / the records are rebuilt from the stored conversations once the human commits the
+  originals (`mosaic teacher-import` again); `mosaic doctor`'s placeholder check should be verified on the next pod.

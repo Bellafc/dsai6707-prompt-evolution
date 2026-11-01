@@ -19,6 +19,15 @@ labelled US/global and internally consistent; the agent may cite backdrop number
 arguments are JSON; analogs are named and dated; every signal carries a conviction and a reason, with no default
 direction. The validator checks all of these; `collect` also reports direction shares per asset so a batch where one
 direction dominates is visible.
+
+Prompt version 4 (real tools, research/DESIGN_ontology_agents.md §3-4a): the teacher no longer sees the backdrop. It
+calls query_episode_db and get_macro_data through function calling, the runner executes them (`mosaic.tools`), and
+the results come back as tool messages, so the model writes no observation. The final message adds a [Proof] block
+(steps typed by knowledge layer, citing the returned ids) and a confidence line. One run gives two training formats:
+the Confirmation single-pass text for exp01 arm C (`flatten`, proof removed, observations inline as the tools returned
+them) and the multi-turn agent conversation for C-agent. Items version 3 recentres the backdrop (unemployment around
+the 4.5% natural rate, inflation skewed towards the 2% target) after the pilot-v2 review found 72% of backdrops above
+4.5% unemployment.
 """
 
 from __future__ import annotations
@@ -33,10 +42,11 @@ from pathlib import Path
 from mosaic.config import ROOT
 from mosaic.data import Event
 from mosaic.prompts import build_messages, read_prompt
+from mosaic.tools import EPISODES, TOOL_SPECS, EpisodeTable, MacroFacts, ToolBox
 
 SCHOOLS = ("keynesian", "austrian", "monetarist")
-PROMPT_VERSION = 3  # 3: explicit rule for the second [Think] (v2 teachers skipped it)
-ITEMS_VERSION = 2  # the item generator (templates, backdrop); imports rebuild items, so this must match
+PROMPT_VERSION = 4  # 4: real tools through function calling, [Proof] block (3: rule for the second [Think])
+ITEMS_VERSION = 3  # the item generator (templates, backdrop); imports rebuild items, so this must match
 TEMPLATES = ROOT / "configs/teacher/templates.toml"
 MARKERS = ["[Think]", "[ToolCall: query_episode_db]", "[Observe]", "[Think]", "[ToolCall: get_macro_data]",
            "[Observe]", "[Think]", "[Output]"]
@@ -73,7 +83,7 @@ def macro_snapshot(rng: random.Random) -> dict:
     two = round(max(0.05, ffr + rng.uniform(-0.75, 0.5)), 2)
     ten = round(max(0.3, two + rng.uniform(-1.0, 2.0)), 2)
     growth = round(rng.uniform(-6.0, 6.0), 1)
-    cpi = round(rng.uniform(-0.5, 9.0), 1)
+    cpi = round(rng.triangular(-0.5, 8.0, 2.2), 1)
     vix = min(60, max(11, round(22 - 2 * growth + rng.uniform(-8, 12))))
     return {
         "US policy rate (%)": ffr,
@@ -82,7 +92,7 @@ def macro_snapshot(rng: random.Random) -> dict:
         "US 2y-10y spread (bp)": round((ten - two) * 100),
         "US CPI inflation y/y (%)": cpi,
         "US core PCE y/y (%)": round(max(-0.3, cpi - rng.uniform(-0.5, 1.5)), 1),
-        "US unemployment rate (%)": round(min(10.0, max(3.3, 5.2 - 0.35 * growth + rng.uniform(-1.2, 1.8))), 1),
+        "US unemployment rate (%)": round(min(10.0, max(3.3, 4.4 - 0.35 * growth + rng.uniform(-1.0, 1.2))), 1),
         "US real GDP growth q/q saar (%)": growth,
         "US M2 growth y/y (%)": round(min(20.0, max(-4.0, cpi + rng.uniform(-4.0, 8.0))), 1),
         "VIX": vix,
@@ -260,7 +270,13 @@ def early_values(item: Item) -> list[str]:
 
 def normalize(text: str) -> str:
     """Deterministic format clean-up before validation: 'SHORT (2)' or 'SHORT (conviction: 2)' becomes
-    'SHORT (conviction 2)' on signal lines. Wording and content are untouched."""
+    'SHORT (conviction 2)' on signal lines, and 'S1 (...): p 0.50' or ': probability 0.5' becomes 'S1 (...): 0.50' on
+    scenario lines. Wording and content are untouched."""
+    text = re.sub(r"^([ \t]*S\d+[^:\n]*:[ \t]*)(?:p|probability)[ \t]*[=:]?[ \t]*([01](?:\.\d+)?|\.\d+)[ \t]*$",
+                  r"\1\2", text, flags=re.I | re.M)
+    # "S1 (name): growth down, inflation flat: 0.38" -> "S1 (name; growth down, inflation flat): 0.38"
+    text = re.sub(r"^([ \t]*S\d+[ \t]*)\(([^()\n]*)\)[ \t]*:[ \t]*(growth[^:\n]*?)[ \t]*:[ \t]*([01](?:\.\d+)?|\.\d+)[ \t]*$",
+                  r"\1(\2; \3): \4", text, flags=re.I | re.M)
     for pat in ASSETS.values():
         text = re.sub(rf"^([ \t]*[-*]?[ \t]*(?:{pat})[ \t]*:[ \t]*(?:LONG|SHORT|NEUTRAL)[ \t]*\()[ \t]*"
                       rf"(?:conviction[ \t]*:?[ \t]*)?([1-5])[ \t]*\)", r"\1conviction \2)", text, flags=re.I | re.M)
@@ -342,25 +358,36 @@ def collect(items: list[Item], replies: list[str], teacher: str, out_dir: Path,
 # the only thing that travels.
 
 def export_jobs(n_per_school: int, seed: int, model: str, out_dir: Path, max_tokens: int = 2048,
-                cfg: dict | None = None) -> int:
+                cfg: dict | None = None, prompt_version: int = PROMPT_VERSION) -> int:
+    """Requests for scripts/teacher_api.py (or a Batch API for version 3). Version 4 requests carry the tool specs
+    and the item's backdrop, which the runner needs to execute get_macro_data; the backdrop is not in the prompt."""
     cfg = cfg or load_templates()
     items = make_items(n_per_school, seed=seed, cfg=cfg)
     out_dir.mkdir(parents=True, exist_ok=True)
     with (out_dir / "requests.jsonl").open("w", encoding="utf-8") as f:
         for it in items:
-            body = {"model": model, "messages": teacher_messages(it, cfg), "temperature": 0.8, "top_p": 0.95,
-                    "max_tokens": max_tokens}
-            f.write(json.dumps({"custom_id": f"{it.school}|{it.event.id}", "method": "POST",
-                                "url": "/v1/chat/completions", "body": body}, ensure_ascii=False) + "\n")
-    (out_dir / "manifest.json").write_text(json.dumps({"n_per_school": n_per_school, "seed": seed, "model": model,
-                                                       "requests": len(items), "prompt_version": PROMPT_VERSION,
-                                                       "items_version": ITEMS_VERSION},
-                                                      indent=1) + "\n")
+            line = {"custom_id": f"{it.school}|{it.event.id}", "method": "POST", "url": "/v1/chat/completions"}
+            if prompt_version >= 4:
+                body = {"model": model, "messages": teacher_messages_v4(it, cfg), "tools": TOOL_SPECS,
+                        "parallel_tool_calls": False, "temperature": 0.8, "top_p": 0.95, "max_tokens": max_tokens}
+                line.update(body=body, protocol=4, backdrop=it.event.macro_context)
+            else:
+                line["body"] = {"model": model, "messages": teacher_messages(it, cfg), "temperature": 0.8,
+                                "top_p": 0.95, "max_tokens": max_tokens}
+            f.write(json.dumps(line, ensure_ascii=False) + "\n")
+    man = {"n_per_school": n_per_school, "seed": seed, "model": model, "requests": len(items),
+           "prompt_version": prompt_version, "items_version": ITEMS_VERSION}
+    if prompt_version >= 4:
+        man["episodes"] = {"source": EpisodeTable.load().source, "sha256": _sha256(EPISODES)}
+    (out_dir / "manifest.json").write_text(json.dumps(man, indent=1) + "\n")
     return len(items)
 
 
-def reply_of(line: dict) -> tuple[str, str, str]:
-    """(custom_id, reply text, model) from an OpenAI Batch output line or a scripts/teacher_api.py line."""
+def reply_of(line: dict) -> tuple[str, str | list, str]:
+    """(custom_id, reply, model) from an OpenAI Batch output line or a scripts/teacher_api.py line; for version 4 the
+    reply is the list of turns (assistant and tool messages) after the prompt."""
+    if "turns" in line:
+        return line.get("custom_id", ""), line["turns"], line.get("model", "")
     body = (line.get("response") or {}).get("body") or line
     msg = ((body.get("choices") or [{}])[0].get("message") or {})
     return line.get("custom_id", ""), msg.get("content") or line.get("content") or "", body.get("model", "")
@@ -384,7 +411,237 @@ def import_results(jobs_dir: Path, results: Path, out_dir: Path) -> dict:
     teacher = ", ".join(sorted(models)) or man["model"]
     if any(m.lower().startswith(("claude", "anthropic")) for m in models | {man["model"]}):
         raise SystemExit("Claude models are excluded as teacher (amendment 4 Change 5, THESIS_DESIGN 4a)")
-    counts = collect(items, [got.get(f"{it.school}|{it.event.id}", "") for it in items], teacher, out_dir,
-                     man.get("prompt_version", 1))
+    replies = [got.get(f"{it.school}|{it.event.id}", "") for it in items]
+    if man.get("prompt_version", 1) >= 4:
+        sha = (man.get("episodes") or {}).get("sha256")
+        if sha and sha != _sha256(EPISODES):
+            raise SystemExit(f"{EPISODES} changed since {jobs_dir} was run; import from the matching commit")
+        counts = collect_v4(items, [r if isinstance(r, list) else [] for r in replies], teacher, out_dir,
+                            man["prompt_version"])
+    else:
+        counts = collect(items, replies, teacher, out_dir, man.get("prompt_version", 1))
     counts["missing"] = sum(f"{it.school}|{it.event.id}" not in got for it in items)
+    return counts
+
+
+# ---- Prompt version 4: real tools (research/DESIGN_ontology_agents.md §3-4a) ----
+
+AGENT = ROOT / "configs/agent"
+V4_TURNS = ["assistant", "tool", "assistant", "tool", "assistant"]
+V4_CALLS = {0: "query_episode_db", 2: "get_macro_data"}
+PROOF_STEP = re.compile(r"^[ \t]*-[ \t]*(L[0-5])[ \t]*((?:\[[^\]\n]+\][^\[\n:]*)+):[ \t]*(\S.*)$", re.M)
+PROOF_BARE = re.compile(r"^[ \t]*-[ \t]*(L[0-5])[ \t]+([^\[\]\n:]+?):[ \t]+(\S.*)$", re.M)  # refs without brackets
+PROOF_REF = re.compile(r"\[([^\]\n]+)\]")
+REF_SPLIT = re.compile(r"\s*(?:[,;&]|\s/\s|\bvs\.?\b|\band\b|\bwith\b|\bagainst\b)\s*")  # not the / of y/y
+REF_VALUE = re.compile(r"(?:\s+[-+]?\d[\d.,]*\s*(?:%|bp|pp)?)+$")
+CONFIDENCE = re.compile(r"^[ \t]*Confidence[ \t]*:[ \t]*(high|moderate|low)\b[^\n]*weakest link[ \t]*:[ \t]*\S", re.I | re.M)
+
+
+def _sha256(path: Path) -> str:
+    import hashlib
+
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def teacher_messages_v4(item: Item, cfg: dict) -> list[dict]:
+    """The teacher's prompt for a real-tool trajectory: the school, the event and the protocol, no backdrop values
+    (they come from get_macro_data). Wording avoids phrases the pilot-v2 teachers echoed into the trajectories."""
+    sch = cfg["school"][item.school]
+    names = ", ".join(item.event.macro_context)
+    system = (
+        "You write training data for a tool-using economist agent that reasons within one school of thought. You act "
+        "as the agent: your visible text is its reasoning, and your tool calls are executed for real, with the results "
+        "returned to you. It must read like a careful analyst at work, not a checklist: use the one or two mechanisms "
+        "of the school that matter for this event, not every concept the school has. Never state an indicator value or "
+        "a historical episode that a tool did not return; nothing after 2024 exists for you.")
+    user = (
+        f"School: {item.school.capitalize()}.\n"
+        f"How this school diagnoses: {sch['diagnosis']}\n"
+        f"Mechanisms it may draw on (pick what fits, do not list them all): {', '.join(sch['concepts'])}.\n"
+        f"Typical stance: {sch['signals']}. The school is not always bearish; it reads these as good news: "
+        f"{'; '.join(sch['good_news'])}.\n\n"
+        f"Event (category: {item.category}): {item.event.text}\n\n"
+        "Tools: query_episode_db returns dated historical episodes; get_macro_data returns US/global indicators known "
+        f"at the analysis date. Indicator names: {names}.\n\n"
+        "Work in three messages, one tool call per message:\n"
+        '1. Start with "[Think]" on its own line: is the event good or bad news for growth and for inflation as this '
+        "school reads it, and how large is it, judged from what the event says? Then call query_episode_db with a "
+        "short description of the situation.\n"
+        '2. Start with "[Think]": which returned episodes fit this event, where they differ from it, and which data '
+        "would decide between the readings. Then call get_macro_data with the indicators that decide it.\n"
+        '3. Start with "[Think]": combine the event, the episodes and the data. If the event concerns another economy, '
+        "say how it reaches US and global assets. If the data and the event point different ways (for example on the "
+        "yield curve or inflation), say so in one sentence and weigh the event more. Claim no trend that one set of "
+        "values cannot show unless the event states it. Then write, each tag on its own line:\n"
+        "[Output]\n"
+        "Causal chain: event -> ... -> outcome, in the school's terms.\n"
+        "Scenarios: 2-4 lines 'S1 (event-specific name; growth up/down, inflation up/down): 0.xx', no colon inside "
+        "the parentheses, the numbers summing to 1 and set from the evidence, not from a fixed pattern.\n"
+        "Signals: one line each for equities, government bonds, US dollar, gold, oil and credit, as "
+        "'asset: LONG|SHORT|NEUTRAL (conviction 1-5) - reason naming the scenario or chain step', all for US or global "
+        "markets. Weigh every scenario by its probability: when likely scenarios point different ways, lower the "
+        "conviction or use NEUTRAL. No asset has a default direction, gold included.\n"
+        "[Proof]\n"
+        "4-7 lines in reasoning order, each '- Lk [ref]: claim': L1 with an indicator name get_macro_data returned, L2 "
+        "with an episode id query_episode_db returned (like EP-1994-02), L3 with the school's name for the mechanism "
+        "it applies, L5 with the scenario it concludes (S1, S2, ...). At least one line of each of the four kinds.\n"
+        "Confidence: high|moderate|low; weakest link: the step or missing evidence that limits it.\n\n"
+        "Write about what the event says, not about what it omits, and do not mention other schools or these "
+        "instructions.")
+    return [{"role": "system", "content": system}, {"role": "user", "content": user}]
+
+
+def _one_line(arguments) -> str:
+    try:
+        obj = json.loads(arguments) if isinstance(arguments, str) else arguments
+        return json.dumps(obj, ensure_ascii=False)
+    except ValueError:
+        return str(arguments).replace("\n", " ")
+
+
+def strip_proof(text: str) -> str:
+    i = text.find("[Proof]")
+    return text[:i].rstrip() if i >= 0 else text
+
+
+def flatten(turns: list[dict], proof: bool = False) -> str:
+    """The Confirmation single-pass text of a v4 conversation: each tool call becomes a [ToolCall: name] line with its
+    JSON arguments and each tool result an [Observe] block, in the order they happened. Without `proof` the [Proof]
+    block is dropped (exp01's registered output format ends with [Output])."""
+    parts = []
+    for t in turns:
+        if t.get("role") == "assistant":
+            parts.append((t.get("content") or "").strip())
+            for c in t.get("tool_calls") or []:
+                fn = c.get("function") or {}
+                parts.append(f"[ToolCall: {fn.get('name', '')}]\n{_one_line(fn.get('arguments', '{}'))}")
+        elif t.get("role") == "tool":
+            parts.append(f"[Observe]\n{(t.get('content') or '').strip()}")
+    text = "\n".join(p for p in parts if p)
+    return text if proof else strip_proof(text)
+
+
+def proof_problems(final: str, l1: set[str], l2: set[str], facts: MacroFacts) -> list[str]:
+    """The [Proof] block must type every step by layer and cite only what the tools returned (grounded)."""
+    i = final.find("[Proof]")
+    if i < 0:
+        return ["missing [Proof] block"]
+    block = final[i + len("[Proof]"):]
+    steps = PROOF_STEP.findall(block) + [(k, f"[{r}]", c) for k, r, c in PROOF_BARE.findall(block)]
+    problems = [] if 4 <= len(steps) <= 10 else [f"{len(steps)} proof steps (4-10 accepted)"]
+    kinds = {k for k, _, _ in steps}
+    problems += [f"proof has no {k} step" for k in ("L1", "L2", "L3", "L5") if k not in kinds]
+    for k, refs, _ in steps:
+        for ref in (r.strip() for r in PROOF_REF.findall(refs)):
+            # "[A, B]", "[A / B]", "[A 1.0 vs B 5.5]" cite two refs when the whole is not one name; values are dropped
+            parts = [ref] if (k == "L1" and facts.resolve(ref)) or (k == "L2" and ref in l2) else \
+                [REF_VALUE.sub("", x).strip() for x in REF_SPLIT.split(ref) if x.strip()]
+            for part in (x for x in parts if x):
+                if k == "L1" and facts.resolve(part) not in l1:
+                    problems.append(f"proof cites an indicator the tool did not return: {part}")
+                elif k == "L2" and part not in l2:
+                    problems.append(f"proof cites an episode the tool did not return: {part}")
+    if not CONFIDENCE.search(block):
+        problems.append("proof has no confidence line")
+    return problems
+
+
+def check_v4(item: Item, turns: list[dict], episodes: EpisodeTable) -> tuple[list[str], list[dict]]:
+    """(problems, normalised turns) for one v4 conversation. The tool calls are executed again here, so a result that
+    does not match the deterministic tools (or an edited table) is caught, and the proof is checked against the refs
+    the tools really returned. The text checks of version 3 run on the flattened conversation."""
+    roles = [t.get("role") for t in turns]
+    if roles != V4_TURNS:
+        return [f"protocol: turns {roles}, expected {V4_TURNS}"], turns
+    problems = []
+    for i, name in V4_CALLS.items():
+        calls = turns[i].get("tool_calls") or []
+        if len(calls) != 1 or (calls[0].get("function") or {}).get("name") != name:
+            problems.append(f"protocol: message {i // 2 + 1} must call {name} once")
+    if turns[4].get("tool_calls"):
+        problems.append("protocol: the final message calls a tool")
+    if problems:
+        return problems, turns
+    turns = [dict(t) for t in turns]
+    turns[4]["content"] = normalize(turns[4].get("content") or "")
+    for i in (0, 2, 4):
+        if not (turns[i].get("content") or "").lstrip().startswith("[Think]"):
+            problems.append(f"protocol: message {i // 2 + 1} does not start with [Think]")
+    facts = MacroFacts(item.event.macro_context)
+    box = ToolBox(facts, episodes)
+    refs: dict[str, set[str]] = {"L1": set(), "L2": set()}
+    for i in V4_CALLS:
+        fn = turns[i]["tool_calls"][0]["function"]
+        res = box.execute(fn["name"], fn.get("arguments", "{}"))
+        if res.layer == "error":
+            problems.append(f"tool error: {res.text}")
+        elif (turns[i + 1].get("content") or "").strip() != res.text.strip():
+            problems.append(f"tool result of {fn['name']} differs from a re-run of the tool")
+        refs.setdefault(res.layer, set()).update(res.refs)
+    problems += validate(flatten(turns), item)
+    problems += proof_problems(turns[4]["content"], refs["L1"], refs["L2"], facts)
+    return problems, turns
+
+
+def agent_messages(item: Item) -> list[dict]:
+    """System and user messages of the agent format: the school's prompt plus the tool note; the event without the
+    backdrop, which the agent has to fetch."""
+    note = (AGENT / "system_note.txt").read_text(encoding="utf-8").strip()
+    system = read_prompt(f"{item.school}.system.txt").strip() + "\n\n" + note.format(
+        indicators=", ".join(item.event.macro_context))
+    user = (AGENT / "user_template.txt").read_text(encoding="utf-8").strip().format(
+        event_id=item.event.id, category=item.category or "unspecified", event_text=item.event.text)
+    return [{"role": "system", "content": system}, {"role": "user", "content": user}]
+
+
+def _clean(turn: dict) -> dict:
+    keep = ("role", "content", "tool_calls", "tool_call_id", "name")
+    out = {k: turn[k] for k in keep if k in turn}
+    if "tool_calls" in out:
+        out["tool_calls"] = [{"id": c.get("id", ""), "type": "function",
+                              "function": {"name": c["function"]["name"],
+                                           "arguments": _one_line(c["function"].get("arguments", "{}"))}}
+                             for c in out["tool_calls"]]
+    return out
+
+
+def record_v4(item: Item, turns: list[dict], teacher: str, prompt_version: int = PROMPT_VERSION) -> tuple[dict, dict]:
+    """(single-pass record for exp01 arm C, agent record for C-agent) from one checked conversation."""
+    single = record(item, flatten(turns), teacher, prompt_version)
+    single["format"] = "single"
+    agent = {k: v for k, v in single.items() if k != "messages"}
+    agent.update(messages=[*agent_messages(item), *(_clean(t) for t in turns)], tools=TOOL_SPECS, format="agent")
+    return single, agent
+
+
+def collect_v4(items: list[Item], results: list[list[dict]], teacher: str, out_dir: Path,
+               prompt_version: int = PROMPT_VERSION) -> dict:
+    """Check every conversation; write <school>.jsonl (single-pass, exp01 arm C), agent/<school>.jsonl (C-agent),
+    rejects.jsonl and report.json to out_dir; return counts per school."""
+    episodes = EpisodeTable.load()
+    (out_dir / "agent").mkdir(parents=True, exist_ok=True)
+    single: dict[str, list[dict]] = {s: [] for s in SCHOOLS}
+    agent: dict[str, list[dict]] = {s: [] for s in SCHOOLS}
+    rejects = []
+    for it, turns in zip(items, results):
+        problems, turns = check_v4(it, turns, episodes) if turns else (["no reply"], turns)
+        if problems:
+            rejects.append({"school": it.school, "event_id": it.event.id, "template_id": it.template_id,
+                            "problems": problems, "turns": turns})
+            continue
+        a, b = record_v4(it, turns, teacher, prompt_version)
+        single[it.school].append(a)
+        agent[it.school].append(b)
+    for school in SCHOOLS:
+        for path, recs in ((out_dir / f"{school}.jsonl", single[school]),
+                           (out_dir / "agent" / f"{school}.jsonl", agent[school])):
+            with path.open("w", encoding="utf-8") as f:
+                f.writelines(json.dumps(r, ensure_ascii=False) + "\n" for r in recs)
+    with (out_dir / "rejects.jsonl").open("w", encoding="utf-8") as f:
+        f.writelines(json.dumps(r, ensure_ascii=False) + "\n" for r in rejects)
+    report = signal_report(single)
+    (out_dir / "report.json").write_text(json.dumps(report, indent=1) + "\n")
+    counts: dict = {s: len(v) for s, v in single.items()}
+    counts["rejected"] = len(rejects)
+    counts["warnings"] = report["warnings"]
     return counts

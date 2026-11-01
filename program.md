@@ -42,6 +42,11 @@ this file → `research/backlog.md` → the end of `research/LOG.md` (to resume 
 12. **Commands.** Run things as `python -m mosaic <command>` or `python -m pytest`; add new steps as `mosaic`
     subcommands with tests. Other shell commands may be denied by the session's permission settings.
 13. **Deadlines.** If a due date in `research/backlog.md` is at risk, say so under "For the human" with the reason.
+14. **Deviations.** When a result departs from what the plan expects (counts, pass or failure rates, a gate such
+    as S0 or S4, cost, time), add a `deviation:` line to its LOG entry: planned, observed, impact, proposed
+    adjustment. Fix operational causes yourself; anything that would change an experiment's scope, arms,
+    hypotheses or data goes under "For the human" with your recommendation (THESIS_DESIGN §6). Never adjust on
+    test-window or other held-out results.
 
 ## Task S — first-day spikes (no assets needed; run first on a new pod, ≤ 4 GPU-hours in total)
 
@@ -112,6 +117,21 @@ a Claude model as teacher. Templates and filters are fixed in `configs/teacher/t
    read them) and log: model, keep rate per school, reject reasons, mean reply length, generation speed.
 3. Hand-off: `READY FOR HUMAN: teacher pilot`. The full run (`--n 500`) waits for the human's review.
 
+## Task A — agent spike (RQ2 infrastructure; no assets needed; ≤ 2 GPU-hours)
+
+Check that Qwen3-8B can act as a framework agent with the real L1/L2 tools (`src/mosaic/tools.py`) before the
+teacher's full run fixes the trajectory format (research/DESIGN_ontology_agents.md §4a; prompted agent = A-agent).
+
+1. `python -m mosaic agent-spike --n 10` (30 conversations: 10 template events per school, item seed 7, chat
+   template in non-thinking mode, the provisional school prompts without their PLACEHOLDER line plus
+   `configs/agent/system_note.txt`), then the same with `--thinking`.
+2. From each `runs/agent-spike/<mode>/summary.json` report: share passing all checks, protocol (episode tool, then
+   macro tool, then the answer), tool-call validity (malformed calls, tool errors), proof validity and grounding,
+   text filters, problems counted, seconds. Write `research/agent_spike.md` with the table and one example
+   conversation per failure type (from `conversations.jsonl`), log it (with a `deviation:` line if the shares are far
+   from what the teacher pilot reached), commit.
+3. Do not tune prompts beyond fixing a clear harness bug (with a test); the spike measures the starting point.
+
 ## Task 2 — exp03 data build (P0; CPU + network; may run while waiting for the human)
 
 Follow `research/prereg_drafts/exp03_market_forecasting.md`.
@@ -155,6 +175,7 @@ registration, `configs/sae_features.toml` is measurement (rule 2).
 - command: …
 - run_ids: …
 - result: … (numbers, vs best so far, vs noise)
+- deviation: planned … / observed … / impact … / proposal … (only when the plan and the result differ)
 - decision: keep | discard | inconclusive
 - next: …
 ```

@@ -89,7 +89,7 @@ def test_generate_writes_the_data_contract_with_inference_prompts(tmp_path):
 
 def test_export_and_import_round_trip_for_a_hosted_api_run(tmp_path):
     jobs, out = tmp_path / "jobs", tmp_path / "out"
-    assert teacher.export_jobs(3, 0, "qwen-test", jobs) == 9
+    assert teacher.export_jobs(3, 0, "qwen-test", jobs, prompt_version=3) == 9  # the single-reply protocol
     reqs = [json.loads(x) for x in (jobs / "requests.jsonl").read_text().splitlines()]
     assert reqs[0]["url"] == "/v1/chat/completions" and reqs[0]["body"]["model"] == "qwen-test"
     lines = [{"custom_id": r["custom_id"], "model": "qwen-test", "content": GOOD} for r in reqs[:-2]]
@@ -106,7 +106,7 @@ def test_import_refuses_a_claude_teacher(tmp_path):
     import pytest
 
     jobs = tmp_path / "jobs"
-    teacher.export_jobs(1, 0, "qwen-test", jobs)
+    teacher.export_jobs(1, 0, "qwen-test", jobs, prompt_version=3)
     (jobs / "results.jsonl").write_text(json.dumps({"custom_id": "keynesian|syn-k0000", "model": "claude-x",
                                                     "content": GOOD}) + "\n")
     with pytest.raises(SystemExit, match="Claude"):

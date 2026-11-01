@@ -1,0 +1,639 @@
+# Stand-in for the episode database (Confirmation: 141 episodes, 1971-2025) behind the L2 tool `query_episode_db`,
+# used until the human uploads the database (design note decision 3). Named, dated episodes before 2025 with a
+# qualitative account of what happened; deliberately no statistics, so nothing here can be a wrong number.
+# Draft by the orchestrator (2026-11-01, AI-use ledger); the human checks it before a full teacher run.
+# Dates: the day when it is certain, otherwise the first of the month. Tags use the template categories' words.
+
+source = "stand-in table v1 (orchestrator draft, human check pending)"
+
+[[episode]]
+id = "EP-1923-11"
+date = "1923-11-15"
+name = "German hyperinflation ends with a currency reform"
+country = "Germany"
+tags = ["hyperinflation", "money printing", "fiscal dominance", "currency reform"]
+what = "Germany financed deficits by printing money and prices spiralled through 1923 until the Rentenmark reform in November stopped the spiral."
+
+[[episode]]
+id = "EP-1930-06"
+date = "1930-06-17"
+name = "Smoot-Hawley tariff act"
+country = "US"
+tags = ["trade", "tariffs", "retaliation", "protectionism"]
+what = "The US raised tariffs on thousands of imports; trading partners retaliated and world trade shrank during the Great Depression."
+
+[[episode]]
+id = "EP-1971-08"
+date = "1971-08-15"
+name = "Nixon closes the gold window"
+country = "US"
+tags = ["currency", "dollar", "gold", "monetary regime", "inflation", "tariffs"]
+what = "The US suspended dollar convertibility into gold and imposed wage and price controls and an import surcharge; the Bretton Woods system ended and the dollar fell over the following years."
+
+[[episode]]
+id = "EP-1973-10"
+date = "1973-10-17"
+name = "OPEC oil embargo"
+country = "global"
+tags = ["oil", "commodity shock", "supply shock", "inflation", "geopolitical", "output cut", "recession"]
+what = "Arab oil producers cut output and embargoed the US; oil prices rose several-fold by early 1974, inflation climbed and the US entered recession with high inflation."
+
+[[episode]]
+id = "EP-1979-10"
+date = "1979-10-06"
+name = "Volcker shift to money-supply targeting"
+country = "US"
+tags = ["monetary policy", "tightening", "rate hike", "inflation", "money supply", "credibility", "recession"]
+what = "The Federal Reserve switched to targeting reserves to break high inflation; short rates rose steeply, the economy fell into recession in 1980 and 1981-82, and inflation came down."
+
+[[episode]]
+id = "EP-1984-05"
+date = "1984-05-17"
+name = "Continental Illinois rescue"
+country = "US"
+tags = ["banking", "bank run", "deposit guarantee", "bank failure", "too big to fail"]
+what = "A run by wholesale depositors hit Continental Illinois; regulators guaranteed all its depositors and creditors and later took control of the bank."
+
+[[episode]]
+id = "EP-1985-09"
+date = "1985-09-22"
+name = "Plaza Accord"
+country = "G5"
+tags = ["currency", "dollar", "intervention", "coordination"]
+what = "G5 finance ministers agreed to coordinated intervention to weaken the dollar, which fell substantially over the next two years."
+
+[[episode]]
+id = "EP-1987-10"
+date = "1987-10-19"
+name = "Black Monday"
+country = "US"
+tags = ["market event", "equity crash", "liquidity", "volatility", "central bank backstop"]
+what = "US equities lost more than a fifth of their value in one day without clear news; the Fed affirmed it would supply liquidity and the economy did not enter recession."
+
+[[episode]]
+id = "EP-1989-03"
+date = "1989-03-13"
+name = "Geomagnetic storm blacks out Quebec"
+country = "Canada"
+tags = ["solar storm", "power grid", "black swan", "outage"]
+what = "A geomagnetic storm collapsed the Hydro-Quebec grid for about nine hours; the economic effects stayed local and short-lived."
+
+[[episode]]
+id = "EP-1989-11"
+date = "1989-11-09"
+name = "Fall of the Berlin Wall"
+country = "Germany"
+tags = ["geopolitical", "peace", "reunification", "fiscal policy"]
+what = "The opening of the Berlin Wall led to German reunification in 1990; large transfers to the east were followed by Bundesbank rate rises to contain inflation."
+
+[[episode]]
+id = "EP-1989-12"
+date = "1989-12-29"
+name = "Japanese asset bubble peaks"
+country = "Japan"
+tags = ["bubble", "housing", "real estate", "banking", "deflation", "equity crash"]
+what = "Japanese equity and land prices peaked around 1989-90 and fell for years; bad loans weighed on banks and the economy entered a long period of low growth and deflation."
+
+[[episode]]
+id = "EP-1990-08"
+date = "1990-08-02"
+name = "Iraq invades Kuwait"
+country = "global"
+tags = ["geopolitical", "conflict", "oil", "supply shock", "recession"]
+what = "Oil prices spiked and the US recession of 1990-91 deepened; prices fell back once the coalition offensive began in early 1991."
+
+[[episode]]
+id = "EP-1992-09"
+date = "1992-09-16"
+name = "Black Wednesday, the UK leaves the ERM"
+country = "UK"
+tags = ["currency", "peg", "devaluation", "speculative attack", "monetary union", "rate hike"]
+what = "The UK failed to defend sterling with emergency rate rises and left the Exchange Rate Mechanism; sterling depreciated, rates were cut and the economy recovered."
+
+[[episode]]
+id = "EP-1994-01"
+date = "1994-01-01"
+name = "NAFTA takes effect"
+country = "North America"
+tags = ["trade", "free trade agreement", "tariffs"]
+what = "The agreement removed most tariffs among the US, Canada and Mexico over the following years; trade among the three expanded."
+
+[[episode]]
+id = "EP-1994-02"
+date = "1994-02-04"
+name = "Fed surprise tightening and bond rout"
+country = "US"
+tags = ["monetary policy", "tightening", "rate hike", "bonds", "yields", "surprise"]
+what = "The Fed began a tightening cycle that doubled the funds rate within a year; long-term yields rose sharply worldwide and leveraged bond investors took heavy losses, but the expansion continued."
+
+[[episode]]
+id = "EP-1994-12"
+date = "1994-12-20"
+name = "Mexican peso crisis"
+country = "Mexico"
+tags = ["emerging market", "peg", "devaluation", "capital flight", "IMF", "contagion"]
+what = "Mexico devalued and then floated the peso; capital fled, a US and IMF rescue followed and Mexico fell into a deep recession in 1995."
+
+[[episode]]
+id = "EP-1996-12"
+date = "1996-12-05"
+name = "Greenspan's irrational exuberance speech"
+country = "US"
+tags = ["equity valuation", "bubble", "central bank communication", "productivity"]
+what = "The Fed chair questioned asset valuations; markets dipped briefly, and productivity-led growth and rising stock prices continued for several more years."
+
+[[episode]]
+id = "EP-1997-07"
+date = "1997-07-02"
+name = "Thai baht float and the Asian financial crisis"
+country = "Thailand"
+tags = ["emerging market", "peg", "devaluation", "contagion", "capital flight", "IMF", "banking"]
+what = "Thailand abandoned its dollar peg; the crisis spread to Indonesia, South Korea and others, with IMF programmes, sharp devaluations and recessions."
+
+[[episode]]
+id = "EP-1998-08"
+date = "1998-08-17"
+name = "Russian default and the LTCM failure"
+country = "Russia"
+tags = ["default", "emerging market", "hedge fund", "contagion", "liquidity", "credit spreads", "easing"]
+what = "Russia defaulted on domestic debt and devalued; credit spreads widened worldwide, the hedge fund LTCM was rescued by banks in a deal organised by the New York Fed, and the Fed cut rates three times."
+
+[[episode]]
+id = "EP-1998-09"
+date = "1998-09-01"
+name = "Malaysia imposes capital controls"
+country = "Malaysia"
+tags = ["capital controls", "emerging market", "peg", "currency"]
+what = "During the Asian crisis Malaysia imposed controls on capital outflows and pegged the ringgit to the dollar instead of taking an IMF programme."
+
+[[episode]]
+id = "EP-2000-03"
+date = "2000-03-10"
+name = "Dot-com bubble peaks"
+country = "US"
+tags = ["bubble", "technology", "equity crash", "investment", "recession"]
+what = "Technology stocks peaked and then fell for more than two years; business investment contracted and the US entered a mild recession in 2001."
+
+[[episode]]
+id = "EP-2001-01"
+date = "2001-01-03"
+name = "Fed cuts rates between meetings"
+country = "US"
+tags = ["monetary policy", "easing", "rate cut", "unscheduled", "recession"]
+what = "The Fed cut rates in an unscheduled move, the start of a rapid easing cycle through 2001 as the economy slipped into recession."
+
+[[episode]]
+id = "EP-2001-09"
+date = "2001-09-11"
+name = "September 11 attacks"
+country = "US"
+tags = ["black swan", "geopolitical", "market closure", "liquidity", "confidence", "easing"]
+what = "US stock markets closed for four trading days; the Fed supplied liquidity and cut rates, and equities fell sharply on reopening before recovering within weeks."
+
+[[episode]]
+id = "EP-2001-12"
+date = "2001-12-23"
+name = "Argentina defaults and ends its currency board"
+country = "Argentina"
+tags = ["default", "emerging market", "peg", "devaluation", "capital controls", "banking"]
+what = "Argentina defaulted on its external debt and abandoned the peso-dollar currency board in early 2002; bank deposits were frozen, the peso collapsed and output fell sharply."
+
+[[episode]]
+id = "EP-2003-03"
+date = "2003-03-20"
+name = "Iraq war begins"
+country = "global"
+tags = ["geopolitical", "conflict", "oil", "uncertainty"]
+what = "Oil prices and risk aversion rose in the run-up; once the invasion began, oil fell and equities rallied as the uncertainty lifted."
+
+[[episode]]
+id = "EP-2006-07"
+date = "2006-07-01"
+name = "US house prices peak"
+country = "US"
+tags = ["housing", "house prices", "mortgage", "credit", "subprime"]
+what = "US house prices peaked in 2006 and then declined; rising mortgage defaults, concentrated in subprime loans, led into the 2007-08 financial crisis."
+
+[[episode]]
+id = "EP-2007-08"
+date = "2007-08-09"
+name = "BNP Paribas freezes funds, interbank stress begins"
+country = "global"
+tags = ["banking", "interbank funding", "credit", "subprime", "liquidity"]
+what = "BNP Paribas suspended three funds exposed to US subprime mortgages; interbank spreads jumped and central banks injected liquidity, the start of the global financial crisis."
+
+[[episode]]
+id = "EP-2008-07"
+date = "2008-07-11"
+name = "Oil price peak of 2008"
+country = "global"
+tags = ["oil", "commodity shock", "inflation", "demand"]
+what = "Oil reached a record high in mid-2008, adding to headline inflation, then collapsed in the second half of the year as the financial crisis cut demand."
+
+[[episode]]
+id = "EP-2008-09"
+date = "2008-09-15"
+name = "Lehman Brothers bankruptcy"
+country = "US"
+tags = ["banking", "bank failure", "credit spreads", "liquidity", "recession", "bailout"]
+what = "Lehman filed for bankruptcy; money markets froze, AIG was rescued, credit spreads and volatility surged and the world economy fell into a deep recession."
+
+[[episode]]
+id = "EP-2008-11-09"
+date = "2008-11-09"
+name = "China's crisis stimulus package"
+country = "China"
+tags = ["China", "stimulus", "fiscal policy", "infrastructure", "commodities", "credit"]
+what = "China announced a large infrastructure-led stimulus backed by a surge in bank lending; Chinese growth and commodity prices rebounded in 2009."
+
+[[episode]]
+id = "EP-2008-11-25"
+date = "2008-11-25"
+name = "Fed announces large-scale asset purchases (QE1)"
+country = "US"
+tags = ["monetary policy", "asset purchases", "easing", "zero lower bound", "mortgage"]
+what = "The Fed announced purchases of agency debt and mortgage-backed securities, later extended to Treasuries; mortgage rates and long yields fell."
+
+[[episode]]
+id = "EP-2009-02"
+date = "2009-02-17"
+name = "US Recovery Act"
+country = "US"
+tags = ["fiscal policy", "stimulus", "infrastructure", "transfers", "recession"]
+what = "A large package of tax cuts, transfers and public investment was signed during the recession; the economy began to recover later in 2009."
+
+[[episode]]
+id = "EP-2009-03"
+date = "2009-03-01"
+name = "US headline CPI turns negative"
+country = "US"
+tags = ["inflation data", "deflation", "recession", "energy prices"]
+what = "Headline CPI fell year on year for most of 2009 as energy prices collapsed, while core inflation stayed positive and inflation expectations held."
+
+[[episode]]
+id = "EP-2010-05-02"
+date = "2010-05-02"
+name = "First Greek bailout"
+country = "euro area"
+tags = ["sovereign debt", "fiscal policy", "monetary union", "contagion", "IMF", "austerity"]
+what = "The euro area and the IMF agreed a loan package for Greece tied to austerity; contagion to other periphery bond markets continued into 2012."
+
+[[episode]]
+id = "EP-2010-05-06"
+date = "2010-05-06"
+name = "Flash crash"
+country = "US"
+tags = ["market event", "liquidity", "market structure", "volatility"]
+what = "US equities plunged and recovered within minutes as liquidity vanished; regulators later introduced single-stock circuit breakers."
+
+[[episode]]
+id = "EP-2010-08"
+date = "2010-08-05"
+name = "Russia bans grain exports after a drought"
+country = "Russia"
+tags = ["drought", "grain", "commodity shock", "food prices", "export ban"]
+what = "A severe drought led Russia to ban grain exports; wheat prices jumped and food inflation rose in importing countries."
+
+[[episode]]
+id = "EP-2010-09"
+date = "2010-09-23"
+name = "China halts rare-earth shipments to Japan"
+country = "China"
+tags = ["China", "export controls", "critical minerals", "geopolitical"]
+what = "During a territorial dispute China halted rare-earth exports to Japan; rare-earth prices spiked and importers sought other suppliers."
+
+[[episode]]
+id = "EP-2011-03"
+date = "2011-03-11"
+name = "Tohoku earthquake and tsunami"
+country = "Japan"
+tags = ["earthquake", "natural disaster", "supply chain", "nuclear", "intervention", "currency"]
+what = "The disaster destroyed industrial capacity and caused the Fukushima nuclear accident; auto and electronics supply chains were disrupted and the G7 intervened jointly to weaken the yen."
+
+[[episode]]
+id = "EP-2011-06"
+date = "2011-06-23"
+name = "IEA coordinated release of oil stocks"
+country = "global"
+tags = ["oil", "strategic reserve", "coordinated release", "supply shock"]
+what = "After the loss of Libyan output the IEA coordinated a release of emergency oil stocks; the price effect faded within weeks."
+
+[[episode]]
+id = "EP-2011-08"
+date = "2011-08-05"
+name = "S&P downgrades the United States"
+country = "US"
+tags = ["rating downgrade", "sovereign debt", "debt ceiling", "fiscal policy", "safe haven"]
+what = "After the debt-ceiling standoff S&P cut the US rating by one notch; equities fell sharply but Treasury yields declined as investors sought safety."
+
+[[episode]]
+id = "EP-2012-07"
+date = "2012-07-26"
+name = "Draghi's whatever-it-takes pledge"
+country = "euro area"
+tags = ["central bank", "monetary policy", "sovereign spreads", "credibility", "monetary union"]
+what = "The ECB president pledged to do whatever it takes to preserve the euro; periphery bond spreads narrowed sharply once the OMT programme was announced."
+
+[[episode]]
+id = "EP-2013-04"
+date = "2013-04-04"
+name = "Bank of Japan launches QQE under a new governor"
+country = "Japan"
+tags = ["monetary policy", "easing", "dovish", "new governor", "asset purchases", "inflation target", "currency"]
+what = "Weeks after a governor seen as far more dovish took office, the BoJ launched quantitative and qualitative easing to reach its inflation target in about two years; the yen weakened and Japanese equities rallied."
+
+[[episode]]
+id = "EP-2013-05"
+date = "2013-05-22"
+name = "Taper tantrum"
+country = "US"
+tags = ["monetary policy", "tightening", "asset purchases", "bonds", "yields", "emerging market", "capital flight"]
+what = "Fed testimony about slowing asset purchases sent US long yields sharply higher and triggered capital outflows from emerging markets."
+
+[[episode]]
+id = "EP-2013-10"
+date = "2013-10-01"
+name = "US government shutdown and debt-ceiling standoff"
+country = "US"
+tags = ["government shutdown", "debt ceiling", "fiscal policy", "budget dispute"]
+what = "A 16-day federal shutdown and debt-ceiling standoff ended with a temporary deal; the measured economic impact was small."
+
+[[episode]]
+id = "EP-2014-11"
+date = "2014-11-27"
+name = "OPEC declines to cut output"
+country = "global"
+tags = ["oil", "oversupply", "commodity price collapse", "energy", "credit spreads"]
+what = "OPEC kept production unchanged despite a glut; oil prices fell by more than half into early 2016, hurting energy producers, commodity exporters and high-yield energy credit."
+
+[[episode]]
+id = "EP-2014-12"
+date = "2014-12-16"
+name = "Russian rouble crisis"
+country = "Russia"
+tags = ["sanctions", "currency", "emerging market", "rate hike", "oil", "capital flight"]
+what = "Sanctions over Crimea and the oil price collapse sent the rouble down sharply; the central bank raised rates steeply overnight and the economy fell into recession."
+
+[[episode]]
+id = "EP-2015-01-15"
+date = "2015-01-15"
+name = "Swiss National Bank abandons the franc cap"
+country = "Switzerland"
+tags = ["currency", "peg", "central bank", "surprise", "safe haven"]
+what = "The SNB removed its minimum exchange rate against the euro without warning; the franc jumped and several currency brokers failed."
+
+[[episode]]
+id = "EP-2015-01-22"
+date = "2015-01-22"
+name = "ECB launches sovereign quantitative easing"
+country = "euro area"
+tags = ["monetary policy", "asset purchases", "easing", "deflation", "currency"]
+what = "With euro-area inflation below zero the ECB announced large-scale purchases of government bonds; the euro weakened and bond yields fell."
+
+[[episode]]
+id = "EP-2015-06"
+date = "2015-06-12"
+name = "Chinese stock market crash"
+country = "China"
+tags = ["China", "equity crash", "bubble", "margin debt", "intervention"]
+what = "A margin-fuelled rally in Chinese equities peaked and reversed; authorities intervened with purchases and trading curbs."
+
+[[episode]]
+id = "EP-2015-07"
+date = "2015-07-05"
+name = "Greek bailout referendum and capital controls"
+country = "euro area"
+tags = ["monetary union", "euro exit", "referendum", "capital controls", "sovereign debt"]
+what = "Greece imposed capital controls and voters rejected the bailout terms; the government then accepted a third programme and contagion to other euro bonds stayed limited."
+
+[[episode]]
+id = "EP-2015-08"
+date = "2015-08-11"
+name = "China changes the renminbi fixing"
+country = "China"
+tags = ["China", "currency", "devaluation", "capital flight", "equity crash"]
+what = "The PBoC changed the daily fixing mechanism and the renminbi weakened; global equities sold off later in August and capital outflows from China rose."
+
+[[episode]]
+id = "EP-2016-01"
+date = "2016-01-29"
+name = "Bank of Japan adopts negative rates"
+country = "Japan"
+tags = ["monetary policy", "negative rates", "easing", "banking"]
+what = "The BoJ introduced a negative rate on part of bank reserves; the yen strengthened rather than weakened and bank shares fell."
+
+[[episode]]
+id = "EP-2016-06"
+date = "2016-06-23"
+name = "Brexit referendum"
+country = "UK"
+tags = ["geopolitical", "referendum", "currency", "uncertainty", "easing"]
+what = "The UK voted to leave the EU; sterling fell sharply, the Bank of England cut rates in August, and global markets recovered within weeks."
+
+[[episode]]
+id = "EP-2016-09"
+date = "2016-09-21"
+name = "Bank of Japan adopts yield-curve control"
+country = "Japan"
+tags = ["monetary policy", "yield curve control", "bonds", "easing"]
+what = "The BoJ began targeting the 10-year government bond yield around zero alongside its negative short rate."
+
+[[episode]]
+id = "EP-2017-12"
+date = "2017-12-22"
+name = "US corporate tax cut"
+country = "US"
+tags = ["fiscal policy", "tax cut", "corporate tax", "deficit"]
+what = "The US cut the corporate tax rate sharply and changed the taxation of foreign profits; share buybacks rose and the federal deficit widened."
+
+[[episode]]
+id = "EP-2018-03"
+date = "2018-03-22"
+name = "US-China trade war begins"
+country = "US"
+tags = ["trade", "tariffs", "China", "retaliation", "uncertainty"]
+what = "After tariffs on steel and aluminium the US announced tariffs on Chinese imports; China retaliated and successive rounds weighed on trade and manufacturing through 2019."
+
+[[episode]]
+id = "EP-2018-08"
+date = "2018-08-10"
+name = "Turkish lira crisis"
+country = "Turkey"
+tags = ["emerging market", "currency", "sanctions", "tariffs", "rate hike", "inflation"]
+what = "A diplomatic dispute and US tariffs on Turkish metals accelerated a lira collapse; the central bank later raised rates sharply."
+
+[[episode]]
+id = "EP-2019-07"
+date = "2019-07-31"
+name = "Fed insurance cut"
+country = "US"
+tags = ["monetary policy", "easing", "rate cut", "trade", "uncertainty"]
+what = "The Fed cut rates for the first time since 2008, citing trade uncertainty and weak global growth, and cut twice more that year."
+
+[[episode]]
+id = "EP-2020-01"
+date = "2020-01-15"
+name = "US-China phase-one trade deal"
+country = "US"
+tags = ["trade", "trade truce", "tariffs", "China"]
+what = "The US and China signed a limited deal that halted further tariff escalation; most existing tariffs stayed in place."
+
+[[episode]]
+id = "EP-2020-03"
+date = "2020-03-15"
+name = "Covid-19 shock and emergency easing"
+country = "global"
+tags = ["pandemic", "lockdown", "black swan", "easing", "asset purchases", "fiscal policy", "stimulus", "liquidity"]
+what = "Lockdowns shut large parts of the economy; the Fed cut to near zero and restarted asset purchases, governments passed large fiscal packages, and US equities regained their losses by August."
+
+[[episode]]
+id = "EP-2020-07"
+date = "2020-07-30"
+name = "Record fall in US GDP"
+country = "US"
+tags = ["GDP", "data surprise", "recession", "pandemic"]
+what = "The advance estimate showed the steepest quarterly fall in US output on record for the second quarter; growth rebounded strongly in the third quarter."
+
+[[episode]]
+id = "EP-2021-03-11"
+date = "2021-03-11"
+name = "American Rescue Plan"
+country = "US"
+tags = ["fiscal policy", "stimulus", "transfers", "inflation"]
+what = "A large package with direct payments to households was enacted; demand surged and inflation rose through 2021."
+
+[[episode]]
+id = "EP-2021-03-23"
+date = "2021-03-23"
+name = "Ever Given blocks the Suez Canal"
+country = "global"
+tags = ["shipping", "freight", "supply chain", "strait closure"]
+what = "A container ship blocked the canal for six days, adding to pandemic-era port congestion and record freight rates in 2021."
+
+[[episode]]
+id = "EP-2021-03-26"
+date = "2021-03-26"
+name = "Archegos collapse"
+country = "US"
+tags = ["hedge fund", "forced selling", "leverage", "banking", "market event"]
+what = "The family office Archegos failed to meet margin calls; forced block sales caused large losses at several banks, notably Credit Suisse and Nomura."
+
+[[episode]]
+id = "EP-2021-09"
+date = "2021-09-23"
+name = "Evergrande misses offshore bond payments"
+country = "China"
+tags = ["China", "property developer", "default", "housing", "credit"]
+what = "China Evergrande missed interest payments on offshore bonds amid a property-sector credit squeeze; it was later declared in default and other developers followed."
+
+[[episode]]
+id = "EP-2022-02"
+date = "2022-02-24"
+name = "Russia invades Ukraine"
+country = "global"
+tags = ["geopolitical", "conflict", "energy", "natural gas", "grain", "commodity shock", "sanctions"]
+what = "Energy and grain prices surged, Europe faced a natural-gas supply shock, and broad financial sanctions were imposed on Russia."
+
+[[episode]]
+id = "EP-2022-03"
+date = "2022-03-16"
+name = "Fed starts hiking against high inflation"
+country = "US"
+tags = ["monetary policy", "tightening", "rate hike", "inflation", "bonds", "dollar"]
+what = "With inflation at a four-decade high the Fed began its fastest tightening in decades; bonds and equities fell together in 2022 and the dollar rose."
+
+[[episode]]
+id = "EP-2022-05"
+date = "2022-05-09"
+name = "TerraUSD stablecoin collapse"
+country = "global"
+tags = ["stablecoin", "crypto", "run", "peg"]
+what = "The algorithmic stablecoin TerraUSD lost its dollar peg and collapsed within days, spreading losses to crypto lenders and funds."
+
+[[episode]]
+id = "EP-2022-09-22"
+date = "2022-09-22"
+name = "Japan intervenes to support the yen"
+country = "Japan"
+tags = ["currency", "intervention", "dollar", "monetary policy divergence"]
+what = "With the dollar at a two-decade high on Fed tightening, Japan bought yen for the first time since 1998; the yen kept weakening until late in the year."
+
+[[episode]]
+id = "EP-2022-09-23"
+date = "2022-09-23"
+name = "UK mini-budget and the gilt crisis"
+country = "UK"
+tags = ["fiscal policy", "tax cut", "bonds", "currency", "pension funds", "central bank intervention"]
+what = "Unfunded tax cuts sent gilt yields and sterling into turmoil; the Bank of England bought long gilts to stop forced selling and most measures were reversed."
+
+[[episode]]
+id = "EP-2023-03-10"
+date = "2023-03-10"
+name = "Silicon Valley Bank fails"
+country = "US"
+tags = ["banking", "bank run", "deposit guarantee", "regional banking", "interest rate risk"]
+what = "A run on uninsured deposits closed SVB; regulators guaranteed all its deposits and the Fed opened a new lending facility for banks."
+
+[[episode]]
+id = "EP-2023-03-19"
+date = "2023-03-19"
+name = "UBS takes over Credit Suisse"
+country = "Switzerland"
+tags = ["banking", "bank merger", "regulator-arranged", "losses"]
+what = "Swiss authorities arranged UBS's takeover of Credit Suisse over a weekend; its additional tier-1 bonds were written off."
+
+[[episode]]
+id = "EP-2023-07-01"
+date = "2023-07-01"
+name = "Deepest US yield-curve inversion in decades"
+country = "US"
+tags = ["yield curve", "inversion", "recession signal", "bonds"]
+what = "The 2-year/10-year Treasury curve inverted to its deepest level since the early 1980s; no recession followed through 2024."
+
+[[episode]]
+id = "EP-2023-07-03"
+date = "2023-07-03"
+name = "China restricts gallium and germanium exports"
+country = "China"
+tags = ["China", "export controls", "critical minerals", "semiconductors"]
+what = "China announced export licensing for two metals used in chips; prices outside China rose and buyers looked for other sources."
+
+[[episode]]
+id = "EP-2023-10"
+date = "2023-10-01"
+name = "US mortgage rates reach a two-decade high"
+country = "US"
+tags = ["housing", "mortgage", "rates", "home sales"]
+what = "Thirty-year mortgage rates rose to their highest level since 2000; existing-home sales fell to multi-year lows while prices held up."
+
+[[episode]]
+id = "EP-2023-12"
+date = "2023-12-15"
+name = "Red Sea shipping attacks"
+country = "global"
+tags = ["shipping", "strait closure", "freight", "geopolitical", "supply chain"]
+what = "Attacks on ships led most container lines to divert around the Cape of Good Hope; freight rates and transit times rose for months."
+
+[[episode]]
+id = "EP-2024-07"
+date = "2024-07-19"
+name = "Faulty software update causes a global IT outage"
+country = "global"
+tags = ["cyber", "outage", "operational risk", "payments"]
+what = "A defective security-software update crashed millions of Windows computers, disrupting airlines, banks and payments for days; the market impact was limited."
+
+[[episode]]
+id = "EP-2024-08-05"
+date = "2024-08-05"
+name = "Yen carry-trade unwind"
+country = "global"
+tags = ["market event", "volatility", "carry trade", "currency", "equity crash", "employment"]
+what = "After a BoJ hike and a weak US jobs report, the yen surged and Japanese equities posted their largest one-day fall since 1987; volatility spiked and markets recovered within weeks."
+
+[[episode]]
+id = "EP-2024-08-21"
+date = "2024-08-21"
+name = "Large downward payroll benchmark revision"
+country = "US"
+tags = ["employment", "revision", "labour market", "data surprise"]
+what = "The preliminary benchmark revision lowered past payroll levels substantially, reinforcing expectations that the Fed would start cutting rates."

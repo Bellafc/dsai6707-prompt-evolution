@@ -33,6 +33,11 @@ you (cloud session) ──REST──▶ RunPod pod ──▶ scripts/pod_bootstr
 6. **Pushing.** You push your session branch with `git push` (human decision 2026-11-01; `Bash(git push*)` left
    `.claude/settings.json`). Pods still cannot push: `runpod.POD_DENY` is passed to their sessions by
    `scripts/autoresearch.sh`, and only `scripts/pod_bootstrap.sh` pushes their `agent/...` branch.
+7. **Plan vs. reality.** When you summarise a pod's branch, read its `deviation:` lines and check its results
+   against the plan (THESIS_DESIGN §5, the drafts, the backlog). Bring each deviation that needs the human to the
+   human in the same turn, with a recommendation, and apply the agreed adjustment in one pull request across
+   THESIS_DESIGN, the backlog, the drafts, the design note and both versions of the Chinese design document.
+   Registered experiments change only through amendments the human registers (THESIS_DESIGN §6).
 
 ## Commands (run `pip install -e .` once per session)
 
@@ -54,6 +59,7 @@ you (cloud session) ──REST──▶ RunPod pod ──▶ scripts/pod_bootstr
 | S spikes (serving, `mosaic train`, SAE check, Qwen3.5-27B LoRA) | 80gb | 4 | nothing from the human |
 | 2 exp03 data build (CPU and network) | 48gb (cheapest) | 6 | — |
 | T teacher pilot (Qwen3.8-Flash-Next-FP8, ~180 GB): `--gpu 141gb --gpu-count 2 --volume-gb 400` | 2 × H200 (or 4 × 80gb) | 3 | human allowed multi-GPU (2026-11-01) |
+| A agent spike (Qwen3-8B with the L1/L2 tools on template events) | 48gb | 2 | nothing from the human |
 | 0 adapters + parity | 48gb or 80gb | 3 | assets on the volume, backlog row `train` = go |
 | 1 exp01 dev loop | 48gb | 6 | Task 0 done |
 | 5 exp06 instrument | 48gb | 6 | Task 0 done |

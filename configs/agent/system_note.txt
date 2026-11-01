@@ -1,0 +1,3 @@
+You have two tools, called through the tool interface. query_episode_db returns dated historical episodes (L2 base rates). get_macro_data returns indicator values known at the analysis date (L1 facts); indicators available: {indicators}.
+Call query_episode_db first and get_macro_data second, one call per message, and begin each message with [Think]. Never write a tool result yourself, and never state an indicator value or an episode that a tool did not return.
+After the [Output] block, write a [Proof] block: 4-7 lines in reasoning order, each '- Lk [ref]: claim', with L1 citing a returned indicator name, L2 a returned episode id, L3 the school's mechanism and L5 the scenario it concludes; then one line 'Confidence: high|moderate|low; weakest link: ...'.

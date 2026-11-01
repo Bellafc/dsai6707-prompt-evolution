@@ -2,7 +2,9 @@
 
 Status: **DRAFT** (not registered). The agent may refine this file during the data build (counts, field names,
 mapping rules). It becomes binding when the human copies it to `prereg/exp03_market_forecasting.md` and commits,
-**before any forecast on the test window is scored**. Thesis chapter 6 (RQ3). Priority **P0**.
+**before any forecast on the test window is scored**. Thesis chapter 6 (RQ3, adopted 2026-11-01: "how sure"). Priority
+**P0**. H8 and the agent arms were added on 2026-11-01 (design note §4, §4a); the multi-model members and personas are
+proposals for the author.
 
 ## Question
 
@@ -76,6 +78,16 @@ No news, no market prices, no text written after t.
 | uniform | equal probability on every bin |
 | history | empirical distribution of the series' historical changes, point-in-time (pmpol `baseline.py`) |
 | market | Kalshi prices at t (daily close), normalised over bins — benchmark, not a competitor to beat |
+| pool-persona | equal-weight pool of three base-model members with non-theoretical personas (proposed: a cautious risk manager, an optimistic portfolio manager, a journalist summarising consensus; the author fixes the wording) |
+| pool-models | equal-weight pool of three open models released before 2025-05 with the school-neutral prompt (proposed: Qwen3-8B, Llama-3.1-8B-Instruct, GLM-4-9B-Chat; the author confirms the list and the licences) |
+| pool-sample | equal-weight pool of three base-model members that differ only in the sampling seed |
+| K/A/M-agent, K′/A′/M′-agent (secondary) | the school adapter trained on the v4 multi-turn trajectories (C-agent) and the base model with the school prompt (A-agent), both with the real tools: `get_macro_data` returns the information set's indicators as published on or before t, `query_episode_db` the analog episodes with trigger date before t; each forecast carries its [Proof] |
+| pool-eq-agent, pool-prompt-agent (secondary) | equal-weight pools of the agent arms |
+
+Every pool has three members, each member's forecast the mean of its 3 samples, so the diversity sources are compared
+at equal ensemble size. **Agent arms, cut-off rule**: they run only if the C-agent adapters are trained and frozen by
+2026-12-10; otherwise they are dropped and reported as not run, and every other system runs as registered. Their
+proofs also feed exp07 (RQ2).
 
 Generation: the scenario set is passed as the [Output] scenario list; 3 samples per (event, system) at
 T = 0.7 / top-p 0.9; per sample the probabilities are parsed per bin and renormalised if their sum is in
@@ -101,7 +113,12 @@ Brier score on the binary contracts, ECE on binary contracts (10 bins), format-f
   among contested frameworks flags harder events.
 - **H7 (analytic confidence is informative)**: mean RPS is higher for events graded low than for events graded
   high analytic confidence (one-sided permutation test).
-Holm correction across H1–H7. Market vs pool is reported descriptively (we expect the market to win).
+- **H8 (theoretical diversity as a source of ensemble diversity; RQ3)**: RPS(pool-eq) < RPS(pool-persona),
+  RPS(pool-eq) < RPS(pool-models) and RPS(pool-eq) < RPS(pool-sample): an ensemble of contested theoretical
+  frameworks beats ensembles of the same size built from personas, from different models and from repeated
+  sampling (three paired comparisons, Holm within H8; pool-prompt against the same three is reported as secondary).
+Holm correction across H1–H8. Market vs pool is reported descriptively (we expect the market to win). The agent arms
+are compared with their single-pass counterparts descriptively (paired RPS differences with bootstrap CIs).
 
 ## Ablations (secondary, P1)
 

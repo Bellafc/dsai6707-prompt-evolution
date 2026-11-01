@@ -54,10 +54,14 @@ the cut-off date) and RQ2 still rests on exp07 and exp02.
 
 The three trained schools stay the deep case; the ontology makes them one instance of a general architecture.
 
+Implementation note (2026-11-01): L0 is passed in the task prompt (exp03 already passes the scenario set), not
+through a `get_rules` tool; RQ2 names the L1 and L2 tools only. The tools are in `src/mosaic/tools.py`, the L2 stand-in
+table in `configs/tools/episodes_standin.toml`.
+
 ## 3. Architecture
 
 ```
-L0 rules ─────────► get_rules(event)        release grids, FOMC step sizes, resolution rules (pmpol propositions)
+L0 rules ─────────► in the task prompt       release grids, FOMC step sizes, resolution rules (pmpol propositions)
 L1 facts (as of t) ► get_macro_data(names)  ALFRED vintages known at t (exp03_context, pmpol known_at)
 L2 base rates ─────► query_episode_db(q)    analog episodes (Stage 1 / exp02), historical distributions
 L3 frameworks ─────► one agent per framework: 3 trained schools (LoRA) + prompted frameworks (below)
@@ -117,7 +121,7 @@ tool-using RL such as Search-R1 and ToolRL, 2025; outcome-based RL for forecasti
 |---|---|---|---|---|
 | **Agent SFT** | imitate teacher trajectories in the multi-turn tool format; loss on the agent's own turns only | 1,500 teacher trajectories (v4) | same as the school SFT (minutes per adapter on one GPU) | core |
 | **Rejection-sampling fine-tuning (RFT / STaR)** | the SFT agent samples k trajectories per event; keep those that pass verifiable checks; fine-tune again (1–2 rounds) | verifiable, no human or Claude labels: proof valid and grounded (`Proof.check`), tool calls well-formed, scenario probabilities coherent with L0 grids, and on historical episodes the realised asset-reaction direction (episode DB, pre-2025, so no test leakage) | a few GPU-hours of sampling + one more SFT | **recommended extension** |
-| **RL with verifiable rewards (GRPO, multi-turn with tools)** | the agent acts in the tool environment; reward = proof validity + format + proper scoring rule (Brier/RPS) on resolved historical outcomes | same rewards; outcome data is the binding limit (141 episodes; exp03's 58 calibration questions are reserved for calibration) | 1–2 days of engineering (TRL or verl multi-turn) + 10–30 H100-hours | stretch; full outcome-RL stays PhD work (THESIS_DESIGN §4a) |
+| **RL with verifiable rewards (GRPO, multi-turn with tools)** | the agent acts in the tool environment; reward = proof validity + format + proper scoring rule (Brier/RPS) on resolved historical outcomes | same rewards; outcome data is the binding limit (141 episodes; exp03's calibration questions, 51 by the data card, are reserved for calibration) | 1–2 days of engineering (TRL or verl multi-turn) + 10–30 H100-hours | stretch; full outcome-RL stays PhD work (THESIS_DESIGN §4a) |
 
 Rules: rewards and filters are rule-based or come from realised outcomes, never from a Claude model's judgement
 (the same reason Claude is not the teacher); the exp03 test window is never used for training, filtering or

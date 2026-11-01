@@ -118,14 +118,16 @@ autoencoder (exp06), a leakage-free history long enough for exp03, and LoRA tool
 
 | By | Milestone | Owner |
 |---|---|---|
-| 2026-11-02 | RunPod pod up; Task S spikes: Qwen3-8B serving, `mosaic train`, SAE reader check, Qwen3.5-27B LoRA | agent |
-| 2026-11-08 | Assets in hand (prompts, lexicons, trajectories or the D11 teacher choice, 96 test events, dev events, episode DB); decisions D1–D11; amendment 4 registered; meeting with Prof. Zhang | human |
-| 2026-11-12 | Qwen3-8B school adapters trained (Task 0), seed-episode audit | agent |
+| 2026-11-02 | RunPod pod up; Task S spikes: Qwen3-8B serving, `mosaic train`, SAE reader check, Qwen3.5-27B LoRA (done 10-31); L1/L2 tool layer, teacher prompt v4 pilot (57/60 kept), agent loop, exp07 draft (done 11-01) | agent |
+| 2026-11-04 | Task A agent spike (Qwen3-8B with the tools); Opus review of pilot v4 and the prompt fixes; full v4 teacher run (1,500 conversations, ~5 h on the token plan) | agent |
+| 2026-11-08 | Assets in hand (prompts, lexicons, trajectories or the D11 teacher choice, 96 test events, dev events, episode DB); decisions D1–D11; check of the L2 stand-in episode table; amendment 4 registered (v4 data, two formats); meeting with Prof. Zhang | human |
+| 2026-11-12 | Qwen3-8B school adapters trained (Task 0: single-pass format for exp01 arm C, multi-turn format for C-agent), seed-episode audit | agent |
 | 2026-11-20 | exp01b go/no-go (D7) from spike S4 | human |
-| 2026-11-22 | exp01 parity + dev tuning (arm B incl. thinking switch); exp03 data build and data card | agent |
-| 2026-11-25 | exp03 registered (counts known, no scores) | human |
+| 2026-11-22 | exp01 parity + dev tuning (arm B incl. thinking switch); exp03 data build and data card; exp03 calibration-window runs of the H8 pools and the agent arms | agent |
+| 2026-11-25 | exp03 registered (counts known, no scores; with H8 and the agent arms' cut-off rule) | human |
 | 2026-12-01 | exp05 go/no-go | human |
-| 2026-12-04 | exp06 instrument ready (gate S0, features, labels) | agent |
+| 2026-12-04 | exp06 instrument ready (gate S0, features, labels); exp07 on E-dev and its registration draft final; RFT round (decision 7) | agent |
+| 2026-12-10 | Cut-off for exp03's agent arms (C-agent adapters frozen, else dropped) | agent → human |
 | 2026-12-06 | exp01 + exp06 registered and frozen; exp01 final (with exp06 Part I) + judge (test) | human |
 | 2026-12-20 | exp01 human ratings (2 raters); exp03 final (test window) | human runs, agent prepares |
 | 2027-01-04 / 01-11 | IJCAI 2027 abstract / paper (if D3 = yes): exp01 + exp06, or exp01 + exp03 | human writes |
@@ -148,6 +150,15 @@ autoencoder (exp06), a leakage-free history long enough for exp03, and LoRA tool
   `research/AI_USE_LEDGER.md`. The thesis AI-use statement is written from that ledger.
 - Confirmatory results come only from pre-registered, frozen, human-run steps. Everything else is labelled
   exploratory in the thesis.
+- **When a run departs from the plan** (counts, pass or failure rates, gates such as S0 or S4, cost, dates), the
+  session that sees it adds a `deviation:` line to that day's `research/LOG.md` entry: what was planned, what was
+  observed, which RQ or date it affects, and the proposed adjustment. How an experiment may change depends on its
+  status: a draft is updated directly, with THESIS_DESIGN, the backlog, the design note and both versions of the
+  Chinese design document in the same pull request; a registered experiment changes only through an amendment the
+  human registers before any test result; after a test result nothing confirmatory changes, the deviation is reported
+  in the thesis and extra analyses are labelled exploratory. Agents decide operational fixes (retries, batch sizes,
+  GPU class, workers); the human decides scope, arms, hypotheses, data and critical-path dates, on the agent's
+  recommendation, brought the same day (human, 2026-11-01).
 
 ## 7. Oral-examination question matrix
 

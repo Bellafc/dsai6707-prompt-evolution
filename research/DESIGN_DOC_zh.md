@@ -1,4 +1,4 @@
-<!-- Snapshot of the Claude Docs design document "Macro-MOSAIC 畢業論文設計" (https://claude.ai/artifact/53m7SsccYQaQqwo9Bdw85Z), exported 2026-10-31 (rev 38); RQ sections synced with it on 2026-11-01 (rev 44). research/THESIS_DESIGN.md stays the source of truth; when one changes, update the other. -->
+<!-- Snapshot of the Claude Docs design document "Macro-MOSAIC 畢業論文設計" (https://claude.ai/artifact/53m7SsccYQaQqwo9Bdw85Z), exported 2026-10-31 (rev 38); RQ sections synced with it on 2026-11-01 (rev 44); timeline note and deviation rule (rev 45). research/THESIS_DESIGN.md stays the source of truth; when one changes, update the other. -->
 
 # Macro-MOSAIC 畢業論文設計
 
@@ -26,6 +26,8 @@ Oct 30, 2026 · @Bella
 （時程圖：15 個里程碑，2026/11–2027/10。日期表見 [THESIS_DESIGN.md §5](THESIS_DESIGN.md)；互動版在 Claude Docs。）
 
 exp01 和 exp03 是關鍵路徑：它們 12 月底前完成，才趕得上 IJCAI，2 月 15 日的 GSB/2B 也才寫得出確定的貢獻。
+
+2026-11-01 新增的里程碑：11/4 Task A（Qwen3-8B 當 agent 的測試）和完整的 v4 老師生成，11/22 exp03 校準期的 H8 組合和 agent 組別，12/4 exp07 試跑，12/10 exp03 agent 組別的截止日。日期表見 THESIS_DESIGN.md §5；時程圖還沒畫入這幾項。
 
 ## 需要重新設計的地方
 
@@ -186,6 +188,7 @@ PolyU 的 GenAI 指引要求標明 AI 產生的內容，也不允許讓 AI 代�
 
 - **有紀錄**：agent 的每一項產出都記在 repo 的 `research/AI_USE_LEDGER.md`。論文的 AI 使用聲明，直接從這份紀錄寫。
 - **確認性證據只有一種來源**：事先登記、凍結、由你親手執行的結果。其他結果在論文裡一律標為探索性。
+- **計畫和實際有出入時**：當天在 LOG 記一筆偏差（原本預期、實際結果、影響、建議）。還是草稿的實驗直接改，並同步更新設計文件；已登記的只能寫修正案，由你在正式結果出來前登記；有正式結果後，確認性的部分不再改，偏差照實寫進論文。
 - **Opus 只用來評估**：Claude 消費者條款不允許用服務訓練 AI 模型，所以 D 組輸出和評審分數只做評估，不當任何模型的訓練資料。透過 Claude Code 的 `setup-token` 自動執行，是官方文件支援的用法。
 - **這份設計本身也是 AI 協助的規劃**，聲明裡要涵蓋。研究問題的取捨和最後的決定，是你和張老師的。
 - **學校指引沒有專門針對學位論文的條款**：送審前問張老師，系上有沒有規定的聲明格式。
