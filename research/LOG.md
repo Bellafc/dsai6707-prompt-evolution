@@ -452,3 +452,24 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
 - deviation: planned get_rules (L0) as a tool (design note §3) / L0 stays in the task prompt / none for RQ2, which
   names L1 and L2 only; exp03 already passes the scenario set / keep, note it in the design note.
 - next: pilot v4 (20 per school) and the Opus review.
+
+### 2026-11-01 — RQ2/Task A: agent spike, Qwen3-8B as prompted agent with the real tools
+- hypothesis: a prompted Qwen3-8B can follow the agent contract (episode tool, macro tool, [Output], [Proof]).
+- change: none (measurement only); report `research/agent_spike.md`.
+- command: `python -m mosaic agent-spike --n 10` and `... --thinking` (A40, ~9 min each)
+- run_ids: `runs/agent-spike/non-thinking`, `runs/agent-spike/thinking` (not versioned)
+- result: 0/30 pass all checks in both modes. Tool calls parse (0 malformed), but protocol 0/30 both modes (final
+  message lacks [Think]; 5/30 thinking conversations call both tools in one message), signals malformed in 25–30/30,
+  proof valid 0/30 (non-thinking) vs 5/30 (thinking), 0 scenario probabilities found in 25–30/30. One non-thinking
+  conversation put all 13 indicator names into a single string (tool error). Time 530 s / 557 s.
+- deviation: the teacher (qwen3.8-max) passed every check on its smoke conversation after normalisation; the 8B
+  starting point is 0 %. No harness bug found (tools run, transcripts complete), so no code change.
+- decision: keep as the A-agent baseline; no prompt tuning (Task A rule 3).
+- next: human decides on normalisation / format example / rejection-sampling SFT. READY FOR HUMAN: agent spike.
+
+## For the human (2026-11-01, Task A)
+- The prompted 8B agent reaches 0 % on the strict contract in both modes; see `research/agent_spike.md` for the
+  failure types and the suggested (untested) prompt changes. The checks may be stricter than a reader needs: say if
+  you want a lenient variant to separate "wrong form" from "wrong content".
+- The pod GPU showed 100 % utilisation and 558 MiB in use before I started anything (another process on the card?);
+  the timings above may be slightly inflated.
