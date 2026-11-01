@@ -170,7 +170,9 @@ steps (typer); Kev fine-tuning (~1,000 labels) is optional.
 ## 6. Decisions for the author
 
 1. Adopt the ontology-grounded agent as the architecture of exp03 (and the thesis framing)?
-2. Which extra L3 frameworks: prompted schools (which), pmpol's quantitative frameworks, or both?
+2. ~~Which extra L3 frameworks?~~ **Decided by the scope rule (human, 2026-11-01; THESIS_DESIGN D13)**: none in
+   the trained or evaluated arms; the three prompted candidates appear only in the disagreement check; development
+   economics and pmpol's quantitative frameworks are future work.
 3. Real tools for the teacher data now (v4), with the episode table as a stand-in until the episode DB is uploaded?
 4. exp01: keep single-pass (recommended) or amend to the agent loop?
 5. D8: decision models as measurement tools (judge, proof-step typer; decision head in exp05)?

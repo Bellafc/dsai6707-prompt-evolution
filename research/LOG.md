@@ -616,3 +616,11 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
 - next: hand-off to the reference session for BibTeX and verification; four cheap in-design uses listed as proposals
   for the human (graded counterfactual edits in exp07, error correlation per H8 arm, the base-model tilt control,
   a pre/post-cutoff leakage check).
+
+### 2026-11-01 — decision (human): completion before breadth
+- decision: the human set the scope rule "completion matters most; covering everything is unrealistic". Recorded as
+  THESIS_DESIGN D13 (rule after §1): no new trained schools, domains or arms; prompted candidate frameworks only in
+  the disagreement check; extensions to Ch. 7. A new idea enters only if it costs no new runs.
+- change: design-note decision 2 closed by the rule; of the scan's four cheap uses, the error correlation per H8 pool
+  (exp03 draft, descriptive), the Gordon & Dahl counter-hypothesis with the base-model tilt (matrix write-up) and the
+  claimed-cutoff limitation are adopted; graded counterfactual edits in exp07 are not (more runs).

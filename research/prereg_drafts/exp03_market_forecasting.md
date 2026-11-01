@@ -119,6 +119,10 @@ Brier score on the binary contracts, ECE on binary contracts (10 bins), format-f
   sampling (three paired comparisons, Holm within H8; pool-prompt against the same three is reported as secondary).
 Holm correction across H1–H8. Market vs pool is reported descriptively (we expect the market to win). The agent arms
 are compared with their single-pass counterparts descriptively (paired RPS differences with bootstrap CIs).
+Reported with H8, descriptively: the mean pairwise error correlation among the members of each pool (per-event RPS
+differences from the pool mean), so that a pool that wins or loses can be read as more or less diverse in its errors
+(Kuncheva & Whitaker 2003; different models can be near-homogeneous, Jiang et al. 2025). Added 2026-11-01; no new
+runs.
 
 ## Ablations (secondary, P1)
 

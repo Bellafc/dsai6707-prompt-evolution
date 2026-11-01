@@ -80,7 +80,9 @@ zhao2026verifying, tian2023just, xiong2024can, kadavath2022language, farquhar202
 schoenegger2024wisdom, sarkar2024lookahead, glasserman2024assessing, lopezlira2025memorization, paleka2026pitfalls,
 du2024improving, liang2024encouraging, gebele2026diversity, kim2025correlated, zheng2024helpful, hu2024quantifying.
 
-### Small, cheap uses inside the current design (proposals, not adopted)
+### Small, cheap uses inside the current design
+Status after the scope rule (THESIS_DESIGN D13, 2026-11-01): 2, 3 and 4 adopted (no new runs; 2 is in the exp03
+draft, 3 goes into the matrix write-up, 4 into the limitations); 1 not adopted (it multiplies the exp07 runs).
 1. exp07: grade the counterfactual tool edits from subtle to blatant (ClashEval) and score whether [Proof] predicts
    which scenario moves (Chen et al. 2024). A null response to a blatant edit can be sanity-checking, not ignoring.
 2. exp03 H8: report pairwise error correlation within each diversity arm (Artificial Hivemind; already the

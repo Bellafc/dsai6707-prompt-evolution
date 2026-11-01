@@ -18,6 +18,13 @@ Claude Docs document); Confirmation-era material and context are in `docs/projec
 | GenAI: AI-generated material must be identified; the student is accountable; GenAI must not write the work | PolyU Student Guide on GenAI (rev. 2026-01-05) | §6: thesis prose by the author; agent output logged in `research/AI_USE_LEDGER.md` |
 | Before submission: 7 credits, GPA ≥ 2.70, AIE, Research Seminars I & II (≥ 10 seminars + ≥ 1,500-word report per year), English per RLSA, National Education online course | DSAI 5.1–5.9 | Checklist item in the timeline (§5) |
 
+**Scope rule (human, 2026-11-01): completion before breadth.** A finished thesis on three schools beats an
+unfinished one on many. No new trained schools, domains or experiment arms are added; the prompted candidate
+frameworks appear only in the disagreement check that validates the three schools; extensions (development
+economics, a regime-type axis, pmpol's quantitative frameworks, test-time training, RL) go to Ch. 7 as future work.
+A new idea enters the plan only if it costs no new runs (a sentence, a limitation, a descriptive number from
+outputs we already produce).
+
 ## 2. Working title, research questions, contributions
 
 **Working title**: *Macro-MOSAIC: Multi-School Language-Model Reasoning for Macroeconomic Event Analysis and
@@ -213,3 +220,6 @@ those decisions say.
   and whether to run the Qwen2.5-7B reproduction arms A7/C7.
 - **D12** Test-time training. Decided 2026-11-01: considered and deliberately not adopted (reasons in §4a); written up
   as related work and a limitation, not run.
+- **D13** Scope. Decided 2026-11-01: completion before breadth (rule after §1). Design-note decision 2 follows from it:
+  no extra trained or evaluated L3 frameworks; New Keynesian, New Classical and Post-Keynesian stay prompted-only
+  inside the disagreement check; development-economics schools are future work.
