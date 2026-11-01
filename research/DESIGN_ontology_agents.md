@@ -172,5 +172,5 @@ steps (typer); Kev fine-tuning (~1,000 labels) is optional.
 5. D8: decision models as measurement tools (judge, proof-step typer; decision head in exp05)?
 6. D10: exp06 Parts I + II, plus the proof-faithfulness analysis and the counterfactual-tool test?
 7. Agent training depth: SFT only, SFT + RFT (recommended), or SFT + RFT + RL (stretch)?
-8. Adopt the three RQs of §2 (wording to be finalised by the author)? Then THESIS_DESIGN §2–3 and §7, README,
-   DESIGN_DOC_zh, the backlog and the RQ labels of the drafts are updated; the title follows (D2).
+8. ~~Adopt the three RQs of §2?~~ **Adopted by the human on 2026-11-01**; THESIS_DESIGN §2–4, §7–8, README,
+   DESIGN_DOC_zh, the backlog and the RQ labels of the drafts were updated the same day. The title follows (D2).

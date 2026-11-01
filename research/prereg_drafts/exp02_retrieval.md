@@ -1,7 +1,8 @@
 # DRAFT pre-registration — exp02: Structural analogy retrieval (Stage 1)
 
 Status: **DRAFT**. Binding once copied to `prereg/` by the human, before any score on the test queries.
-Thesis chapter 5 (RQ2). Priority **P1**. CPU only.
+Thesis chapter 5 (RQ2: the retriever is the agents' L2 tool `query_episode_db`, so this experiment validates the
+L2 evidence the agents cite). Priority **P1**. CPU only.
 
 ## Question
 

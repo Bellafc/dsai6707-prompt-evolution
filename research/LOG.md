@@ -423,3 +423,13 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   tool, new exp07 for proof validity, counterfactual tools and proof faithfulness), RQ3 how sure (exp03 with H8
   diversity sources, exp04, exp05). Decisions 7 (training depth) and 8 (adopt the RQs) added.
 - decision needed (human): decisions 1–8 of the design note; THESIS_DESIGN stays unchanged until the author decides.
+
+### 2026-11-01 — RQs adopted (three angles on one design)
+- decision (human): the three RQs of `research/DESIGN_ontology_agents.md` §2 are adopted (decision 8).
+- change: THESIS_DESIGN §2 (overarching question, RQ table with angles, contributions tagged by RQ), §2a (L0–L2
+  tools), §3 (chapter map: Ch. 5 "Grounded, auditable agents"), §4 (row on the RQ change), §7 (two new examiner
+  questions: proof faithfulness, diversity sources), §8 (adoption note); README and DESIGN_DOC_zh (repo snapshot and
+  the Claude Docs document, rev 44) in the same words; backlog rows `tools` (P0) and `exp07` (P1); RQ labels in the
+  exp02 and exp06 drafts. exp01 and its registration are untouched.
+- next: decisions 1–7 of the design note; then the tool layer, the exp07 draft and exp03 H8 before the 11-25
+  registration.
