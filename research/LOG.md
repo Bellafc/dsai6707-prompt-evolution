@@ -452,3 +452,11 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
 - deviation: planned get_rules (L0) as a tool (design note §3) / L0 stays in the task prompt / none for RQ2, which
   names L1 and L2 only; exp03 already passes the scenario set / keep, note it in the design note.
 - next: pilot v4 (20 per school) and the Opus review.
+
+### 2026-11-01 05:16 UTC — infra: Task A pod (agent spike)
+- pod `tmd8qxb4j16eh3` (`mosaic-A-20261101-0516`), NVIDIA A40 48 GB, $0.59/h, `--hours 2` (watchdog at 4 h), branch
+  `claude/vibrant-tesla-rqvzo1`, pushes to `agent/task-A-20261101-0516`, heartbeat `agent/log-tmd8qxb4j16eh3`.
+- no network volume: CA-MTL-1 (where `dy1ct9hkm0` lives) listed no GPU in stock, so the pod has its own 60 GB volume,
+  downloads Qwen3-8B itself and is terminated (not only stopped) after its push, so no storage cost remains.
+- deviation: planned the network volume / none in stock in CA-MTL-1 / about 10 min more setup per pod / pods without the
+  volume until stock returns; consider a second volume in a data center with stock if this persists.
