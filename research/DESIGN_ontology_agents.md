@@ -62,6 +62,36 @@ L5 ─────────────────► per-framework distribu
 | exp03 (draft, register by 11-25) | main stage of the new design: tool-using agents per framework; H-new **diversity sources**: trained schools vs prompted schools vs quantitative L3 frameworks vs personas vs multi-model (Qwen, DeepSeek, GLM) vs sampling, equal ensemble size; H6/H7 as drafted | before 11-25 |
 | exp04 | coherence constraints come from the proposition ontology (L0) | unchanged |
 
+## 4a. Fine-tuning vs the ontology agent, and how to train the agent
+
+The author asked to compare the fine-tuned schools with the ontology agent, and whether agents can be trained.
+Both fit one factorial design: **how the framework is instilled** (prompting vs training) × **how the agent works**
+(single pass vs ontology agent with real tools and a proof).
+
+| | Single pass, self-simulated tools (Confirmation format) | Ontology agent: real L0/L1/L2 tools, L5 proof |
+|---|---|---|
+| **Prompted** | exp01 arm A (registered) | **A-agent**: base Qwen3-8B + framework prompt + tools |
+| **Fine-tuned (SFT)** | exp01 arm C (registered) | **C-agent**: LoRA trained on multi-turn tool trajectories (teacher v4), tool results masked from the loss |
+| **Agent training beyond SFT** | — | **C-agent+RFT** (main extension) and **C-agent+RL** (stretch) |
+
+What each contrast answers: C vs A = does fine-tuning instil the framework (exp01 H1, unchanged); A-agent vs A and
+C-agent vs C = do real tools and proofs help; C-agent vs A-agent = does fine-tuning still matter once the agent has
+tools; the interaction = are they substitutes or complements.
+
+Methods for training the agent (established literature: ReAct, Yao et al. 2023; FireAct, Chen et al. 2023;
+AgentTuning, Zeng et al. 2023; STaR, Zelikman et al. 2022; RL with verifiable rewards and GRPO, DeepSeek 2024–25;
+tool-using RL such as Search-R1 and ToolRL, 2025; outcome-based RL for forecasting, Turtel et al. 2025):
+
+| Method | How | Data and reward | Cost | Status in this design |
+|---|---|---|---|---|
+| **Agent SFT** | imitate teacher trajectories in the multi-turn tool format; loss on the agent's own turns only | 1,500 teacher trajectories (v4) | same as the school SFT (minutes per adapter on one GPU) | core |
+| **Rejection-sampling fine-tuning (RFT / STaR)** | the SFT agent samples k trajectories per event; keep those that pass verifiable checks; fine-tune again (1–2 rounds) | verifiable, no human or Claude labels: proof valid and grounded (`Proof.check`), tool calls well-formed, scenario probabilities coherent with L0 grids, and on historical episodes the realised asset-reaction direction (episode DB, pre-2025, so no test leakage) | a few GPU-hours of sampling + one more SFT | **recommended extension** |
+| **RL with verifiable rewards (GRPO, multi-turn with tools)** | the agent acts in the tool environment; reward = proof validity + format + proper scoring rule (Brier/RPS) on resolved historical outcomes | same rewards; outcome data is the binding limit (141 episodes; exp03's 58 calibration questions are reserved for calibration) | 1–2 days of engineering (TRL or verl multi-turn) + 10–30 H100-hours | stretch; full outcome-RL stays PhD work (THESIS_DESIGN §4a) |
+
+Rules: rewards and filters are rule-based or come from realised outcomes, never from a Claude model's judgement
+(the same reason Claude is not the teacher); the exp03 test window is never used for training, filtering or
+reward; every round is logged with its data and seed.
+
 ## 4b. Interpretability: three views that check each other
 
 The ontology gives every claim a type (layer, source, time). That makes three kinds of interpretability measurable
@@ -109,3 +139,4 @@ steps (typer); Kev fine-tuning (~1,000 labels) is optional.
 4. exp01: keep single-pass (recommended) or amend to the agent loop?
 5. D8: decision models as measurement tools (judge, proof-step typer; decision head in exp05)?
 6. D10: exp06 Parts I + II, plus the proof-faithfulness analysis and the counterfactual-tool test?
+7. Agent training depth: SFT only, SFT + RFT (recommended), or SFT + RFT + RL (stretch)?
