@@ -1,0 +1,4 @@
+gen,evaluations,archive,front,hv,best_fidelity,best_disagreement,pop_validity_mean,pop_feasible,api_calls,spent_usd
+0,4,4,3,0.057212,0.4429,0.378,1.0,1.0,60,0.4538
+1,8,8,4,0.068307,0.4684,0.408,0.9833,1.0,82,0.6013
+2,12,12,3,0.088148,0.5106,0.411,1.0,1.0,106,0.7546
