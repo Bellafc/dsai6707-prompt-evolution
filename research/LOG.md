@@ -413,3 +413,13 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   prompt echoes; backdrop skew; residual gold/bond defaults).
 - decision needed (human): real tools (episode DB, ALFRED contexts) vs self-simulated tool calls; it shapes the
   trajectory format, exp01's inference and exp03. The full teacher run waits for this and the scope decision.
+
+### 2026-11-01 — design note: fine-tuning vs ontology agent, agent training, three RQs
+- change: `research/DESIGN_ontology_agents.md` §4a, a factorial design (prompted / fine-tuned / beyond SFT ×
+  single pass / ontology agent with real tools and a proof) and the agent-training methods (agent SFT core,
+  rejection-sampling fine-tuning recommended, multi-turn RL as stretch; rewards only from rules or realised
+  outcomes, never from a Claude judgement; the exp03 test window never used). §2, three proposed RQs from the three
+  interpretability angles: RQ1 inside the model (exp01, exp06, exp01b), RQ2 what the agent says (exp02 as the L2
+  tool, new exp07 for proof validity, counterfactual tools and proof faithfulness), RQ3 how sure (exp03 with H8
+  diversity sources, exp04, exp05). Decisions 7 (training depth) and 8 (adopt the RQs) added.
+- decision needed (human): decisions 1–8 of the design note; THESIS_DESIGN stays unchanged until the author decides.

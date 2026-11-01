@@ -19,11 +19,38 @@ pmpol's ontology (`vendor/pmpol-academic/docs/ARCHITECTURE.md` §0, `PROPOSITION
 time-stamped fact of a knowledge layer, contested theories are L3 frameworks kept side by side, and every inference
 is an L5 proof that must trace back to L0–L4.
 
-## 2. Proposed thesis question (wording is the author's)
+## 2. Proposed research questions: one design, three angles (wording is the author's)
 
-> Do agents that reason through explicitly contested theoretical frameworks (L3), over point-in-time facts (L1) and
-> base rates (L2) fetched by real tools, produce analyses that are more auditable and forecasts that are better
-> calibrated, and is theoretical diversity a better source of ensemble diversity than personas, models or sampling?
+Overarching question:
+
+> Can language-model agents reason through explicitly contested economic theories in a way that is theory-driven
+> inside the model, auditable in what they say, and calibrated in how sure they are?
+
+The three interpretability angles of §4b become the three RQs. All three read the same factorial design (§4a) and
+the same agents, so the chapters remain one study rather than three.
+
+| RQ | Angle | Question | Evidence | Ch. |
+|---|---|---|---|---|
+| RQ1 | Inside the model: what it computes | Does fine-tuning instil a contested economic framework beyond the best prompting baseline, and does it change what the model computes (the framework's concepts) or only what it writes (its vocabulary)? | exp01 (registered, unchanged: A/B/C, D; keyword metrics, validated judge, two human raters); exp06 (SAE, S-H1 to S-H3); exp01b (Qwen3.5-27B, D7); agent arms C-agent and C-agent+RFT (fidelity and SAE, exploratory) | 4 |
+| RQ2 | What the agent says: auditable reasoning | When framework agents must fetch point-in-time facts (L1) and historical base rates (L2) through real tools and justify each forecast with a layered proof, is their reasoning auditable and faithful: are the proofs valid and traceable to L0–L4, do the conclusions follow the evidence when it changes, and are the mechanisms a proof claims active inside the model? | exp02 (the L2 tool: macro-state analogies vs narrative and naive similarity, protocol unchanged); exp07 (new: proof validity and grounding, tool-call validity, counterfactual tool results, proof-step typing by a decision model, SAE proof faithfulness; dev and pre-2025 events only) | 5 |
+| RQ3 | How sure: calibrated forecasts | Do probability forecasts pooled across contested frameworks beat single frameworks and other sources of ensemble diversity (personas, multiple models, repeated sampling) on real post-cutoff macro outcomes; are they calibrated and coherent; and do their uncertainty signals (disagreement among frameworks, analytic confidence) predict error? | exp03 (H1–H7 as drafted, H8 diversity sources, the agent arms of §4a as forecasters); exp04 (coherence); exp05 (live, optional; decision head) | 6 |
+
+What changes against THESIS_DESIGN §2:
+- **RQ1** keeps its evidence. "Concepts or vocabulary" moves from a sub-question to the core, so exp06 becomes half
+  of the answer (D10 matters more). exp01 and its amendments are untouched; amendment 2's "discussion of RQ1" still
+  applies.
+- **RQ2** changes most: the analogy question (exp02) becomes one part, the quality of the L2 tool, inside a wider
+  question about grounded and faithful reasoning. Chapter 5 becomes "Grounded, auditable agents".
+- **RQ3** keeps H1–H7 and gains the diversity-source comparison (H8); disagreement and analytic confidence move from
+  secondary hypotheses into the question.
+- Contributions 1–5 stay, regrouped: 2 → RQ1; 3 and 5 → RQ2; 4 → RQ3; 1 serves all three.
+- Decision models (D8) are instruments for all three angles, not a fourth question: judge (RQ1), proof-step typer
+  (RQ2), decision head (RQ3, exp05 only).
+- The examiner question "reasoning or vocabulary?" is answered by three independent instruments (§4b).
+
+Priorities if time runs short: exp01 and the exp03 primary hypothesis stay P0; exp06, exp02, exp07 and RFT are P1;
+RL is P2. If the agent arms are not trained by the exp03 final run, exp03 runs without them (the registration names
+the cut-off date) and RQ2 still rests on exp07 and exp02.
 
 The three trained schools stay the deep case; the ontology makes them one instance of a general architecture.
 
@@ -58,9 +85,10 @@ L5 ─────────────────► per-framework distribu
 | exp01 (registered) | unchanged: single-pass arms A/B/C/D on the 96 events, for comparability with the Confirmation; the self-simulated tool calls become a stated limitation | none |
 | exp06 | unchanged; feature cards still map SAE features to the L3 entries | with exp01 freeze |
 | Training data (D11) | teacher prompt v4: multi-turn trajectories, tool results injected by the harness (L1 from the backdrop, L2 from the episode table), masked from the loss; Output as a layered proof | amendment 4 (training data) |
-| exp02 | its retriever becomes the `query_episode_db` tool | unchanged protocol |
-| exp03 (draft, register by 11-25) | main stage of the new design: tool-using agents per framework; H-new **diversity sources**: trained schools vs prompted schools vs quantitative L3 frameworks vs personas vs multi-model (Qwen, DeepSeek, GLM) vs sampling, equal ensemble size; H6/H7 as drafted | before 11-25 |
+| exp02 | its retriever becomes the `query_episode_db` tool; its result validates the L2 evidence (RQ2) | unchanged protocol |
+| exp03 (draft, register by 11-25) | main stage of the new design: tool-using agents per framework; **H8 diversity sources**: trained schools vs prompted schools vs quantitative L3 frameworks vs personas vs multi-model (Qwen, DeepSeek, GLM) vs sampling, equal ensemble size; H6/H7 as drafted | before 11-25 |
 | exp04 | coherence constraints come from the proposition ontology (L0) | unchanged |
+| exp07 (new, RQ2) | grounded-agent faithfulness: proof validity and grounding, tool-call validity, counterfactual tool results (one L1 value or L2 episode changed), proof-step typing, SAE proof faithfulness; needs no outcomes, so dev and pre-2025 events only | draft, register before it runs (P1) |
 
 ## 4a. Fine-tuning vs the ontology agent, and how to train the agent
 
@@ -77,6 +105,9 @@ Both fit one factorial design: **how the framework is instilled** (prompting vs 
 What each contrast answers: C vs A = does fine-tuning instil the framework (exp01 H1, unchanged); A-agent vs A and
 C-agent vs C = do real tools and proofs help; C-agent vs A-agent = does fine-tuning still matter once the agent has
 tools; the interaction = are they substitutes or complements.
+
+Each RQ (§2) reads this table from one angle: RQ1 the rows (how the framework is instilled, seen from inside the
+model), RQ2 the columns (what real tools and proofs change in what the agent says), RQ3 every cell as a forecaster.
 
 Methods for training the agent (established literature: ReAct, Yao et al. 2023; FireAct, Chen et al. 2023;
 AgentTuning, Zeng et al. 2023; STaR, Zelikman et al. 2022; RL with verifiable rewards and GRPO, DeepSeek 2024–25;
@@ -124,7 +155,8 @@ steps (typer); Kev fine-tuning (~1,000 labels) is optional.
 ## 5. Cost and risks
 
 - **Effort**: tool layer and multi-turn format ≈ 2–3 days of agent work; teacher v4 + pilot + review ≈ 1 day;
-  exp03 arms are prompt/API runs on 149 questions (token plan; no extra GPU).
+  exp03 arms are prompt/API runs on 149 questions (token plan; no extra GPU); exp07 is inference only (agents on a
+  pod, a few GPU-hours) plus the SAE pass of exp06.
 - **Needs from the human**: the episode database (141 episodes, 117 narratives) for a real `query_episode_db`;
   until then the L2 tool uses a vetted episode table (named, dated, pre-2025), labelled as such.
 - **Risks**: (i) more moving parts before the 12-06 exp01 freeze (mitigated: exp01 untouched); (ii) the student may
@@ -140,3 +172,5 @@ steps (typer); Kev fine-tuning (~1,000 labels) is optional.
 5. D8: decision models as measurement tools (judge, proof-step typer; decision head in exp05)?
 6. D10: exp06 Parts I + II, plus the proof-faithfulness analysis and the counterfactual-tool test?
 7. Agent training depth: SFT only, SFT + RFT (recommended), or SFT + RFT + RL (stretch)?
+8. Adopt the three RQs of §2 (wording to be finalised by the author)? Then THESIS_DESIGN §2–3 and §7, README,
+   DESIGN_DOC_zh, the backlog and the RQ labels of the drafts are updated; the title follows (D2).
