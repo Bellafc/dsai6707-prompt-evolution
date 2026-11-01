@@ -391,3 +391,16 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   with conviction and reason and no default direction, direction-share report per batch; manifests carry
   `prompt_version` and imports refuse a mismatch. 63 offline tests pass.
 - next: pilot v2 (20 per school), same Opus review, compare.
+
+### 2026-11-01 — D11: pilot v2 (teacher prompt version 2); prompt version 3, format normalisation
+- command: `scripts/teacher_api.py research/teacher_runs/pilot-v2 --n 20 ... --model qwen3.8-max` (60/60 replies;
+  60k tokens in, 414k out), `mosaic teacher-import`.
+- result: 51/60 kept after normalisation (K 15, A 19, M 17). All 9 rejects skipped the second [Think] (the v2 rules
+  named only the first and third). Signal diversity up: equities SHORT 30/51 (v1 52/59), gold LONG 34/51 (v1 56/59);
+  remaining warnings (> 70 % one direction): Keynesian bonds LONG 12/15 and gold LONG 11/15, Austrian gold LONG
+  15/19 and credit SHORT 14/19.
+- change: prompt version 3 adds the rule for the second [Think]; `normalize()` rewrites "SHORT (2)" and
+  "(conviction: 2)" to "(conviction 2)" on signal lines before validation (5 v2 replies had only that format slip;
+  wording untouched); manifests carry `items_version` separately (imports rebuild items, so only the item generator
+  must match; the record keeps the run's prompt version). 64 offline tests pass.
+- next: Opus review of pilot v2 with the v1 rubric; the full run waits for the human's scope decision.

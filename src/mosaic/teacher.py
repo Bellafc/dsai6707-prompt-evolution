@@ -35,7 +35,8 @@ from mosaic.data import Event
 from mosaic.prompts import build_messages, read_prompt
 
 SCHOOLS = ("keynesian", "austrian", "monetarist")
-PROMPT_VERSION = 2
+PROMPT_VERSION = 3  # 3: explicit rule for the second [Think] (v2 teachers skipped it)
+ITEMS_VERSION = 2  # the item generator (templates, backdrop); imports rebuild items, so this must match
 TEMPLATES = ROOT / "configs/teacher/templates.toml"
 MARKERS = ["[Think]", "[ToolCall: query_episode_db]", "[Observe]", "[Think]", "[ToolCall: get_macro_data]",
            "[Observe]", "[Think]", "[Output]"]
@@ -139,6 +140,8 @@ def teacher_messages(item: Item, cfg: dict) -> list[dict]:
         "specific episodes, each with its country or institution and year, all before 2025; no 'various episodes'.\n"
         '3. [ToolCall: get_macro_data] is followed by one JSON line {"indicators": [...]} with the backdrop\'s names. '
         "The second [Observe] reports the requested values exactly as in the backdrop.\n"
+        "Between the first [Observe] and [ToolCall: get_macro_data] comes the second [Think]: what the episodes imply "
+        "for this event and which data would decide between the readings. Never skip a block.\n"
         "4. Third [Think]: combine event and data. If the event concerns another economy, say how it reaches US and "
         "global assets. If the event contradicts the backdrop (for example on the yield curve or inflation), say so "
         "in one sentence and treat the event as the newest information. Claim no trend that a single backdrop cannot "
@@ -255,6 +258,15 @@ def early_values(item: Item) -> list[str]:
     return sorted(v for v in vals if ("." in v or len(v.lstrip("-")) >= 3) and v not in item.event.text)
 
 
+def normalize(text: str) -> str:
+    """Deterministic format clean-up before validation: 'SHORT (2)' or 'SHORT (conviction: 2)' becomes
+    'SHORT (conviction 2)' on signal lines. Wording and content are untouched."""
+    for pat in ASSETS.values():
+        text = re.sub(rf"^([ \t]*[-*]?[ \t]*(?:{pat})[ \t]*:[ \t]*(?:LONG|SHORT|NEUTRAL)[ \t]*\()[ \t]*"
+                      rf"(?:conviction[ \t]*:?[ \t]*)?([1-5])[ \t]*\)", r"\1conviction \2)", text, flags=re.I | re.M)
+    return text
+
+
 def signal_report(kept: dict[str, list[dict]], dominant: float = 0.7) -> dict:
     """Direction shares per school and asset, and warnings where one direction exceeds `dominant` (n >= 10)."""
     report: dict = {"shares": {}, "warnings": []}
@@ -275,12 +287,12 @@ def signal_report(kept: dict[str, list[dict]], dominant: float = 0.7) -> dict:
     return report
 
 
-def record(item: Item, reply: str, teacher: str) -> dict:
+def record(item: Item, reply: str, teacher: str, prompt_version: int = PROMPT_VERSION) -> dict:
     """One training example in the data contract: arm-A messages plus the teacher's reply as the assistant turn."""
     msgs = build_messages("A", item.school, item.event, system=read_prompt(f"{item.school}.system.txt"),
                           user_template=read_prompt("user_template.txt"))
     return {"messages": [*msgs, {"role": "assistant", "content": reply.strip()}], "template_id": item.template_id,
-            "category": item.category, "teacher": teacher, "teacher_prompt_version": PROMPT_VERSION,
+            "category": item.category, "teacher": teacher, "teacher_prompt_version": prompt_version,
             "event": {"id": item.event.id, "text": item.event.text, "category": item.category,
                       "macro_context": item.event.macro_context}}
 
@@ -294,7 +306,8 @@ def generate(backend, items: list[Item], cfg: dict, teacher: str, out_dir: Path)
     return collect(items, [o.get("text", "") for o in outs], teacher, out_dir)
 
 
-def collect(items: list[Item], replies: list[str], teacher: str, out_dir: Path) -> dict:
+def collect(items: list[Item], replies: list[str], teacher: str, out_dir: Path,
+            prompt_version: int = PROMPT_VERSION) -> dict:
     """Keep valid replies, write <school>.jsonl and rejects.jsonl to out_dir; return counts per school."""
     from mosaic.backends import split_reasoning
 
@@ -303,12 +316,13 @@ def collect(items: list[Item], replies: list[str], teacher: str, out_dir: Path) 
     rejects = []
     for it, reply in zip(items, replies):
         reply = split_reasoning(reply or "")[1] if "<think>" in (reply or "") else (reply or "")
+        reply = normalize(reply)
         problems = validate(reply, it)
         if problems:
             rejects.append({"school": it.school, "event_id": it.event.id, "template_id": it.template_id,
                             "problems": problems, "reply": reply})
         else:
-            kept[it.school].append(record(it, reply, teacher))
+            kept[it.school].append(record(it, reply, teacher, prompt_version))
     for school, recs in kept.items():
         with (out_dir / f"{school}.jsonl").open("w", encoding="utf-8") as f:
             f.writelines(json.dumps(r, ensure_ascii=False) + "\n" for r in recs)
@@ -339,7 +353,8 @@ def export_jobs(n_per_school: int, seed: int, model: str, out_dir: Path, max_tok
             f.write(json.dumps({"custom_id": f"{it.school}|{it.event.id}", "method": "POST",
                                 "url": "/v1/chat/completions", "body": body}, ensure_ascii=False) + "\n")
     (out_dir / "manifest.json").write_text(json.dumps({"n_per_school": n_per_school, "seed": seed, "model": model,
-                                                       "requests": len(items), "prompt_version": PROMPT_VERSION},
+                                                       "requests": len(items), "prompt_version": PROMPT_VERSION,
+                                                       "items_version": ITEMS_VERSION},
                                                       indent=1) + "\n")
     return len(items)
 
@@ -353,9 +368,10 @@ def reply_of(line: dict) -> tuple[str, str, str]:
 
 def import_results(jobs_dir: Path, results: Path, out_dir: Path) -> dict:
     man = json.loads((jobs_dir / "manifest.json").read_text())
-    if man.get("prompt_version", 1) != PROMPT_VERSION:  # items and prompts are rebuilt from the current code
-        raise SystemExit(f"{jobs_dir} was made with teacher prompt version {man.get('prompt_version', 1)}, the code "
-                         f"is at {PROMPT_VERSION}; import it from the matching commit or regenerate")
+    items_version = man.get("items_version", 1 if man.get("prompt_version", 1) < 2 else 2)
+    if items_version != ITEMS_VERSION:  # items are rebuilt from (n, seed) with the current generator
+        raise SystemExit(f"{jobs_dir} was made with item generator version {items_version}, the code is at "
+                         f"{ITEMS_VERSION}; import it from the matching commit or regenerate")
     items = make_items(man["n_per_school"], seed=man["seed"])
     got = {}
     models = set()
@@ -368,6 +384,7 @@ def import_results(jobs_dir: Path, results: Path, out_dir: Path) -> dict:
     teacher = ", ".join(sorted(models)) or man["model"]
     if any(m.lower().startswith(("claude", "anthropic")) for m in models | {man["model"]}):
         raise SystemExit("Claude models are excluded as teacher (amendment 4 Change 5, THESIS_DESIGN 4a)")
-    counts = collect(items, [got.get(f"{it.school}|{it.event.id}", "") for it in items], teacher, out_dir)
+    counts = collect(items, [got.get(f"{it.school}|{it.event.id}", "") for it in items], teacher, out_dir,
+                     man.get("prompt_version", 1))
     counts["missing"] = sum(f"{it.school}|{it.event.id}" not in got for it in items)
     return counts

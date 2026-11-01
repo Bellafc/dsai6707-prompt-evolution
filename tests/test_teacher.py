@@ -146,14 +146,20 @@ def test_signal_report_warns_when_one_direction_dominates():
     assert "keynesian: equities SHORT in 10/10" in rep["warnings"]
 
 
-def test_import_refuses_jobs_made_with_another_prompt_version(tmp_path):
+def test_normalize_fixes_conviction_format_only():
+    bad = GOOD.replace("SHORT (conviction 3) - S2 recession", "SHORT (3) - S2 recession").replace(
+        "gold: LONG (conviction 2)", "gold: LONG (conviction: 2)")
+    assert teacher.validate(bad) and teacher.normalize(bad) == GOOD
+
+
+def test_import_refuses_jobs_made_with_another_item_generator(tmp_path):
     import pytest
 
     jobs = tmp_path / "jobs"
     teacher.export_jobs(1, 0, "qwen-test", jobs)
     man = json.loads((jobs / "manifest.json").read_text())
-    assert man["prompt_version"] == teacher.PROMPT_VERSION
-    (jobs / "manifest.json").write_text(json.dumps(dict(man, prompt_version=1)))
+    assert man["prompt_version"] == teacher.PROMPT_VERSION and man["items_version"] == teacher.ITEMS_VERSION
+    (jobs / "manifest.json").write_text(json.dumps({"n_per_school": 1, "seed": 0, "model": "x"}))  # a v1 manifest
     (jobs / "results.jsonl").write_text("")
-    with pytest.raises(SystemExit, match="prompt version"):
+    with pytest.raises(SystemExit, match="item generator version 1"):
         teacher.import_results(jobs, jobs / "results.jsonl", tmp_path / "out")
