@@ -596,3 +596,12 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   dropped and reported as a limitation, with Part I (reader) and the non-SAE baselines carrying the analysis. S0 and
   the layer scan get one pod session (6 GPU-hours) at most.
 - change: exp06 draft (S0 fallback replaced), THESIS_DESIGN §4a (Gemma row) and §8 (D10), program.md Task 5.
+
+### 2026-11-01 — decision (human): test-time training considered, deliberately not adopted
+- decision: no test-time training (per-input weight updates at inference) in any experiment. Reasons (THESIS_DESIGN
+  §4a): per-event weights leave no fixed model for RQ1 and drift from the Qwen-Scope SAEs; entropy-minimising
+  adaptation sharpens predictions against RQ3's calibration; the time shift is already handled at test time by the
+  L1/L2 tools, whose evidence stays in the context and checkable (RQ2); cost and the frozen test protocol. Repeated
+  sampling (test-time compute, no weight change) stays in exp03.
+- change: THESIS_DESIGN §4a row, §7 oral-exam row, §8 D12. A related-work and future-work scan for the thesis runs
+  next; verified candidates go to the reference session for the bibliography.

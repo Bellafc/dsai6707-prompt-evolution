@@ -113,6 +113,7 @@ autoencoder (exp06), a leakage-free history long enough for exp03, and LoRA tool
 | Claude Opus 5.5 | Arm D (frontier reference), the exp01 judge, exp06 feature labels | Evaluation and analysis only. Not a teacher: the Consumer Terms (§3.2) bar using the service to train models |
 | RL with proper-scoring rewards (GRPO/ReMax on Brier; Turtel et al., TMLR 2025; Mantic 2026) | Future work / PhD | Published systems used ~10k–110k resolved questions; exp03 yields hundreds. exp03's dataset is the seed for it |
 | Activation steering of school directions | exp06 Part III (optional, dev only) | A third way between prompting and fine-tuning; expected to trail prompting (AxBench, ICML 2025) |
+| Test-time training: weights updated per test input at inference (Sun et al., 2020; TENT, Wang et al., 2021; per-task LoRA, Akyürek et al.; TTT on retrieved neighbours, Hardt & Sun, 2024) | Considered and deliberately not adopted (human, 2026-11-01); related work and limitations in Ch. 2 and 7 | (1) Per-event weights leave no single model to compare across prompted, SFT and SFT+RFT (RQ1), and move the weights further from the Qwen-Scope SAEs. (2) Entropy-minimising adaptation sharpens predictions, against RQ3's calibration. (3) The shift we face is time, and the L1/L2 tools already adapt at test time without touching weights: retrieved evidence goes into the context, where every reference can be checked (RQ2); TTT-NN puts the same neighbours into the weights, where they cannot. (4) One training run per event × school × seed, and a rewrite of the frozen test protocol. Kept: test-time compute without weight changes (repeated sampling, the exp03 samples pool) |
 
 ## 5. Timeline (target submission 2027-06-15; hard limit = end of Normal Period)
 
@@ -185,6 +186,7 @@ autoencoder (exp06), a leakage-free history long enough for exp03, and LoRA tool
 | What do you do when the schools disagree? | L3 rule (side by side, not adopted); exp03 H6 tests disagreement as an uncertainty signal |
 | Is the agent's explanation faithful, or a story written after the fact? | exp07: counterfactual tool results (behaviour), SAE proof faithfulness (inside), proof validity (`Proof.check`, grounding) |
 | Is theoretical diversity better than other sources of diversity (personas, models, sampling)? | exp03 H8, equal ensemble size |
+| Why not adapt the model at test time (test-time training)? | §4a: considered and rejected; it breaks RQ1's fixed-model comparison and RQ3's calibration, and the L1/L2 tools already adapt at test time in an auditable way |
 
 ## 8. Decisions pending (human)
 
@@ -209,3 +211,5 @@ those decisions say.
 - **D11** Training data: the original 1,500 GPT-4o trajectories if they were kept (preferred), otherwise
   regenerated (GPT-4o if still offered, or an open-weight teacher whose licence allows training on its outputs);
   and whether to run the Qwen2.5-7B reproduction arms A7/C7.
+- **D12** Test-time training. Decided 2026-11-01: considered and deliberately not adopted (reasons in §4a); written up
+  as related work and a limitation, not run.
