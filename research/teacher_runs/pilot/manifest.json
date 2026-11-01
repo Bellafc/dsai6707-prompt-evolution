@@ -1,0 +1,6 @@
+{
+ "n_per_school": 20,
+ "seed": 0,
+ "model": "qwen3.8-max",
+ "requests": 60
+}
