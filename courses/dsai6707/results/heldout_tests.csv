@@ -1,0 +1,9 @@
+comparison,metric,mean_diff,p_raw,p_holm
+nsga2 - b0,fidelity,0.0179,0.2168,1.0
+nsga2 - b0,disagreement,0.0056,0.8672,1.0
+ga - b0,fidelity,0.0426,0.0293,0.2051
+ga - b0,disagreement,-0.0074,0.8848,1.0
+random - b0,fidelity,0.0262,0.0254,0.2031
+random - b0,disagreement,0.0,0.9805,1.0
+nsga2_rule - b0,fidelity,0.0272,0.0566,0.3398
+nsga2_rule - b0,disagreement,0.0204,0.5664,1.0
