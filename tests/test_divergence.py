@@ -37,7 +37,9 @@ def test_parse_and_distance():
     assert abs(p["growth"] - (-0.6 + 0.4)) < 1e-9 and abs(p["inflation"] - (-0.6)) < 1e-9
     flipped = divergence.parse(OUT.replace("government bonds: LONG", "government bonds: SHORT"))
     d = divergence.distance({"e1": p}, {"e1": flipped})
-    assert d == {"n": 1, "signals": round(1 / 6, 3), "opposite": round(1 / 6, 3), "macro": 0.0}
+    assert d == {"n": 1, "disagreement": round(1 / 6, 3), "signals": round(1 / 6, 3), "opposite": round(1 / 6, 3),
+                 "macro": 0.0}
+    assert divergence.spearman([1, 2, 3, 4], [10, 20, 30, 40]) == 1.0
     assert divergence.parse("no output") is None
 
 
@@ -54,3 +56,4 @@ def test_analyze_writes_the_matrix(tmp_path):
     assert s["pairs"]["keynesian|austrian"]["opposite"] == round(1 / 6, 3)
     assert s["nearest"]["new_keynesian"][1] != "new_keynesian"
     assert "| keynesian |" in (tmp_path / "matrix.md").read_text()
+    assert s["pairs_with_positions"] == 15 and s["dispersion"]["events"] == 2

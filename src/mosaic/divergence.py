@@ -3,6 +3,13 @@
 Each framework analyses the same dev template events in one pass (no tools); the signals and the scenario mass are
 compared pairwise. Two frameworks are run twice, so between-framework distances can be read against the noise of
 running the same framework again. Evaluation only: nothing here becomes training data. Standard library only.
+
+The measures are established ones: the pairwise disagreement measure of ensemble diversity (Kuncheva & Whitaker 2003,
+the share of items on which two members' outputs differ), here over events x assets; and forecast dispersion across
+forecasters (Mankiw, Reis & Wolfers 2003), here the standard deviation across frameworks of the expected growth and
+inflation direction per event. The frameworks' positions on two literature dimensions (configs/frameworks.toml,
+expert-coded as in the Chapel Hill Expert Survey) are compared with the measured disagreement, as text-based party
+positions are validated against expert surveys (Laver, Benoit & Garry 2003).
 """
 
 from __future__ import annotations
@@ -104,14 +111,50 @@ def distance(a: dict, b: dict) -> dict:
     common = sorted(set(a) & set(b))
     if not common:
         return {"n": 0}
-    sig = opp = macro = 0.0
+    sig = opp = macro = kw = 0.0
     for e in common:
         da, db = a[e]["signals"], b[e]["signals"]
         sig += sum(abs(da[x] - db[x]) / 2 for x in ASSETS) / len(ASSETS)
+        kw += sum(da[x] != db[x] for x in ASSETS) / len(ASSETS)
         opp += sum(da[x] * db[x] == -1 for x in ASSETS) / len(ASSETS)
         macro += abs(a[e]["growth"] - b[e]["growth"]) + abs(a[e]["inflation"] - b[e]["inflation"])
     k = len(common)
-    return {"n": k, "signals": round(sig / k, 3), "opposite": round(opp / k, 3), "macro": round(macro / k, 3)}
+    return {"n": k, "disagreement": round(kw / k, 3), "signals": round(sig / k, 3), "opposite": round(opp / k, 3),
+            "macro": round(macro / k, 3)}
+
+
+def dispersion(runs: dict[str, dict]) -> dict:
+    """Mean over events of the standard deviation across frameworks of expected growth and inflation direction."""
+    import statistics
+
+    events = set.intersection(*(set(r) for r in runs.values())) if runs else set()
+    out = {}
+    for key in ("growth", "inflation"):
+        sds = [statistics.pstdev([r[e][key] for r in runs.values()]) for e in events]
+        out[key] = round(sum(sds) / len(sds), 3) if sds else None
+    return {"events": len(events), **out}
+
+
+def spearman(x: list[float], y: list[float]) -> float | None:
+    def ranks(v):
+        order = sorted(range(len(v)), key=lambda i: v[i])
+        r = [0.0] * len(v)
+        i = 0
+        while i < len(v):
+            j = i
+            while j + 1 < len(v) and v[order[j + 1]] == v[order[i]]:
+                j += 1
+            for k in range(i, j + 1):
+                r[order[k]] = (i + j) / 2
+            i = j + 1
+        return r
+    if len(x) < 3:
+        return None
+    rx, ry = ranks(x), ranks(y)
+    mx, my = sum(rx) / len(rx), sum(ry) / len(ry)
+    num = sum((a - mx) * (b - my) for a, b in zip(rx, ry))
+    den = (sum((a - mx) ** 2 for a in rx) * sum((b - my) ** 2 for b in ry)) ** 0.5
+    return round(num / den, 3) if den else None
 
 
 def analyze(jobs_dir: Path) -> dict:
@@ -137,8 +180,18 @@ def analyze(jobs_dir: Path) -> dict:
         others = [(v["signals"], next(x for x in k.split("|") if x != n)) for k, v in pairs.items()
                   if n in k.split("|")]
         nearest[n] = min(others) if others else None
+    pos = tomllib.loads(FRAMEWORKS.read_text(encoding="utf-8")).get("positions", {})
+    theory, measured = [], []
+    for k, v in pairs.items():
+        a, b = k.split("|")
+        if a in pos and b in pos:
+            theory.append(sum(abs(pos[a][d] - pos[b][d]) for d in ("state_market", "orthodoxy")))
+            measured.append(v["disagreement"])
     summary = {"parsed": sum(len(v) for v in runs.values()), "failed": failed, "pairs": pairs, "noise": noise,
-               "nearest": nearest}
+               "nearest": nearest, "dispersion": dispersion({n: runs[(n, 0)] for n in names}),
+               "dispersion_schools_only": dispersion({n: runs[(n, 0)] for n in names
+                                                      if n in ("keynesian", "austrian", "monetarist")}),
+               "position_vs_disagreement_spearman": spearman(theory, measured), "pairs_with_positions": len(theory)}
     (jobs_dir / "matrix.json").write_text(json.dumps(summary, indent=1) + "\n")
     lines = ["# Disagreement matrix", "", f"Parsed {summary['parsed']} analyses, {failed} unparsable.", "",
              "Signal disagreement (0 = same calls, 1 = all opposite), above the diagonal; macro gap (expected growth "
@@ -156,6 +209,10 @@ def analyze(jobs_dir: Path) -> dict:
     lines += ["", "Noise (the same framework run twice):", ""]
     lines += [f"- {n}: signals {d['signals']:.2f}, opposite {d['opposite']:.2f}, macro {d['macro']:.2f} (n={d['n']})"
               for n, d in noise.items()]
+    lines += ["", f"Forecast dispersion across all frameworks: {summary['dispersion']}; three schools only: "
+              f"{summary['dispersion_schools_only']}.",
+              f"Literature distance (state-market + orthodoxy) vs measured disagreement, Spearman over "
+              f"{summary['pairs_with_positions']} pairs: {summary['position_vs_disagreement_spearman']}."]
     lines += ["", "Nearest framework by signal disagreement:", ""]
     lines += [f"- {n}: {v[1]} ({v[0]:.2f})" for n, v in nearest.items() if v]
     (jobs_dir / "matrix.md").write_text("\n".join(lines) + "\n")
