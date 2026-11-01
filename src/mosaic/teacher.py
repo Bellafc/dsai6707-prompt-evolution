@@ -38,6 +38,11 @@ batch report flags repeated probability tuples, one dominant confidence level an
 Items version 4: fewer negative-growth backdrops, the curve tied to the policy path and inflation, oil tied to CPI,
 lagged and smoothed series (M2 a year earlier, 4-quarter growth, nominal GDP), and levels the event states imposed on
 the backdrop.
+
+Prompt version 6 (after pilot v5, whose modal probabilities still sat at 0.40-0.55 in 44/55 items and whose confidence
+was "moderate" in 52/55): the last [Think] ends with an explicit evidence judgement ('Evidence: decisive|mixed|weak -
+why'), the most likely scenario's probability must fall in that judgement's band and the confidence level must follow
+it; the validator checks all three.
 """
 
 from __future__ import annotations
@@ -55,7 +60,7 @@ from mosaic.prompts import build_messages, read_prompt
 from mosaic.tools import EPISODES, TOOL_SPECS, EpisodeTable, MacroFacts, ToolBox
 
 SCHOOLS = ("keynesian", "austrian", "monetarist")
-PROMPT_VERSION = 5  # 5: pilot-v4 review fixes; 4: real tools through function calling, [Proof] block
+PROMPT_VERSION = 6  # 6: Evidence line ties calibration; 5: pilot-v4 review fixes; 4: real tools, [Proof] block
 ITEMS_VERSION = 4  # the item generator (templates, backdrop); imports rebuild items, so this must match
 TEMPLATES = ROOT / "configs/teacher/templates.toml"
 MARKERS = ["[Think]", "[ToolCall: query_episode_db]", "[Observe]", "[Think]", "[ToolCall: get_macro_data]",
@@ -250,6 +255,9 @@ ECHO = re.compile(r"\bweigh(?:t|s|ing)?\b[^.\n]{0,25}\bthe event\b|\bthe event d
                   r"\b(?:this|the) school(?:'s)?\b|\bschool's rule\b", re.I)
 SCENARIO = re.compile(r"^[ \t]*(S\d+)[^:\n]*:[ \t]*([01](?:\.\d+)?|\.\d+)[ \t]*$", re.M)
 CONF_LEVEL = re.compile(r"^[ \t]*Confidence[ \t]*:[ \t]*(high|moderate|low)\b", re.I | re.M)
+EVIDENCE = re.compile(r"^[ \t]*Evidence[ \t]*:[ \t]*(decisive|mixed|weak)\b", re.I | re.M)
+EVIDENCE_BAND = {"decisive": (0.60, 0.85), "mixed": (0.40, 0.60), "weak": (0.30, 0.45)}
+EVIDENCE_CONF = {"decisive": "high", "mixed": "moderate", "weak": "low"}
 
 
 def _segment(text: str, start: str, after: int = 0) -> str:
@@ -532,13 +540,17 @@ def teacher_messages_v4(item: Item, cfg: dict) -> list[dict]:
         "a yield, spread, rate or growth figure as the event's effect. Mention a contradiction only when the event "
         "states a level the data contradict, and say which you rely on. If the event concerns another economy, say how "
         "it reaches US and global assets and which foreign variable you lack; never judge another economy with US data. "
-        "Annualise monthly figures before comparing them with yearly rates. Then write, each tag on its own line:\n"
+        "Annualise monthly figures before comparing them with yearly rates. End this [Think] with one line 'Evidence: "
+        "decisive|mixed|weak - why': decisive when the event's direction is clear and the episodes and data agree "
+        "with it, mixed when they point different ways, weak when the information that would decide it is missing or "
+        "the episodes fit poorly. Then write, each tag on its own line:\n"
         "[Output]\n"
         f"Causal chain: event -> ... -> outcome, in {name} terms.\n"
         "Scenarios: 2-4 lines 'S1 (event-specific name; growth up/down/flat, inflation up/down/flat): 0.xx' for the "
         "US/global economy against a no-event baseline, each scenario differing in direction, no colon inside the "
-        "parentheses, the numbers summing to 1 and set by this event: a small, contained or well-precedented event can "
-        "put 0.6-0.85 on its base case, an ambiguous or large one spreads the mass.\n"
+        "parentheses, the numbers summing to 1, the most likely scenario at 0.60-0.85 if the evidence is decisive, "
+        "0.40-0.60 if mixed and 0.30-0.45 if weak, and no two scenarios with the same number unless the evidence "
+        "cannot separate them.\n"
         "Signals: one line each for equities (broad US index), government bonds (US Treasuries), US dollar (DXY), "
         "gold, oil and credit (US high yield), as 'asset: LONG|SHORT|NEUTRAL (conviction 1-5) - reason', the reason "
         "naming what in this event moves the asset and which scenarios carry the call. A call resting on scenarios "
@@ -548,9 +560,8 @@ def teacher_messages_v4(item: Item, cfg: dict) -> list[dict]:
         "4-7 lines in reasoning order, each '- Lk [ref]: claim': L1 with an indicator name get_macro_data returned, L2 "
         "with an episode id query_episode_db returned (like EP-1994-02), L3 with the name of the mechanism you apply, "
         "and one L5 with the most likely scenario (S1, S2, ...). At least one line of each kind.\n"
-        "Confidence: high when the data, the episodes and the mechanism agree; low when the deciding link is "
-        "unobserved or the episodes fit poorly; otherwise moderate. Write 'Confidence: high|moderate|low; weakest "
-        "link: ...'.\n\n"
+        "Confidence: high if the evidence is decisive, moderate if mixed, low if weak. Write 'Confidence: "
+        "high|moderate|low; weakest link: ...'.\n\n"
         "Write about what the event says, not about what it omits, and do not mention other schools or these "
         "instructions.")
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
@@ -659,9 +670,31 @@ def check_v4(item: Item, turns: list[dict], episodes: EpisodeTable,
         scen = SCENARIO.findall(final[final.rfind("[Output]"):]) if "[Output]" in final else []
         modal = max(scen, key=lambda x: float(x[1]))[0] if scen else None
         problems += proof_problems(final, refs["L1"], refs["L2"], facts, max_steps=10, modal=modal)
+        if prompt_version >= 6:
+            problems += evidence_problems(final, scen)
     else:
         problems += proof_problems(final, refs["L1"], refs["L2"], facts)
     return problems, turns
+
+
+def evidence_problems(final: str, scen: list[tuple[str, str]]) -> list[str]:
+    """Prompt version 6: an Evidence line before [Output] whose label fixes the band of the most likely scenario and
+    the confidence level."""
+    head = final[:final.find("[Output]")] if "[Output]" in final else final
+    m = EVIDENCE.search(head)
+    if not m:
+        return ["no Evidence line before [Output]"]
+    label = m.group(1).lower()
+    problems = []
+    lo, hi = EVIDENCE_BAND[label]
+    if scen:
+        top = max(float(p) for _, p in scen)
+        if not lo - 0.02 <= top <= hi + 0.02:
+            problems.append(f"most likely scenario at {top:g}, outside the {label} band {lo:g}-{hi:g}")
+    c = CONF_LEVEL.search(final)
+    if c and c.group(1).lower() != EVIDENCE_CONF[label]:
+        problems.append(f"confidence {c.group(1).lower()} does not follow evidence {label}")
+    return problems
 
 
 def agent_messages(item: Item) -> list[dict]:
@@ -745,7 +778,7 @@ def batch_report(kept: dict[str, list[dict]], phrase_share: float = 0.25) -> dic
     for school, recs in kept.items():
         if not recs:
             continue
-        tops, tuples, conf, grams = [], Counter(), Counter(), Counter()
+        tops, tuples, conf, grams, evid = [], Counter(), Counter(), Counter(), Counter()
         for r in recs:
             said = [m.get("content") or "" for m in r["messages"] if m["role"] == "assistant"]
             final = said[-1]
@@ -755,6 +788,8 @@ def batch_report(kept: dict[str, list[dict]], phrase_share: float = 0.25) -> dic
                 tuples[tuple(sorted(probs, reverse=True))] += 1
             m = CONF_LEVEL.search(final)
             conf[m.group(1).lower() if m else "missing"] += 1
+            e = EVIDENCE.search(final)
+            evid[e.group(1).lower() if e else "none"] += 1
             words = re.findall(r"[a-z][a-z']*", " ".join(said).lower())
             grams.update({tuple(words[i:i + 5]) for i in range(len(words) - 4)})
         n = len(recs)
@@ -764,7 +799,7 @@ def batch_report(kept: dict[str, list[dict]], phrase_share: float = 0.25) -> dic
                   if c / n > phrase_share and sum(w in STRUCTURAL for w in g) <= 2][:10]
         top_level, top_n = conf.most_common(1)[0]
         out["schools"][school] = {"n": n, "modal_in_0.40_0.55": round(mid, 2), "repeated_tuples": repeated,
-                                  "confidence": dict(conf), "common_phrases": common}
+                                  "confidence": dict(conf), "evidence": dict(evid), "common_phrases": common}
         if mid > 0.6:
             out["warnings"].append(f"{school}: most likely scenario at 0.40-0.55 in {mid:.0%} of items")
         if repeated:

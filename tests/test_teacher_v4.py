@@ -17,6 +17,7 @@ _spec.loader.exec_module(api)
 
 FINAL = """[Think]
 The data confirm slack, so weaker spending feeds on itself before policy reacts.
+Evidence: mixed - the data show slack, but the episodes differ from the event in size.
 [Output]
 Causal chain: shock -> lower spending -> lower income -> wider slack -> lower rates
 Scenarios:
@@ -250,3 +251,21 @@ def test_backdrop_v4_follows_stated_levels_and_has_lagged_series():
     ecb = teacher.align_backdrop("the ECB cuts rates by 50bp while inflation is still 2.5pp above target.", snap,
                                  random.Random(2))
     assert ecb["US CPI inflation y/y (%)"] == snap["US CPI inflation y/y (%)"]  # a foreign statement is not imposed
+
+
+def test_v6_evidence_line_fixes_the_modal_band_and_the_confidence():
+    item = teacher.make_items(1)[0]
+    job = {"body": {"model": "x", "messages": teacher.teacher_messages_v4(item, teacher.load_templates()),
+                    "tools": teacher.TOOL_SPECS}, "backdrop": item.event.macro_context}
+    eps = EpisodeTable.load()
+    turns, _ = api.converse(job, fake_send())
+    assert teacher.check_v4(item, turns, eps)[0] == []  # mixed, 0.47, moderate
+    no_line = FINAL.replace("Evidence: mixed - the data show slack, but the episodes differ from the event in size.\n", "")
+    turns, _ = api.converse(job, fake_send(no_line))
+    assert "no Evidence line before [Output]" in teacher.check_v4(item, turns, eps)[0]
+    assert teacher.check_v4(item, turns, eps, prompt_version=5)[0] == []  # version 5 runs are judged as before
+    decisive = FINAL.replace("Evidence: mixed", "Evidence: decisive")
+    turns, _ = api.converse(job, fake_send(decisive))
+    probs = teacher.check_v4(item, turns, eps)[0]
+    assert "most likely scenario at 0.47, outside the decisive band 0.6-0.85" in probs
+    assert "confidence moderate does not follow evidence decisive" in probs
