@@ -460,3 +460,12 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   downloads Qwen3-8B itself and is terminated (not only stopped) after its push, so no storage cost remains.
 - deviation: planned the network volume / none in stock in CA-MTL-1 / about 10 min more setup per pod / pods without the
   volume until stock returns; consider a second volume in a data center with stock if this persists.
+
+### 2026-11-01 — drafts: exp07 (RQ2) and exp03 H8 plus agent arms (RQ3)
+- change: new `research/prereg_drafts/exp07_faithfulness.md` (systems A-agent, C-agent, C-agent+RFT; E-dev seed 7,
+  E-test fixed at registration, E-hist if the episode database arrives; M1 validity and grounding, M2 counterfactual
+  sensitivity with cited vs placebo indicators, M3 SAE faithfulness, a validated proof-step typer; F-H1 to F-H4 with
+  Holm). exp03 draft: pool-persona, pool-models (open models released before 2025-05), pool-sample at equal ensemble
+  size, H8 (pool-eq beats each of them), agent arms as secondary systems with a cut-off date (2026-12-10).
+- decision needed (human): the personas' wording, the two extra open models and their licences, F-H1 to F-H4 and the
+  counterfactual shifts; both drafts are registered by the human.
