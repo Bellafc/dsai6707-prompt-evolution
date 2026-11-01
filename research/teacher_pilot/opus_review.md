@@ -122,3 +122,39 @@ information") and the 0.55/0.25/0.20 tuple are gone; good news gets risk-on call
 
 The Task A spike (`research/agent_spike.md`) found the prompted Qwen3-8B at 0/30 on the same contract (tool calls
 valid, format contract failed), so the format the teacher sets is what agent SFT must teach.
+
+# Review of pilot v5 (prompt version 5, items version 4)
+
+Same rubric and setup (three Opus 5.5 reviewers, evaluation only; `opus_review/review_v5_<school>.json`). The three
+reviewers were cut off by the subscription's spend limit after writing their files; the files are complete (items and
+summaries). Verdict of all three: "with changes".
+
+| School | n | school fidelity | causal coherence | event responsiveness | output consistency | factual hygiene | grounding |
+|---|---|---|---|---|---|---|---|
+| Keynesian | 17 | 4.18 | 3.65 | 4.47 | 3.59 | 4.29 | 3.82 |
+| Austrian | 19 | 4.79 | 3.74 | 4.32 | 3.74 | 4.21 | 3.84 |
+| Monetarist | 19 | 4.53 | 3.89 | 4.11 | 3.79 | 3.84 | 3.84 |
+| all, v5 | 55 | 4.51 | 3.76 | 4.29 | 3.71 | 4.11 | 3.84 |
+| all, v4 | 57 | 4.61 | 3.81 | 3.96 | 3.46 | 4.21 | 3.54 |
+
+Mean of the five shared criteria: v1 3.61, v2 4.12, v4 4.01, v5 4.08; grounding 3.54 → 3.84.
+
+**Fixed since v4** (all three reviewers): the echoes ("weigh the event" 0/55, "this/the school" 0/55); no pre-event
+value read as the event's effect; foreign events no longer judged with US data and the missing foreign variables
+named; gold and credit defaults broken (Austrian gold LONG 15/18 → 9/19, credit SHORT 15/18 → 9/19; Keynesian credit
+SHORT 15/20 → 9/17); calls on minority scenarios mostly NEUTRAL or conviction 1; Monetarist velocity computed from
+nominal GDP minus M2 in 19/19, the backdrop oil level no longer a live shock.
+
+**Remaining** (the prompt-v7 work list):
+1. Calibration still templated (v5: modal at 0.35-0.55 in most items, "Confidence: moderate" 52/55, repeated
+   tuples). v6 added the evidence label; the v6 pilot labels 21/26 "mixed".
+2. Rule narration replaces the old echoes: "nothing contradicts the data / the event states no level", pre-event
+   disclaimers, "the oil level is not a live shock", annualisation remarks without a monthly figure, "not a liquidity
+   trap" at policy rates of 2.5-5.5% (Keynesian 13/17), "velocity is not stable".
+3. New stock diagnoses: Austrian real rate against the 4-quarter average and "necessary liquidation" without a boom
+   (15/19); Monetarist 4-quarter average used as trend growth, moving the money benchmark with the cycle.
+4. Signals: the "data-driven, conviction 2 or less" clause used as a licence for backdrop-only calls; reasons citing
+   scenarios whose tags point the other way; scenarios with identical tags (Keynesian 7/17).
+5. Backdrop: inflation drawn independently of the gap (low unemployment with low core PCE in 6/17 Keynesian items),
+   which feeds easing calls.
+6. Claims about money growth in past episodes from memory (several wrong); the stand-in table carries no money context.
