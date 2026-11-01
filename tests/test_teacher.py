@@ -5,32 +5,33 @@ import json
 from mosaic import teacher
 
 GOOD = """[Think]
-Demand is the binding constraint; the multiplier matters here.
+Bad news for growth and mildly good news for inflation: a demand shock worth about half a percent of GDP.
 [ToolCall: query_episode_db]
-query: demand shock, policy response
+{"query": "demand shock and policy response"}
 [Observe]
-Analogues from 2001 and 2008 show demand falling for two quarters.
+1. United States, 2001: demand fell for two quarters after the investment bust.
+2. Euro area, 2008: credit and spending contracted together.
 [Think]
-The output gap widens.
+The output gap widens and the multiplier works in reverse.
 [ToolCall: get_macro_data]
-unemployment, CPI
+{"indicators": ["US unemployment rate (%)", "US CPI inflation y/y (%)"]}
 [Observe]
-Unemployment 6.1%, CPI 2.0% as in the snapshot.
+US unemployment rate (%): 6.1; US CPI inflation y/y (%): 2.0
 [Think]
-Fiscal support is needed.
+Fiscal support is needed while the gap is negative.
 [Output]
 Causal chain: shock -> lower spending -> multiplier -> output gap -> lower rates
 Scenarios:
-S1 (soft landing): 0.5
-S2 (recession): 0.3
-S3 (stagflation): 0.2
+S1 (soft landing; growth down, inflation down): 0.5
+S2 (recession; growth down, inflation down): 0.3
+S3 (stagflation; growth down, inflation up): 0.2
 Signals:
-equities: SHORT (conviction 3)
-government bonds: LONG (conviction 4)
-US dollar: NEUTRAL (conviction 2)
-gold: LONG (conviction 2)
-oil: SHORT (conviction 2)
-credit: SHORT (conviction 3)
+equities: SHORT (conviction 3) - S2 recession risk cuts earnings
+government bonds: LONG (conviction 4) - rates fall as the gap widens
+US dollar: NEUTRAL (conviction 2) - no clear relative rate path
+gold: LONG (conviction 2) - easing lowers real yields
+oil: SHORT (conviction 2) - weaker demand for energy
+credit: SHORT (conviction 3) - defaults rise in S2
 """
 
 
@@ -61,7 +62,7 @@ def test_items_are_seeded_and_cover_all_templates_before_repeating():
 def test_validate_and_leakage_filter():
     assert teacher.validate(GOOD) == []
     assert any("missing" in p for p in teacher.validate(GOOD.replace("[ToolCall: get_macro_data]", "")))
-    assert any("sum to" in p for p in teacher.validate(GOOD.replace("S3 (stagflation): 0.2", "S3 (x): 0.4")))
+    assert any("sum to" in p for p in teacher.validate(GOOD.replace("inflation up): 0.2", "inflation up): 0.4")))
     assert teacher.leaks("as in March 2025 and in 2019") == []
     assert teacher.leaks("since June 2025") and teacher.leaks("by 2026") and teacher.leaks("in 2025 overall")
     assert teacher.leaks("analog episodes before 2025, pre-2025 cycles, prior to 2025") == []  # the boundary itself
@@ -109,4 +110,56 @@ def test_import_refuses_a_claude_teacher(tmp_path):
     (jobs / "results.jsonl").write_text(json.dumps({"custom_id": "keynesian|syn-k0000", "model": "claude-x",
                                                     "content": GOOD}) + "\n")
     with pytest.raises(SystemExit, match="Claude"):
+        teacher.import_results(jobs, jobs / "results.jsonl", tmp_path / "out")
+
+
+
+def test_v2_rules_reject_the_problems_the_opus_review_found():
+    v = teacher.validate
+    assert any("JSON" in p for p in v(GOOD.replace('{"query": "demand shock and policy response"}', "query: demand")))
+    assert any("dated analog" in p for p in v(GOOD.replace("United States, 2001", "Various episodes")))
+    assert any("malformed: gold" in p for p in v(GOOD.replace("gold: LONG (conviction 2)", "gold: LONG")))
+    assert any("without a reason: oil" in p for p in v(GOOD.replace(" - weaker demand for energy", "")))
+    assert any("instructions" in p for p in v(GOOD.replace("Fiscal support", "As instructed, fiscal support")))
+    cfg = teacher.load_templates()
+    item = next(it for it in teacher.make_items(3, cfg=cfg) if it.school == "austrian")
+    assert any("another school: keynesian" in p for p in v(GOOD.replace("multiplier", "Keynesian multiplier"), item))
+    vals = teacher.early_values(item)[:2]
+    early = GOOD.replace("half a percent of GDP.", f"half a percent of GDP; backdrop {vals[0]} and {vals[1]}.")
+    assert any("before get_macro_data" in p for p in v(early, item)) and v(GOOD, item) == []
+
+
+def test_backdrop_hangs_together():
+    import random
+
+    for i in range(200):
+        m = teacher.macro_snapshot(random.Random(i))
+        assert m["US 2y-10y spread (bp)"] == round((m["US 10y yield (%)"] - m["US 2y yield (%)"]) * 100)
+        assert 3.3 <= m["US unemployment rate (%)"] <= 10 and 11 <= m["VIX"] <= 60
+        assert all(k.startswith(("US ", "VIX", "DXY", "WTI")) for k in m)  # labelled as a US/global backdrop
+
+
+def test_signal_report_warns_when_one_direction_dominates():
+    rec = {"messages": [{"role": "assistant", "content": GOOD}]}
+    rep = teacher.signal_report({"keynesian": [rec] * 10, "austrian": [], "monetarist": []})
+    assert rep["shares"]["keynesian"]["equities"]["SHORT"] == 10
+    assert "keynesian: equities SHORT in 10/10" in rep["warnings"]
+
+
+def test_normalize_fixes_conviction_format_only():
+    bad = GOOD.replace("SHORT (conviction 3) - S2 recession", "SHORT (3) - S2 recession").replace(
+        "gold: LONG (conviction 2)", "gold: LONG (conviction: 2)")
+    assert teacher.validate(bad) and teacher.normalize(bad) == GOOD
+
+
+def test_import_refuses_jobs_made_with_another_item_generator(tmp_path):
+    import pytest
+
+    jobs = tmp_path / "jobs"
+    teacher.export_jobs(1, 0, "qwen-test", jobs)
+    man = json.loads((jobs / "manifest.json").read_text())
+    assert man["prompt_version"] == teacher.PROMPT_VERSION and man["items_version"] == teacher.ITEMS_VERSION
+    (jobs / "manifest.json").write_text(json.dumps({"n_per_school": 1, "seed": 0, "model": "x"}))  # a v1 manifest
+    (jobs / "results.jsonl").write_text("")
+    with pytest.raises(SystemExit, match="item generator version 1"):
         teacher.import_results(jobs, jobs / "results.jsonl", tmp_path / "out")

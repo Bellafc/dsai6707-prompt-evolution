@@ -378,3 +378,38 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   its branch directly (the GitHub API path cannot carry multi-megabyte files such as the full teacher run). Pods keep
   the rule through `runpod.POD_DENY`, passed by `scripts/autoresearch.sh` (`tests/test_runpod.py` checks it);
   ORCHESTRATOR.md rule 6.
+
+### 2026-11-01 — D11: Opus review of the teacher pilot; teacher prompt version 2
+- review: three Claude Opus 5.5 reviewers (evaluation only) scored the 59 kept pilot trajectories 1–5 on school
+  fidelity, causal coherence, event responsiveness, output consistency, factual hygiene. Means K 3.8/3.4/3.2/3.5/3.7,
+  A 4.1/3.5/3.3/2.9/3.8, M 4.5/3.9/3.7/3.6/3.4; all three verdicts "train with changes". Main problems: default
+  bearish signals (equities SHORT 52/59, gold LONG 56/59) also for good news, checklist use of school concepts,
+  backdrop numbers before get_macro_data, US backdrop for foreign events, templated scenarios, vague analogs,
+  implausible backdrops. Summary and per-item scores: `research/teacher_pilot/opus_review.md`, `opus_review/*.json`.
+- change: teacher prompt version 2 (table in opus_review.md): school diagnosis and good-news cases instead of
+  must-use concepts, consistent US/global backdrop, tool-honest order, JSON tool arguments, dated analogs, signals
+  with conviction and reason and no default direction, direction-share report per batch; manifests carry
+  `prompt_version` and imports refuse a mismatch. 63 offline tests pass.
+- next: pilot v2 (20 per school), same Opus review, compare.
+
+### 2026-11-01 — D11: pilot v2 (teacher prompt version 2); prompt version 3, format normalisation
+- command: `scripts/teacher_api.py research/teacher_runs/pilot-v2 --n 20 ... --model qwen3.8-max` (60/60 replies;
+  60k tokens in, 414k out), `mosaic teacher-import`.
+- result: 51/60 kept after normalisation (K 15, A 19, M 17). All 9 rejects skipped the second [Think] (the v2 rules
+  named only the first and third). Signal diversity up: equities SHORT 30/51 (v1 52/59), gold LONG 34/51 (v1 56/59);
+  remaining warnings (> 70 % one direction): Keynesian bonds LONG 12/15 and gold LONG 11/15, Austrian gold LONG
+  15/19 and credit SHORT 14/19.
+- change: prompt version 3 adds the rule for the second [Think]; `normalize()` rewrites "SHORT (2)" and
+  "(conviction: 2)" to "(conviction 2)" on signal lines before validation (5 v2 replies had only that format slip;
+  wording untouched); manifests carry `items_version` separately (imports rebuild items, so only the item generator
+  must match; the record keeps the run's prompt version). 64 offline tests pass.
+- next: Opus review of pilot v2 with the v1 rubric; the full run waits for the human's scope decision.
+
+### 2026-11-01 — D11: Opus review of pilot v2
+- result: same rubric, means v1 → v2: Keynesian 3.79/3.42/3.21/3.47/3.74 → 4.13/3.80/4.00/3.67/4.87, Austrian
+  4.10/3.45/3.25/2.90/3.75 → 4.42/4.05/3.58/3.53/4.58, Monetarist 4.50/3.85/3.70/3.60/3.40 → 4.59/3.88/4.18/4.06/4.53;
+  overall 3.61 → 4.12. Verdicts still "with changes". Remaining issues listed in research/teacher_pilot/opus_review.md
+  (teacher-written tool results; signals that follow S1 only; templated probabilities; undefined asset referents;
+  prompt echoes; backdrop skew; residual gold/bond defaults).
+- decision needed (human): real tools (episode DB, ALFRED contexts) vs self-simulated tool calls; it shapes the
+  trajectory format, exp01's inference and exp03. The full teacher run waits for this and the scope decision.

@@ -1,0 +1,382 @@
+{
+  "school": "austrian",
+  "items": [
+    {
+      "id": "syn-a0000",
+      "template_id": "T04-01",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 3,
+        "event_responsiveness": 3,
+        "output_consistency": 4,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "positive payroll beat recast as late-boom signal by default",
+        "'late-cycle' claim despite 5.3% unemployment",
+        "cites snapshot values before get_macro_data call",
+        "bond/gold/credit signals justified by negative real rates and M2 16%"
+      ]
+    },
+    {
+      "id": "syn-a0001",
+      "template_id": "T12-05",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 3,
+        "event_responsiveness": 4,
+        "output_consistency": 3,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "rents-vs-prices divergence explained well",
+        "'higher time preference' raising rents is loose",
+        "bonds SHORT despite M2 contraction and -2.4% GDP (debt-deflation S2)",
+        "gold LONG 4 with contracting money weakly argued"
+      ]
+    },
+    {
+      "id": "syn-a0002",
+      "template_id": "T04-05",
+      "scores": {
+        "school_fidelity": 3,
+        "causal_coherence": 3,
+        "event_responsiveness": 3,
+        "output_consistency": 2,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "1920-21 analog mischaracterised: Austrians cite it as a non-intervention liquidation",
+        "govt bonds SHORT while S3 debt deflation and M2 -3.8%",
+        "oil $25 not used in reasoning",
+        "calls 10y 0.4% 'distortion' without argument"
+      ]
+    },
+    {
+      "id": "syn-a0003",
+      "template_id": "T12-01",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 3,
+        "event_responsiveness": 3,
+        "output_consistency": 3,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "inflation 1.6% and GDP 4.4% treated as stress",
+        "VIX 25 / HY 690 called 'already stressed' then gold LONG 5",
+        "conviction 5 on gold and credit not supported by low CPI",
+        "good housing-boom analogs"
+      ]
+    },
+    {
+      "id": "syn-a0004",
+      "template_id": "T07-06",
+      "scores": {
+        "school_fidelity": 3,
+        "causal_coherence": 3,
+        "event_responsiveness": 3,
+        "output_consistency": 3,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "sector-specific lithium shock drives economy-wide SHORT equities",
+        "policy rate 4% called 'still too low' only loosely",
+        "gold LONG 5 unexplained by a lithium shock",
+        "cites snapshot before get_macro_data"
+      ]
+    },
+    {
+      "id": "syn-a0005",
+      "template_id": "T01-09",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 4,
+        "event_responsiveness": 3,
+        "output_consistency": 2,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "BoE event analysed with US snapshot (DXY, core PCE) without noting it",
+        "US dollar SHORT on a dovish BoE: GBP should weaken, not USD",
+        "no sterling/gilt signal for a UK event",
+        "good Cantillon/asset-inflation reasoning with low CPI and M2 14.5%"
+      ]
+    },
+    {
+      "id": "syn-a0006",
+      "template_id": "T09-01",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 3,
+        "event_responsiveness": 2,
+        "output_consistency": 3,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "GDP beat during 7.8% unemployment called 'late-cycle' (looks early recovery)",
+        "positive surprise gets crisis-style signals",
+        "M2 20% used well",
+        "boilerplate chain"
+      ]
+    },
+    {
+      "id": "syn-a0007",
+      "template_id": "T06-05",
+      "scores": {
+        "school_fidelity": 2,
+        "causal_coherence": 2,
+        "event_responsiveness": 1,
+        "output_consistency": 2,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "tariff truce (removal of intervention) framed as 'another intervention'; Austrians favour free trade",
+        "positive shock gets SHORT equities 4 / gold LONG 5",
+        "'rising unemployment' not in snapshot",
+        "gold LONG 5 with core PCE 0.3% unjustified",
+        "vague late-1980s US-Japan 'truce' analog"
+      ]
+    },
+    {
+      "id": "syn-a0008",
+      "template_id": "T01-01",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 3,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "RBA event with US snapshot; signal labelled 'the US dollar'",
+        "no AUD view",
+        "gold LONG 4 'as trust in fiat weakens' after a hawkish hike into 0.5% CPI is contradictory",
+        "hike-as-liquidation-accelerant reasoning is genuinely Austrian"
+      ]
+    },
+    {
+      "id": "syn-a0009",
+      "template_id": "T09-06",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 4,
+        "event_responsiveness": 3,
+        "output_consistency": 3,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "productivity jump plausibly read as liquidation/labour-shedding effect given 9.4% unemployment",
+        "gold LONG 5 with DXY 113 and oil $27 under-argued",
+        "Hoover wage-support analog accurate",
+        "positive shock still ends in standard bearish set"
+      ]
+    },
+    {
+      "id": "syn-a0010",
+      "template_id": "T10-03",
+      "scores": {
+        "school_fidelity": 5,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 3,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "strong Austrian reading of state-directed infrastructure credit",
+        "HY 430bp called 'stress'",
+        "US-centric signals for a China event; no CNY/commodity channel",
+        "currency of '150bn' unspecified, not queried"
+      ]
+    },
+    {
+      "id": "syn-a0011",
+      "template_id": "T13-04",
+      "scores": {
+        "school_fidelity": 5,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 3,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "good interbank/time-preference mechanism with real analogs (1907, 1930s, 2008)",
+        "USD SHORT in an interbank funding crisis ignores dollar funding squeeze",
+        "'unemployment is rising' not in snapshot",
+        "S1 'necessary liquidation' with policy rate 5.5% coherent"
+      ]
+    },
+    {
+      "id": "syn-a0012",
+      "template_id": "T13-06",
+      "scores": {
+        "school_fidelity": 5,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 3,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "assisted merger as forbearance/moral hazard is on-school",
+        "S1 'contained panic, forbearance boom' 0.30 conflicts with equities SHORT 4",
+        "bonds SHORT on -ve real yields consistent",
+        "analogs real and dated"
+      ]
+    },
+    {
+      "id": "syn-a0013",
+      "template_id": "T10-02",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 3,
+        "event_responsiveness": 4,
+        "output_consistency": 3,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "China developer event analysed with US-style snapshot without comment",
+        "'time preference normalises' vague",
+        "US dollar SHORT not explained",
+        "shortest Think steps; reasoning thin"
+      ]
+    },
+    {
+      "id": "syn-a0014",
+      "template_id": "T01-06",
+      "scores": {
+        "school_fidelity": 5,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 3,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "YCC as administered price of time: excellent fit",
+        "analogs accurate (1942-51 US peg, BoJ YCC 2016)",
+        "no yen view; USD NEUTRAL despite BoJ capping yields",
+        "snapshot is not Japanese (8.6% CPI)"
+      ]
+    },
+    {
+      "id": "syn-a0015",
+      "template_id": "T11-04",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 4,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "peg-as-pseudo-sound-money analysis good",
+        "USD LONG justified",
+        "'rising unemployment' not in snapshot",
+        "HY 478bp called 'stressed'"
+      ]
+    },
+    {
+      "id": "syn-a0016",
+      "template_id": "T06-06",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 3,
+        "event_responsiveness": 2,
+        "output_consistency": 3,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "a 5% lithium tariff treated as macro-significant",
+        "conviction 5 credit SHORT for a minor tariff",
+        "chain asserts 'rising unemployment'",
+        "thin, short Think; boilerplate signals"
+      ]
+    },
+    {
+      "id": "syn-a0017",
+      "template_id": "T14-04",
+      "scores": {
+        "school_fidelity": 5,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 3,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "stablecoin as fiduciary media/free-banking analogy is strong",
+        "'demand for final settlement money' but USD NEUTRAL",
+        "10y 7.14% vs policy 5.5% with 2s10s 10bp inconsistency not noticed",
+        "'free-banking ... capital forced into shorter uses' unsupported claim"
+      ]
+    },
+    {
+      "id": "syn-a0018",
+      "template_id": "T01-04",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 4,
+        "event_responsiveness": 3,
+        "output_consistency": 2,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "BoJ QE but USD NEUTRAL; S3 'yen credibility strain' implies USD LONG",
+        "S2 'carry reflation rally' 0.25 not reflected in signals",
+        "US-style snapshot for a Japan event",
+        "analogs (Japan 1990s, QQE 2013-19) accurate"
+      ]
+    },
+    {
+      "id": "syn-a0019",
+      "template_id": "T11-05",
+      "scores": {
+        "school_fidelity": 5,
+        "causal_coherence": 3,
+        "event_responsiveness": 3,
+        "output_consistency": 3,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "textbook Austrian hyperinflation narrative",
+        "frontier event mapped to US equities/bonds SHORT; asset universe ambiguous",
+        "snapshot (M2 2.9%, CPI 4.7%) does not reflect frontier printing; treated as if it did",
+        "'mid-2000s African' hyperinflation imprecise (Zimbabwe peaked 2007-08)"
+      ]
+    }
+  ],
+  "summary": {
+    "mean_scores": {
+      "school_fidelity": 4.1,
+      "causal_coherence": 3.45,
+      "event_responsiveness": 3.25,
+      "output_consistency": 2.9,
+      "factual_hygiene": 3.75
+    },
+    "main_strengths": [
+      "Rich, mostly correct Austrian vocabulary: malinvestment, Cantillon effects, structure of production, time preference, forbearance/liquidation, sound money",
+      "Very good fit on events that are themselves interventions or credit busts (YCC, assisted bank merger, China infrastructure stimulus, stablecoin run, interbank stress, EM peg)",
+      "Historical analogs are almost all real, pre-2025 and appropriately chosen (1907, 1920s-30s, 1970s, Japan 1990s, Asia 1997, GFC, BoJ YCC 2016)",
+      "Tool-use format is consistent and parseable; snapshot echoed correctly in get_macro_data observations"
+    ],
+    "main_problems": [
+      "Signal collapse: equities SHORT, gold LONG and credit SHORT in 20/20 items (gold conviction 4-5 every time); bonds never LONG; this is a teacher default, not event-driven",
+      "Every event, including positive shocks (payroll beat, GDP beat, productivity jump, tariff truce), is forced into 'reveals malinvestment -> liquidation'; the student will learn that Austrians are perma-bears",
+      "School-logic error on trade: tariff truce called 'another intervention', when removing tariffs is pro-market in Austrian terms",
+      "Scenario block is templated: always 4 scenarios, top prob 0.35-0.45, near-identical labels (Delayed liquidation / Necessary liquidation / Sound-money reset)",
+      "Signals often contradict own scenarios: bonds SHORT under debt-deflation, USD NEUTRAL/SHORT where yen/sterling/dollar-funding logic implies otherwise, 'contained/reflation' scenarios with no effect on signals",
+      "Non-US events (BoE, RBA, BoJ, China, frontier EM) analysed with a US-style snapshot and US asset signals with no acknowledgment; no local currency or local-bond view",
+      "Snapshot values are cited before get_macro_data is called in most items, making the tool call redundant",
+      "Minor fabricated observations ('rising unemployment' with no time series) and stretched readings (HY 430-480bp called stress, 1.6% CPI with 4.4% GDP called fragile); 1920-21 depression mischaracterised"
+    ],
+    "would_you_train_on_this": "with changes",
+    "suggested_prompt_or_template_changes": [
+      "Require the teacher to first classify the event's sign for the economy (positive/negative/ambiguous) and whether it adds or removes intervention, and make signals conditional on it; give explicit Austrian examples of bullish or neutral outcomes (deregulation, tariff removal, rate normalisation, genuine saving-driven growth, productivity gains)",
+      "Rebalance with a rejection/quota rule: cap the share of identical signal vectors (e.g. reject if equities SHORT + gold LONG + credit SHORT exceeds ~50% per batch), and require each signal to cite a specific chain step",
+      "Allow 2-4 scenarios with free labels and require that the highest-probability scenario determine the sign of the signals; add a check that bonds/USD signals match debt-deflation vs inflationary scenarios",
+      "Make the macro snapshot match the event's economy (or label it 'US/global backdrop' and add a local-currency / local-bond signal for non-US events)",
+      "Enforce tool ordering: the first Think may not reference snapshot numbers before get_macro_data is observed (or drop the snapshot from the user prompt)",
+      "Forbid claims about trends ('rising unemployment', 'credit tightening') that a single-point snapshot cannot show, unless stated in the event",
+      "Generate internally consistent snapshots (e.g. policy rate vs 10y vs 2s10s, frontier inflation events with matching CPI/M2) or have the teacher explicitly note inconsistencies",
+      "Add a few hand-written gold trajectories for positive shocks and pro-market policy events to anchor fidelity without perma-bear bias"
+    ]
+  }
+}

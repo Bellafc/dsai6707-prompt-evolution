@@ -1,0 +1,381 @@
+{
+ "school": "austrian",
+ "items": [
+  {
+   "id": "syn-a0000",
+   "template_id": "T04-01",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 3,
+    "event_responsiveness": 3,
+    "output_consistency": 3,
+    "factual_hygiene": 4
+   },
+   "flags": [
+    "payroll beat in a contracting backdrop (GDP -2.1%, HY 768bp) called a 'late-stage boom'",
+    "wage-push inflation channel, not monetary",
+    "S2 'Delayed liquidation' labelled growth down, inflation down (self-contradictory)",
+    "credit SHORT = default: contradicts growth-up S1 at 768bp spreads",
+    "gold LONG justified: 6.9% CPI vs 0.125% policy rate",
+    "oil LONG via 'hard-asset bidding' weakly argued"
+   ]
+  },
+  {
+   "id": "syn-a0001",
+   "template_id": "T12-05",
+   "scores": {
+    "school_fidelity": 3,
+    "causal_coherence": 3,
+    "event_responsiveness": 3,
+    "output_consistency": 3,
+    "factual_hygiene": 3
+   },
+   "flags": [
+    "rising rents said to expose housing malinvestment (they signal under-supply)",
+    "relative-price rise in rents treated as general inflation",
+    "bonds SHORT 3 with 1.8% core PCE and both main scenarios growth-down",
+    "gold LONG = default: argued from shelter costs, no monetary channel",
+    "credit SHORT weak: 'stagnant prices weaken collateral' overstated",
+    "US 1974-75 analog misfit (rents lagged CPI, house prices kept rising)",
+    "511bp HY called elevated"
+   ]
+  },
+  {
+   "id": "syn-a0002",
+   "template_id": "T04-05",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 4,
+    "factual_hygiene": 4
+   },
+   "flags": [
+    "gold LONG = default: no scenario named; M2 -0.7% and DXY 114 argue against",
+    "credit SHORT justified by liquidation S1 and -3.7% GDP",
+    "wage-bidding inflation channel rather than monetary",
+    "451bp HY called elevated"
+   ]
+  },
+  {
+   "id": "syn-a0003",
+   "template_id": "T12-01",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 4,
+    "event_responsiveness": 3,
+    "output_consistency": 3,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "gold LONG 4 = default: generic 'policy risk' in disinflationary S1",
+    "ignores 1.0% policy rate vs 7.8% CPI, the backdrop's most Austrian feature",
+    "credit SHORT 4 and gold LONG 4 high for a possibly non-US housing event",
+    "credit SHORT direction justified by bust S1",
+    "scenario labels lack the ';' separator"
+   ]
+  },
+  {
+   "id": "syn-a0004",
+   "template_id": "T07-06",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 4,
+    "event_responsiveness": 3,
+    "output_consistency": 3,
+    "factual_hygiene": 4
+   },
+   "flags": [
+    "gold LONG 4 = default: no monetary channel for a lithium supply shock",
+    "broad equities/credit SHORT 3 too strong for a sector-specific shock",
+    "credit SHORT fits battery/EV issuers, not broad credit",
+    "chain ends in 'reallocation toward hard assets' without argument",
+    "invalid JSON in second [Observe] (missing quote after spread key)"
+   ]
+  },
+  {
+   "id": "syn-a0005",
+   "template_id": "T01-09",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 4,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "gold LONG justified (cheaper money) but conviction 4 high for a UK personnel change, with USD LONG 3",
+    "unclear whether the bond signal means gilts or Treasuries",
+    "ignores US overheating in backdrop (GDP 3.5%, CPI 5.4% vs 1.75% policy rate)",
+    "scenario labels lack the ';' separator"
+   ]
+  },
+  {
+   "id": "syn-a0007",
+   "template_id": "T06-05",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 5,
+    "event_responsiveness": 5,
+    "output_consistency": 5,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "'cost-push' framing of tariffs is generic, not Austrian",
+    "thin school content beyond 'removes intervention'",
+    "gold and credit NEUTRAL reasoned (no default)"
+   ]
+  },
+  {
+   "id": "syn-a0008",
+   "template_id": "T01-01",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 4,
+    "event_responsiveness": 3,
+    "output_consistency": 4,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "conviction 4 on US equities and credit for a local RBA move (backdrop-driven)",
+    "'localized normalization' scenario only 0.15 for a small-economy hike",
+    "Australian credit distortion asserted without evidence",
+    "credit SHORT direction justified by liquidation S1, magnitude not",
+    "gold NEUTRAL reasoned (higher real funding costs)"
+   ]
+  },
+  {
+   "id": "syn-a0009",
+   "template_id": "T09-06",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 3,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "gold LONG 4 = default: 'hard-asset preference remains' contradicts disinflationary S1",
+    "gold is the top-conviction signal though the chain never involves gold",
+    "S3 'cyclical productivity fade; inflation up' unexplained"
+   ]
+  },
+  {
+   "id": "syn-a0010",
+   "template_id": "T10-03",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 4,
+    "event_responsiveness": 3,
+    "output_consistency": 3,
+    "factual_hygiene": 4
+   },
+   "flags": [
+    "scale ignored: 150bn is small vs China's GDP, yet bonds/gold/oil at conviction 4",
+    "US bonds SHORT 4 justified by Chinese state issuance (wrong market)",
+    "credit SHORT = default: contradicts own 'credit may rally briefly' in S1",
+    "gold LONG only partly argued (inflation hedge); misses US -7% real policy rate",
+    "scenario growth directions mix China and US",
+    "invalid JSON in second [Observe] (missing quote after spread key)"
+   ]
+  },
+  {
+   "id": "syn-a0011",
+   "template_id": "T13-04",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 4,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "bonds NEUTRAL despite disinflationary S1 and ~5.9% real 10y yield",
+    "gold LONG justified (bank-liability distrust) but conviction 4 ignores dash-for-cash and +5.5% real rates",
+    "credit SHORT justified",
+    "query echoes the 'before 2025' instruction"
+   ]
+  },
+  {
+   "id": "syn-a0012",
+   "template_id": "T13-06",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 4,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "gold LONG justified (rescue plus -5.7% real policy rate)",
+    "equities/credit SHORT ignore the short-run bailout put",
+    "S2 'slower liquidation; growth up, inflation down' loosely specified",
+    "rule echoes ('if the bank were non-US', 'a single backdrop cannot show a trend')"
+   ]
+  },
+  {
+   "id": "syn-a0013",
+   "template_id": "T10-02",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 5,
+    "event_responsiveness": 5,
+    "output_consistency": 4,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "S1 'controlled, ring-fenced' yet conviction-4 global bond/credit calls fit contagion S3",
+    "bonds LONG 4 with 10y at 0.3% leaves little upside",
+    "gold NEUTRAL reasoned from liquidation-phase cash demand (not default)",
+    "credit SHORT justified (offshore China/EM high yield)"
+   ]
+  },
+  {
+   "id": "syn-a0014",
+   "template_id": "T01-06",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 3,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "second [Think] is a one-line placeholder",
+    "spurious 'contradiction' between BoJ cap and US curve",
+    "bonds SHORT 3 contradicts own chain (Japanese outflows support foreign bonds in S1)",
+    "USD NEUTRAL ignores the yen-weakness channel",
+    "gold LONG argued (monetisation pledge) but conviction 4 high with US M2 -0.8%",
+    "scenario labels lack the ';' separator"
+   ]
+  },
+  {
+   "id": "syn-a0015",
+   "template_id": "T11-04",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 5,
+    "event_responsiveness": 4,
+    "output_consistency": 4,
+    "factual_hygiene": 4
+   },
+   "flags": [
+    "global equities/oil SHORT 3 despite own 'country-specific, not global' sizing",
+    "gold NEUTRAL reasoned (strong USD, deflation)",
+    "credit SHORT justified (EM dollar debt)",
+    "458bp HY called elevated",
+    "causal chain opens with literal 'event ->'",
+    "'inflation up locally' mixes local and global axes"
+   ]
+  },
+  {
+   "id": "syn-a0016",
+   "template_id": "T06-06",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 4,
+    "event_responsiveness": 2,
+    "output_consistency": 3,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "self-described 'small-to-moderate' 5% tariff gets equities/credit SHORT 3",
+    "gold LONG 3 = default: 'hard money' with no monetary channel",
+    "signal vector nearly identical to the large lithium supply shock (syn-a0004)",
+    "'cost-push inflation' framing generic",
+    "rule echo 'treat the tariff as the newest information'"
+   ]
+  },
+  {
+   "id": "syn-a0017",
+   "template_id": "T14-04",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 4,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "gold LONG justified (failure of private money substitutes) but conviction 4 high vs S1 cash demand",
+    "conviction 4 on broad equities and credit for a crypto-sector shock",
+    "credit SHORT direction justified"
+   ]
+  },
+  {
+   "id": "syn-a0018",
+   "template_id": "T01-04",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 4,
+    "factual_hygiene": 4
+   },
+   "flags": [
+    "gold LONG justified (debasement via renewed purchases), top conviction though chain centres on carry",
+    "size of 1,200bn (currency unstated) not assessed",
+    "S3 'Delayed correction; growth down, inflation down' label inconsistent",
+    "mangled key in second [Observe] ('(bp' missing ')')"
+   ]
+  },
+  {
+   "id": "syn-a0019",
+   "template_id": "T11-05",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 4,
+    "event_responsiveness": 2,
+    "output_consistency": 2,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "signals mix local (equities, bonds, credit) and global (USD, gold) assets",
+    "gold LONG 4 / USD LONG 3 contradict own 'limited reach into US' sizing",
+    "gold LONG = default: local hard-asset demand, no global channel",
+    "second [Think] is a one-line placeholder",
+    "third [Think] recites backdrop; ignores US 6.9% CPI and negative real rate",
+    "meta phrases ('I do not infer a trend'; 'Austrian-relevant' in query)",
+    "causal chain opens with literal 'event ->'"
+   ]
+  }
+ ],
+ "summary": {
+  "mean_scores": {
+   "school_fidelity": 4.42,
+   "causal_coherence": 4.05,
+   "event_responsiveness": 3.58,
+   "output_consistency": 3.53,
+   "factual_hygiene": 4.58
+  },
+  "main_strengths": [
+   "High school fidelity: the 'does the event add or remove intervention, credit or price distortion?' test is applied in nearly every item, and the mechanisms fit the event (liquidation vs forbearance, moral hazard in the weekend bank merger, money substitutes in the stablecoin run, interest rates as coordinating signals under YCC, state-directed malinvestment in the China stimulus), one or two per item rather than a checklist.",
+   "Analogs are real, dated before 2025, and mostly apt and accurately described (Buenos Aires truce 2018, Trump-Juncker 2018, Miller Fed 1978, Credit-Anstalt 1931, Knickerbocker 1907, Reserve Primary 2008, Fed 1942 peg, RBA YCC 2020, EU solar duties 2013); only one clear misfit (US 1974-75 rents).",
+   "Good news is no longer forced into the crisis story: the trade truce is read as removal of intervention (equities LONG, USD SHORT, gold NEUTRAL), productivity as genuine growth, and boom-phase events (dovish BoE, YCC, BoJ purchases) get equities/credit LONG with a later-correction caveat. Equities LONG in 5/19, bonds balanced 7 LONG / 7 SHORT / 5 NEUTRAL.",
+   "Non-US events usually name their channel to US/global assets (sterling to dollar, yen carry, EM dollar funding, China commodity demand); event-vs-backdrop contradictions are stated; tool calls are clean JSON; no backdrop numbers appear before get_macro_data.",
+   "Gold NEUTRAL is reasoned in the 4 items where it should be (liquidation-phase cash demand, strong dollar plus deflation, high real funding costs)."
+  ],
+  "main_problems": [
+   "Gold LONG is still largely a teacher default: 15/19 LONG (11 at conviction 4), never SHORT, and the only top-conviction signal in 7/19. It is argued from the event in about 7 items (negative real rates, dovish BoE, bank rescue, interbank stress, stablecoin failure, YCC, BoJ purchases) but asserted without a monetary channel in about 7 (lithium closure, 5% lithium tariff, productivity jump, rents, G7 housing bust, job openings, frontier hyperinflation via US assets). The template stance 'favours hard assets' is the likely cause.",
+   "Credit SHORT in 14/19: justified by a bust-type top scenario in about half; elsewhere it contradicts a growth-up S1 (payroll beat), the trajectory's own 'credit may rally briefly' (China stimulus), or the event's small scale (lithium tariff).",
+   "Conviction does not scale with event size or reach: the 5% lithium tariff gets the same equities/credit SHORT 3 + gold LONG vector as a mine closure removing a large share of world supply; an RBA hike, one EM's IMF request, a 150bn China package and a frontier hyperinflation get conviction 3-4 on US/global assets, often against the trajectory's own 'country-specific' sizing. High convictions are often carried by the US backdrop (recession, wide HY), not the event.",
+   "Templated scenarios: 3 scenarios in 17/19, top probability exactly 0.45 in 14/19 (0.55 in 4), and a recurring 'liquidation / policy rescue (growth up, inflation up) / contagion' triad (rescue scenario in 9/19).",
+   "Asset universe and horizon undefined: signals mix local and US/global assets (frontier local bonds/equities/credit next to DXY and gold; gilts or Treasuries for the BoE item), scenario axes mix local and US growth, and short-run boom support is mixed with long-run bust calls (bailout put ignored; YCC bonds SHORT 'vulnerable to correction' while the peg holds in S1).",
+   "Instruction echoes the student will learn: 'the event gives no bp, pp or share-of-GDP magnitude' in 15/19 first [Think]s, 'newest (marginal) information' in 14/19, 'does not contradict the backdrop' in 10/19, 'a single backdrop cannot show a trend', spurious contradictions (BoJ cap vs US curve), 'Causal chain: event ->', and two one-line second [Think]s.",
+   "Non-Austrian inflation logic in 5-6 items (wage-push, cost-push; rents or a single input treated as general inflation), and the backdrop's most Austrian feature, the real policy rate (e.g. 1.0% vs 7.8-8.0% CPI, or 5.5% vs 0% CPI), is rarely named. Average HY spreads (451-511bp) are called 'elevated'.",
+   "Second [Observe] JSON broken or mangled in 3/19 (always the 'US 2y-10y spread (bp)' key), not caught by validate(); with loss on all assistant tokens the student learns to write these blocks."
+  ],
+  "would_you_train_on_this": "with changes",
+  "suggested_prompt_or_template_changes": [
+   "templates.toml [school.austrian].signals: replace 'favours hard assets' with a conditional: gold LONG only when the event adds money/credit creation, debases a currency or undermines trust in bank/fiat liabilities, or the backdrop shows deeply negative real rates; in a liquidation the demand for money (cash, bills, dollars) rises and gold can be NEUTRAL; a shock to another commodity is not a gold signal. Require the gold reason to name that channel.",
+   "Add a scope step to rule 1 (US/global-systemic, regional, sector-specific, local to a non-US economy) and cap conviction at 2 on US/global assets for sector or local events unless a large channel is named; tag each template's scope in templates.toml and have validate() flag conviction >= 3 on sector/local templates.",
+   "Rule 5: define the six signals as US/global benchmarks (US equities, Treasuries, DXY, gold in USD, WTI, US credit) over a fixed horizon matching the evaluation (e.g. 3 months); local assets and later-phase effects go in the chain; scenario growth/inflation directions refer to the US/global economy unless labelled 'local'.",
+   "Probabilities: ask for a top probability set by the evidence (about 0.6-0.7 for mechanical, well-understood events, 0.35-0.4 when genuinely ambiguous); extend signal_report() with a histogram of top probabilities and scenario counts, warning when one value exceeds about 40% of a batch.",
+   "Reword rules 1 and 4 so the teacher stops narrating compliance: 'use the event's size if it gives one, otherwise judge scale from what it touches; do not comment on missing units' and 'mention a contradiction with the backdrop only if there is one'. Add the echo phrases ('gives no bp', 'does not contradict', 'newest information', 'single backdrop', 'I do not infer a trend', 'Causal chain: event ->') to META or a soft filter.",
+   "Austrian diagnosis line: add 'read the real policy rate (policy rate minus CPI) and money growth first: is credit artificially cheap or already tight?' and 'a relative-price change (rents, one input, wages) is not inflation; a general price rise needs money and credit growth'. This anchors gold/bond calls in the backdrop and removes wage-push/cost-push logic.",
+   "validate(): flag credit SHORT when the top scenario is growth-up, and gold LONG >= 3 when the top scenario is disinflationary with USD LONG, unless the reason names a horizon or monetary channel; consider rejecting items where gold is the only top-conviction signal and the chain never mentions money, credit or debasement.",
+   "Write the second [Observe] deterministically from the backdrop (it is a pure echo), or json.loads it and check keys/values; give v3's second-[Think] rule a content check (>= 25 words, not just 'I need the backdrop').",
+   "Training: train.py puts loss on the whole assistant reply, so the student learns to write the episode list itself. Mask [Observe] spans or check analogs against a vetted episode list (the US 1974-75 rent analog in syn-a0001 does not fit)."
+  ]
+ }
+}

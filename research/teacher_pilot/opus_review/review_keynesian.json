@@ -1,0 +1,375 @@
+{
+  "school": "keynesian",
+  "items": [
+    {
+      "id": "syn-k0000",
+      "template_id": "T13-01",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 4,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "obvious 2023 SVB/regional-bank analog missing",
+        "vague '2020 funding scare' analog",
+        "CPI 5.3% vs 8.2% unemployment stagflation tension barely addressed",
+        "gold LONG not argued"
+      ]
+    },
+    {
+      "id": "syn-k0001",
+      "template_id": "T07-07",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 3,
+        "event_responsiveness": 2,
+        "output_consistency": 3,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "positive supply shock gets bearish equities/credit (teacher default)",
+        "S1 'Demand gap dominates' ignores the event's sign",
+        "gold LONG unexplained in disinflation",
+        "snapshot cited before get_macro_data call",
+        "WTI 128 with CPI 2.0 snapshot oddity not questioned"
+      ]
+    },
+    {
+      "id": "syn-k0002",
+      "template_id": "T03-01",
+      "scores": {
+        "school_fidelity": 3,
+        "causal_coherence": 2,
+        "event_responsiveness": 3,
+        "output_consistency": 3,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "0.6% m/m CPI (~7% annualised) treated as soft",
+        "4.8% unemployment and 3.4% growth forced into demand-shortfall story",
+        "vague, undatable analogs ('2011-2012 soft-inflation episode')",
+        "oil SHORT conviction 4 unrelated to CPI event",
+        "gold LONG default",
+        "typo 'coincated'",
+        "snapshot cited before get_macro_data call"
+      ]
+    },
+    {
+      "id": "syn-k0003",
+      "template_id": "T07-04",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 4,
+        "event_responsiveness": 3,
+        "output_consistency": 3,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "oil SHORT not linked to grain shock",
+        "S2 'stagflation' 0.30 inconsistent with CPI 1.7%",
+        "boilerplate keyword chain (paradox of thrift, liquidity trap)",
+        "snapshot cited before get_macro_data call"
+      ]
+    },
+    {
+      "id": "syn-k0004",
+      "template_id": "T05-08",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 4,
+        "event_responsiveness": 5,
+        "output_consistency": 4,
+        "factual_hygiene": 5
+      },
+      "flags": [
+        "good: signals flip risk-on for positive shock",
+        "bonds LONG alongside risk-on only weakly argued",
+        "snapshot cited before get_macro_data call"
+      ]
+    },
+    {
+      "id": "syn-k0005",
+      "template_id": "T05-07",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 4,
+        "factual_hygiene": 5
+      },
+      "flags": [
+        "good: oil LONG and gold LONG justified by blockade risk",
+        "10y 4.43 with 2.5 policy rate and +20bp curve not examined",
+        "snapshot cited before get_macro_data call"
+      ]
+    },
+    {
+      "id": "syn-k0006",
+      "template_id": "T08-05",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 3,
+        "event_responsiveness": 2,
+        "output_consistency": 4,
+        "factual_hygiene": 2
+      },
+      "flags": [
+        "event says deepest inversion but snapshot 2s10s is +38bp; contradiction ignored",
+        "unemployment 4.0% with GDP -4.1% not examined",
+        "2007-08 inversion misdated (inversion was 2006-07)",
+        "indicator typo 'qqq'",
+        "snapshot cited before get_macro_data call"
+      ]
+    },
+    {
+      "id": "syn-k0007",
+      "template_id": "T01-04",
+      "scores": {
+        "school_fidelity": 3,
+        "causal_coherence": 3,
+        "event_responsiveness": 3,
+        "output_consistency": 3,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "CPI 6.3% and 4.0% unemployment read as demand shortfall (more likely supply shock/closed gap)",
+        "analogs all low-inflation despite high-inflation query",
+        "RBA event but no AUD/Australian-rates mapping; USD NEUTRAL by default",
+        "gold LONG default",
+        "snapshot cited before get_macro_data call"
+      ]
+    },
+    {
+      "id": "syn-k0008",
+      "template_id": "T11-03",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 3,
+        "event_responsiveness": 3,
+        "output_consistency": 3,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "conflates EM hiking economy with the snapshot economy",
+        "equities SHORT conviction 4 despite 4.1% GDP and a single-EM shock",
+        "contradictory 'positive curve with policy above long yield' not resolved",
+        "gold LONG default"
+      ]
+    },
+    {
+      "id": "syn-k0009",
+      "template_id": "T05-06",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 3,
+        "event_responsiveness": 2,
+        "output_consistency": 2,
+        "factual_hygiene": 5
+      },
+      "flags": [
+        "3-day Latin American outage drives global SHORT equities/credit (teacher default)",
+        "oil SHORT conviction 4 unjustified",
+        "paradox of thrift stretched for a 3-day deferral shock",
+        "spending mostly deferred, not lost: multiplier overstated",
+        "good, real analogs (demonetisation 2016, NotPetya 2017, Korea 2013)"
+      ]
+    },
+    {
+      "id": "syn-k0010",
+      "template_id": "T11-06",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 4,
+        "event_responsiveness": 3,
+        "output_consistency": 4,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "'room below the zero bound' wording error",
+        "2015-16 capital-flow-management analog vague and embellished ('relied on fiscal transfers')",
+        "one EM peg mapped to global risk-off signals without spillover argument",
+        "snapshot cited before get_macro_data call"
+      ]
+    },
+    {
+      "id": "syn-k0011",
+      "template_id": "T14-01",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 4,
+        "factual_hygiene": 5
+      },
+      "flags": [
+        "lockdown framed as pure demand shock; supply side (Keynesian supply shock) ignored",
+        "USD NEUTRAL despite dollar-funding stress precedent (2020)",
+        "snapshot cited before get_macro_data call"
+      ]
+    },
+    {
+      "id": "syn-k0012",
+      "template_id": "T05-05",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 3,
+        "event_responsiveness": 3,
+        "output_consistency": 4,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "causal chain starts with 'event ->' (lazy)",
+        "2015-16 oil period mischaracterised as geopolitical risk (it was a supply glut)",
+        "oil exporter in monetary union premise not interrogated",
+        "snapshot cited before get_macro_data call"
+      ]
+    },
+    {
+      "id": "syn-k0013",
+      "template_id": "T04-06",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 3,
+        "event_responsiveness": 3,
+        "output_consistency": 4,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "minor data print treated as driver of a recession; conviction too high",
+        "lower wage growth also eases cost-push, not discussed",
+        "vague generic analogs ('mid-1970s demand contraction')",
+        "VIX 13 with GDP -6% not questioned",
+        "snapshot cited before get_macro_data call"
+      ]
+    },
+    {
+      "id": "syn-k0014",
+      "template_id": "T14-03",
+      "scores": {
+        "school_fidelity": 3,
+        "causal_coherence": 3,
+        "event_responsiveness": 3,
+        "output_consistency": 4,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "grid failure (supply shock) framed as demand shock",
+        "'main risk is demand shortfall' asserted before seeing CPI 6.3%",
+        "1989 Quebec blackout called 'prolonged' (about 9 hours)",
+        "gold LONG default",
+        "snapshot partly cited before get_macro_data call"
+      ]
+    },
+    {
+      "id": "syn-k0016",
+      "template_id": "T03-03",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 4,
+        "event_responsiveness": 3,
+        "output_consistency": 3,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "sound slack-limits-pass-through logic",
+        "oil SHORT after an input-cost shock not explained",
+        "generic analog descriptions",
+        "snapshot cited before get_macro_data call"
+      ]
+    },
+    {
+      "id": "syn-k0017",
+      "template_id": "T01-09",
+      "scores": {
+        "school_fidelity": 3,
+        "causal_coherence": 3,
+        "event_responsiveness": 3,
+        "output_consistency": 2,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "3.4% unemployment and core 4.1% read as demand-shortfall risk",
+        "USD SHORT wrong-signed: dovish BoE weakens GBP, lifting DXY",
+        "BoE has a Governor, not a chair (template)",
+        "Japan 2001-03 QE not a dovish leadership change",
+        "gold LONG default",
+        "snapshot cited before get_macro_data call"
+      ]
+    },
+    {
+      "id": "syn-k0018",
+      "template_id": "T12-02",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 4,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "good: explains mortgage spike with 0.4% 10y via credit premia",
+        "2018-19 analog embellished (fiscal transfers, weak-inflation constraint)",
+        "gold LONG default",
+        "snapshot cited before get_macro_data call"
+      ]
+    },
+    {
+      "id": "syn-k0019",
+      "template_id": "T03-04",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 4,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "good: stagflation dilemma, bonds NEUTRAL, gold LONG justified",
+        "expectations-driven wage push slightly at odds with sticky-wage emphasis",
+        "snapshot cited before get_macro_data call"
+      ]
+    }
+  ],
+  "summary": {
+    "mean_scores": {
+      "school_fidelity": 3.79,
+      "causal_coherence": 3.42,
+      "event_responsiveness": 3.21,
+      "output_consistency": 3.47,
+      "factual_hygiene": 3.74
+    },
+    "main_strengths": [
+      "Consistent Keynesian vocabulary and mechanisms: effective demand, multiplier, output gap, sticky wages/prices, liquidity preference, counter-cyclical fiscal policy",
+      "Historical analogs are mostly real and pre-2025 (Iran-Iraq 1988, Dayton 1995, Colombia 2016, NotPetya 2017, demonetisation 2016, 2011 IEA release); no invented institution-attributed statistics",
+      "Some trajectories respond well to the event's sign: peace deal (k0004) and RBA QE (k0007) go risk-on; blockade (k0005) and party exit (k0012) get oil LONG; inflation expectations (k0019) handles stagflation with bonds NEUTRAL",
+      "Tool-use structure (Think -> episode DB -> Think -> macro data -> Think -> Output) is followed in all 19"
+    ],
+    "main_problems": [
+      "Fixed demand-shortfall prior: every trajectory concludes 'demand shortfall, not overheating', even with 3.4-4.0% unemployment and 4-6% inflation (k0002, k0007, k0014, k0017); a Keynesian output-gap reading should flip to overheating or supply constraint there",
+      "Keyword stuffing: paradox of thrift, animal spirits, liquidity trap and multiplier appear in nearly every chain whether relevant or not (3-day outage, peace deal, CPI print); the student will learn a checklist, not a theory",
+      "Signal defaults: equities SHORT 15/19, gold LONG 18/19, bonds LONG 18/19, oil SHORT 15/19, USD NEUTRAL (conv 2) 12/19. Gold LONG is argued in about 3 cases; equities SHORT is unjustified for the SPR release (k0001) and the 3-day LatAm outage (k0009), and overconfident for single-EM shocks (k0008)",
+      "Scenario probabilities templated: 0.45/0.30/0.15/0.10 in 9/19, S4=0.10 in 15/19; scenarios are labels with no direction, horizon or mapping to signals",
+      "Snapshot leakage: in 16/19 the first Think already quotes snapshot values before get_macro_data is called, which makes the tool call pointless and teaches incoherent tool use",
+      "Snapshot/event contradictions not caught (k0006 'deepest inversion' vs +38bp 2s10s; k0008 curve statement); synthetic snapshots often internally implausible",
+      "Supply shocks (solar storm, pandemic, drought, SPR) forced into a pure aggregate-demand frame; stagflation trade-off rarely analysed",
+      "Non-US events (RBA, BoE, LatAm, EM) mapped to US-centric assets with no FX/spillover reasoning; one wrong-signed USD call (k0017)",
+      "Analogs are often vague era labels ('2008-09 banking-stress episode', '2011-2012 soft-inflation episode') with Keynesian-flavoured embellishments (e.g., fiscal transfers in 2018-19); some mischaracterisations (2015-16 oil as geopolitical, 1989 Quebec 'prolonged', 2007-08 inversion)",
+      "Tool-call argument formats and indicator names vary randomly (JSON, bare text, 'query:', 'request:', typos like 'qqq')"
+    ],
+    "would_you_train_on_this": "with changes",
+    "suggested_prompt_or_template_changes": [
+      "Require an explicit output-gap sign check from the snapshot (unemployment vs a stated NAIRU, inflation vs target) before diagnosing; allow and expect 'positive gap / overheating' and 'supply-constrained' conclusions",
+      "Require one justification sentence per asset signal tied to a causal-chain step; permit NEUTRAL and demand it when the event is small or local; add a balance check across the pilot that rejects batches where any asset's direction exceeds about 70%",
+      "Stop listing Keynesian keywords in the teacher prompt as must-use; instead ask for the one or two mechanisms most relevant to this event, and reject outputs that use more than N school buzzwords",
+      "Do not show the macro snapshot to the teacher before the get_macro_data Observe, or post-filter trajectories whose pre-tool Think quotes snapshot numbers",
+      "Make scenarios structured: each with direction for growth/inflation, horizon, and probability not drawn from a fixed template; reject the 0.45/0.30/0.15/0.10 pattern and require signals to follow the probability-weighted scenarios",
+      "Have the episode DB return real retrieved analogs (with dates/country) rather than letting the teacher write them; or require named, dated, country-specific episodes and auto-check against a whitelist",
+      "Add an event-sign and event-scale field (positive/negative, local/global) to templates and check signals against it; for non-US events require FX and spillover reasoning",
+      "Validate synthetic snapshots for internal consistency (curve vs event text, mortgage vs 10y, VIX vs GDP) or instruct the teacher to flag contradictions explicitly",
+      "Normalise tool-call argument schema (always JSON with fixed indicator keys) in post-processing",
+      "Fix template wording errors (BoE 'chair' -> Governor) and ask the teacher to treat supply shocks as supply shocks with demand second-round effects"
+    ]
+  }
+}

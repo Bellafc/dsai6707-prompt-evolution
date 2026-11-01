@@ -1,0 +1,387 @@
+{
+  "school": "monetarist",
+  "items": [
+    {
+      "id": "syn-m0000",
+      "template_id": "T01-02",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 3,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "snapshot values cited in first Think before get_macro_data",
+        "observation adds non-snapshot fields (velocity trend, money-market conditions)",
+        "gold LONG 3 despite disinflation base case (S1 0.40)",
+        "equities SHORT plausible given crisis snapshot"
+      ]
+    },
+    {
+      "id": "syn-m0001",
+      "template_id": "T09-03",
+      "scores": {
+        "school_fidelity": 5,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 3,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "good MV=PY velocity inference",
+        "mixes y/y CPI with q/q saar GDP in velocity arithmetic",
+        "1980-82 analog had high not low inflation",
+        "gold LONG 3 in deflation/strong-dollar base case looks like default",
+        "snapshot leaked into first Think"
+      ]
+    },
+    {
+      "id": "syn-m0002",
+      "template_id": "T01-05",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 4,
+        "event_responsiveness": 3,
+        "output_consistency": 4,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "event says inflation 2.0pp above target but snapshot core PCE 6.2% (~4pp); mismatch not noticed",
+        "snapshot leaked into first Think",
+        "rules-vs-discretion credibility channel well used"
+      ]
+    },
+    {
+      "id": "syn-m0003",
+      "template_id": "T10-02",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 3,
+        "event_responsiveness": 3,
+        "output_consistency": 3,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "US-style snapshot (core PCE, DXY) applied to China without comment",
+        "ambiguous whose M2 (16.8%) is driving the argument",
+        "garbled line 'restrictive relative to some nominal rates'",
+        "equities SHORT with VIX 12 and GDP 5.6% weakly justified",
+        "snapshot leaked into first Think"
+      ]
+    },
+    {
+      "id": "syn-m0004",
+      "template_id": "T12-06",
+      "scores": {
+        "school_fidelity": 5,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 4,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "money multiplier / deposit creation channel well argued",
+        "bonds SHORT and gold LONG consistent with overhang base case",
+        "equities SHORT conviction 3 weakly argued with GDP 4.1%"
+      ]
+    },
+    {
+      "id": "syn-m0005",
+      "template_id": "T01-10",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 3,
+        "event_responsiveness": 3,
+        "output_consistency": 2,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "'inverted short-end' contradicts +216bp 2y-10y",
+        "direction of intervention (buy/sell USD) never specified",
+        "USD NEUTRAL for an FX intervention event",
+        "gold LONG 4 while base case is benign sterilized intervention",
+        "causal chain generic, no direction of effect"
+      ]
+    },
+    {
+      "id": "syn-m0006",
+      "template_id": "T13-07",
+      "scores": {
+        "school_fidelity": 5,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 4,
+        "factual_hygiene": 5
+      },
+      "flags": [
+        "clean bank-capital -> money multiplier -> disinflation chain",
+        "meta phrase 'I must reason as a monetarist' leaks prompt",
+        "gold LONG 2 mild default under disinflation base"
+      ]
+    },
+    {
+      "id": "syn-m0007",
+      "template_id": "T01-04",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 4,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "snapshot leaked before get_macro_data (cites M2 0.6%, core PCE 0.6%)",
+        "US snapshot treated as Japan's 'domestic' money signal",
+        "500bn size never assessed",
+        "equities NEUTRAL: good differentiation for easing event"
+      ]
+    },
+    {
+      "id": "syn-m0008",
+      "template_id": "T05-04",
+      "scores": {
+        "school_fidelity": 5,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 3,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "good relative-price vs monetary-inflation distinction",
+        "benign scenarios S1+S2=0.60 yet bonds SHORT 4",
+        "USD LONG 3 unexplained in reasoning",
+        "snapshot leaked into second Think before data call"
+      ]
+    },
+    {
+      "id": "syn-m0009",
+      "template_id": "T07-04",
+      "scores": {
+        "school_fidelity": 5,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 4,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "analogs vague and written to confirm priors (unnamed '2010-12', 'mid-1990s' episodes)",
+        "snapshot leaked into first Think",
+        "USD SHORT reasoned from excess money: good",
+        "signals consistent with accommodation base case"
+      ]
+    },
+    {
+      "id": "syn-m0010",
+      "template_id": "T14-04",
+      "scores": {
+        "school_fidelity": 5,
+        "causal_coherence": 5,
+        "event_responsiveness": 5,
+        "output_consistency": 5,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "strong: stablecoin as private near-money, velocity/money-demand channel",
+        "gold NEUTRAL and bonds LONG well matched to disinflation base",
+        "snapshot leaked into first Think"
+      ]
+    },
+    {
+      "id": "syn-m0011",
+      "template_id": "T04-02",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 3,
+        "event_responsiveness": 3,
+        "output_consistency": 4,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "causal chain starts with unemployment rise as cause of weak nominal spending (reversed)",
+        "no consideration that +0.3pp is a modest/noisy print",
+        "analogs vaguely dated ('early-1980s', 'mid-1970s')",
+        "snapshot leaked into first Think",
+        "boilerplate signal set"
+      ]
+    },
+    {
+      "id": "syn-m0012",
+      "template_id": "T05-02",
+      "scores": {
+        "school_fidelity": 5,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 3,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "1967 Suez closure analog apt",
+        "benign S1+S2=0.60 yet equities/bonds SHORT 4",
+        "USD LONG 3 with M2 16.9% and DXY 86 unexplained",
+        "near-duplicate reasoning of other geopolitical items",
+        "snapshot leaked into first Think"
+      ]
+    },
+    {
+      "id": "syn-m0013",
+      "template_id": "T05-07",
+      "scores": {
+        "school_fidelity": 5,
+        "causal_coherence": 4,
+        "event_responsiveness": 3,
+        "output_consistency": 4,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "treats blockade RISK as realized oil shock (oil LONG 4)",
+        "template-like copy of syn-m0008/0012 analogs and chain",
+        "snapshot leaked into first Think"
+      ]
+    },
+    {
+      "id": "syn-m0014",
+      "template_id": "T07-08",
+      "scores": {
+        "school_fidelity": 5,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 4,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "good: low M2 -> temporary relative-price shock; bonds LONG, gold NEUTRAL, USD LONG",
+        "2021-22 analog accurate",
+        "first two analogs generic 1970s",
+        "equities SHORT with VIX 11 only weakly justified"
+      ]
+    },
+    {
+      "id": "syn-m0015",
+      "template_id": "T02-06",
+      "scores": {
+        "school_fidelity": 3,
+        "causal_coherence": 3,
+        "event_responsiveness": 3,
+        "output_consistency": 3,
+        "factual_hygiene": 2
+      },
+      "flags": [
+        "analogs unnamed and likely fabricated ('Asian export-manufacturing budget impasse, pre-2025')",
+        "shutdown framed as velocity shock: stretched monetarist link",
+        "US snapshot (core PCE, DXY safe haven) applied to Asian economy",
+        "snapshot fully read out before get_macro_data",
+        "defensive signals despite benign S1 0.45"
+      ]
+    },
+    {
+      "id": "syn-m0016",
+      "template_id": "T11-02",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 4,
+        "factual_hygiene": 4
+      },
+      "flags": [
+        "Mexico 1994, Asia 1997, Argentina 2001 analogs apt",
+        "only 3 scenarios (format drift)",
+        "domestic EM channel and US snapshot conflated",
+        "'unemployment near natural rate' at 6.4% asserted"
+      ]
+    },
+    {
+      "id": "syn-m0017",
+      "template_id": "T12-04",
+      "scores": {
+        "school_fidelity": 5,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 5,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "financing/accommodation channel well distinguished",
+        "equities/credit NEUTRAL: good event differentiation",
+        "third analog 'Various high-inflation housing-support episodes' is vague filler",
+        "snapshot incl. 2s10s quoted before get_macro_data",
+        "confused sentence on natural rate vs 7.5%"
+      ]
+    },
+    {
+      "id": "syn-m0018",
+      "template_id": "T10-01",
+      "scores": {
+        "school_fidelity": 4,
+        "causal_coherence": 4,
+        "event_responsiveness": 4,
+        "output_consistency": 3,
+        "factual_hygiene": 3
+      },
+      "flags": [
+        "China RRR analogs (2014-15, 2018-19, 2022) real",
+        "0.4pp size not assessed",
+        "US snapshot (core PCE, DXY 115) treated as China",
+        "bonds SHORT 2 vs velocity-offset base case",
+        "snapshot leaked into first Think"
+      ]
+    },
+    {
+      "id": "syn-m0019",
+      "template_id": "T06-02",
+      "scores": {
+        "school_fidelity": 5,
+        "causal_coherence": 4,
+        "event_responsiveness": 3,
+        "output_consistency": 3,
+        "factual_hygiene": 2
+      },
+      "flags": [
+        "get_macro_data asks for Latin America but returns US-style snapshot unremarked",
+        "'1990s Latin American tariff escalation' dubious (decade of liberalisation)",
+        "signal format 'SHORT (3)' drops 'conviction'",
+        "gold LONG 3 under rule-anchored base case looks default",
+        "snapshot leaked into second Think"
+      ]
+    }
+  ],
+  "summary": {
+    "mean_scores": {
+      "school_fidelity": 4.5,
+      "causal_coherence": 3.85,
+      "event_responsiveness": 3.7,
+      "output_consistency": 3.6,
+      "factual_hygiene": 3.4
+    },
+    "main_strengths": [
+      "Strong school fidelity: every trajectory reasons via M2, MV=PY/velocity, long and variable lags, natural rate, rules vs discretion and credibility; no Keynesian multiplier or Austrian malinvestment drift",
+      "Consistent relative-price vs monetary-inflation distinction for supply shocks (oil, drought, freight, tariffs), a genuinely Monetarist move",
+      "Some event-specific gems: stablecoin as private near-money (syn-m0010), bank capital -> money multiplier (syn-m0006), freight shock with low M2 -> temporary (syn-m0014), mortgage relief financing channel (syn-m0017)",
+      "Most named analogs real and pre-2025 (1967 Suez, 1973/79/90 oil, Mexico 1994, Asia 1997, Argentina 2001, 2008 MMF run, 2022 stablecoin depeg, China RRR 2014-22)",
+      "Signals do vary with the snapshot's M2/inflation regime: bonds LONG in low-M2 disinflation cases, SHORT in high-M2 inflation cases"
+    ],
+    "main_problems": [
+      "Information leakage in ~17/20: the Think before get_macro_data already quotes snapshot values (M2, CPI, sometimes 2s10s/VIX), so the tool call is theatre; student will learn to hallucinate data before fetching",
+      "Gold LONG in 18/20, credit SHORT in 18/20 and equities SHORT in 17/20 (never LONG for any of the three), often regardless of base-case scenario: gold LONG under disinflation/benign bases (m0000, m0001, m0005, m0019) is a teacher default",
+      "Scenario probabilities weakly tied to signals: benign base cases (rule-anchored, temporary shock >=0.55) paired with conviction-4 risk-off signals (m0005, m0008, m0012, m0015)",
+      "US-style snapshot (core PCE, DXY, M2) silently applied to China/Japan/Asia/LatAm/EM events; region never questioned",
+      "Event-snapshot inconsistencies not flagged (m0002 '2.0pp above target' vs core PCE 6.2%; m0005 'inverted short-end' vs +216bp); event magnitudes (0.4pp RRR, 500bn, +0.3pp) rarely sized",
+      "Vague or fabricated analogs in a few items (m0015 unnamed shutdown episodes, m0017 'various episodes', m0019 1990s LatAm tariff escalation); analog descriptions often pre-written to confirm Monetarist priors",
+      "Template monotony: near-identical chains/analogs across geopolitical items (m0008/m0012/m0013); scenario labels recycle the same 4 archetypes (rule-anchored / accommodation / velocity collapse / credibility erosion)",
+      "Format drift: 3 scenarios in m0016, 'SHORT (3)' without 'conviction' in m0019, prompt leakage 'I must reason as a monetarist'"
+    ],
+    "would_you_train_on_this": "with changes",
+    "suggested_prompt_or_template_changes": [
+      "Enforce tool-order integrity: forbid citing any snapshot number before the get_macro_data Observe (auto-reject via regex on numbers matching snapshot values before that step)",
+      "Require an explicit 'signal rationale' line per asset tied to a named scenario, and a check that the probability-weighted direction matches the signal; reject if base case is benign but >=3 risk-off conviction-4 signals",
+      "Remove default-asset bias: tell teacher gold/credit/equities have no default and require NEUTRAL when the chain gives no directional reason; monitor per-asset direction shares across the pilot and resample if >70% one way",
+      "Make the snapshot's economy explicit (add a 'region' field) or generate region-appropriate snapshots for China/Japan/EM/LatAm events; instruct the teacher to state how a foreign event transmits to the US snapshot (or vice versa)",
+      "Require the agent to size the event (bp, % of base money, pp) and to flag event-snapshot conflicts rather than ignore them",
+      "Require analogs to name country, institution and year; reject 'various episodes' or undated generic labels; keep the episode DB as a real tool with fixed returns so analogs are not teacher-confabulated",
+      "Positive-shock and benign templates (easing, RRR cut, mortgage relief) should be oversampled with snapshots where the Monetarist answer is risk-on, so the student sees LONG equities/credit cases",
+      "Fix output schema: exactly 4 scenarios summing to 1.0, 'DIRECTION (conviction N)' format, strip meta-phrases like 'I must reason as a monetarist'",
+      "Vary scenario taxonomy: ask for event-specific scenario names instead of the recycled rule/accommodation/velocity/credibility quartet"
+    ]
+  }
+}
