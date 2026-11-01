@@ -157,6 +157,49 @@ def spearman(x: list[float], y: list[float]) -> float | None:
     return round(num / den, 3) if den else None
 
 
+def space(pairs: dict, names: list[str], pos: dict) -> dict:
+    """How many dimensions the measured disagreement needs, and whether both literature axes explain it.
+
+    Classical multidimensional scaling of the pairwise disagreement matrix (as spatial models in political science
+    recover positions from votes, e.g. Poole & Rosenthal's NOMINATE) gives each framework coordinates and the share of
+    variance per dimension; an OLS of pairwise disagreement on the distance along each literature axis shows whether
+    the axes are separate dimensions (both coefficients positive) or one (the second adds nothing). Needs numpy."""
+    try:
+        import numpy as np
+    except ImportError:
+        return {}
+    n = len(names)
+    d = np.zeros((n, n))
+    for i, a in enumerate(names):
+        for j, b in enumerate(names):
+            if i != j:
+                v = pairs.get(f"{a}|{b}") or pairs.get(f"{b}|{a}")
+                d[i, j] = v["disagreement"]
+    j = np.eye(n) - np.ones((n, n)) / n
+    b = -0.5 * j @ (d ** 2) @ j
+    vals, vecs = np.linalg.eigh(b)
+    order = np.argsort(vals)[::-1]
+    vals, vecs = vals[order], vecs[:, order]
+    pos_vals = np.clip(vals, 0, None)
+    share = (pos_vals / pos_vals.sum()).round(3).tolist() if pos_vals.sum() > 0 else []
+    coords = {nm: [round(float(vecs[i, k] * np.sqrt(pos_vals[k])), 3) for k in range(2)] for i, nm in enumerate(names)}
+    out = {"variance_share_by_dimension": share[:4], "coordinates_2d": coords}
+    rows = [(abs(pos[a]["state_market"] - pos[b]["state_market"]), abs(pos[a]["orthodoxy"] - pos[b]["orthodoxy"]),
+             (pairs.get(f"{a}|{b}") or pairs.get(f"{b}|{a}"))["disagreement"])
+            for i, a in enumerate(names) for b in names[i + 1:] if a in pos and b in pos]
+    if len(rows) >= 5:
+        x = np.array([[1.0, r[0], r[1]] for r in rows])
+        y = np.array([r[2] for r in rows])
+        beta, *_ = np.linalg.lstsq(x, y, rcond=None)
+        pred = x @ beta
+        r2 = 1 - ((y - pred) ** 2).sum() / ((y - y.mean()) ** 2).sum() if ((y - y.mean()) ** 2).sum() else None
+        out["ols_disagreement_on_axes"] = {"intercept": round(float(beta[0]), 3),
+                                           "state_market": round(float(beta[1]), 3),
+                                           "orthodoxy": round(float(beta[2]), 3),
+                                           "r2": round(float(r2), 3) if r2 is not None else None, "pairs": len(rows)}
+    return out
+
+
 def analyze(jobs_dir: Path) -> dict:
     """Read <jobs>/results.jsonl, write matrix.json and matrix.md, return the summary."""
     man = json.loads((jobs_dir / "manifest.json").read_text())
@@ -191,7 +234,8 @@ def analyze(jobs_dir: Path) -> dict:
                "nearest": nearest, "dispersion": dispersion({n: runs[(n, 0)] for n in names}),
                "dispersion_schools_only": dispersion({n: runs[(n, 0)] for n in names
                                                       if n in ("keynesian", "austrian", "monetarist")}),
-               "position_vs_disagreement_spearman": spearman(theory, measured), "pairs_with_positions": len(theory)}
+               "position_vs_disagreement_spearman": spearman(theory, measured), "pairs_with_positions": len(theory),
+               "space": space(pairs, names, pos)}
     (jobs_dir / "matrix.json").write_text(json.dumps(summary, indent=1) + "\n")
     lines = ["# Disagreement matrix", "", f"Parsed {summary['parsed']} analyses, {failed} unparsable.", "",
              "Signal disagreement (0 = same calls, 1 = all opposite), above the diagonal; macro gap (expected growth "
@@ -213,6 +257,11 @@ def analyze(jobs_dir: Path) -> dict:
               f"{summary['dispersion_schools_only']}.",
               f"Literature distance (state-market + orthodoxy) vs measured disagreement, Spearman over "
               f"{summary['pairs_with_positions']} pairs: {summary['position_vs_disagreement_spearman']}."]
+    sp = summary["space"]
+    if sp:
+        lines += ["", f"Multidimensional scaling: variance share by dimension {sp['variance_share_by_dimension']}; "
+                  f"2-D coordinates {sp['coordinates_2d']}.",
+                  f"OLS of pairwise disagreement on the distance along each axis: {sp.get('ols_disagreement_on_axes')}."]
     lines += ["", "Nearest framework by signal disagreement:", ""]
     lines += [f"- {n}: {v[1]} ({v[0]:.2f})" for n, v in nearest.items() if v]
     (jobs_dir / "matrix.md").write_text("\n".join(lines) + "\n")

@@ -57,3 +57,5 @@ def test_analyze_writes_the_matrix(tmp_path):
     assert s["nearest"]["new_keynesian"][1] != "new_keynesian"
     assert "| keynesian |" in (tmp_path / "matrix.md").read_text()
     assert s["pairs_with_positions"] == 15 and s["dispersion"]["events"] == 2
+    assert set(s["space"]["coordinates_2d"]) == set(divergence.profiles())
+    assert s["space"]["ols_disagreement_on_axes"]["pairs"] == 15
