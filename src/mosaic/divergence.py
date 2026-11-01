@@ -1,0 +1,162 @@
+"""Disagreement matrix between L3 frameworks (research/DESIGN_ontology_agents.md, decision 2).
+
+Each framework analyses the same dev template events in one pass (no tools); the signals and the scenario mass are
+compared pairwise. Two frameworks are run twice, so between-framework distances can be read against the noise of
+running the same framework again. Evaluation only: nothing here becomes training data. Standard library only.
+"""
+
+from __future__ import annotations
+
+import json
+import re
+import tomllib
+from itertools import combinations
+from pathlib import Path
+
+from mosaic.config import ROOT
+from mosaic.teacher import ASSET_TAIL, ASSETS, load_templates, make_items, normalize
+
+FRAMEWORKS = ROOT / "configs/frameworks.toml"
+DIRECTION = {"LONG": 1, "SHORT": -1, "NEUTRAL": 0}
+STEP = {"up": 1, "flat": 0, "down": -1}
+SCEN = re.compile(r"^[ \t]*S\d+[ \t]*\(([^()\n]*)\)[ \t]*:[ \t]*([01](?:\.\d+)?|\.\d+)[ \t]*$", re.M)
+
+
+def profiles() -> dict[str, dict]:
+    """The three trained schools (templates.toml) and the candidate frameworks (frameworks.toml)."""
+    out = {}
+    for name, sch in load_templates()["school"].items():
+        out[name] = {"label": name.capitalize(), **sch}
+    for name, fw in tomllib.loads(FRAMEWORKS.read_text(encoding="utf-8"))["framework"].items():
+        out[name] = fw
+    return out
+
+
+def messages(prof: dict, event) -> list[dict]:
+    ctx = "\n".join(f"- {k}: {v}" for k, v in event.macro_context.items())
+    system = ("You are an economist who reasons strictly within one framework. Analyse the event as that framework "
+              "does, in its own terms, and cite no other framework.")
+    user = (f"Framework: {prof['label']}.\n"
+            f"How it diagnoses: {prof['diagnosis']}\n"
+            f"Mechanisms to draw on (pick what fits): {', '.join(prof['concepts'])}.\n"
+            f"Typical stance: {prof['signals']}. It reads these as good news: {'; '.join(prof['good_news'])}.\n\n"
+            f"Event (category: {event.category}): {event.text}\n\n"
+            f"US/global data known before the event:\n{ctx}\n\n"
+            "Write, each tag on its own line:\n"
+            "[Think]\n3-6 sentences of reasoning within the framework.\n"
+            "[Output]\n"
+            "Causal chain: event -> ... -> outcome.\n"
+            "Scenarios: 2-4 lines 'S1 (event-specific name; growth up/down/flat, inflation up/down/flat): 0.xx' for "
+            "the US/global economy against a no-event baseline, the numbers summing to 1.\n"
+            "Signals: one line each, labelled exactly equities, government bonds, US dollar, gold, oil, credit, as "
+            "'asset: LONG|SHORT|NEUTRAL (conviction 1-5) - reason'. No asset has a default direction.")
+    return [{"role": "system", "content": system}, {"role": "user", "content": user}]
+
+
+def export(out_dir: Path, n_events: int = 30, seed: int = 11, model: str = "qwen3.8-max",
+           repeats: tuple[str, ...] = ("keynesian", "new_keynesian")) -> int:
+    """requests.jsonl for scripts/teacher_api.py: every framework on the same events (seed 11: neither the teacher's
+    training items, seed 0, nor the agent spike's, seed 7), the `repeats` frameworks a second time."""
+    events = [it.event for it in make_items(n_events, seed=seed) if it.school == "keynesian"][:n_events]
+    profs = profiles()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    n = 0
+    with (out_dir / "requests.jsonl").open("w", encoding="utf-8") as f:
+        for name, prof in profs.items():
+            for rep in range(2 if name in repeats else 1):
+                for ev in events:
+                    body = {"model": model, "messages": messages(prof, ev), "temperature": 0.8, "top_p": 0.95,
+                            "max_tokens": 1500}
+                    f.write(json.dumps({"custom_id": f"{name}|{rep}|{ev.id}", "body": body}, ensure_ascii=False) + "\n")
+                    n += 1
+    (out_dir / "manifest.json").write_text(json.dumps({"n_events": n_events, "seed": seed, "model": model,
+                                                       "frameworks": list(profs), "repeats": list(repeats),
+                                                       "requests": n}, indent=1) + "\n")
+    return n
+
+
+def parse(text: str) -> dict | None:
+    """Signal directions per asset and the expected growth and inflation direction of the scenario mass."""
+    text = normalize(text or "")
+    out = text[text.rfind("[Output]"):] if "[Output]" in text else text
+    sig = {}
+    for asset, pat in ASSETS.items():
+        m = re.search(rf"^[ \t]*[-*]?[ \t]*(?:{pat}){ASSET_TAIL}[ \t]*:[ \t]*(LONG|SHORT|NEUTRAL)", out, re.I | re.M)
+        if m:
+            sig[asset] = DIRECTION[m.group(1).upper()]
+    g = i = total = 0.0
+    for inner, p in SCEN.findall(out):
+        gm = re.search(r"growth\s+(up|down|flat)", inner, re.I)
+        im = re.search(r"inflation\s+(up|down|flat)", inner, re.I)
+        if gm and im:
+            p = float(p)
+            g += p * STEP[gm.group(1).lower()]
+            i += p * STEP[im.group(1).lower()]
+            total += p
+    if len(sig) < 6 or total < 0.8:
+        return None
+    return {"signals": sig, "growth": g / total, "inflation": i / total}
+
+
+def distance(a: dict, b: dict) -> dict:
+    """Over the events both parsed: signal disagreement (0 same, 0.5 one NEUTRAL, 1 opposite, averaged over assets),
+    the share of opposite calls, and the gap in expected growth plus expected inflation direction (0-4)."""
+    common = sorted(set(a) & set(b))
+    if not common:
+        return {"n": 0}
+    sig = opp = macro = 0.0
+    for e in common:
+        da, db = a[e]["signals"], b[e]["signals"]
+        sig += sum(abs(da[x] - db[x]) / 2 for x in ASSETS) / len(ASSETS)
+        opp += sum(da[x] * db[x] == -1 for x in ASSETS) / len(ASSETS)
+        macro += abs(a[e]["growth"] - b[e]["growth"]) + abs(a[e]["inflation"] - b[e]["inflation"])
+    k = len(common)
+    return {"n": k, "signals": round(sig / k, 3), "opposite": round(opp / k, 3), "macro": round(macro / k, 3)}
+
+
+def analyze(jobs_dir: Path) -> dict:
+    """Read <jobs>/results.jsonl, write matrix.json and matrix.md, return the summary."""
+    man = json.loads((jobs_dir / "manifest.json").read_text())
+    runs: dict[tuple[str, int], dict] = {}
+    failed = 0
+    for raw in (jobs_dir / "results.jsonl").read_text(encoding="utf-8").splitlines():
+        if not raw.strip():
+            continue
+        line = json.loads(raw)
+        name, rep, eid = line["custom_id"].split("|")
+        parsed = parse(line.get("content", ""))
+        if parsed is None:
+            failed += 1
+            continue
+        runs.setdefault((name, int(rep)), {})[eid] = parsed
+    names = [n for n in man["frameworks"] if (n, 0) in runs]
+    pairs = {f"{a}|{b}": distance(runs[(a, 0)], runs[(b, 0)]) for a, b in combinations(names, 2)}
+    noise = {n: distance(runs[(n, 0)], runs[(n, 1)]) for n in man["repeats"] if (n, 1) in runs}
+    nearest = {}
+    for n in names:
+        others = [(v["signals"], next(x for x in k.split("|") if x != n)) for k, v in pairs.items()
+                  if n in k.split("|")]
+        nearest[n] = min(others) if others else None
+    summary = {"parsed": sum(len(v) for v in runs.values()), "failed": failed, "pairs": pairs, "noise": noise,
+               "nearest": nearest}
+    (jobs_dir / "matrix.json").write_text(json.dumps(summary, indent=1) + "\n")
+    lines = ["# Disagreement matrix", "", f"Parsed {summary['parsed']} analyses, {failed} unparsable.", "",
+             "Signal disagreement (0 = same calls, 1 = all opposite), above the diagonal; macro gap (expected growth "
+             "plus inflation direction, 0-4), below it.", "",
+             "| | " + " | ".join(names) + " |", "|---|" + "---|" * len(names)]
+    for a in names:
+        row = []
+        for b in names:
+            if a == b:
+                row.append("–")
+            else:
+                d = pairs.get(f"{a}|{b}") or pairs.get(f"{b}|{a}")
+                row.append(f"{d['signals']:.2f}" if names.index(b) > names.index(a) else f"{d['macro']:.2f}")
+        lines.append(f"| {a} | " + " | ".join(row) + " |")
+    lines += ["", "Noise (the same framework run twice):", ""]
+    lines += [f"- {n}: signals {d['signals']:.2f}, opposite {d['opposite']:.2f}, macro {d['macro']:.2f} (n={d['n']})"
+              for n, d in noise.items()]
+    lines += ["", "Nearest framework by signal disagreement:", ""]
+    lines += [f"- {n}: {v[1]} ({v[0]:.2f})" for n, v in nearest.items() if v]
+    (jobs_dir / "matrix.md").write_text("\n".join(lines) + "\n")
+    return summary
