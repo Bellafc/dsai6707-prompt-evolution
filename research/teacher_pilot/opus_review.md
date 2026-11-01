@@ -40,3 +40,38 @@ Automatic checks (orchestrator): all 708 backdrop values echoed correctly in the
 | 7 | first [Observe] must name ≥ 2 dated episodes (country or institution, year before 2025) |
 | 8 | backdrop made consistent (curve from the 2y and 10y, unemployment and VIX against growth, M2 near inflation, HY spread from VIX); event-vs-backdrop contradictions must be stated |
 | 9 | tool arguments must be one JSON line; every signal `asset: DIR (conviction N) - reason`; meta phrases and mentions of other schools rejected |
+
+# Review of pilot v2 (prompt version 2, same rubric)
+
+Same reviewer setup and rubric on the 51 kept v2 trajectories (`opus_review/review_v2_<school>.json`). Reviewer
+instances differ between rounds, so small differences are within judge noise; the direction is consistent.
+
+| School | n | school fidelity | causal coherence | event responsiveness | output consistency | factual hygiene |
+|---|---|---|---|---|---|---|
+| Keynesian | 15 | 3.79 → **4.13** | 3.42 → **3.80** | 3.21 → **4.00** | 3.47 → **3.67** | 3.74 → **4.87** |
+| Austrian | 19 | 4.10 → **4.42** | 3.45 → **4.05** | 3.25 → **3.58** | 2.90 → **3.53** | 3.75 → **4.58** |
+| Monetarist | 17 | 4.50 → **4.59** | 3.85 → **3.88** | 3.70 → **4.18** | 3.60 → **4.06** | 3.40 → **4.53** |
+
+Overall mean 3.61 → 4.12. All three verdicts still "train with changes".
+
+Fixed by v2: good news gets risk-on signals (trade truce, SPR release, easing); overheating diagnosed; analogs real,
+specific and pre-2025 (15/15, 19/19, 17/17); clean JSON tool calls; no backdrop numbers before get_macro_data (one
+exception); event-vs-backdrop contradictions and foreign channels stated.
+
+Remaining, for prompt version 4:
+1. **The teacher writes the tool results.** Nothing in `src/` executes query_episode_db or get_macro_data, so the
+   student learns to produce [Observe] text from memory in varying formats. Options: real tools (episode DB, ALFRED
+   contexts) with [Observe] injected and masked from the loss, or one fixed schema and a stated "self-simulated
+   tools" limitation. Human decision (affects exp01 and exp03).
+2. **Signals follow S1 only** (86/90, 97/102 reasons cite S1) and ignore 45–55 % of the probability mass; use
+   probability-weighted signals and cut conviction when other scenarios point the other way.
+3. **Templated probabilities** (S1 always 0.45–0.55; 0.55/0.25/0.20 in 8/17 M, 0.45 in 14/19 A).
+4. **Undefined asset referents and horizon** (local vs US assets); define US/global benchmarks and a horizon.
+5. **Prompt echoes** the student would learn ("the event gives no bp, pp or share of GDP" in 12–15 of each school,
+   "newest information", "a single backdrop cannot show a trend").
+6. **Backdrop skew** (unemployment above 4.5 % in ~72 % of draws pushes Keynesian items to "support, bonds LONG");
+   Monetarist money growth compared with one quarter's GDP instead of trend growth; no lagged series.
+7. **Residual defaults**: Keynesian bonds LONG 12/15 (never SHORT), gold LONG from the Austrian "favours hard assets",
+   gold never SHORT for any school.
+8. **School toolkits** to sharpen: Keynesian real rate and zero bound, Austrian real policy rate, Monetarist trend
+   growth, velocity and the natural rate (now absent).

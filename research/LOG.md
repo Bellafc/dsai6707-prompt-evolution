@@ -404,3 +404,12 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   wording untouched); manifests carry `items_version` separately (imports rebuild items, so only the item generator
   must match; the record keeps the run's prompt version). 64 offline tests pass.
 - next: Opus review of pilot v2 with the v1 rubric; the full run waits for the human's scope decision.
+
+### 2026-11-01 — D11: Opus review of pilot v2
+- result: same rubric, means v1 → v2: Keynesian 3.79/3.42/3.21/3.47/3.74 → 4.13/3.80/4.00/3.67/4.87, Austrian
+  4.10/3.45/3.25/2.90/3.75 → 4.42/4.05/3.58/3.53/4.58, Monetarist 4.50/3.85/3.70/3.60/3.40 → 4.59/3.88/4.18/4.06/4.53;
+  overall 3.61 → 4.12. Verdicts still "with changes". Remaining issues listed in research/teacher_pilot/opus_review.md
+  (teacher-written tool results; signals that follow S1 only; templated probabilities; undefined asset referents;
+  prompt echoes; backdrop skew; residual gold/bond defaults).
+- decision needed (human): real tools (episode DB, ALFRED contexts) vs self-simulated tool calls; it shapes the
+  trajectory format, exp01's inference and exp03. The full teacher run waits for this and the scope decision.

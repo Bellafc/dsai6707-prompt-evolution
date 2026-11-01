@@ -1,0 +1,243 @@
+{
+  "school": "keynesian",
+  "items": [
+    {
+      "id": "syn-k0001",
+      "template_id": "T07-07",
+      "scores": {"school_fidelity": 4, "causal_coherence": 5, "event_responsiveness": 5, "output_consistency": 4, "factual_hygiene": 5},
+      "flags": [
+        "bonds LONG: justified (event-driven disinflation with slack)",
+        "gold SHORT: justified (less inflation-hedge demand); the batch's only gold SHORT",
+        "oil SHORT conviction 4 vs its own analogs (2011/2022 releases had short-lived price effects)",
+        "2.8% GDP growth (gap closing) not weighed against the slack reading",
+        "'no explicit size' and 'newest marginal information' boilerplate"
+      ]
+    },
+    {
+      "id": "syn-k0002",
+      "template_id": "T03-01",
+      "scores": {"school_fidelity": 4, "causal_coherence": 3, "event_responsiveness": 3, "output_consistency": 3, "factual_hygiene": 5},
+      "flags": [
+        "0.6% m/m (~7.4% annualised) called a 'softer impulse' though at/above the 6.9% y/y pace (same flaw as v1)",
+        "'0.6 percentage-point monthly inflation increase' confuses a price-level change with an inflation change",
+        "growth-up S1 is modal in a -3.1% contraction right after calling demand shortfall the dominant risk",
+        "equities/credit LONG conviction 3 although growth-down scenarios hold 0.55",
+        "'less pressure to keep policy restrictive' ignores a -2.9% real policy rate",
+        "bonds LONG: justified (downside surprise, negative gap)",
+        "'Event only:' opener and 'newest marginal information' are prompt echoes",
+        "generic analogs (no specific print or month)"
+      ]
+    },
+    {
+      "id": "syn-k0003",
+      "template_id": "T07-04",
+      "scores": {"school_fidelity": 4, "causal_coherence": 4, "event_responsiveness": 4, "output_consistency": 4, "factual_hygiene": 5},
+      "flags": [
+        "no liquidity-trap/zero-bound reading despite 0.5% policy rate, 0.3% 10y and deflation",
+        "ignores that the US is a net grain exporter (farm income/terms-of-trade gain)",
+        "bonds LONG weak: 10y at 0.3% and inflation-up scenarios hold 0.75 (look-through argument only)",
+        "gold LONG: thin (inflation hedge in a deflationary backdrop), likely teacher default",
+        "fixed asset list offers no grain exposure; oil NEUTRAL is the only commodity call",
+        "'no explicit size' and 'newest information' boilerplate"
+      ]
+    },
+    {
+      "id": "syn-k0005",
+      "template_id": "T05-07",
+      "scores": {"school_fidelity": 5, "causal_coherence": 4, "event_responsiveness": 4, "output_consistency": 3, "factual_hygiene": 5},
+      "flags": [
+        "oil SHORT contradicts its own 2019 Hormuz analog (risk premia rose) and the 0.35 blockade scenario",
+        "signals key on S1 (0.45) only, ignoring the blockade tail",
+        "bonds LONG: justified (confidence shock, flight to quality)",
+        "gold LONG: justified (geopolitical safe haven)",
+        "'the school's 4.5% natural-rate benchmark' prompt leak",
+        "'newest marginal information' and 'no explicit magnitude' boilerplate"
+      ]
+    },
+    {
+      "id": "syn-k0006",
+      "template_id": "T08-05",
+      "scores": {"school_fidelity": 3, "causal_coherence": 3, "event_responsiveness": 4, "output_consistency": 4, "factual_hygiene": 4},
+      "flags": [
+        "treats the inversion (an endogenous market signal) as an exogenous cause; no bank-margin/credit-supply mechanism",
+        "misses the +3% real policy rate (4.0% vs 1.0% CPI) in a -4.7% slump, the core Keynesian point",
+        "no liquidity-preference/expected-rates reading of the term structure",
+        "analogs omit the 2022-23 deepest inversion in four decades, which had no recession (selection bias)",
+        "event adds nothing beyond the backdrop's -91bp, yet four signals at conviction 4",
+        "bonds LONG: direction justified (recession, disinflation) but conviction 4 with S1 at 0.50 and 0.50 inflation-up mass",
+        "gold LONG: justified (lower real yields, safe haven)",
+        "second Think is a one-line filler; 'no explicit bp, pp' boilerplate"
+      ]
+    },
+    {
+      "id": "syn-k0007",
+      "template_id": "T01-04",
+      "scores": {"school_fidelity": 4, "causal_coherence": 3, "event_responsiveness": 4, "output_consistency": 3, "factual_hygiene": 5},
+      "flags": [
+        "causal chain slides from Australian yields to closing an unnamed negative output gap (AU and US frames mixed)",
+        "S1 'growth up' 0.55 although the Think says one foreign action cannot close the US gap",
+        "USD SHORT skips the direct effect (AUD weakens vs USD); only the risk-on channel supports it",
+        "gold LONG: teacher default (RBA QE barely moves US real yields; core PCE 1.5%)",
+        "bonds NEUTRAL: reasonable",
+        "omits the RBA's own 2020-21 bond-purchase programme as analog"
+      ]
+    },
+    {
+      "id": "syn-k0008",
+      "template_id": "T11-03",
+      "scores": {"school_fidelity": 4, "causal_coherence": 4, "event_responsiveness": 5, "output_consistency": 5, "factual_hygiene": 5},
+      "flags": [
+        "7.4% US core PCE attributed to a supply shock without argument",
+        "does not ask whether 75bp is small for an emergency defence (Turkey 2018: 625bp)",
+        "bonds LONG: plausible flight to quality but contestable at 7.4% core PCE (hedged at conviction 2)",
+        "gold LONG: justified, with a dollar-strength caveat",
+        "S1 and S2 carry identical growth/inflation labels"
+      ]
+    },
+    {
+      "id": "syn-k0009",
+      "template_id": "T05-06",
+      "scores": {"school_fidelity": 4, "causal_coherence": 4, "event_responsiveness": 4, "output_consistency": 4, "factual_hygiene": 5},
+      "flags": [
+        "'before 2025' prompt constraint leaked into the tool query",
+        "'No trend is inferred from a single backdrop' prompt-rule echo",
+        "bonds LONG: teacher default, driven by the pre-existing US gap, not a 3-day LatAm outage (core PCE 6.0%, 2y above policy rate)",
+        "contained scenario only 0.55 for a self-described small temporary shock (templated probabilities)",
+        "forced labels: 'rapid restoration' = growth up; bank contagion = inflation up without reason",
+        "gold NEUTRAL: appropriate; mostly NEUTRAL signals are proportionate",
+        "'newest information' boilerplate"
+      ]
+    },
+    {
+      "id": "syn-k0010",
+      "template_id": "T11-06",
+      "scores": {"school_fidelity": 4, "causal_coherence": 4, "event_responsiveness": 4, "output_consistency": 4, "factual_hygiene": 5},
+      "flags": [
+        "misses the trilemma point (Malaysia 1998: controls let a pegged economy cut rates and support demand)",
+        "'peg defence supports the dollar' is muddled (a defence sells USD reserves)",
+        "gold LONG beside USD LONG 3 without noting the dollar headwind (partly default)",
+        "bonds LONG: justified (safe haven, negative gap, near-target core)",
+        "same direction set as k0008 (EM risk-off template)",
+        "'the school's natural-rate benchmark' prompt leak"
+      ]
+    },
+    {
+      "id": "syn-k0011",
+      "template_id": "T14-01",
+      "scores": {"school_fidelity": 4, "causal_coherence": 4, "event_responsiveness": 4, "output_consistency": 3, "factual_hygiene": 5},
+      "flags": [
+        "missing 'Signals:' header (passed the validator)",
+        "Think says 'supply disruption first'; the output treats demand collapse as dominant",
+        "bonds LONG conviction 4 despite 6.6% core PCE and 0.55 inflation-up mass: default/over-conviction",
+        "gold LONG: justified (lower real rates, uncertainty; 2020 analog)",
+        "USD NEUTRAL ignores the 2020 dollar-funding spike in its own analog",
+        "'newest marginal information' used twice, once with no contradiction",
+        "fiscal bridge labelled 'growth up' (forced binary labels); second Think is an 18-word filler"
+      ]
+    },
+    {
+      "id": "syn-k0013",
+      "template_id": "T04-06",
+      "scores": {"school_fidelity": 5, "causal_coherence": 4, "event_responsiveness": 4, "output_consistency": 4, "factual_hygiene": 5},
+      "flags": [
+        "second Think cites the backdrop (U 5.9%, sub-zero CPI/PCE, steep curve, HY, VIX) before get_macro_data; passed the 2-number check",
+        "get_macro_data call therefore redundant (tool honesty)",
+        "bonds LONG conviction 4 for a self-described 'small-to-moderate' surprise (conviction set by the backdrop)",
+        "bonds LONG: direction justified (deflation, negative gap)",
+        "gold LONG: plausible and caveated (deflationary cash demand)",
+        "no zero-bound/liquidity-trap mention with a 1.0% policy rate and deflation",
+        "'from the event alone' and 'the school's natural-rate benchmark' prompt echoes"
+      ]
+    },
+    {
+      "id": "syn-k0014",
+      "template_id": "T14-03",
+      "scores": {"school_fidelity": 4, "causal_coherence": 4, "event_responsiveness": 5, "output_consistency": 4, "factual_hygiene": 5},
+      "flags": [
+        "equities/credit SHORT conviction 4 although the continent (US or not) and outage length are unknown",
+        "calls policy rates 'restrictive' though the real policy rate is negative (4.75% vs 6.1% CPI)",
+        "bonds NEUTRAL: well argued, breaks the LONG default",
+        "gold LONG: justified (cost-push plus uncertainty)",
+        "2003 Northeast blackout was not geomagnetic (fine as a blackout analog, but unlabelled)",
+        "'no explicit size' and 'newest information' boilerplate"
+      ]
+    },
+    {
+      "id": "syn-k0015",
+      "template_id": "T11-04",
+      "scores": {"school_fidelity": 5, "causal_coherence": 4, "event_responsiveness": 3, "output_consistency": 3, "factual_hygiene": 4},
+      "flags": [
+        "bonds LONG: teacher default; contradicts its own 'US overheating calls for restraint' (U 3.3%, core 4.7%, real policy rate -2.6%)",
+        "scenarios describe the frontier economy (all growth down) while signals price US assets; no 'negligible spillover' scenario",
+        "credit SHORT justified by frontier debt, not US high yield",
+        "oil SHORT conviction 2 too large for a frontier demand loss at $127 oil",
+        "Greece 2010 is not a frontier economy (Sri Lanka 2022, Ghana 2022, Pakistan 2023 fit better)",
+        "gold NEUTRAL: appropriate",
+        "'newest information', 'single backdrop cannot show a trend' and 'the school's' prompt echoes"
+      ]
+    },
+    {
+      "id": "syn-k0017",
+      "template_id": "T01-09",
+      "scores": {"school_fidelity": 3, "causal_coherence": 3, "event_responsiveness": 3, "output_consistency": 3, "factual_hygiene": 5},
+      "flags": [
+        "judges a UK policy change with the US output gap and inflation (frame confusion)",
+        "'government bonds' referent unclear (gilts vs Treasuries)",
+        "equities/credit LONG conviction 3 although growth-down scenarios hold 0.55",
+        "bonds LONG with 0.75 inflation-up mass: teacher default",
+        "gold LONG conviction 3 for a UK personnel change: default/over-conviction",
+        "convictions exceed those of the concrete RBA QE item (k0007, 1-2)",
+        "S3 'credibility breaks' labelled inflation down (ambiguous)",
+        "'good news for inflation' undefined (prompt wording)",
+        "generic monetary transmission, little that is distinctively Keynesian",
+        "'the school's rough natural rate' prompt leak"
+      ]
+    },
+    {
+      "id": "syn-k0019",
+      "template_id": "T03-04",
+      "scores": {"school_fidelity": 5, "causal_coherence": 4, "event_responsiveness": 4, "output_consistency": 4, "factual_hygiene": 5},
+      "flags": [
+        "oil LONG is circular: the survey reflects high oil, it does not move oil",
+        "forced labels: 'slack reasserts' = growth up; 'expectations de-anchor' = inflation down",
+        "gold LONG: justified (higher expected inflation, lower real rates)",
+        "bonds NEUTRAL: well argued",
+        "'newest information' and 'the school's natural-rate benchmark' prompt echoes",
+        "no blank lines before Scenarios/Signals (format drift)"
+      ]
+    }
+  ],
+  "summary": {
+    "mean_scores": {"school_fidelity": 4.13, "causal_coherence": 3.8, "event_responsiveness": 4.0, "output_consistency": 3.67, "factual_hygiene": 4.87},
+    "main_strengths": [
+      "Clear gain over v1 (3.79/3.42/3.21/3.47/3.74) on event sign: the SPR release now gets risk-on calls (equities/credit LONG, oil/gold SHORT), easing events go risk-on, and k0015's 3.3% unemployment and 4.7% core PCE are diagnosed as overheating that 'calls for restraint'.",
+      "Analogs are real, specific and pre-2025 in 15/15 (e.g. Hydro-Quebec 1989, Mexico SPEI 2018, Costa Rica 2022, Malaysia 1998); no invented institutional statistics; all 195 get_macro_data values match the backdrop.",
+      "Proportionality is emerging: small or local events get NEUTRAL or low conviction (k0009 mostly NEUTRAL, k0007 and k0015 at conviction 1-2), and foreign events state how they reach US assets.",
+      "Supply and demand channels are separated well (k0005 freeze vs blockade, k0014 solar storm, k0019 expectations amid slack), and the best items carry real Keynesian mechanisms: wage income to consumption and the multiplier (k0013), the austerity multiplier with sticky wages (k0015), 'do not contract into slack' (k0019).",
+      "Format is clean: probabilities sum to 1.00 in 15/15, all six signals carry a conviction and a reason, tool arguments are JSON, and the scenario count varies (3 or 4) instead of v1's fixed four."
+    ],
+    "main_problems": [
+      "Bonds LONG default: 12/15 and never SHORT, including against the item's own analysis (k0015 overheating, k0011 core PCE 6.6% at conviction 4, k0017 and k0003 with 0.75 inflation-up mass, k0009 a 3-day foreign outage).",
+      "Gold LONG 11/15 for both risk-on easing (k0007, k0017) and risk-off shocks. It is justified in about 7 items (geopolitics, recession, cost-push, inflation expectations) and thin or default in k0003, k0007, k0010 and k0017.",
+      "Signals follow S1 only (86/90 reasons start from S1, as the prompt demands). So risk assets go LONG at conviction 3 while growth-down scenarios hold 0.55 (k0002, k0017), and oil goes SHORT despite a 0.35 blockade scenario (k0005).",
+      "Templated probabilities: S1 is always 0.45-0.55; 0.55/0.25/0.20 appears in 5/15 and 0.45/0.35/0.20 in 4/15, so a 3-day outage and a pandemic get the same shape. Forced binary labels produce incoherent tags ('rapid restoration' = growth up, 'credibility breaks' = inflation down, 'slack reasserts' = growth up).",
+      "Frame confusion on foreign events: scenarios and output-gap reasoning describe the foreign economy, or apply the US gap to a UK or Australian policy move, while signals price US assets (k0007, k0015, k0017). 'Government bonds' and 'credit' have no fixed referent.",
+      "Prompt echoes the student would learn: a missing-size sentence ('no explicit size in bp, pp, or share of GDP') in 12/15, 'newest (marginal) information' in 11/15 (often with no contradiction), 'the school's natural-rate benchmark' in 6/15, plus 'single backdrop cannot show a trend', 'before 2025' inside a tool query, and 'Event only:'.",
+      "Thin Keynesian toolkit where the backdrop calls for it: no liquidity trap or zero bound in k0003 or k0013 (deflation, policy rate 0.5-1.0%), and the real policy rate is never computed (+3% in k0006's -4.7% slump). 'Liquidity preference' appears in 0/15, 'paradox of thrift' in 0/15, sticky wages/prices in 1/15. The output gap is read through the 'natural rate', which also sits on the Monetarist concept list, so the schools blur.",
+      "Residual errors: 0.6% m/m CPI (~7.4% annualised) read as soft (same flaw as v1); k0013 cites backdrop values before get_macro_data and passed the 2-number check; k0011 has no 'Signals:' header; Greece 2010 used as a frontier analog; the inversion analogs omit 2022-23; k0019's oil LONG is circular.",
+      "Backdrop skew drives the defaults: the sampler puts unemployment above the 4.5% benchmark in about 72% of draws (12/15 here) and GDP below zero in half (11/15), so the Keynesian diagnosis almost always concludes 'negative gap, support, duration'."
+    ],
+    "would_you_train_on_this": "with changes",
+    "suggested_prompt_or_template_changes": [
+      "macro_snapshot: centre unemployment on the 4.5% benchmark (e.g. 4.5 - 0.35*growth + U(-1,1)) or stratify items by gap sign x inflation regime, so that about a third of Keynesian items show overheating. Today P(U>4.5) is about 0.72 and P(slack and CPI>3) about 0.45, which mechanically yields 'support, bonds LONG'.",
+      "Replace 'The signals follow the most likely scenario' with probability-weighted signals: if scenarios pointing the other way hold >= 0.5 combined, use NEUTRAL or conviction <= 2, and name the scenarios behind each signal. Add a validator rule that rejects or flags equities/credit LONG at conviction >= 3 when growth-down mass > 0.5, and bonds LONG when inflation-up mass >= 0.6 without a stated reason.",
+      "Scenario format: allow 'flat' for growth and inflation, define the reference ('US/global outcome vs a no-event baseline'), and ask for confidence that depends on the event (a contained small shock should have a dominant scenario of about 0.7-0.85). Add a batch warning when more than 25% of a school's items share one probability vector or S1 never leaves 0.45-0.55.",
+      "Keynesian profile in templates.toml: replace 'natural rate of about 4.5%' with 'NAIRU/full employment near 4.5% and growth vs ~2% potential (Okun)'. Add 'compare the policy rate with inflation: is policy tight or loose for this gap?' and 'near the zero bound (policy <= 1%) monetary policy is weak: liquidity trap, larger fiscal multiplier'. This brings in liquidity preference, the zero bound and fiscal stance where relevant, and separates the school from the Monetarist one.",
+      "Foreign events: 'every scenario is a US/global outcome; judge a foreign policy move by that economy's own situation (say if unknown); never apply the US gap to it'. Define the assets: government bonds = US Treasuries, US dollar = DXY (AUD is not in it), credit = US high yield.",
+      "Remove the boilerplate triggers. Rule 1: 'give a magnitude only if the event states one; never say it is missing', and replace 'good/bad news for inflation' with 'inflation up/down'. Rule 4: 'mention a contradiction only if one exists; do not write \"newest information\"'. Drop the word 'school' from the diagnosis text and add \"the school's\" to META. Reject 'before 2025' inside tool calls. Have the batch report flag any 6-gram that appears in more than 30% of a school's items.",
+      "Validator: lower the early-citation threshold to 1 distinctive backdrop value and also catch qualitative previews ('steep curve', 'below zero', 'elevated VIX') before get_macro_data, since k0013 passed. v3's 'which data would decide' rule for the second Think invites exactly this. Require the 'Scenarios:' and 'Signals:' headers (k0011 passed without one).",
+      "Template slots: bound the CPI m/m slot relative to the backdrop's y/y, or tell the teacher to annualise the m/m and compare it with y/y; this flaw survived from v1. Consider an optional event-specific seventh asset (grains for droughts, EM FX or sovereign credit for EM events).",
+      "Training design: train.py trains on the whole reply and nothing in src executes query_episode_db, so the student learns to write episode-DB 'observations' from memory, in free-form JSON, array or bullet formats. Either run a real episode DB and mask [Observe] spans from the loss, or fix one Observe schema and state in the thesis that the tool calls are self-simulated."
+    ]
+  }
+}

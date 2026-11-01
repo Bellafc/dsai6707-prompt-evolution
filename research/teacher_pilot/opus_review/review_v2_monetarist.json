@@ -1,0 +1,365 @@
+{
+ "school": "monetarist",
+ "items": [
+  {
+   "id": "syn-m0000",
+   "template_id": "T01-02",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 3,
+    "event_responsiveness": 4,
+    "output_consistency": 3,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "S1 'growth up, inflation down' after a 100bp easing is causally backwards",
+    "discretionary-accommodation scenario only 0.10 despite M2 6.7% at 3.9% unemployment",
+    "assumes stable velocity though MV=PY on the data implies velocity falling ~2pp",
+    "M2 benchmarked against one quarter's 4.5% q/q saar GDP, not trend growth",
+    "no long-and-variable-lags or natural-rate reading of a 3.9% unemployment, 4.5% growth economy",
+    "spurious 'conflict' between the cut and the pre-cut 5.5% policy rate",
+    "signal verdict: risk-on set (equities/credit/gold LONG, USD SHORT) is event-justified for an easing"
+   ]
+  },
+  {
+   "id": "syn-m0001",
+   "template_id": "T09-03",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 4,
+    "factual_hygiene": 4
+   },
+   "flags": [
+    "boilerplate 'no size in bp, pp or share of GDP' line for a PMI level",
+    "M2 3.5% vs -1.0% GDP implies ~4.5% inflation at stable velocity, yet read as non-accommodative",
+    "claims M2 is 'not accelerating' from a single snapshot",
+    "analog money claims shaky (US M2 accelerated in 2001; euro-area M3 was firming in 2019)",
+    "relative-price framing applied to a demand-side PMI drop",
+    "no Scenarios:/Signals: headers (format drift)",
+    "signal verdict: risk-off, long-duration set is event-justified"
+   ]
+  },
+  {
+   "id": "syn-m0002",
+   "template_id": "T01-05",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 4,
+    "factual_hygiene": 3
+   },
+   "flags": [
+    "1998 analog misfit: inflation was below target and M2 accelerated (~8-9%)",
+    "flags the event/backdrop inflation contradiction, then ignores the -74bp inversion and 0.1% core PCE",
+    "S1 and S2 share the same direction; the split is degree only",
+    "no Scenarios:/Signals: headers, capitalised asset names (format drift)",
+    "signal verdict: bonds SHORT/gold LONG follow the event's stated above-target inflation, not a default"
+   ]
+  },
+  {
+   "id": "syn-m0003",
+   "template_id": "T10-02",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 4,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "boilerplate 'no size in bp, pp or share of GDP' line",
+    "spurious 'conflict' between a disinflationary shock and the pre-event inflation level",
+    "judges accommodation by M2 vs inflation, not vs real growth plus target (5.0 vs -4.0 implies ~9%)",
+    "no long-and-variable-lags discussion despite 8.5% core PCE",
+    "USD NEUTRAL contradicts its own dollar-funding-stress channel at VIX 39",
+    "'rule-like non-accommodation' label pasted onto the PBoC",
+    "signal verdict: risk-off set is event-justified for a credit default"
+   ]
+  },
+  {
+   "id": "syn-m0005",
+   "template_id": "T01-10",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 3,
+    "event_responsiveness": 4,
+    "output_consistency": 3,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "boilerplate 'no size in bp, pp or share of GDP' line",
+    "says the intervention 'sits uneasily' with DXY 114, though a strong dollar is the obvious motive",
+    "S3 'defensive dollar support' at 0.25 implausible with DXY at 114",
+    "bonds SHORT in a deflationary recession (CPI 0.6%, M2 1.2%, GDP -4%) contradicts its own low-money reading",
+    "sterilized smoothing labelled 'inflation up' although it argues sterilized ops leave inflation unchanged",
+    "misses the Monetarist point that 1.2% M2 in a -4% recession is too tight",
+    "no Scenarios:/Signals: headers (format drift)",
+    "signal verdict: USD SHORT/gold LONG event-justified; equities LONG and bonds SHORT overreach for a sterilized op"
+   ]
+  },
+  {
+   "id": "syn-m0007",
+   "template_id": "T01-04",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 5,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "boilerplate 'no size in bp, pp or share of GDP' line",
+    "calls '500bn' small-to-moderate; the slot is USD with no period, which is QQE-scale for the BoJ",
+    "skips the BoJ 2001-06 lesson that base money barely moved broad money",
+    "signal verdict: mild risk-on with yen-weakness USD LONG is event-justified and well sized"
+   ]
+  },
+  {
+   "id": "syn-m0008",
+   "template_id": "T05-04",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 4,
+    "factual_hygiene": 4
+   },
+   "flags": [
+    "boilerplate 'no size in bp, pp or share of GDP' line",
+    "assumes an oil producer; oil LONG conviction 4 though the commodity is unspecified",
+    "flags accommodation risk (M2 7.9% vs -3.2% GDP) yet makes non-accommodation the base case",
+    "bonds LONG rests on that non-accommodation assumption",
+    "Iraq 1958 'oil-supply fears moved relative prices' doubtful under posted prices",
+    "one mechanism only (relative-price/accommodation repeated 8 times)",
+    "no Scenarios:/Signals: headers (format drift)",
+    "signal verdict: oil/gold LONG and equities/credit SHORT are event-justified for a supply shock"
+   ]
+  },
+  {
+   "id": "syn-m0009",
+   "template_id": "T07-04",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 4,
+    "factual_hygiene": 4
+   },
+   "flags": [
+    "boilerplate 'no size in bp, pp or share of GDP' line",
+    "spurious 'contradiction' between a new food-price shock and pre-shock low CPI",
+    "2012 drought analog: M2 grew ~7% and QE3 began, so 'money not accommodative' is doubtful",
+    "accommodation S2 (0.25) outweighs deflation S3 (0.20) despite M2 -0.5% and core PCE -0.3%",
+    "no Scenarios:/Signals: headers (format drift)",
+    "signal verdict: risk-off set justified; oil NEUTRAL (conviction 1) shows good discrimination"
+   ]
+  },
+  {
+   "id": "syn-m0010",
+   "template_id": "T14-04",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 4,
+    "event_responsiveness": 5,
+    "output_consistency": 4,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "boilerplate 'no size in bp, pp or share of GDP' line",
+    "doesn't ask whether stablecoin balances sit inside M2 (flight to deposits could raise M2)",
+    "reserve-asset (T-bill) fire sales not reconciled with a plain bonds LONG",
+    "forced 'conflict' with the steep curve and high 10y",
+    "signal verdict: risk-off, USD LONG and credit SHORT 4 are event-justified"
+   ]
+  },
+  {
+   "id": "syn-m0011",
+   "template_id": "T04-02",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 5,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "natural-rate hypothesis absent on an unemployment event",
+    "labels the unemployment rise a 'supply shock' without evidence",
+    "signals price the backdrop's 15.2% M2 more than the event's marginal effect",
+    "silent on an implausible backdrop (10y 0.3% with 7.2% CPI)",
+    "no Scenarios:/Signals: headers (format drift)",
+    "signal verdict: stagflation set (bonds SHORT 4, gold LONG) justified by money growth, not a default"
+   ]
+  },
+  {
+   "id": "syn-m0012",
+   "template_id": "T05-02",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 5,
+    "event_responsiveness": 5,
+    "output_consistency": 5,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "boilerplate 'no size in bp, pp or share of GDP' line",
+    "assumes an energy chokepoint (oil LONG 4) for an unnamed strait",
+    "signal verdict: stagflation set justified by M2 9.8% vs ~5.4% need; model example"
+   ]
+  },
+  {
+   "id": "syn-m0014",
+   "template_id": "T07-08",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 5,
+    "event_responsiveness": 5,
+    "output_consistency": 5,
+    "factual_hygiene": 4
+   },
+   "flags": [
+    "boilerplate 'no size in bp, pp or share of GDP' line beside a stated 200% rise",
+    "malformed key in the macro observation ('(bp' missing ')'): teacher-written tool output",
+    "1973 and 1979 freight analogs are generic oil-shock stand-ins",
+    "underuses the 2021 analog (M2 surge, then inflation)",
+    "signal verdict: bonds SHORT/gold LONG justified by M2 6.2% vs ~2.5% need; oil NEUTRAL well discriminated"
+   ]
+  },
+  {
+   "id": "syn-m0015",
+   "template_id": "T02-06",
+   "scores": {
+    "school_fidelity": 3,
+    "causal_coherence": 3,
+    "event_responsiveness": 3,
+    "output_consistency": 4,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "boilerplate 'no size in bp, pp or share of GDP' line",
+    "treats a fiscal pause as a nominal-demand shock; no 'fiscal matters little without money' point",
+    "uses US M2 to judge accommodation of an Asian shock",
+    "only US shutdown analogs for an Asian economy",
+    "spurious 'conflict' with low core PCE",
+    "signal verdict: generic risk-off set for a minor, temporary foreign event looks like a teacher default; NEUTRAL fits better"
+   ]
+  },
+  {
+   "id": "syn-m0016",
+   "template_id": "T11-02",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 4,
+    "factual_hygiene": 4
+   },
+   "flags": [
+    "boilerplate 'no size in bp, pp or share of GDP' line",
+    "Argentina 2001 lesson garbled (a currency board is not 'financed' by money growth)",
+    "Mexico 1994 analog was a devaluation, not a default",
+    "spurious 'conflict' with moderate DXY and VIX",
+    "scenario labels don't say whose growth and inflation (EM or US)",
+    "calls a sovereign default a 'relative-price' shock",
+    "signal verdict: USD LONG/credit SHORT/oil SHORT event-justified; NEUTRAL equities/bonds sensible"
+   ]
+  },
+  {
+   "id": "syn-m0017",
+   "template_id": "T12-04",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 4,
+    "event_responsiveness": 5,
+    "output_consistency": 4,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "boilerplate 'no size in bp, pp or share of GDP' line",
+    "S1 'stable money' labelled 'inflation up', contradicting the chain's relative-price-only effect",
+    "S1 and S2 share the same direction",
+    "oil LONG via housing demand is a weak link",
+    "forced 'contrast' with negative inflation",
+    "signal verdict: risk-on set is event-justified for a supportive policy"
+   ]
+  },
+  {
+   "id": "syn-m0018",
+   "template_id": "T10-01",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 3,
+    "event_responsiveness": 4,
+    "output_consistency": 3,
+    "factual_hygiene": 5
+   },
+   "flags": [
+    "claims an RRR cut 'can be disinflationary' (offsetting a velocity fall prevents deflation, it doesn't lower inflation)",
+    "S1 'growth up, inflation down' for an easing",
+    "bond rationale 'disinflationary China impulse' inherits the slip",
+    "signal verdict: mild risk-on is event-justified for a modest easing"
+   ]
+  },
+  {
+   "id": "syn-m0019",
+   "template_id": "T06-02",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 4,
+    "factual_hygiene": 4
+   },
+   "flags": [
+    "boilerplate 'no size in bp, pp or share of GDP' line",
+    "Argentina 2008 conflict was over export taxes (which lower domestic food prices), not import tariffs",
+    "S1 'rule-based money' unclear: whose rule, when US M2 is judged excessive",
+    "bonds SHORT 3 is a backdrop level call, not an event response",
+    "signal verdict: mostly NEUTRAL for a local event, well calibrated; not a default"
+   ]
+  }
+ ],
+ "summary": {
+  "mean_scores": {
+   "school_fidelity": 4.59,
+   "causal_coherence": 3.88,
+   "event_responsiveness": 4.18,
+   "output_consistency": 4.06,
+   "factual_hygiene": 4.53,
+   "overall": 4.25
+  },
+  "main_strengths": [
+   "The Monetarist reasoning is genuine, not decoration. 15/17 trajectories run the money-growth vs real-growth-plus-target test on the actual numbers (the other two state it). They treat supply shocks as relative-price changes that become inflation only if money accommodates them, and use velocity (9/17), rules vs discretion and long and variable lags (6/17). No Keynesian or Austrian vocabulary appears in any trajectory.",
+   "Several trajectories use the school's own tool for the event: sterilized vs unsterilized FX intervention (m0005), money multiplier vs high-powered money for an RRR cut (m0018), stablecoins as private money and a velocity shock (m0010), tariffs as a one-time price-level change with Smoot-Hawley under contracting money (m0019), and credit vs money in mortgage relief (m0017).",
+   "Most signal directions follow the event and backdrop rather than a default. Easing and support events (m0000, m0005, m0007, m0017, m0018) get risk-on sets. High-M2 backdrops flip bonds to SHORT (m0011, m0012, m0014, m0019), and an event that states above-target inflation does too (m0002). Oil goes LONG for supply shocks, SHORT for demand shocks and NEUTRAL when the chain doesn't touch it (m0009, m0014). Bonds are balanced at 7 LONG, 7 SHORT, 3 NEUTRAL.",
+   "Every analog is real and dated before 2025, and most are apt (2001/2008/2020 intermeeting cuts, the 1998/2000/2011 US FX interventions, Terra, Reserve Primary and USDC, HAMP, PBoC RRR cuts in 2008/2015/2018). The macro observations copy the backdrop exactly in 17/17 (one has a malformed key). Probabilities sum to 1 and every signal has a conviction and a reason."
+  ],
+  "main_problems": [
+   "Wrong money-growth benchmark: M2 is compared with one quarter's q/q saar GDP (-4 to +5 here), never with trend real growth (0/17). The verdict therefore swings on noise and is applied inconsistently: 3.5% against -1.0% is called non-accommodative (m0001), but 4.8% against -0.5% is called excessive (m0002). The quantity equation is never written out, and only m0017 (implicitly m0007) infers velocity from the data.",
+   "One stock mechanism dominates. 'Relative-price shock, inflation only if money accommodates' appears in 15/17, up to 10 times per trajectory, including for demand and financial shocks (PMI, unemployment, EM default, shutdown). The natural rate of unemployment appears 0/17 times, even for the unemployment event (m0011). The quantity theory, real balances and Friedman-Schwartz are never named.",
+   "Spurious event-vs-backdrop 'conflict' sentences in 8/17 (m0000, m0003, m0005, m0009, m0010, m0015, m0016, m0017): prompt rule 4 gets applied to every new shock that would move a pre-event variable. m0005 reverses the logic. Only m0002 has a real contradiction.",
+   "Templated scenarios and probabilities. S1 is always the modal scenario at 0.45-0.55, and the split 0.55/0.25/0.20 appears in 8/17 (7 in that exact order). Signal reasons almost never weigh other scenarios: 97 of 102 lines cite S1, 4 cite a chain step and 1 adds S3 (prompt: 'signals follow the most likely scenario'). That ignores 45-55% of the probability mass. Some S1 labels run backwards: easing leads to 'inflation down' (m0000, m0018) and stable money to 'inflation up' (m0017). In 10/17, two scenarios carry the same growth/inflation directions, so the labels cannot separate temporary from persistent inflation.",
+   "The teacher writes the tool outputs. get_macro_data comes back in 4 formats and query_episode_db in 12 different layouts or key sets, with one malformed key (m0014). 6/17 drop the Scenarios:/Signals: headers. Every item runs the identical two-call script and requests all 13 indicators. A student trained on this learns to make up tool results and a fixed call order.",
+   "Boilerplate: 13/17 first [Think] blocks state that the event gives no size in bp, pp or share of GDP (rule 1), even for a PMI level or a stated 200% freight jump.",
+   "Some analogs misstate money growth: 1998, when M2 accelerated and inflation was below target (m0002); the 2012 drought, during QE3 with M2 near 7% (m0009); euro M3 in 2019 (m0001); Argentina 2008, which was over export taxes (m0019); and a garbled Argentina 2001 currency-board lesson (m0016).",
+   "Default-looking directions: gold is never SHORT (8 LONG, 9 NEUTRAL), even with tight money and a firmer dollar. The dollar is NEUTRAL in 9/17. A minor foreign shutdown gets the full risk-off set (m0015).",
+   "Input problems the teacher accepts without comment. The backdrop generator produces implausible mixes (10y at 0.3% with 7.2% CPI; a 5.5% policy rate with -0.2% core PCE; 0.3% CPI with $126 oil). It has no lagged money or trend-growth series, so 'long and variable lags' can be asserted but never shown. Templates leave size and commodity unclear ('500bn' with no currency or period; 'major commodity producer' and 'major shipping strait' unnamed), and the teacher fills the gap with oil LONG 4."
+  ],
+  "would_you_train_on_this": "with changes",
+  "suggested_prompt_or_template_changes": [
+   "School diagnosis (templates.toml, monetarist): 'Compare M2 growth with trend real growth (about 2.5-3%) plus the 2% target, i.e. about 4.5-5%; one quarter's q/q saar GDP is noise. Where it helps, back out implied velocity growth (CPI + real GDP - M2). Separate supply shocks (relative prices) from money-demand, velocity and credit shocks; do not call a demand or financial shock a relative-price shock.'",
+   "Make the mechanism event-dependent with a per-category hint. Labour and data releases: natural rate and expectations-augmented Phillips curve. Balance-sheet, RRR and FX events: monetary base vs broad money, multiplier, sterilization. Fiscal events: fiscal changes move nominal spending only if money moves. Financial crises: money demand and velocity, and whether the central bank prevents a broad-money contraction.",
+   "Rule 1: replace the size clause with 'If the event states a size, use it to judge materiality; if not, do not comment on missing units.' Validator: reject the 'bp, pp, or share of GDP' disclaimer.",
+   "Rule 4: 'Mention a contradiction only when the event states a level the backdrop contradicts (e.g. inflation 2pp above target vs CPI 1.4%). A shock that would move a variable away from its pre-event value is not a contradiction.' Better still, condition the backdrop on levels the event states (T01-05) so there is nothing to contradict.",
+   "Rule 5: replace 'The signals follow the most likely scenario' with 'Signals reflect the probability-weighted scenarios; if S1 is below 0.6 and another scenario points the other way, cut conviction or go NEUTRAL; reasons may cite several scenarios.' Add 'Scenarios must differ in growth or inflation direction; labels must follow from the mechanism; probabilities come from this event and backdrop, not a 0.55/0.25/0.20 default; for a foreign event say whose growth and inflation.' Have collect() report the distribution of S1 probabilities and repeated probability tuples, as it already does for direction shares.",
+   "Stop letting the teacher write [Observe]. Render get_macro_data from the backdrop in one canonical JSON format, and back query_episode_db with a curated, fact-checked episode table in one schema. Generate in two stages (teacher writes up to the tool call, the harness injects the result, the teacher continues), or at least mask [Observe] tokens from the SFT loss. Allow subsets of indicators and a data-first order for data-release events.",
+   "macro_snapshot: tie the 10y and policy rate to inflation and unemployment (Fisher/Taylor with noise), let oil co-move with CPI, and add 'M2 growth y/y, 12 months earlier', 'nominal GDP growth y/y' and 'real GDP growth, 4-quarter average'. That lets velocity and lags be computed from data instead of asserted. Fewer impossible regimes also stop the student learning spurious relations.",
+   "Templates: render T01-04 as '$500bn over 12 months' (or per month); use the existing commodity slot in T05-04 and name the strait or its cargo in T05-02; rephrase T02-06 for economies without shutdown mechanisms (e.g. a spending freeze under a provisional budget).",
+   "Asset menu: tell the teacher gold can be SHORT under tight money, rising real rates and a firmer dollar, and add a warning to the batch report when an asset's direction count is 0 (gold SHORT 0/17). For events about grain, freight or copper, allow NEUTRAL with conviction 1 rather than proxying through oil.",
+   "Before scaling: keep m0012, m0014, m0010, m0007, m0019 and m0016 as exemplars. Regenerate m0015, m0000, m0018 and m0005 (backwards scenario labels or reversed logic), and fix m0002's 1998 analog."
+  ]
+ }
+}
