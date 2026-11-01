@@ -605,3 +605,14 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   sampling (test-time compute, no weight change) stays in exp03.
 - change: THESIS_DESIGN §4a row, §7 oral-exam row, §8 D12. A related-work and future-work scan for the thesis runs
   next; verified candidates go to the reference session for the bibliography.
+
+### 2026-11-01 — related-work and future-work scan
+- command: three parallel search agents (RQ1 + TTT; RQ2/RQ3; economics, ideology, disagreement matrix, future work),
+  each checked against LIBRARY.md and the .bib files.
+- result: `research/related_work_scan_2026-11-01.md`, about 50 works missing from the library, with priority A/B/F.
+  Two sources cited in `configs/frameworks.toml` (Javdani & Chang 2023; Lavoie 2014) were missing from the library.
+  No peer-reviewed SAE study of economic-school concepts was found (exp06 would be the first). Gordon & Dahl (2013)
+  is a counter-hypothesis to "position distance predicts disagreement" and goes into the matrix write-up.
+- next: hand-off to the reference session for BibTeX and verification; four cheap in-design uses listed as proposals
+  for the human (graded counterfactual edits in exp07, error correlation per H8 arm, the base-model tilt control,
+  a pre/post-cutoff leakage check).

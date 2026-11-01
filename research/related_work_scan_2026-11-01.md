@@ -50,7 +50,45 @@ deng2026qwenscope, shuttleworth2025lora, wu2025axbench, guo2017calibration.
 
 ## 2. RQ2 (what the agent says) and RQ3 (how sure)
 
-(pending: third search)
+### RQ2: faithful, grounded output
+| Pri | Work | Record | Why it matters here |
+|---|---|---|---|
+| A | Xu et al. (2025). *Beyond Correctness: Rewarding Faithful Reasoning in Retrieval-Augmented Generation.* TMLR (per arXiv comment) | https://arxiv.org/abs/2510.13272 | Closest analogue: Think–Search, Information–Think and Think–Answer faithfulness for tool-using agents map onto [Think]→tool call, tool return→[Think], [Proof]→probabilities |
+| A | Wu et al. (2024). *ClashEval: Quantifying the Tug-of-War between an LLM's Internal Prior and External Evidence.* NeurIPS 2024 D&B | https://neurips.cc/virtual/2024/poster/97658 | Precedent for exp07's counterfactual tool results: perturbations from subtle to blatant; models resist implausible edits |
+| A | Chen et al. (2024). *Do Models Explain Themselves? Counterfactual Simulatability of Natural Language Explanations.* ICML 2024, PMLR 235:7880–7904 | https://proceedings.mlr.press/v235/chen24bl.html | Precision and generality of an explanation on counterfactual inputs: does [Proof] predict which conclusion moves? |
+| A | Korbak et al. (2025). *Chain of Thought Monitorability: A New and Fragile Opportunity for AI Safety.* arXiv preprint | https://arxiv.org/abs/2507.11473 | Visible reasoning as a monitorable channel that training can erode |
+| B | Ling et al. (2023). *Deductive Verification of Chain-of-Thought Reasoning.* NeurIPS 2023 | https://proceedings.neurips.cc/paper_files/paper/2023/hash/72393bd47a35f5b3bee4c609e7bba733-Abstract-Conference.html | Steps that cite their premises (Natural Program): nearest format to the layer-typed [Proof]; their verifier is an LLM, ours is code |
+| B | Song et al. (2025). *Measuring and Enhancing Trustworthiness of LLMs in RAG through Grounded Attributions and Learning to Refuse.* ICLR 2025 | https://proceedings.iclr.cc/paper_files/paper/2025/hash/4c88827decab6c046b881a2c3a99c76f-Abstract-Conference.html | Trust-Score (answer, citation, refusal) on small open models incl. Qwen2.5-7B: comparison point for code-checked grounding |
+| F | Baker et al. (2025). *Monitoring Reasoning Models for Misbehavior and the Risks of Promoting Obfuscation.* arXiv preprint | https://arxiv.org/abs/2503.11926 | Rewarding the CoT monitor makes reasoning obfuscated: any future RL reward must leave [Think] alone |
+
+### RQ3: calibration, uncertainty and diversity
+| Pri | Work | Record | Why it matters here |
+|---|---|---|---|
+| A | Kuhn, Gal, Farquhar (2023). *Semantic Uncertainty: Linguistic Invariances for Uncertainty Estimation in Natural Language Generation.* ICLR 2023 | https://arxiv.org/abs/2302.09664 | Origin of semantic entropy (Farquhar 2024 is in the library, this is not): disagreement at the level of meaning for the sampling and school arms |
+| A | Lin, Hilton, Evans (2022). *Teaching Models to Express Their Uncertainty in Words.* TMLR (venue via MLAnthology) | https://arxiv.org/abs/2205.14334 | Fine-tuning can calibrate verbalised probabilities: precedent for trained agents emitting scenario probabilities |
+| A | He et al. (2025). *Chronologically Consistent Large Language Models.* arXiv preprint | https://arxiv.org/abs/2502.21206 | Models trained only on text available at each date: the strict alternative to our claimed cutoff; a limitation to state |
+| A | Choi et al. (2025). *Debate or Vote: Which Yields Better Decisions in Multi-Agent Large Language Models?* NeurIPS 2025 | https://arxiv.org/abs/2508.17536 | Voting explains most debate gains: supports pooling independent school outputs and keeping debate out of H8 |
+| A | Jiang et al. (2025). *Artificial Hivemind: The Open-Ended Homogeneity of Language Models (and Beyond).* NeurIPS 2025 | https://arxiv.org/abs/2510.22954 | Different models give similar outputs: the "different models" arm may carry little real diversity; report pairwise error correlation per arm |
+| B | Hou et al. (2024). *Decomposing Uncertainty for Large Language Models through Input Clarification Ensembling.* ICML 2024, PMLR 235:19023–19042 | https://proceedings.mlr.press/v235/hou24b.html | Aleatoric/epistemic split by ensembling input variants: template for the persona arm |
+| B | Zhang et al. (2025). *Stop Overvaluing Multi-Agent Debate — We Must Rethink Evaluation and Embrace Model Heterogeneity.* arXiv preprint | https://arxiv.org/abs/2502.08788 | Debate rarely beats self-consistency; heterogeneity helps: equal-compute baselines |
+| B | Benhenda (2026). *Look-Ahead-Bench: A Standardized Benchmark of Look-ahead Bias in Point-in-Time LLMs for Finance.* arXiv preprint, single author | https://arxiv.org/abs/2601.13770 | Look-ahead bias as decay across periods: template for a pre/post-cutoff negative control |
+| F | Schoenegger et al. (2025). *AI-Augmented Predictions: LLM Assistants Improve Human Forecasting Accuracy.* ACM TiiS 15(1) (from the economics search) | https://doi.org/10.1145/3707649 | Template for a human study: do analysts forecast better when they read the proof? |
+
+Already in the library (not repeated): turpin2023language, lanham2023measuring, chen2025reasoning,
+arcuschin2026chain, matton2025walk, gao2023enabling, rashkin2023measuring, cohenwang2024contextcite, zhao2026agents,
+zhao2026verifying, tian2023just, xiong2024can, kadavath2022language, farquhar2024detecting, lyu2025calibrating,
+schoenegger2024wisdom, sarkar2024lookahead, glasserman2024assessing, lopezlira2025memorization, paleka2026pitfalls,
+du2024improving, liang2024encouraging, gebele2026diversity, kim2025correlated, zheng2024helpful, hu2024quantifying.
+
+### Small, cheap uses inside the current design (proposals, not adopted)
+1. exp07: grade the counterfactual tool edits from subtle to blatant (ClashEval) and score whether [Proof] predicts
+   which scenario moves (Chen et al. 2024). A null response to a blatant edit can be sanity-checking, not ignoring.
+2. exp03 H8: report pairwise error correlation within each diversity arm (Artificial Hivemind; already the
+   Kuncheva–Whitaker logic).
+3. Disagreement matrix: state Gordon & Dahl (2013) as the counter-hypothesis (disagreement need not follow ideology)
+   and control for the base model's interventionist tilt (Lee et al. 2026).
+4. Limitations: the knowledge cutoff is claimed, not enforced (He et al. 2025); a pre/post-cutoff check on the
+   exp03 events would bound the leakage.
 
 ## 3. Economics, ideology, the disagreement matrix
 
@@ -111,4 +149,25 @@ the reference session should find the source).
 
 ## 4. Future work (for Ch. 7)
 
-(assembled after the third search)
+Ranked by fit with the thesis; each is anchored to verified work above.
+
+1. **Development-economics schools in L3** (Williamson 1990; Johnson 1982; Wade 1990; Amsden 1989; Rodrik 2006,
+   2007; Chang 2002). Washington Consensus, developmental state and institutional pluralism as prompted-only
+   frameworks first, placed by the same disagreement matrix; a regime-type axis (democratic vs authoritarian) needs its
+   own anchor (CHES-style coding; Esping-Andersen for the welfare-state quadrant, to be checked).
+2. **Reinforcement learning on proper scoring rules** (turtel2025outcome, in the library), with the reward on the
+   probabilities and the [Proof] references only, never on [Think] (Baker et al. 2025; Korbak et al. 2025). Needs
+   10k+ resolved questions; exp03 is the seed.
+3. **Live, out-of-sample evaluation** of the school agents (karger2025forecastbench; Alam et al. 2026 show why only
+   live evaluation is credible), with a chronologically consistent base model (He et al. 2025) to remove leakage by
+   construction.
+4. **Retrieval-based test-time training as a comparison, gated by calibration** (Hardt & Sun 2024; Akyürek et al.
+   2025; C-TPT and Amin & Kim on over-confidence): a throwaway LoRA on retrieved episodes versus the frozen adapter with
+   the same episodes in context.
+5. **Human–AI teaming** (Schoenegger et al. 2025, TiiS): do analysts forecast better reading a school's proof than its
+   probabilities alone? Tests the auditability claim of RQ2 with people.
+6. **Inside-the-model extensions** (Soligo et al. 2025; Betley et al. 2026; Jain et al. 2024; Prakash et al. 2024):
+   a shared "school-adopted" direction across the three schools, a spillover audit on non-macro prompts, and wrapper
+   versus new mechanism — only with public SAEs (D10).
+7. **Scaling the agents' texts** (Slapin & Proksch 2008; Laver et al. 2003; Jelveh et al. 2024): position the schools
+   from their proofs alone and compare with the expert coding.
