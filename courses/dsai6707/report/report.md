@@ -20,7 +20,7 @@ Multi-perspective LLM agents are useful only if each agent stays faithful to its
 
 Systems that combine several LLM agents, each speaking from a different perspective, are increasingly used for analysis, forecasting and debate [@Baltaji2024persona; @Takano2025hawkish]. Their value rests on two properties that pull in opposite directions. Each agent must stay *faithful* to its perspective, and the agents must be *distinct* from one another, or the ensemble collapses into one voice. Recent evidence points to exactly this failure: debate and ensemble systems lose diversity through conformity and majority pressure [@Wu2025debate; @Zhu2026demystifying], and aligned models produce homogeneous outputs across many open-ended queries [@Jiang2025hivemind]. Prompts are the cheapest lever for setting perspective, but they are usually written by hand.
 
-Evolutionary prompt optimisation can search prompts automatically, with an LLM supplying the variation operators [@Fernando2024promptbreeder; @Guo2024evoprompt; @Lange2024large]. These methods, however, optimise one prompt against one scalar score. None of them evolves a *set* of prompts whose members must be good individually and different from each other, and none exposes the trade-off between fidelity, distinctness and cost (prompt length). Multi-objective prompt search has started to appear [@Zhao2025pareto; @Camara2025moprompt], ; we found no such work for multi-agent sets.
+Evolutionary prompt optimisation can search prompts automatically, with an LLM supplying the variation operators [@Fernando2024promptbreeder; @Guo2024evoprompt; @Lange2024large]. These methods, however, optimise one prompt against one scalar score. None of them evolves a *set* of prompts whose members must be good individually and different from each other, and none exposes the trade-off between fidelity, distinctness and cost (prompt length). Multi-objective prompt search has started to appear [@Zhao2025pareto; @Camara2025moprompt]. We found no such work for multi-agent sets.
 
 The thesis harness from which this project borrows its measurements provides motivating evidence. In a 240-request disagreement matrix over six economic frameworks (synthetic events, seed 11, the same model identifier `qwen3.8-max`), the three trained schools disagreed about twice as much as one school disagreed with itself, while New Keynesian duplicated Keynesian within the noise floor (`research/divergence/RESULTS.md` in the thesis repository, not a bibliography entry). This evidence is used here only as motivation; none of its events or outputs enter the experiments below.
 
@@ -61,6 +61,8 @@ Automated multi-agent design is also active. MASS optimises prompts and topology
 **Gap.** Diversity is studied as an accuracy device or as a property to be measured, but not as an optimisation target next to persona fidelity, and not for competing economic perspectives.
 
 ## 2.4 Evolutionary model merging, fine-tuning and self-evolution
+
+This family is on the course's list of directions and is the closest population-based alternative to our method that changes model weights instead of prompt text. We review it briefly to show where our setting sits.
 
 Evolution has been applied to parameters and recipes rather than text. Evolutionary search over merge recipes, in parameter and data-flow space, yields state-of-the-art Japanese models [@Akiba2025merging]. Multi-objective evolution of merged experts trades cross-task performance against storage [@Qiu2026modular], and a two-dimensional recombination of LLM blocks is searched by bi-level multi-objective evolution [@Wu2026lego]. Layer-wise merging of reasoning-tuned LLMs is another route to combining specialised models [@Zhang2024unconstrained]. Evolution strategies can fine-tune billion-parameter LLMs without gradients [@Qiu2026es], and black-box evolutionary merging works from API queries alone [@Chen2025evomerging]. Self-evolving training co-evolves a rubric generator and a policy without human labels [@Li2026evolm].
 
@@ -119,7 +121,7 @@ Each school gene has four parts: `diagnosis` (sentences), `concepts` (an ordered
 
 ## 4.1 Task and data
 
-The task is a set of synthetic macroeconomic events produced by `mosaic.teacher.make_items`. The search set is the first five events of seed 23 and the held-out set is the first ten of seed 29; search and held-out sets share no events. Seed 11 (the thesis disagreement matrix) and all thesis held-out files are not used. Lexicons come from `configs/lexicons.toml`, which the thesis marks as PROVISIONAL; this affects the fidelity objective (Section 6).
+The task is a set of synthetic macroeconomic events produced by `mosaic.teacher.make_items`. The search set is the first five events of seed 23 and the held-out set is the first ten of seed 29; one held-out event (`syn-k0007`, seed 29) has the same text as one search event (`syn-k0002`, seed 23), although the two have different macro contexts. Section 5.2 reports the held-out tests with that event removed. Seed 11 (the thesis disagreement matrix) and all thesis held-out files are not used. Lexicons come from `configs/lexicons.toml`, which the thesis marks as PROVISIONAL; this affects the fidelity objective (Section 6).
 
 ## 4.2 Model and backend
 
@@ -171,9 +173,10 @@ Table 2 reports the archive and the knee on the search events. Values are mean �
 
 ![**Figure 1.** Mean hypervolume of the feasible archive per generation (3 seeds, shaded ±1 sd). Generation 0 is the shared initial population.](../results/figures/hv_vs_generation.png)
 
-Figure 1 shows the mean hypervolume per generation. Generation 0 is the shared initial population (0.071 for NSGA-II, the ablation and the GA alike; 0.073 for random search). From generation 1 on, NSGA-II and the GA rise above the two methods without LLM mutation (generation 4: 0.121 and 0.122, against 0.098 and 0.098), and the gap widens over the generations. ![**Figure 2.** Final feasible archives of NSGA-II + LLM and the GA (3 seeds each), fidelity against disagreement on the search events, coloured by prompt-set length.](../results/figures/pareto_fronts.png)
+Figure 1 shows the mean hypervolume per generation. Generation 0 is the shared initial population (0.071 for NSGA-II, the ablation and the GA alike; 0.073 for random search). From generation 1 on, NSGA-II and the GA rise above the two methods without LLM mutation (generation 4: 0.121 and 0.122, against 0.098 and 0.098), and the gap widens over the generations.
 
-Figure 2 shows the final archives in the fidelity–disagreement plane, coloured by length.
+![**Figure 2.** Final feasible archives of NSGA-II + LLM and the GA (3 seeds each), fidelity against disagreement on the search events, coloured by prompt-set length.](../results/figures/pareto_fronts.png)
+
 
 The pattern answers RQ2 at this budget. NSGA-II without LLM mutation has the same hypervolume as random search (0.0979 against 0.0978), so selection alone adds nothing over random sampling here. Adding the LLM as mutation operator raises the hypervolume to 0.121 for NSGA-II and 0.122 for the GA, and the choice of selection scheme makes no visible difference (the GA's selection is single-objective, yet its archive has the same hypervolume). In this experiment the LLM-guided mutation is the component that carries the search-level gain. With three seeds the standard deviations overlap, so this is a descriptive finding, not a significance claim.
 
@@ -202,9 +205,10 @@ Table 4 gives the paired tests. Each comparison uses the ten held-out events, an
 | NSGA-II, rule only − B0 | fidelity | +0.0272 | [+0.0041, +0.0503] | 0.0566 | 0.3398 |
 | NSGA-II, rule only − B0 | disagreement | +0.0204 | [-0.0518, +0.0852] | 0.5664 | 1.0000 |
 
-No comparison is significant after Holm correction (smallest adjusted p = 0.203). Before correction, the exact sign-flip p-values for the fidelity gains of the GA and random search are about 0.03. The uncorrected 95% bootstrap intervals exclude zero for the fidelity gains of the GA, random search and the ablation, but the corresponding p-values do not survive the correction across eight tests. We therefore read these fidelity gains as suggestive, not established. ![**Figure 3.** Held-out fidelity and disagreement of B0 and the knee solutions. Bars are the mean over the ten events; error bars are standard errors; dots are individual events.](../results/figures/heldout_bars.png)
+No comparison is significant after Holm correction (smallest adjusted p = 0.203). Before correction, the exact sign-flip p-values for the fidelity gains of the GA and random search are about 0.03. The uncorrected 95% bootstrap intervals exclude zero for the fidelity gains of the GA, random search and the ablation, but the corresponding p-values do not survive the correction across eight tests. We therefore read these fidelity gains as suggestive, not established. Removing the one held-out event whose text duplicates a search event (Section 4.1), the exact sign-flip p-values on the remaining nine events are 0.059 for the GA fidelity gain, 0.051 for random search and 0.109 for the ablation, and no conclusion changes.
 
-Figure 3 shows the per-event values.
+![**Figure 3.** Held-out fidelity and disagreement of B0 and the knee solutions. Bars are the mean over the ten events; error bars are standard errors; dots are individual events.](../results/figures/heldout_bars.png)
+
 
 Three observations follow from the tables.
 
@@ -253,6 +257,7 @@ We formulated the design of three competing economic-school agents as a constrai
 
 | Number | File |
 |---|---|
+| One row per run (search and held-out metrics) | `results/summary.csv` |
 | Hypervolume, front size, knee search metrics | `results/summary_search.csv`, `results/summary_table.md` |
 | Held-out means, per-event values | `results/summary_table.md`, `results/heldout_per_event.csv` |
 | Paired tests and Holm | `results/heldout_tests.csv` |
