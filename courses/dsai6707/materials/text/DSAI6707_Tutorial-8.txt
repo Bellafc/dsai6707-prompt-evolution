@@ -1,0 +1,378 @@
+Tutorial 8
+Neural Networks and Perceptron Learning
+DSAI6707: Advanced Computational Intelligence
+
+
+                                                Yinsong Yan
+                                            Department of DSAI
+                                       yinsong.yan@connect.polyu.hk
+Outline
+ TUTORIAL 8
+
+ 1. Review the basic concepts
+  Artificial neurons, activation functions and network architectures.
+
+
+ 2. Solve five exercises
+  Compute outputs, design logic gates and update perceptron weights.
+
+
+ 3. Examine the limitations
+  Relate linear separability to convergence and the XOR problem.
+
+
+
+                                                                        2
+The Artificial Neuron
+ REVIEW
+
+ A neuron combines weighted inputs with a bias and applies an activation function.
+
+
+  Weighted input
+  u = w₁x₁ + w₂x₂ + ⋯ + wₘxₘ
+
+  Net input and output
+
+  v=u+b                              y = φ(v)
+
+ Weights control input contributions. The bias shifts the activation threshold.
+                                                                                  3
+Activation Functions
+ REVIEW
+
+
+ Hard limiter                                                         1.0
+
+ H(v) = 1 if v ≥ 0
+ H(v) = 0 if v < 0
+
+
+
+
+                                                       φ(v)
+                                                                      0.5
+
+
+ Logistic sigmoid
+                                                                      0.0
+ φ(v) = 1 / [1 + exp(−av)]                                  -6   -3        0         3   6
+ a > 0, 0 < φ(v) < 1                                                  Net input v
+                                                                      a=1      a=2
+
+
+
+ Threshold convention throughout this tutorial: H(0) = 1.
+                                                                                         4
+Network Architectures
+ REVIEW
+
+
+
+        Architecture            Computational layers                  Information flow
+
+          Single-layer
+                                   Output layer only               Inputs directly to outputs
+          feedforward
+                                  Hidden layer(s) and
+  Multilayer feedforward                                               Successive layers
+                                       output
+
+ The input layer supplies data and does not count as a computational layer.
+
+
+
+ Training adjusts parameters. Generalization concerns performance on unseen inputs.
+                                                                                                5
+Perceptron Decision Boundary
+ REVIEW
+
+
+ For two inputs, the perceptron predicts:
+
+  y = H(w₁x₁ + w₂x₂ + b)
+
+               Net input v                      Output                        Decision
+                   v≥0                              1                          Class 1
+                   v<0                              0                          Class 0
+
+  Decision boundary: w₁x₁ + w₂x₂ + b = 0
+ In two dimensions the boundary is a line. In higher dimensions it is a hyperplane.
+                                                                                         6
+Perceptron Learning
+ REVIEW
+
+ For each labelled example (x, d), compute y using the current parameters.
+
+
+  Error: e = d − y
+  w(new) = w + ηex                b(new) = b + ηe
+                     Condition                                      Parameter change
+             Correct prediction: e = 0                                   No update
+            False negative: d = 1, y = 0                          Add ηx to w and η to b
+            False positive: d = 0, y = 1                     Subtract ηx from w and η from b
+
+ η > 0 is the learning rate. One epoch is one complete pass through the training set.
+                                                                                               7
+Exercise 1: Neuron Output
+ INDIVIDUAL WORK · 2 MIN
+
+ Consider a neuron with the following inputs and parameters:
+
+  x = (2, −1)      w = (0.5, 1)     b = −0.2
+
+  1. Calculate the weighted input u and net input v.
+
+  2. Find y using H(v), then using the sigmoid with a = 1.
+
+  3. Repeat the hard-limiter calculation with b = 0.4.
+
+
+                                                               8
+Solution 1: Forward Calculation
+ EXERCISE 1 · SOLUTION
+
+
+  u = 0.5(2) + 1(−1) = 0
+
+  v = u + b = 0 − 0.2 = −0.2
+
+          Activation                           Calculation                     Output
+         Hard limiter                            H(−0.2)                         0
+        Sigmoid, a = 1                      1 / [1 + exp(0.2)]                 ≈ 0.450
+
+  With b = 0.4: v = 0.4, so H(v) = 1.
+ The inputs and weights stay fixed. Changing the bias changes this decision.
+                                                                                         9
+Exercise 2: Sigmoid Derivative
+ PAIR WORK · 2 MIN
+
+
+  Let φ(v) = 1 / [1 + exp(−av)], where a > 0.
+
+
+  1. Express dφ/dv in terms of φ(v).
+
+  2. Evaluate the derivative at v = 0 when a = 2.
+
+  3. Describe how the derivative behaves as v becomes
+     very positive or very negative.
+
+ Use the chain rule and the identity 1 − φ(v) = exp(−av) / [1 + exp(−av)].
+                                                                             10
+Solution 2: Sigmoid Derivative
+ EXERCISE 2 · SOLUTION
+
+ Differentiation gives
+
+  dφ/dv = a exp(−av) / [1 + exp(−av)]²
+           = aφ(v)[1 − φ(v)]
+
+  At v = 0: φ(0) = 1/2, so φ′(0) = a/4 = 0.5.
+
+  As v tends to either extreme, φ(v) approaches 0 or 1,
+  and the derivative approaches 0.
+ The sigmoid is steepest at v = 0. Its saturated regions have small derivatives.
+                                                                                   11
+Exercise 3: Logic Gates
+ PAIR WORK · 3 MIN
+
+ Design one OR perceptron and one NAND perceptron.
+ Use y = H(w₁x₁ + w₂x₂ + b).
+
+         x₁                x₂               OR target            NAND target
+          0                0                     0                    1
+          0                1                     1                    1
+          1                0                     1                    1
+          1                1                     1                    0
+
+  For each gate, give (w₁, w₂, b), state the decision boundary
+  and verify all four outputs.
+                                                                               12
+Solution 3: Gate Parameters
+ EXERCISE 3 · SOLUTION
+
+  OR: (w₁, w₂, b) = (1, 1, −0.5)
+  NAND: (w₁, w₂, b) = (−1, −1, 1.5)
+
+         (x₁, x₂)              v for OR             OR            v for NAND   NAND
+          (0, 0)                 −0.5                 0                 1.5     1
+          (0, 1)                  0.5                 1                 0.5     1
+          (1, 0)                  0.5                 1                 0.5     1
+          (1, 1)                  1.5                 1                −0.5     0
+ Each gate has a straight-line decision boundary and is linearly separable.
+                                                                                      13
+Solution 3: Decision Boundaries
+ EXERCISE 3 · SOLUTION
+
+  OR: x₁ + x₂ = 0.5                                    NAND: x₁ + x₂ = 1.5
+           1.5                                                  1.5
+
+           1.0                                                  1.0
+
+           0.5                                                  0.5
+  x₂
+
+
+
+
+                                                       x₂
+           0.0                                                  0.0
+   -0.5          0       0.5         1        1.5       -0.5          0       0.5        1      1.5
+          -0.5                                                 -0.5
+                         x₁                                                   x₁
+                 y=0    y=1      Boundary                             y=0   y=1      Boundary
+
+
+
+ Multiplying every weight and the bias by the same positive number preserves the classifier.
+                                                                                                 14
+Exercise 4: Learning Updates
+ GROUP WORK · 4 MIN
+
+ Train y = H(wx + b) with η = 1, starting from b = −1.5 and w = −2.
+
+
+     Presentation order                  1                2                 3           4
+             Input x                    0.5               −1                2           −2
+            Target d                     1                0                 1           0
+
+  1. For each example, calculate v, y and e = d − y.
+  2. Update b and w immediately after each example.
+ Use the latest parameters at every step. Then check whether another epoch is needed.
+                                                                                             15
+Solution 4: First Two Updates
+ EXERCISE 4 · SOLUTION
+
+  Step 1: x = 0.5, d = 1
+  v = (−2)(0.5) − 1.5 = −2.5, so y = 0 and e = 1.
+
+  b(new) = −1.5 + 1 = −0.5
+  w(new) = −2 + 1(0.5) = −1.5
+
+  Step 2: x = −1, d = 0
+  v = (−1.5)(−1) − 0.5 = 1, so y = 1 and e = −1.
+
+  b(new) = −1.5            w(new) = −0.5
+
+                                                    16
+Solution 4: End of the Epoch
+ EXERCISE 4 · SOLUTION
+
+ Every row uses the parameters resulting from the previous row.
+
+
+   Step      x       d         v        y       e        b after   w after
+    1       0.5      1       −2.5       0       1         −0.5      −1.5
+    2       −1       0         1        1      −1         −1.5      −0.5
+    3        2       1       −2.5       0       1         −0.5       1.5
+    4       −2       0       −3.5       0       0         −0.5       1.5
+
+  Final parameters: b = −0.5, w = 1.5.
+
+                                                                             17
+Solution 4: Convergence Check
+ EXERCISE 4 · SOLUTION
+
+ Evaluate the entire training set with the final parameters:
+
+  v = 1.5x − 0.5
+
+            x                   Target d                  Final v                   Prediction y
+           0.5                      1                       0.25                         1
+            −1                      0                        −2                          0
+            2                       1                        2.5                         1
+            −2                      0                       −3.5                         0
+
+ All predictions are correct. The next epoch makes no updates. Boundary: x = 1/3.
+                                                                                                   18
+Exercise 5: The XOR Problem
+ PAIR WORK · 3 MIN
+
+                                                              1.5
+      x₁          x₂       XOR target
+                                                              1.0
+      0           0              0
+                                                              0.5
+
+
+
+
+                                                      x₂
+      0           1              1
+                                                              0.0
+      1           0              1                     -0.5
+                                                              -0.5
+                                                                     0     0.5            1   1.5
+                                                                               x₁
+      1           1              0
+                                                                         d=0        d=1
+
+
+
+  1. Can one hard-limiter perceptron classify all four inputs?
+  2. Write the four required inequalities and justify your answer.
+ Extension: combine OR and NAND in a hidden layer, then choose an output gate.
+                                                                                                    19
+Solution 5: Why One Unit Fails
+ EXERCISE 5 · SOLUTION
+
+
+           Input and target                                  Required inequality
+              (0, 0), d = 0                                            b<0
+              (0, 1), d = 1                                         w₂ + b ≥ 0
+              (1, 0), d = 1                                         w₁ + b ≥ 0
+              (1, 1), d = 0                                      w₁ + w₂ + b < 0
+
+  The middle two conditions imply w₁ + w₂ + 2b ≥ 0.
+  Hence w₁ + w₂ + b ≥ −b > 0, contradicting the last condition.
+ XOR is not linearly separable. A single perceptron cannot realize its truth table.
+                                                                                      20
+Solution 5: A Hidden Layer
+ EXERCISE 5 · EXTENSION
+
+ Use OR and NAND as hidden units, followed by AND:
+  h₁ = H(x₁ + x₂ − 0.5)       h₂ = H(−x₁ − x₂ + 1.5)
+  y = H(h₁ + h₂ − 1.5)
+            (x₁, x₂)                h₁: OR               h₂: NAND             y: AND
+            (0, 0)                     0                      1                 0
+            (0, 1)                     1                      1                 1
+            (1, 0)                     1                      1                 1
+            (1, 1)                     1                      0                 0
+
+ This construction has two computational layers. The output implements XOR.
+                                                                                       21
+Convergence and Limitations
+ REVIEW
+
+  Linearly separable training data
+  For a finite training set and a fixed η > 0, the standard perceptron
+  learning procedure reaches a separating solution in finitely many updates.
+
+  Data that are not linearly separable
+  A zero-error solution does not exist for a single perceptron.
+  Training therefore needs a stopping limit or another model.
+
+
+
+ Zero training error alone does not establish good performance on unseen data.
+                                                                                 22
+Key Takeaways
+ SUMMARY
+
+ A neuron computes an affine sum and an activation.
+  Include the bias when calculating v.
+
+ A perceptron divides the input space with a hyperplane.
+  Positive scaling of all parameters preserves its decisions.
+
+ Learning updates depend on the current prediction error.
+  Update weights and bias immediately, then verify the full data set.
+
+ Linear separability determines what one perceptron can learn.
+  Hidden units allow a multilayer network to represent XOR.
+
+
+                                                                        23
+Thanks for your time
+

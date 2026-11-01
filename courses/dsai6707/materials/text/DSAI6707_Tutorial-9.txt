@@ -1,0 +1,354 @@
+Tutorial 9
+Multilayer Perceptrons and Back-Propagation
+DSAI6707: Advanced Computational Intelligence
+
+
+                                                Yinsong Yan
+                                            Department of DSAI
+                                       yinsong.yan@connect.polyu.hk
+Outline
+
+ 1. Review the basic concepts
+ MLP architecture, nonlinear activation and back-propagation.
+
+
+ 2. Solve five exercises
+ XOR, forward computation, local gradients and parameter updates.
+
+
+ 3. Interpret training behaviour
+ Validation error, stopping criteria and sigmoid saturation.
+
+
+
+
+                                                                    2
+Multilayer Perceptrons
+ REVIEW
+
+ An MLP contains an input layer, one or more hidden layers,
+ and an output layer.
+
+ Hidden neurons learn intermediate representations of the inputs.
+
+ Nonlinear activation functions allow nonlinear decision boundaries.
+
+
+ Without nonlinear activations, stacked affine layers reduce to
+ a single affine mapping.
+
+
+
+                                                                       3
+Forward Computation
+ REVIEW
+
+ For hidden neuron j and output neuron k:
+
+ aⱼ = Σᵢ wⱼᵢ xᵢ + bⱼ              hⱼ = σ(aⱼ)
+
+ zₖ = Σⱼ vₖⱼ hⱼ + cₖ               yₖ = σ(zₖ)
+
+ wⱼᵢ and vₖⱼ are weights. The biases are bⱼ and cₖ.
+
+
+ Each weight multiplies the activation entering its connection.
+
+
+                                                                  4
+The Logistic Sigmoid
+ REVIEW
+
+
+ σ(z) = 1 / (1 + exp(−z))
+
+ σ′(z) = σ(z)[1 − σ(z)]
+
+           z                       −2                         0         2
+          σ(z)                   0.1192                    0.5000     0.8808
+          σ′(z)                  0.1050                    0.2500     0.1050
+
+
+ Use the derivative at the same pre-activation as the forward pass.
+                                                                               5
+Loss and Weight Updates
+ REVIEW
+
+ For one training example with target vector d:
+
+ E = ½ Σₖ (dₖ − yₖ)²
+
+ Gradient descent: θ(new) = θ(old) − η ∂E/∂θ
+
+ The learning rate η controls the size of each update.
+
+
+ Here δ = −∂E/∂(pre-activation), so the delta rule uses a plus sign.
+
+
+                                                                       6
+Local Gradients
+ REVIEW
+
+ Output neuron k
+ δₖ = (dₖ − yₖ) yₖ(1 − yₖ)
+
+ Hidden neuron j
+ δⱼ = hⱼ(1 − hⱼ) Σₖ vₖⱼ δₖ
+
+ Parameter updates
+ Δvₖⱼ = ηδₖhⱼ    Δcₖ = ηδₖ     Δwⱼᵢ = ηδⱼxᵢ    Δbⱼ = ηδⱼ
+
+ The hidden-layer sum uses the outgoing weights from the forward pass.
+
+                                                                         7
+Back-Propagation Procedure
+ REVIEW
+
+ 1. Initialize weights and biases
+ Use small random weights to break symmetry between hidden neurons.
+
+ 2. Perform the forward pass
+ Compute activations and the loss for the training example.
+
+ 3. Perform the backward pass
+ Compute all local gradients, then update weights and biases.
+
+ 4. Repeat over the training set
+ One epoch processes the entire training set once.
+
+                                                                      8
+Exercise 1: XOR
+ PAIR WORK 2 MIN
+
+ For binary inputs, define H(s) = 1 if s ≥ 0, and H(s) = 0 otherwise.
+
+ h₁ = H(x₁ + x₂ − 1.5)           h₂ = H(x₁ + x₂ − 0.5)
+ y = H(−2h₁ + h₂ − 0.5)
+         x₁                 x₂                  h₁                 h₂          y
+          0                  0                  ?                  ?           ?
+          0                  1                  ?                  ?           ?
+          1                  0                  ?                  ?           ?
+          1                  1                  ?                  ?           ?
+ Complete the table. Why can a single linear threshold neuron not solve XOR?
+                                                                                   9
+Solution 1: XOR
+ EXERCISE 1 SOLUTION
+
+
+         x₁                  x₂                  h₁                  h₂              y
+          0                   0                   0                   0              0
+          0                   1                   0                   1              1
+          1                   0                   0                   1              1
+          1                   1                   1                   1              0
+
+ h₁ detects the case where both inputs equal 1.
+ h₂ detects the case where at least one input equals 1.
+ No single straight line separates the two XOR classes.
+ Threshold units illustrate XOR. Back-propagation uses differentiable activations.
+                                                                                         10
+Exercise 2: Forward Pass
+ INDIVIDUAL WORK 3 MIN
+
+ Consider one input, one hidden sigmoid neuron and one sigmoid output.
+
+ a = wx + b         h = σ(a)        z = vh + c         y = σ(z)
+
+      Quantity             x          w           b           v       c     d   η
+
+        Value              1         0.5          0         −0.4      0.1   1   0.5
+
+
+
+
+ Find a, h, z, y and E = ½(d − y)². Keep at least 4 decimal places.
+                                                                                      11
+Solution 2: Activations
+ EXERCISE 2 SOLUTION
+
+ Hidden neuron
+ a = 0.5(1) + 0 = 0.5
+ h = σ(0.5) ≈ 0.622459
+
+ Output neuron
+ z = −0.4(0.622459) + 0.1 ≈ −0.148984
+ y = σ(−0.148984) ≈ 0.462823
+
+
+ The output neuron receives h, the hidden activation.
+                                                        12
+Solution 2: Prediction Error
+ EXERCISE 2 SOLUTION
+
+ Target and actual output
+ d=1                     y ≈ 0.462823
+
+ e = d − y ≈ 0.537177
+
+ E = ½(1 − 0.462823)² ≈ 0.144280
+
+
+
+ The residual e and the squared-error loss E are different quantities.
+                                                                         13
+Exercise 3: Output Update
+ PAIR WORK 3 MIN
+
+ Continue with the same network and training example.
+
+ h ≈ 0.622459       y ≈ 0.462823        d=1       η = 0.5
+
+ Current output parameters: v = −0.4 and c = 0.1.
+
+ 1. Compute δₒ = (d − y)y(1 − y).
+ 2. Compute Δv = ηδₒh and Δc = ηδₒ.
+ 3. Find the updated values of v and c.
+
+ Use the saved forward-pass activations throughout this backward pass.
+                                                                         14
+Solution 3: Output Gradient
+ EXERCISE 3 SOLUTION
+
+ The chain rule gives the gradient with respect to z.
+
+ ∂E/∂z = (y − d)y(1 − y)
+
+ δₒ = −∂E/∂z = (d − y)y(1 − y)
+
+ δₒ ≈ (1 − 0.462823)(0.462823)(0.537177)
+
+ δₒ ≈ 0.133552
+
+ Since d > y, this output local gradient is positive.
+                                                        15
+Solution 3: Output Parameters
+ EXERCISE 3 SOLUTION
+
+
+
+    Parameter                     Increment                             Updated value
+
+                           0.5(0.133552)(0.622459)                      −0.4 + 0.041565
+         v
+                                  ≈ 0.041565                             ≈ −0.358435
+
+                                 0.5(0.133552)                          0.1 + 0.066776
+         c
+                                  ≈ 0.066776                              ≈ 0.166776
+
+
+ The weight update includes h. The bias update uses an input of 1.
+
+
+ A positive increment makes the negative output weight less negative.
+                                                                                          16
+Exercise 4: Hidden Update
+ PAIR WORK 3 MIN
+
+ Use the original output weight v = −0.4 for this backward pass.
+
+ h ≈ 0.622459       δₒ ≈ 0.133552      x=1        η = 0.5
+
+ Original hidden parameters: w = 0.5 and b = 0.
+
+ 1. Compute δₕ = h(1 − h)vδₒ.
+ 2. Compute Δw = ηδₕx and Δb = ηδₕ.
+ 3. Find w(new) and b(new). Explain the sign of δₕ.
+
+ Compute the hidden gradient before applying any parameter updates.
+                                                                      17
+Solution 4: Hidden Gradient
+ EXERCISE 4 SOLUTION
+
+ δₕ = h(1 − h)vδₒ
+
+ δₕ ≈ (0.622459)(0.377541)(−0.4)(0.133552)
+
+ δₕ ≈ −0.012554
+
+ The negative outgoing weight reverses the sign of the error signal.
+
+ Reducing h increases the output pre-activation z = vh + c
+ when v is negative.
+
+                                                                       18
+Solution 4: Parameter Check
+ EXERCISE 4 SOLUTION
+
+
+      Parameter            Original value             Increment        Updated value
+          w                   0.500000                −0.006277          0.493723
+           b                  0.000000                −0.006277         −0.006277
+           v                 −0.400000                +0.041565         −0.358435
+           c                  0.100000                +0.066776          0.166776
+
+ Δw = 0.5(−0.012554)(1) ≈ −0.006277. The bias increment is the same.
+ After all updates: y(new) ≈ 0.486185 and E(new) ≈ 0.132003.
+
+ For this example, one update reduces E from 0.144280 to 0.132003.
+                                                                                       19
+Exercise 5: Training Decisions
+ GROUP WORK 3 MIN
+
+        Epoch                    Training loss               Validation loss
+          10                         0.180                         0.190
+          20                         0.100                         0.120
+          30                         0.060                         0.140
+          40                         0.040                         0.180
+
+ 1. Which checkpoint would you choose? Explain why.
+ 2. A hidden sigmoid has h = 0.999. What is h(1 − h),
+    and how can it affect learning?
+
+ 3. Does a nearly constant training loss prove a global minimum?
+
+                                                                               20
+Solution 5: Validation Error
+ EXERCISE 5 SOLUTION
+
+ Choose the checkpoint at epoch 20.
+ Its validation loss, 0.120, is the lowest among the recorded values.
+
+
+ After epoch 20, training loss falls while validation loss rises.
+
+ This pattern suggests overfitting. Early stopping can retain
+ the best validation checkpoint.
+
+ Use a separate test set for the final performance estimate.
+
+                                                                        21
+Solution 5: Small Gradients
+ EXERCISE 5 SOLUTION
+
+ Sigmoid saturation
+ h(1 − h) = 0.999(0.001) = 0.000999
+
+ This small derivative can attenuate the hidden local gradient.
+
+
+ A plateau does not certify a global minimum
+ Small gradients can occur in flat regions or near stationary points.
+ An MLP loss surface is generally nonconvex.
+
+ Initialization and learning rate affect convergence. An excessive
+ learning rate can cause oscillation or an increase in loss.
+
+                                                                        22
+Key Takeaways
+ SUMMARY
+
+ Nonlinear hidden units support nonlinear decision boundaries.
+
+ Forward propagation computes activations and prediction error.
+
+ Back-propagation applies the chain rule recursively.
+
+ Each weight update uses its local gradient and incoming activation.
+
+ Validation performance helps select a useful stopping point.
+
+
+                                                                       23
+Thanks for your time
+

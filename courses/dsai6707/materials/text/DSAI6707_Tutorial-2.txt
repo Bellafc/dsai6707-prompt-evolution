@@ -1,0 +1,564 @@
+Tutorial 2
+DSAI6707 Artificial Intelligence Concepts
+
+
+                                              TA: ZHANG Yajie
+                                                   DSAI
+                                        yajie.zhang@connect.polyu.hk
+Search Algorithm
+Breadth-first Search
+
+  Concept:
+
+
+
+
+                       3
+Breadth-first Search
+
+  Concept:             Example:
+
+
+
+
+                                  4
+Depth-first Search
+
+  Concept:           Example:
+
+
+
+
+                                5
+  Hill Climbing
+ Hill climbing is a heuristic search algorithm.
+
+                       Pseudo Code:
+                                   Input: ������� , Problem Function �(∙)
+                                   Output: Current
+                                   Current ← RandomSolution(Problem);
+                                   for each ����� ∈ ������� do
+                                          Candidate ← RandomNeighbour(Current);
+                                          if F(Current) ≤ F(Candidate) then
+Maximize a problem function �(∙)                  Current ← Candidate;
+                                          end
+                                   end
+                                   return Current;
+                                                                           6
+  Hill Climbing
+Hill climbing algorithm goes uphill along the steepest possible path until
+can go no further up, which may return a state that is a local maximum.
+
+
+
+
+Maximize the objective function
+
+
+                                                                    7
+Hill Climbing
+            Pros:
+            Avoid traversal and achieve the purpose of improving efficiency.
+            Cons 1:
+            Hill climbing will not necessarily find the global maximum, but
+            may instead converge on a local maximum.
+
+
+
+
+                                                                         8
+Hill Climbing
+            Pros:
+            Avoid traversal and achieve the purpose of improving efficiency.
+            Cons 2:
+            In plateau cases, the hill climber may not be able to determine in
+            which direction it should step, and may wander in a direction that
+            never leads to improvement.
+
+
+
+
+                                                                          9
+Hill Climbing
+            Pros:
+            Avoid traversal and achieve the purpose of improving efficiency.
+            Cons 3:
+            Ridges problem: If the target function creates a narrow ridge that
+            ascends in a non-axis-aligned direction, then the hill climber can
+            only ascend the ridge by zig-zagging.
+
+
+
+
+                                                                           1
+                                                                           0
+Exercise
+Exercise 1
+
+
+     B              D       • Given the problem-solution graph in Figure 1,
+                              perform a breadth-first search starting from the
+                              initial state A and ending in the goal state F.
+ A                      F
+
+                            • If there are two or more nodes of the same
+     C              E         preference, then handle the nodes alphabetically.
+         Figure 1
+
+
+
+
+                                                                         1
+                                                                         2
+Exercise 1
+
+                            •   Breadth first search
+     B              D
+                                                       A
+ A                      F
+                                               B       C   D
+     C              E
+
+         Figure 1                                      E   F
+
+
+
+
+                                                               1
+                                                               3
+Exercise 2
+
+
+     B              D       • Given the problem-solution graph in Figure 1,
+                              perform a depth-first search starting from the
+                              initial state A and ending in the goal state F.
+ A                      F
+
+                            • If there are two or more nodes of the same
+     C              E         preference, then handle the nodes in descending
+                              (rather than ascending) alphabetical order.
+         Figure 1
+
+
+
+
+                                                                         1
+                                                                         4
+Exercise 2
+                             •   Depth first search
+
+                                 A
+      B              D
+
+                                 D
+  A                      F
+
+
+      C              E           F      E
+
+          Figure 1                             B
+
+
+                                                      C
+
+                                                          1
+                                                          5
+Exercise 3
+The 4 queens problem consists of a 4 x 4 chessboard with 4 queens. The goal is to place
+the 4 queens on the chessboard such that no two queens can attack each other. Each queen
+attacks anything in the same row, in the same column, or in the same diagonal.
+
+                 • State: 4 queens on the board. One queen per column. (�0 , �1 , �2 , �3 )
+                 – Variables: �0 , �1 , �2 , �3 where �� is the row position of the queen in
+                 column i. Assume that there is one queen per column.
+                 – Domain for each variable: �� ∈ {0, 1, 2, 3}, ∀i.
+                 • Initial state: a random state.
+                 • Goal state: 4 queens on the board. No pair of queens are attacking each
+                 other.
+                 • Generation of a solution: Swap the row positions of two queens.
+ (2,0,3,1)       • Objective function: The number of pairs of queens attacking each other,
+                 directly or indirectly.
+                                                                                       1
+                                                                                       6
+ Exercise 3
+Start with the initial state �0 = 3, �1 = 1, �2 = 2, �3 = 0. Show the steps of executing the hill
+climbing algorithm until it terminates.
+
+• The way for generating a new solution: swap the row positions of two queens.
+• If multiple solutions have the same objective value, select the solution where the pair of
+  queens swapped has the smallest subscript/column number.
+  For example, when we can swap either (�0 , �1 ) or (�2 , �3 ), we will swap (�0 , �1 ).
+  When we can swap either (�2 , �3 ) or (�1 , �3 ) we will swap (�1 , �3 ).
+                                                                           �0 �1 �2 �3
+                                                                       0               Q
+                                                                       1       Q
+                                                                       2           Q
+                                                                       3   Q
+                                                                                            1
+                                                                                            7
+Exercise 3
+                                                                                         Q
+Solutions:                       �0 = 1, �1 = 3, �2 = 2, �3 = 0 cost is 1.   Q
+                                                                                     Q
+                                 �0 = 2, �1 = 1, �2 = 3, �3 = 0                  Q
+                     Q
+             Q                   �0 = 0, �1 = 1, �2 = 2, �3 = 3
+                 Q
+         Q
+                                 �0 = 3, �1 = 2, �2 = 1, �3 = 0
+
+Initial state:                   �0 = 3, �1 = 0, �2 = 2, �3 = 1
+�0 = 3, �1 = 1, �2 = 2, �3 = 0
+(cost is 2.)
+                                 �0 = 3, �1 = 1, �2 = 0, �3 = 2
+
+
+
+                                                                                         1
+                                                                                         8
+Exercise 3
+                                                                                         Q
+Solutions:                       �0 = 1, �1 = 3, �2 = 2, �3 = 0 cost is 1.   Q
+                                                                                     Q
+                                 �0 = 2, �1 = 1, �2 = 3, �3 = 0 cost is 1.       Q
+                     Q
+             Q                   �0 = 0, �1 = 1, �2 = 2, �3 = 3 cost is 6.
+                                                                             Q
+                 Q                                                               Q
+         Q
+                                 �0 = 3, �1 = 2, �2 = 1, �3 = 0 cost is 6.
+                                                                                     Q
+                                                                                         Q
+Initial state:                   �0 = 3, �1 = 0, �2 = 2, �3 = 1 cost is 1.
+�0 = 3, �1 = 1, �2 = 2, �3 = 0
+(cost is 2.)
+                                 �0 = 3, �1 = 1, �2 = 0, �3 = 2 cost is 1.
+
+
+
+                                                                                         1
+                                                                                         9
+Exercise 3
+Solutions:                       �0 = 3, �1 = 1, �2 = 2, �3 = 0
+
+                                 �0 = 2, �1 = 3, �2 = 1, �3 = 0
+
+                     Q
+                                 �0 = 0, �1 = 3, �2 = 2, �3 = 1
+         Q
+                 Q
+                                 �0 = 1, �1 = 2, �2 = 3, �3 = 0
+             Q
+
+Second state:                    �0 = 1, �1 = 0, �2 = 2, �3 = 3
+�0 = 1, �1 = 3, �2 = 2, �3 = 0
+cost is 1.
+                                 �0 = 1, �1 = 3, �2 = 0, �3 = 2
+
+
+
+                                                                  2
+                                                                  0
+Exercise 3
+Solutions:                       �0 = 3, �1 = 1, �2 = 2, �3 = 0 cost is 2.
+                                                                             Q
+                                                                                         Q
+                                 �0 = 2, �1 = 3, �2 = 1, �3 = 0 cost is 2.
+                                                                                     Q
+                     Q                                                           Q
+                                 �0 = 0, �1 = 3, �2 = 2, �3 = 1 cost is 4.
+         Q
+                 Q
+                                 �0 = 1, �1 = 2, �2 = 3, �3 = 0 cost is 4.
+             Q
+
+Second state:                    �0 = 1, �1 = 0, �2 = 2, �3 = 3 cost is 2.           Q
+�0 = 1, �1 = 3, �2 = 2, �3 = 0
+cost is 1.                                                                   Q
+                                 �0 = 1, �1 = 3, �2 = 0, �3 = 2 cost is 0.               Q
+                                                                                 Q
+
+
+                                                                                         2
+                                                                                         1
+Exercise 4
+ Perform the A* Algorithm on the following graph. Explicitly write down the queue
+ at each step, where the red figure means the heuristic value, and the black figure is
+ the path cost.
+
+
+
+
+                                                                                         2
+                                                                                         2
+ Exercise 4                                          i
+                                                     0
+                                                           c      open_list
+                                                                        S
+                                                                              close_list
+
+
+
+openList
+
+
+
+
+open_list = [], close_list = []
+open_list.append(start)
+while True:
+cccccurrent_node = min(open_list, key=lambda x: x.f)
+ccccclose_list.append(current_node)
+ccccif current_node == end: return                                                 actual cost �
+ccccfor neighbour in current_node.neighbours:                                                      �=�+ℎ
+                                                                              heuristic value ℎ
+ccccccccif neighbour not in [open_list, close_list]:
+ccccccccccccopen_list.append(neighbour)
+ccccccccelif (neighbour in open_list).f >= neighbour.f:
+cccccccccccc(neighbour in open_list) = neighbour
+ccccccccelif (neighbour in close_list).f >= neighbour.f:
+Ccccccccccccclose_list.pop(neighbour) and open_list.append(neighbour)                                 2
+                                                                                                      3
+   Exercise 4                                         i
+                                                      0
+                                                            c      open_list
+                                                                         S
+                                                                               close_list
+
+
+openList                                              1     S        ABC           S
+
+
+
+
+ open_list = [], close_list = []
+ open_list.append(start)
+ while True:
+ cccccurrent_node = min(open_list, key=lambda x: x.f)
+ ccccclose_list.append(current_node)
+ ccccif current_node == end: return
+ ccccfor neighbour in current_node.neighbours:
+ ccccccccif neighbour not in [open_list, close_list]:
+ ccccccccccccopen_list.append(neighbour)
+ ccccccccelif (neighbour in open_list).f >= neighbour.f:
+ cccccccccccc(neighbour in open_list) = neighbour
+ ccccccccelif (neighbour in close_list).f >= neighbour.f:
+ Ccccccccccccclose_list.pop(neighbour) and open_list.append(neighbour)                      2
+                                                                                            4
+  Exercise 4                                         i
+                                                     0
+                                                           c      open_list
+                                                                        S
+                                                                              close_list
+
+
+openList                                             1     S        ABC           S
+                                                     2     C        ABD          SC
+                                                     3     A        EBD         SCA
+
+
+
+
+open_list = [], close_list = []
+open_list.append(start)
+while True:
+cccccurrent_node = min(open_list, key=lambda x: x.f)
+ccccclose_list.append(current_node)
+ccccif current_node == end: return
+ccccfor neighbour in current_node.neighbours:
+ccccccccif neighbour not in [open_list, close_list]:
+ccccccccccccopen_list.append(neighbour)
+ccccccccelif (neighbour in open_list).f >= neighbour.f:
+cccccccccccc(neighbour in open_list) = neighbour
+ccccccccelif (neighbour in close_list).f >= neighbour.f:
+Ccccccccccccclose_list.pop(neighbour) and open_list.append(neighbour)                      2
+                                                                                           5
+  Exercise 4                                         i
+                                                     0
+                                                           c      open_list
+                                                                        S
+                                                                              close_list
+
+
+openList                                             1     S        ABC           S
+                                                     2     C        ABD          SC
+                                                     3     A        EBD         SCA
+                                                     4     E        BDF         SCAE
+
+
+
+
+open_list = [], close_list = []
+open_list.append(start)
+while True:
+cccccurrent_node = min(open_list, key=lambda x: x.f)
+ccccclose_list.append(current_node)
+ccccif current_node == end: return
+ccccfor neighbour in current_node.neighbours:
+ccccccccif neighbour not in [open_list, close_list]:
+ccccccccccccopen_list.append(neighbour)
+ccccccccelif (neighbour in open_list).f >= neighbour.f:
+cccccccccccc(neighbour in open_list) = neighbour
+ccccccccelif (neighbour in close_list).f >= neighbour.f:
+Ccccccccccccclose_list.pop(neighbour) and open_list.append(neighbour)                      2
+                                                                                           6
+Exercise 4                                           i     c      open_list   close_list
+                                                     0                  S
+openList                                             1     S        ABC           S
+                                                     2     C        ABD          SC
+                                                     3     A        EBD         SCA
+                                                     4     E        BDF         SCAE
+                                                     5     F        BDG        SCAEF
+
+
+open_list = [], close_list = []
+open_list.append(start)
+while True:
+cccccurrent_node = min(open_list, key=lambda x: x.f)
+ccccclose_list.append(current_node)
+ccccif current_node == end: return
+ccccfor neighbour in current_node.neighbours:
+ccccccccif neighbour not in [open_list, close_list]:
+ccccccccccccopen_list.append(neighbour)
+ccccccccelif (neighbour in open_list).f >= neighbour.f:
+cccccccccccc(neighbour in open_list) = neighbour
+ccccccccelif (neighbour in close_list).f >= neighbour.f:
+Ccccccccccccclose_list.pop(neighbour) and open_list.append(neighbour)                      2
+                                                                                           7
+  Exercise 4                                         i
+                                                     0
+                                                           c      open_list
+                                                                        S
+                                                                              close_list
+
+
+openList                                             1     S        ABC           S
+                                                     2     C        ABD          SC
+                                                     3     A        EBD         SCA
+                                                     4     E        BDF         SCAE
+                                                     5     F        BDG        SCAEF
+                                                     6     D            BG    SCAEFD
+
+open_list = [], close_list = []
+open_list.append(start)
+while True:
+cccccurrent_node = min(open_list, key=lambda x: x.f)
+ccccclose_list.append(current_node)
+ccccif current_node == end: return
+ccccfor neighbour in current_node.neighbours:
+ccccccccif neighbour not in [open_list, close_list]:
+ccccccccccccopen_list.append(neighbour)
+ccccccccelif (neighbour in open_list).f >= neighbour.f:
+cccccccccccc(neighbour in open_list) = neighbour
+ccccccccelif (neighbour in close_list).f >= neighbour.f:
+Ccccccccccccclose_list.pop(neighbour) and open_list.append(neighbour)                      2
+                                                                                           8
+  Exercise 4                                         i
+                                                     0
+                                                           c      open_list
+                                                                        S
+                                                                              close_list
+
+
+openList                                             1     S        ABC           S
+                                                     2     C        ABD          SC
+                                                     3     A        EBD         SCA
+                                                     4     E        BDF         SCAE
+                                                     5     F        BDG        SCAEF
+                                                     6     D            BG    SCAEFD
+                                                     7     B        GDE        SCAFB
+open_list = [], close_list = []
+open_list.append(start)
+while True:
+cccccurrent_node = min(open_list, key=lambda x: x.f)
+ccccclose_list.append(current_node)
+ccccif current_node == end: return
+ccccfor neighbour in current_node.neighbours:
+ccccccccif neighbour not in [open_list, close_list]:
+ccccccccccccopen_list.append(neighbour)
+ccccccccelif (neighbour in open_list).f >= neighbour.f:
+cccccccccccc(neighbour in open_list) = neighbour
+ccccccccelif (neighbour in close_list).f >= neighbour.f:
+Ccccccccccccclose_list.pop(neighbour) and open_list.append(neighbour)                      2
+                                                                                           9
+  Exercise 4                                         i
+                                                     0
+                                                            c     open_list
+                                                                      S
+                                                                              close_list
+
+
+openList                                             1     S        ABC           S
+                                                     2     C        ABD          SC
+                                                     3     A        EBD         SCA
+                                                     4     E        BDF         SCAE       16
+                                                     5     F        BDG        SCAEF
+                                                     6     D         BG       SCAEFD
+                                                     7     B        GDE        SCAFB
+open_list = [], close_list = []
+open_list.append(start)                                  8  D         GE      SCAFBD
+while True:
+cccccurrent_node = min(open_list, key=lambda x: x.f)
+ccccclose_list.append(current_node)
+ccccif current_node == end: return
+ccccfor neighbour in current_node.neighbours:
+ccccccccif neighbour not in [open_list, close_list]:
+ccccccccccccopen_list.append(neighbour)
+ccccccccelif (neighbour in open_list).f >= neighbour.f:
+cccccccccccc(neighbour in open_list) = neighbour
+ccccccccelif (neighbour in close_list).f >= neighbour.f:
+Ccccccccccccclose_list.pop(neighbour) and open_list.append(neighbour)
+  Exercise 4                                         i
+                                                     0
+                                                            c     open_list
+                                                                      S
+                                                                              close_list
+
+
+openList                                             1     S        ABC           S
+                                                     2     C        ABD          SC
+                                                     3     A        EBD         SCA
+                                                     4     E        BDF         SCAE
+                                                     5     F        BDG        SCAEF
+                                                     6     D         BG       SCAEFD
+                                                     7     B        GDE        SCAFB
+open_list = [], close_list = []
+open_list.append(start)                                  8  D         GE      SCAFBD
+while True:                                              9  E         GF      SCABDE
+cccccurrent_node = min(open_list, key=lambda x: x.f)
+ccccclose_list.append(current_node)
+ccccif current_node == end: return
+ccccfor neighbour in current_node.neighbours:
+ccccccccif neighbour not in [open_list, close_list]:
+ccccccccccccopen_list.append(neighbour)
+ccccccccelif (neighbour in open_list).f >= neighbour.f:
+cccccccccccc(neighbour in open_list) = neighbour
+ccccccccelif (neighbour in close_list).f >= neighbour.f:
+Ccccccccccccclose_list.pop(neighbour) and open_list.append(neighbour)
+  Exercise 4
+                                                     i      c     open_list   close_list
+                                                     0                S
+                                                     1     S        ABC           S
+openList
+                                                     2     C        ABD          SC
+                                                     3     A        EBD         SCA
+                                                     4     E        BDF         SCAE
+                                                     5     F        BDG        SCAEF
+                                                     6     D         BG       SCAEFD
+                                                     7     B        GDE        SCAFB
+
+open_list = [], close_list = []                           8 D         GE      SCAFBD
+open_list.append(start)                                   9 E         GF      SCABDE
+while True:                                              10 F         G       SCABDEF
+cccccurrent_node = min(open_list, key=lambda x: x.f)
+ccccclose_list.append(current_node)
+ccccif current_node == end: return
+ccccfor neighbour in current_node.neighbours:
+ccccccccif neighbour not in [open_list, close_list]:
+ccccccccccccopen_list.append(neighbour)
+ccccccccelif (neighbour in open_list).f >= neighbour.f:
+cccccccccccc(neighbour in open_list) = neighbour
+ccccccccelif (neighbour in close_list).f >= neighbour.f:
+Ccccccccccccclose_list.pop(neighbour) and open_list.append(neighbour)
+Thanks for your time
+

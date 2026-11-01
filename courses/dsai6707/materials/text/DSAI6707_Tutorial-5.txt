@@ -1,0 +1,424 @@
+Tutorial 5
+DSAI6707: Advanced Computational Intelligence
+
+
+                                           Yinsong Yan
+                                        Department of DSAI
+                                   yinsong.yan@connect.polyu.hk
+Outline
+
+ 1. Multi-objective optimization and Pareto dominance
+
+ 2. Multi-objective evolutionary algorithms
+
+ 3. MOGA: algorithm, exercise and solution
+
+ 4. NSGA-II: algorithm, exercise and solution
+
+ 5. Comparison and conclusions
+
+
+
+                                                        2
+Multi-objective problems
+
+ A multi-objective optimization problem (MOP) has at least two objectives.
+
+
+
+   minimize f(x) = [f₁(x), f₂(x), …, fₘ(x)]
+   subject to x ∈ Ω,          m≥2
+
+ x: decision variables     Ω: feasible set
+
+ The objectives may conflict, so several trade-off solutions can be useful.
+
+                                                                              3
+Conflicting objectives
+
+ Example: choosing a model for deployment
+
+                Model                 Latency (ms) ↓   Error (%) ↓
+                  A                            10          12
+                  B                            20          8
+                  C                            35          5
+                  D                            25          10
+
+ A is faster than B, but B is more accurate.
+ B improves both objectives relative to D.
+
+                                                                     4
+Pareto dominance
+
+ For minimization, a dominates b (a ≺ b) when:
+
+   fⱼ(a) ≤ fⱼ(b) for every objective j
+   and fⱼ(a) < fⱼ(b) for at least one objective.
+
+
+                 Comparison                               Conclusion
+            B = (20, 8), D = (25, 10)                    B dominates D
+            A = (10, 12), B = (20, 8)              Neither dominates the other
+
+                                                                                 5
+Pareto set and front
+
+              15
+                                                                         Pareto set
+              10                                                         Feasible decisions that no other
+  Error (%)
+
+
+
+
+                                                                         feasible decision dominates.
+
+              5
+                                                                         Pareto front
+              0                                                          The objective vectors of the
+                   0           10            20          30         40   Pareto-optimal decisions.
+                                        Latency (ms)
+
+                   Red: non-dominated             Blue: dominated
+
+ In this four-model example, A, B and C are non-dominated.
+                                                                                                            6
+Evolutionary search
+
+ Multi-objective Evolutionary Algorithms (MOEAs)
+
+ A population explores several trade-offs in one search run.
+
+
+ Selection encourages convergence towards better objective values.
+
+
+ Diversity preservation maintains alternatives across the front.
+
+
+
+ MOGA and NSGA-II are genetic-algorithm-based MOEAs.
+                                                                     7
+The MOEA cycle
+
+ 1. Initialize a population of candidate decisions.
+
+ 2. Evaluate every objective for each candidate.
+
+ 3. Select parents using objective quality and diversity.
+
+ 4. Apply crossover and mutation to generate offspring.
+
+ 5. Form the next population and repeat until termination.
+
+
+ Output: a non-dominated approximation set for subsequent decision making.
+                                                                             8
+MOGA: algorithm
+
+ Multi-objective Genetic Algorithm (Fonseca–Fleming, 1993)
+
+ 1. Initialize and evaluate the population.
+
+ 2. Count dominators and assign a rank to each individual.
+
+ 3. Assign rank-based fitness and apply fitness sharing.
+
+ 4. Select parents in proportion to their adjusted fitness.
+
+ 5. Generate and evaluate offspring using crossover and mutation.
+
+ 6. Replace the population and repeat until the stopping criterion.
+
+
+                                                                      9
+MOGA: rank and fitness
+
+ Dominance-count rank
+
+    r(x) = 1 + |{y ∈ P : y ≺ x}|
+ A non-dominated individual has rank 1. Lower ranks are better.
+
+
+ Fitness assignment
+ 1. Sort individuals by rank and assign decreasing position scores.
+
+ 2. Average scores within each rank to obtain equal base fitness.
+
+
+                                                                      10
+MOGA: fitness sharing
+
+ Sharing reduces the reproductive advantage of crowded solutions.
+
+
+  nᵢ = Σⱼ sh(dᵢⱼ)           and         F′ᵢ = Fᵢ / nᵢ
+
+  sh(d) = max(0, 1 − d / σ)
+
+ nᵢ measures crowding among individuals of the same rank, including itself.
+
+ Rescale within each rank to preserve that rank’s total base fitness.
+
+ The sharing radius σ and objective scaling affect the result.
+
+                                                                              11
+Exercise 1: MOGA
+
+ Minimize both objectives. B and C have identical objective values.
+
+   Candidate         A         B         C         D            E       F   G   H
+        f₁           1         2         2         5            8       4   6   7
+        f₂           8         6         6         3            1       7   6   8
+
+ 1. List the dominators of each candidate and calculate r(x).
+
+ 2. Assign position scores 8, 7, …, 1, then average within each rank.
+
+ 3. Given niche counts n(A) = n(D) = n(E) = 1 and n(B) = n(C) = 2,
+    calculate shared and rescaled fitness for rank 1.
+
+                                                                                    12
+Solution: dominance ranks
+
+
+     Candidate                     Dominated by                Count   MOGA rank
+
+   A, B, C, D, E                        None                     0         1
+
+         F                              B, C                     2         3
+
+         G                             B, C, D                   3         4
+
+         H                        A, B, C, D, F, G               6         7
+
+
+ For F: B = (2, 6) and C = (2, 6) both dominate (4, 7).
+ Ranks need not be consecutive: ranks 2, 5 and 6 are absent.
+                                                                               13
+Solution: base fitness
+
+
+    Rank            Candidates              Position scores   Base fitness each
+
+      1            A, B, C, D, E              8, 7, 6, 5, 4          6
+
+      3                  F                         3                 3
+
+      4                  G                         2                 2
+
+      7                  H                         1                 1
+
+
+ For rank 1: (8 + 7 + 6 + 5 + 4) / 5 = 6.
+ Equal rank gives equal base fitness before sharing.
+                                                                                  14
+Solution: fitness sharing
+
+ Rank 1 has total base fitness 5 ×6 = 30.
+
+     Candidates         Base Fᵢ       Niche count nᵢ    Shared F′ᵢ   Rescaled fitness
+
+       A, D, E             6                1               6            7.5 each
+
+         B, C              6                2               3           3.75 each
+
+
+ Shared total = 3 ×6 + 2 ×3 = 24.
+
+ Rescaling factor = 30 / 24 = 1.25.
+
+ A, D and E each receive twice the selection weight of B or C.
+
+                                                                                        15
+NSGA-II: algorithm
+
+ Non-dominated Sorting Genetic Algorithm II
+
+ 1. Initialize N parents P₀, then assign front ranks and crowding distances.
+
+ 2. Select parents, apply crossover and mutation, and evaluate N offspring Qₜ.
+
+ 3. Combine parents and offspring: Rₜ = Pₜ ∪ Qₜ, with size 2N.
+
+ 4. Sort Rₜ into fronts and calculate crowding distances within each front.
+
+ 5. Select N survivors to form Pₜ₊₁. Repeat steps 2–5.
+
+
+
+                                                                                 16
+Non-dominated sorting
+
+ 1. F₁ contains every individual with no dominator in the current set.
+
+
+ 2. Remove F₁. The non-dominated individuals that remain form F₂.
+
+
+ 3. Continue until every individual belongs to a front.
+
+
+
+ NSGA-II rank = front index.
+ Fast implementation tracks each individual’s dominator count
+ and the set of individuals it dominates.
+                                                                         17
+Crowding distance
+
+ Within one front, sort individuals separately by each objective.
+
+
+  CD(i) = Σⱼ [fⱼ(i⁺) − fⱼ(i⁻)] / [max fⱼ − min fⱼ]
+
+  i⁻ and i⁺ are the adjacent individuals in the ordering for objective j.
+
+
+ Give boundary individuals infinite distance (∞).
+
+ Larger crowding distance favours a less crowded region.
+
+ Use the range within this front. Skip an objective with zero range.
+
+                                                                            18
+Selection in NSGA-II
+
+ Parent selection
+
+ Binary tournament:
+ 1. Prefer the lower front rank.
+ 2. For equal ranks, prefer larger CD.
+ 3. Break a remaining tie randomly.
+
+ Survivor selection
+ Accept complete fronts in rank order.
+ When a front does not fit, take its largest-CD individuals
+ until the population contains N survivors.
+
+                                                              19
+Exercise 2: NSGA-II
+
+ Minimize both objectives. Population size N = 5.
+ Parents Pₜ = {A, B, C, D, E}      Offspring Qₜ = {F, G, H, I, J}
+
+      Candidate             f₁           f₂                  Candidate   f₁   f₂
+           A                1            5                         F     7    4
+           B                5            1                         G     10   2
+           C                2            10                        H     5    9
+           D                3            8                         I     8    8
+           E                4            7                         J     9    6
+
+ All candidates are feasible. Use the combined set Rₜ = Pₜ ∪ Qₜ.
+                                                                                   20
+Exercise 2: selection
+
+ 1. Sort the ten candidates into non-dominated fronts.
+
+
+ 2. Determine how many places remain after accepting complete fronts.
+
+
+ 3. Calculate crowding distance for every candidate in the splitting front.
+
+
+ 4. Select the five survivors and justify the last selected candidate.
+
+
+ Use the objective range within each front.
+ Assign infinite distance to boundary candidates.
+                                                                              21
+Solution: Pareto fronts
+
+    Front           Candidates                               Reason
+
+      F₁               A, B                       Neither has a dominator in Rₜ.
+
+      F₂           C, D, E, F, G                Non-dominated after removing F₁.
+
+      F₃              H, I, J                Non-dominated after removing F₁ and F₂.
+
+
+ Accept A and B. Three places remain.
+ F₂ has five candidates, so crowding distance decides which three survive.
+
+                                                                                       22
+Solution: crowding distance
+ Splitting front: C(2,10), D(3,8), E(4,7), F(7,4), G(10,2)
+ Both objective ranges are 10 − 2 = 8.
+
+    Candidate           f₁ contribution             f₂ contribution              Total CD
+         C                 Boundary                    Boundary                      ∞
+         D                 (4 − 2) / 8                (10 − 7) / 8              5/8 = 0.625
+         E                 (7 − 3) / 8                 (8 − 4) / 8              8/8 = 1.000
+         F                (10 − 4) / 8                 (7 − 2) / 8              11/8 = 1.375
+         G                 Boundary                    Boundary                      ∞
+
+ The f₂ ordering is G, F, E, D, C. Each contribution uses its own neighbours.
+                                                                                               23
+Solution: survivors
+
+
+                Selection stage                         Accepted       Places left
+
+               Complete front F₁                          A, B             3
+
+           Boundary candidates in F₂                      C, G             1
+
+      Largest remaining crowding distance            F (CD = 1.375)        0
+
+
+
+  Pₜ₊₁ = {A, B, C, F, G}
+ E and D have lower crowding distances. No candidate in F₃ survives.
+                                                                                     24
+MOGA and NSGA-II
+
+    Mechanism                Classic MOGA                        NSGA-II
+
+  Quality ranking       1 + number of dominators         Non-dominated front index
+
+     Diversity               Fitness sharing                 Crowding distance
+
+ Density parameter           Sharing radius σ                No sharing radius
+
+     Survivors        Basic generational replacement   Best N from parents + offspring
+
+For Exercise 1, F and G have MOGA ranks 3 and 4,
+but both lie in the second non-dominated front.
+
+                                                                                     25
+Key conclusions
+
+ 1. A MOP can have several useful trade-off solutions.
+
+ 2. Pareto dominance compares solutions without fixed objective weights.
+
+ 3. MOGA uses dominance counts and fitness sharing.
+
+ 4. NSGA-II uses front ranks, crowding distance and elitist survival.
+
+
+
+ A non-dominated population is an approximation, not proof of global optimality.
+
+                                                                                   26
+References
+
+ Fonseca, C. M., and Fleming, P. J. (1993).
+ Genetic Algorithms for Multiobjective Optimization:
+ Formulation, Discussion and Generalization.
+ Proceedings of the Fifth International Conference on Genetic Algorithms,
+ 416–423.
+
+
+ Deb, K., Pratap, A., Agarwal, S., and Meyarivan, T. (2002).
+ A Fast and Elitist Multiobjective Genetic Algorithm: NSGA-II.
+ IEEE Transactions on Evolutionary Computation, 6(2), 182–197.
+ DOI: 10.1109/4235.996017
+
+                                                                            27
+Thanks for your time
+               Yinsong Yan
+           Department of DSAI
+      yinsong.yan@connect.polyu.hk
+

@@ -1,0 +1,358 @@
+Tutorial 3
+DSAI6707: Artificial Intelligence Concepts
+
+
+
+
+                                                     Yinsong Yan
+                                                 Department of DSAI
+                                             yinsong.yan@connect.polyu.hk
+Genetic Algorithm
+Framework
+Darwinian evolution theory: Survival of the fittest
+               Begin
+
+       Initialize a population
+
+         Perform crossover
+
+         Perform mutation
+
+     Evaluate the fitness value
+
+    Select promising individuals
+
+
+               Stop?                                  Fitness landscape
+
+
+                End                                                       3
+Encoding
+Binary Encoding
+                     Solution 𝑥：0          Chromosome：00000
+
+                    Solution 𝑥：5           Chromosome：00101
+
+                    Solution 𝑥：31          Chromosome：11111
+
+
+Real-number Encoding        Solution 𝑥：5     Chromosome：5
+
+Encoding dependent on specific problems, e.g. traveling salesman problem
+
+
+
+
+                                                                       4
+Crossover and Mutation
+ Crossover:
+                           Crossover Point
+     Parent chromosome 1：0 1 0 1 1 1 1 0     Offspring chromosome 1：0 1 0 1 1 0 1 1
+
+
+     Parent chromosome 2：1 1 0 0 1 0 1 1     Offspring chromosome 2：1 1 0 0 1 1 1 0
+
+
+
+ Mutation:
+
+
+     Parent chromosome：0 1 0 1 1 1 1 0       Offspring chromosome： 0 1 1 1 1 1 1 0
+
+
+
+                        Mutation Point
+
+                                                                                 5
+ Evaluate Fitness Value
+
+
+
+Chromosome 1： 0 0 1 1            Solution 1： 3
+                        Decode                    Calculate
+Chromosome 2： 0 1 0 1            Solution 2： 5 fitness function
+
+
+
+
+                                                                  6
+  Selection
+For maximizing a problem: 𝑓 𝑥 , we have 3 individuals 𝑥1 , 𝑥2 , 𝑥3 and their fitness values 𝑓 𝑥1 = 15, 𝑓 𝑥2 = 5, 𝑓 𝑥3 = 80
+
+Rank Weighting Selection:
+The probability that an individual in the population is selected is proportional to the rank of the individual.
+• The ranks of the 3 individuals are 𝑟𝑎𝑛𝑘(𝑥1 ) = 2, 𝑟𝑎𝑛𝑘(𝑥2 ) = 1, 𝑟𝑎𝑛𝑘(𝑥3 ) = 3
+• The probability of 𝑥1 being chosen is 𝑝 𝑥1 =? , 𝑝 𝑥2 =? , 𝑝 𝑥3 =?
+
+
+Fitness Weighting Selection (Roulette Wheel Selection):
+
+The probability that an individual in the population is selected is proportional to the fitness value of the individual.
+
+• The probability of 𝑥1 being chosen is 𝑝 𝑥1 =? , 𝑝 𝑥2 =? , 𝑝 𝑥3 =?
+
+
+
+
+                                                                                                                           7
+  Selection
+For maximizing a problem: 𝑓 𝑥 , we have 3 individuals 𝑥1 , 𝑥2 , 𝑥3 and their fitness values 𝑓 𝑥1 = 15, 𝑓 𝑥2 = 5, 𝑓 𝑥3 = 80
+
+Rank Weighting Selection:
+The probability that an individual in the population is selected is proportional to the rank of the individual.
+• The ranks of the 3 individuals are 𝑟𝑎𝑛𝑘(𝑥1 ) = 2, 𝑟𝑎𝑛𝑘(𝑥2 ) = 1, 𝑟𝑎𝑛𝑘(𝑥3 ) = 3
+                                                             𝑟𝑎𝑛𝑘(𝑥1 )           1                 1              1
+• The probability of 𝑥1 being chosen is 𝑝 𝑥1 =                                  = , 𝑝 𝑥2        = , 𝑝 𝑥3 =
+                                                    𝑟𝑎𝑛𝑘 𝑥1 +𝑟𝑎𝑛𝑘 𝑥2 +𝑟𝑎𝑛𝑘(𝑥3 )  3                 6              2
+
+Fitness Weighting Selection (Roulette Wheel Selection):
+
+The probability that an individual in the population is selected is proportional to the fitness value of the individual.
+                                                           𝑓(𝑥 )
+• The probability of 𝑥1 being chosen is 𝑝 𝑥1 = 𝑓 𝑥 +𝑓 𝑥1 +𝑓(𝑥 ) = 0.15, 𝑝 𝑥2 = 0.05, 𝑝 𝑥3 = 0.8
+                                                       1      2    3
+
+
+
+
+                                                                                                                           8
+ Selection
+For maximizing a problem: 𝑓 𝑥 , we have 3 individuals 𝑥1 , 𝑥2 , 𝑥3 and their fitness values 𝑓 𝑥1 = 15, 𝑓 𝑥2 = 5, 𝑓 𝑥3 = 80
+If 3 individuals should be selected from 𝑥1 , 𝑥2 , 𝑥3 , which 3 individuals will be selected? Take the fitness weighting selection
+as an example:
+                                                             𝑓(𝑥1 )
+   • The probability of 𝑥1 being chosen is 𝑝 𝑥1 =                         = 0.15, 𝑝 𝑥2   = 0.05, 𝑝 𝑥3 = 0.8
+                                                       𝑓 𝑥1 +𝑓 𝑥2 +𝑓(𝑥3 )
+   • Obtain the probability table.
+                                                                                                     Probability for each
+                      Chromosome           Fitness          Probability
+                                                                                                         individual
+                            𝑥3                80                 0.8                                                          0.14
+                            𝑥1                15                0.15                           0.9
+                                                                                                               0.05
+                            𝑥2                 5                0.05                                    0.15
+                                                                                                                                x3
+  • Since 3 individuals should be selected, we can generate 3 random numbers which                                              x1
+    are uniformly sampled from [0,1], assume these 3 random numbers are 0.14, 0.5,
+    and 0.9.                                                                                                          0.8
+                                                                                                                                x2
+  • We can draw a pie chart as the right figure to simulate the selection process.
+  • Random number 0.14 points the bule region of 𝑥3 , so 𝑥3 is selected.
+  • Random number 0.5 points the bule region of 𝑥3 , so 𝑥3 is selected again.
+  • Random number 0.9 points the bule region of 𝑥3 , so 𝑥1 is selected.                                         0.5
+Exercise
+Exercise 1
+Three chromosomes 00001, 01000, 11010 are initialized for maximizing 𝑓(𝑥, 𝑦) = 𝑥 + 𝑦. 𝑥 is
+represented by the first 2 bits and 𝑦 is represented by the last 3 bits.
+1-st and 2-nd chromosomes are selected for crossover and the crossover point is between 4-th
+point and 5-th point.
+1-st and 3-rd chromosomes are selected for crossover and the crossover point is between 2-nd
+point and 3-rd point.
+Please calculate the fitness values of the offspring.
+
+
+
+
+                                                                                     11
+Exercise 1
+Three chromosomes 00001, 01000, 11010 are initialized for maximizing 𝑓(𝑥, 𝑦) = 𝑥 + 𝑦. 𝑥 is
+represented by the first 2 bits and 𝑦 is represented by the last 3 bits.
+1-st and 2-nd chromosomes are selected for crossover and the crossover point is between 4-th
+point and 5-th point.
+1-st and 3-rd chromosomes are selected for crossover and the crossover point is between 2-nd
+point and 3-rd point.
+Please calculate the fitness values of the offspring.
+       Crossover Point
+
+      00001              Offspring 1：0 0 0 0 0   Offspring 1：0 0 0 0 0   𝒙 = 𝟎, 𝒚 = 𝟎, 𝒇(𝒙, 𝒚) = 𝟎
+      01000              Offspring 2：0 1 0 0 1   Offspring 2：0 1 0 0 1   𝒙 = 𝟏, 𝒚 = 𝟏, 𝒇(𝒙, 𝒚) = 𝟐
+    Crossover Point
+
+      00001              Offspring 1：0 0 0 1 0   Offspring 1：0 0 0 1 0   𝒙 = 𝟎, 𝒚 = 𝟐, 𝒇(𝒙, 𝒚) = 𝟐
+      11010              Offspring 2：1 1 0 0 1   Offspring 2：1 1 0 0 1   𝒙 = 𝟑, 𝒚 = 𝟏, 𝒇(𝒙, 𝒚) = 𝟒
+                                                                                               12
+Exercise 2
+For the binary genetic algorithm with 4 individuals. The 4 individuals and their fitness
+values for a maximization problem are presented in the Table.
+  Solution   Chromosome   Fitness
+
+     1         01101       169      Q1:
+                                       (a) Obtain the probability table for rank weighting
+     2         11000       576         selection.
+                                       (b) If 2 individuals should be selected, and the
+                                       corresponding 2 random numbers generated are 0.15,
+     3         01000        64
+                                       0.82, which two chromosomes will be selected?
+
+     4         10011       361
+
+
+
+                                                                                           13
+Exercise 2
+ Answer for Q1: (a) Obtain the probability table for rank weighting selection.
+
+
+           Solution   Chromosome        Fitness     Rank       Probability
+
+              2          11000           576          4      4/(1+2+3+4)=0.4
+
+              4          10011           361          3      3/(1+2+3+4)=0.3
+
+              1          01101           169          2      2/(1+2+3+4)=0.2
+
+              3          01000            64          1      1/(1+2+3+4)=0.1
+
+
+
+
+                                                                                 14
+Exercise 2
+ Answer for Q1:
+ (b) If 2 individuals should be selected, and the corresponding 2 random numbers
+ generated are 0.15, 0.82, which two chromosomes will be selected?
+
+                                                       0.82   Probability for each individual
+  Solution     Chromos    Fitness   Rank   Probability                                     0.15
+                 ome
+                                                                          0.1
+     2          11000       576       4          0.4
+                                                                                                  2
+                                                                    0.2          0.4
+     4          10011       361       3          0.3                                              4
+                                                                                                  1
+     1          01101       169       2          0.2
+                                                                                                  3
+
+     3          01000        64       1          0.1                      0.3
+
+
+             Chromosomes 2 and 1 are selected.
+
+                                                                                            15
+Exercise 2
+For the binary genetic algorithm with 4 individuals. The 4 individuals and their fitness
+values for a maximization problem are presented in the Table.
+  Solution   Chromosome   Fitness
+
+     1         01101       169      Q2:
+                                       (a) Obtain the probability table for fitness weighting
+     2         11000       576         selection.
+                                       (b) If 2 individuals should be selected, and the
+     3         01000        64         corresponding 2 random numbers generated are 0.15,
+                                       0.82, which two chromosomes will be selected?
+     4         10011       361
+
+
+
+                                                                                           16
+Exercise 2
+ Answer for Q2: (a) Obtain the probability table for fitness weighting selection.
+
+
+           Solution   Chromosome         Fitness           Probability
+
+              2          11000            576       576/(169+576+64+361)=0.49
+
+              4          10011            361       361/(169+576+64+361)=0.31
+
+              1          01101            169       169/(169+576+64+361)=0.14
+
+              3          01000             64       64/(169+576+64+361)=0.06
+
+
+
+
+                                                                                    17
+Exercise 2
+ Answer for Q2:
+ (b) If 2 individuals should be selected, and the corresponding 2 random numbers
+ generated are 0.15, 0.82, which two chromosomes will be selected?
+
+                                                  0.82   Probability for each individual
+
+    Solution   Chromosome    Fitness   Probability                                     0.15
+
+       2         11000         576         0.49                        0.06
+                                                                0.14
+                                                                                              2
+       4         10011         361         0.31
+                                                                                              4
+                                                                              0.49
+       1         01101         169         0.14                                               1
+                                                                                              3
+       3         01000          64         0.06                0.31
+
+
+
+       Chromosomes 2 and 1 are selected.
+
+                                                                                       18
+ Exercise 3
+Two chromosomes ACDBE, ADECB are initialized for solving a traveling salesman problem.
+The distance matrix of the five nodes is given in the table.
+        A    B    C        D       E            The mutation operator is to exchange the positions of 2 mutation
+  A     0    56   31       8       10           points.
+  B     56   0    9    40          7
+                                                • For chromosome ACDBE, the mutation points are 2-rd point
+                                                    and 4-th point.
+  C     31   9    0    15          20
+                                                • For chromosome ADECB, the mutation points are 5-th point
+  D     8    40   15       0       5                and 4-th point.
+  E     10   7    20       5       0            If two chromosomes should be selected from parents and
+                                                offspring by rank weighting selection, which two chromosomes
+                               A                will be selected (The random numbers are 0.3, 0.6)?
+ACDBE                  B                    E
+
+                           C            D                                                                19
+ Exercise 3
+Two chromosomes ACDBE, ADECB are initialized for solving a traveling salesman problem.
+The distance matrix of the five nodes is given in the table. (The random numbers are 0.3, 0.6)
+                                                Parents:
+        A    B    C        D       E
+                                                • ACDBE, Cost=AC+CD+DB+BE+EA=31+15+40+7+10=103,Rank=2
+  A     0    56   31       8       10           • ADECB, Cost=AD+DE+EC+CB+BA=8+5+20+9+56=98,Rank=3
+                                                Offspring:
+  B     56   0    9    40          7            • ABDCE, Cost=AB+BD+DC+CE+EA=56+40+15+20+10=141,Rank=1
+                                                • ADEBC, Cost=AD+DE+EB+BC+CA=8+5+7+9+31=60,Rank=4
+  C     31   9    0    15          20
+
+  D     8    40   15       0       5                      Chromosome          Cost         Probability
+
+  E     10   7    20       5       0                         ADEBC             60        4/(4+3+2+1)=0.4
+                                                             ADECB             98        3/(4+3+2+1)=0.3
+                               A                             ACDBE            103        2/(4+3+2+1)=0.2
+ACDBE                  B                    E                ABDCE            141        1/(4+3+2+1)=0.1
+
+                                                         Chromosomes ADEBC and ADECB are selected.
+                           C            D                                                                  20
+   Exercise 4
+By considering the individual and combined effect of reproduction, crossover and mutation in
+genetic algorithms, derive the schemata theorem to examine the growth rates of various schemata
+or similarity templates contained in a population. The schemata theorem is given as,
+                                              fit ( S )            d (S )             
+                    n s (t + 1)  n s (t )             1 − Pcross        − Pm o( S ) 
+                                              fit                l −1               
+A population contains the following strings and fitness values at generation 0:
+      #       String Fitness
+      1       10001 20
+      2       11100 10
+      3       00011 5
+      4       01110 15
+The probability of mutation is Pm = 0.01 and the probability of crossover is Pcross = 1. Using the
+schemata theorem to estimate the expected number of schemata of the form 1**** in generation 1.
+Exercise 4
+From the schemata theorem,
+                                        fit ( S )             d (S )              
+              n s (t + 1)  n s (t )              1 − Pcross        − Pm o ( S ) 
+                                        fit                 l −1                
+The number of schemata at generation 0 is 2, i.e., ns(t) = 2 and the length of the
+string l = 5.
+For schema of 1****, the defining length d(S) = 0, the order o(S) = 1, fit(S) = 15 and
+<fit> = 50/4. Hence the expected number of schemata at generation 1 is given as,
+
+                                      15( 4)
+                        n s (1) = 2         (1 − 0 − 0.01) = 2.376
+                                       50
+Thanks for your time
+

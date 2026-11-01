@@ -1,0 +1,498 @@
+                        1
+
+
+
+
+     DSAI6707
+     Advanced
+     Computational
+     Intelligence
+     Sem 1, 2026/2027
+
+
+
+
+DSAI6707 Chapter 3
+                                     2
+
+
+
+
+Particle Swarm Optimization
+
+
+
+
+                DSAI6707 Chapter 3
+                     3
+
+
+
+
+DSAI6707 Chapter 3
+                                                                                   4
+
+Classical PSO Algorithm
+• PSO is a robust stochastic optimization technique based on the movement
+  and intelligence of swarms
+• PSO applies the concept of social interaction to problem solving
+• It was developed in 1995 by James Kennedy (social-psychologist) and
+  Russell Eberhart (electrical engineer)
+• It uses a number of agents (particles) that constitute a swarm moving
+  around in the search space looking for the best solution
+• Each particle is treated as a point in a N-dimensional space which adjusts its
+  “flying” according to its own flying experience as well as the flying
+  experience of other particles
+• Each particle keeps track of its coordinates in the solution space which are
+  associated with the best solution (fitness) that has achieved so far by that
+  particle. This value is called personal best, pbest
+
+                                            DSAI6707 Chapter 3
+                                                                                       5
+
+• Another best value that is tracked by the PSO is the best value
+  obtained so far by any particle in the neighborhood of that particle.
+  This value is called gbest
+• The basic concept of PSO lies in accelerating each particle toward
+  its pbest and the gbest locations, with a random weighted
+  acceleration at each time step
+   Vid = w  Vid + c1  Rand ()  ( pid − xid ) + c2  Rand ()  ( g d − xid )   (1)
+   xid = xid + Vid                                                               (2)
+      Vid : Velocity of each particle in each dimension
+        ➢ i:     Particle
+        ➢ d: Dimension
+
+      w:       Inertia Weight
+      c1、c2 : Constants
+      Rand() : Random
+      pid :      Best position of each particle
+      gd :       Best position of swarm
+      xid :     Current position of each particle in each dimension
+                                                  DSAI6707 Chapter 3
+                     6
+
+
+
+
+DSAI6707 Chapter 3
+                                                                                        7
+
+
+                            Classical PSO
+> The inertia weight w is often chosen between [0.5, 1.5].
+> A large inertia weight (w) facilitates a global search while a small inertia weight
+  facilitates a local search.
+> By linearly decreasing the inertia weight from a relatively large value to a small
+  value through the course of the PSO run gives better PSO performance as
+  compared with fixed inertia weight settings.
+         Larger w ----------- greater global search ability
+         Smaller w ------------ greater local search ability.
+> The interval of c1 and c2 is [0, 4.0]. If c2 is higher than c1, the social information
+  would influence the particle more. If c1 is higher than c2, the particle would be
+  affected more by its personal best rather than the global best.
+> Rand() is a random number between [0, 1].
+
+
+
+                                                 DSAI6707 Chapter 3
+                                                                 8
+
+
+               Simulation
+
+
+
+
+                                                           max
+  y
+
+
+                                                           min
+                                                 fitness
+
+
+                    x
+search space
+                            DSAI6707 Chapter 3
+                                                                 9
+
+
+               Simulation
+
+
+
+
+                                                           max
+   y
+
+
+                                                           min
+                                                 fitness
+
+
+                    x
+search space
+                            DSAI6707 Chapter 3
+                                                                 10
+
+
+               Simulation
+
+
+
+
+                                                           max
+   y
+
+
+                                                           min
+                                                 fitness
+
+
+                    x
+search space
+                            DSAI6707 Chapter 3
+                                                                 11
+
+
+               Simulation
+
+
+
+
+                                                           max
+   y
+
+
+                                                           min
+                                                 fitness
+
+
+                    x
+search space
+                            DSAI6707 Chapter 3
+                                                                 12
+
+
+               Simulation
+
+
+
+
+                                                           max
+   y
+
+
+                                                           min
+                                                 fitness
+
+
+                    x
+search space
+                            DSAI6707 Chapter 3
+                                                                 13
+
+
+               Simulation
+
+
+
+
+                                                           max
+   y
+
+
+                                                           min
+                                                 fitness
+
+
+                    x
+search space
+                            DSAI6707 Chapter 3
+                                                                 14
+
+
+               Simulation
+
+
+
+
+                                                           max
+   y
+
+
+                                                           min
+                                                 fitness
+
+
+                    x
+search space
+                            DSAI6707 Chapter 3
+                                                                 15
+
+
+               Simulation
+
+
+
+
+                                                           max
+   y
+
+
+                                                           min
+                                                 fitness
+
+
+                    x
+search space
+                            DSAI6707 Chapter 3
+                                                                      16
+
+
+
+
+Comparison with other evolutionary computation techniques:
+
+ • Unlike in genetic algorithms, evolutionary programming and
+   evolutionary strategies, in PSO, there is no selection operation
+ • All particles in PSO are kept as members of the population
+   through the course of the run.
+ • No need of crossover or mutation operations in PSO
+ • In PSO, balance between the global and local search can be
+   adjusted through the inertial weight factor (w).
+
+
+
+                                      DSAI6707 Chapter 3
+                                                                                17
+
+
+                    Differential Evolution
+• Proposed by Price and Storn in 1995.
+• Considered as one of the most powerful evolutionary algorithms for real
+  number function optimization.
+• Differential Evolution -- a simple and efficient adaptive scheme for global
+  optimization over continuous spaces, 1995.
+• Finished 3rd at the First International Contest on Evolutionary
+  Computation, Nagoya, 1996.
+• Outperformed GA and PSO on a 34-function test suite (Vesterstrom &
+  Thomsen, 2004).
+• Continually exhibited remarkable performance in competitions on
+  different kinds of optimization problems like dynamic, multi-objective,
+  constrained and multi-modal problems held under IEEE Congress on
+  Evolutionary Computation (CEC) conference series.
+
+
+
+                                            DSAI6707 Chapter 3
+                                                                                18
+
+
+
+                                Background
+• DE’s Main Idea:
+
+    •   Generate trial vectors (v) using the following formula:
+
+
+        where xr1, xr2, xr3 are randomly selected from the current population
+        and F is a parameter called scaling factor.
+
+    •   Less parameters to be tuned.
+
+
+
+
+                                             DSAI6707 Chapter 3
+                                                                19
+                         DE Algorithm
+• Initialize the population X with uniform random values
+• Determine quality of members of X based on fitness function
+• repeat
+                        
+   – For each parent X c in X                       
+                                                
+         • Randomly select a difference pair Xa and X b
+                                          
+         • Calculate Xc = X c + F  ( X a − Xb )
+                                        
+        • Calculate Xc = Crossover ( Xc , X c )
+                                      
+        • Determine the quality of X c
+                                 
+        • if X c is better than X c
+                        
+             – then X c goes in new population X 
+                    
+             – else X c goes in new population X 
+   – endfor
+   – X  replaces X
+• until population converged or generation limit
+                                          DSAI6707 Chapter 3
+                                                                                 20
+
+                Different DE Mutation Schemes
+
+
+
+
+The general convention used for naming the various mutation strategies is
+DE/x/y/z, where DE stands for Differential Evolution, x represents a string denoting
+the vector to be perturbed, y is the number of difference vectors considered for
+perturbation of x, and z stands for the type of crossover being used.
+
+                                              DSAI6707 Chapter 3
+                                                                  21
+
+                  Memetic algorithms (MA)
+
+Overview of the development in evolutionary computation:
+• Evolutionary programming (1960s, Fogel)
+• Genetic algorithm (1970s, Rechenberg)
+• Evolutionary strategies (1970s, Holland)
+• Evolutionary algorithms (1990s, Goldberg)
+• Genetic programming (1990s, Koza)
+• Memetic algorithms (1990s), Also known as…
+    • Cultural algorithms
+    • Hybrid GA
+    • Baldwinian GA
+    • Larmarckian GA
+    • Etc…(But the concepts are the same!)
+
+
+                                             DSAI6707 Chapter 3
+                                                                       22
+
+
+
+                        Memetic algorithms
+
+• MA are evolutionary algorithms that incorporates global search
+  (crossover + mutation) and local searches simultaneously.
+
+
+• Metaphors in natural systems:
+    • Evolutionary adaptation (GA) across generations, AND
+    • Individual learning within a lifetime of an individual.
+
+
+• Individual learning can be implemented as (problem-specific) local
+  searchers within MA.
+
+
+
+
+                                             DSAI6707 Chapter 3
+                                                                          23
+
+                         Performance of EA
+1990s view of EA performance after Michalewicz:
+
+
+
+
+       Source: Introduction to Evolutionary Computing, Eiben and Smith.
+
+                                             DSAI6707 Chapter 3
+                                                                   24
+
+
+
+                  Utilizing domain knowledge
+• GA can be made more problem-specific through the
+  introduction of domain knowledge specific to the problem.
+• Domain knowledge manifests in the forms of:
+   – Specialized crossover
+   – Specialized mutation
+   – Problem specific representations
+   – Problem specific local search
+• Make EA perform better for the current tasks at hand, resulted
+  in “Memetic algorithms”
+
+
+                                        DSAI6707 Chapter 3
+                                                              25
+
+
+                 Utilizing domain knowledge
+• A typical workflow of MA
+
+• Various possibilities exist for
+  incorporation of domain knowledge
+  in the form of specialized
+  evolutionary operators.
+
+
+
+
+  Source: Introduction to Evolutionary
+  Computing, Eiben and Smith.
+
+
+                                         DSAI6707 Chapter 3
+                                                                 26
+
+
+              General workflow of MA
+
+
+ Initialize      Evaluate each
+population         candidate
+
+
+
+                                    Mutation
+ Selection and
+ Recombination
+
+
+
+                     Improve via                  Improve via
+                     local search                 local search
+
+
+
+                                    DSAI6707 Chapter 3
+                                                                        27
+
+
+
+• Local search: Mechanism that enables the algorithm to obtain better
+  solution within the neighborhood of the current individual.
+
+ Algorithm 𝐿𝑜𝑐𝑎𝑙𝑆𝑒𝑎𝑟𝑐ℎ(𝑠, 𝒩)
+ Begin
+    𝑠𝑏𝑒𝑠𝑡 = 𝑠
+    while (Depth condition not satisfied) do
+          while (Pivot rule not satisfied) do
+                   Choose 𝑠′ from the neighborhood of 𝑠, 𝒩(𝑠)
+                   if (𝑓 𝑠 ′ is better than 𝑓(𝑠))
+                             s𝑏𝑒𝑠𝑡 = 𝑠 ′
+                   end if
+          End.
+          𝑠 = 𝑠𝑏𝑒𝑠𝑡
+    End.
+                                           DSAI6707 Chapter 3
+                                                                               28
+
+
+
+                     Preservation of Diversity
+
+• The use of local search in MA can easily lead to a loss of
+  diversity:
+    – All points / individuals are moved to a local optimum
+
+• Allow only a small fraction of the population undergo local search.
+
+• Use multiple local searchers to induce different search space and distinct
+   local optima
+
+• Prevent duplicates in the selection operator
+
+• New acceptance criteria for local search, e.g., Boltzmann method (similar
+   to Simulated Annealing).
+
+                                            DSAI6707 Chapter 3
+

@@ -1,0 +1,353 @@
+Tutorial 6
+Fuzzy Sets and Fuzzy Relations
+DSAI6707: Advanced Computational Intelligence
+
+
+                                                Yinsong Yan
+                                            Department of DSAI
+                                       yinsong.yan@connect.polyu.hk
+Outline
+
+ 1. Review the basic concepts
+  Membership functions, set properties, operations and relations.
+
+ 2. Solve five exercises
+  Calculate membership grades and apply fuzzy-set operations.
+
+ 3. Consolidate the key ideas
+  Interpret fuzzy relations and perform max–min composition.
+
+
+
+
+                                                                    2
+Crisp Sets and Fuzzy Sets
+ REVIEW
+
+
+                     Crisp set                                          Fuzzy set
+
+                 χA : X → {0, 1}                                     μA : X → [0, 1]
+                A sharp boundary                                   A gradual transition
+
+                “Hot” if x ≥ 30°C                              “Hot” to a specified degree
+
+
+ A fuzzy set is defined on a universe of discourse X.
+ μHot(28) = 0.6 means a degree of membership of 0.6 in “Hot”.
+ Membership degree is not, by itself, the probability that a temperature is hot.
+                                                                                             3
+Membership Functions
+ REVIEW
+
+ Triangular: (a, b, c)
+  a, c: endpoints of the base
+  b: location of the peak
+
+
+ Trapezoidal: (a, b, c, d)
+  a, d: endpoints of the base
+  b, c: endpoints of the plateau
+
+ Choose the shape and parameters to represent the intended concept.
+
+                                                                      4
+Properties of a Fuzzy Set
+ REVIEW · FINITE UNIVERSE X
+
+
+                    Property                                       Definition
+                Height; normality                   h(A) = maxx μA(x); A is normal if h(A) = 1
+                     Support                             Supp(A) = {x ∈ X : μA(x) > 0}
+                      Core                                Core(A) = {x ∈ X : μA(x) = 1}
+                      α-cut                                 Aα = {x ∈ X : μA(x) ≥ α}
+                Scalar cardinality                              SC(A) = Σx μA(x)
+
+
+ For the ordinary α-cut: A0 = X and A1 = Core(A).
+
+                                                                                            5
+Standard Fuzzy-Set Operations
+ REVIEW ·APPLY EACH OPERATION AT THE SAME x
+
+
+                   Operation                                   Membership function
+                Complement Ac                                      μA (x) = 1 − μA(x)
+                                                                     c
+
+
+
+
+                  Union A ∪ B                               μA∪B(x) = max{μA(x), μB(x)}
+               Intersection A ∩ B                            μA∩B(x) = min{μA(x), μB(x)}
+                Inclusion A ⊆ B                            μA(x) ≤ μB(x) for every x ∈ X
+
+  De Morgan’s law: (A ∪ B)c = Ac ∩ Bc
+ Use these standard operators throughout this tutorial unless stated otherwise.
+                                                                                           6
+Convexity and Fuzzy Relations
+ REVIEW
+
+ Convexity on an ordered universe
+  For a < b < c: μA(b) ≥ min{μA(a), μA(c)}.
+
+
+ A fuzzy relation R on X ×Y
+  μR(x, y) ∈ [0, 1] describes the strength of the relation between x and y.
+
+
+ Matrix representation
+  Rows correspond to X; columns correspond to Y.
+
+
+ Convexity excludes a dip below both endpoints of any ordered triple.
+
+                                                                              7
+Projection and Composition
+ REVIEW
+
+ Projection: retain one variable and take the maximum over the other.
+
+  μdom R(x) = maxy μR(x, y)          μran R(y) = maxx μR(x, y)
+
+ Max–min composition: combine R(X, Y) and S(Y, Z).
+
+  μT(x, z) = maxy min{μR(x, y), μS(y, z)}
+
+
+ For each output entry: take the minimum along each path, then the maximum.
+
+                                                                              8
+Exercise 1: Membership Grades
+ INDIVIDUAL WORK · 2 MIN
+
+ Let X = [10, 50]°C. Define “Warm” by the triangular function (20, 30, 40).
+
+
+  Find μWarm(x) at:
+  18°C, 25°C, 30°C and 35°C.
+
+  Does μWarm(25) = 0.5 imply a
+  50% probability that 25°C is warm?
+
+
+
+                                                                              9
+Solution 1: Piecewise Evaluation
+ EXERCISE 1 · SOLUTION
+
+
+  μWarm(x) =                            Region                        Membership grade
+                                    x ≤ 20 or x ≥ 40                               0
+                                      20 < x ≤ 30                          (x − 20) / 10
+                                      30 < x < 40                          (40 − x) / 10
+
+
+      x (°C)                 18                  25                   30                   35
+      μWarm(x)                0                  0.5                   1                   0.5
+
+ 0.5 represents partial membership in “Warm”; it is not a probability statement.
+
+                                                                                                 10
+Exercise 2: Set Properties
+ PAIR WORK · 3 MIN
+
+ Let X = {0, 1, 2, 3, 4, 5}. The membership grades of A are:
+
+       x             0           1              2      3       4     5
+     μA(x)           0          0.3             0.7    1       0.7   0.2
+
+ 1. Find the height, support and core of A.
+
+ 2. Determine A0.7 and A0.
+
+ 3. Calculate the scalar and relative cardinalities.
+   Relative cardinality: RC(A) = SC(A) / |X|.
+
+                                                                           11
+Solution 2: Support and α-Cuts
+ EXERCISE 2 · SOLUTION
+
+
+                    Quantity                                          Result
+                     Height                              h(A) = 1; therefore A is normal
+                     Support                                Supp(A) = {1, 2, 3, 4, 5}
+                      Core                                        Core(A) = {3}
+                     0.7-cut                                      A0.7 = {2, 3, 4}
+                      0-cut                                 A0 = {0, 1, 2, 3, 4, 5} = X
+
+ An α-cut uses ≥ α. Support uses > 0, so A0 and Supp(A) need not coincide.
+
+                                                                                           12
+Solution 2: Cardinality
+ EXERCISE 2 · SOLUTION
+
+
+ Scalar cardinality sums the membership grades.
+
+   SC(A) = 0 + 0.3 + 0.7 + 1 + 0.7 + 0.2 = 2.9
+
+ Relative cardinality divides by the size of the universe.
+
+   RC(A) = 2.9 / 6 ≈ 0.483
+
+ SC(A) is a weighted count; |Supp(A)| = 5 is an ordinary count.
+
+                                                                  13
+Exercise 3: Fuzzy Operations
+ PAIR WORK · 3 MIN
+
+ Let A and B be fuzzy sets on X = {x1, x2, x3, x4}.
+         x                x1            x2            x3    x4
+       μA(x)             0.2            0.7           1.0   0.4
+       μB(x)             0.6            0.3           0.8   0.4
+
+ 1. Compute Ac, A ∪ B and A ∩ B.
+ 2. Verify (A ∪ B)c = Ac ∩ Bc at x2.
+ 3. Is A ⊆ B? Is B ⊆ A? Justify your answers.
+
+                                                                  14
+Solution 3: Pointwise Operations
+ EXERCISE 3 · SOLUTION
+
+
+          x                   x1                  x2                  x3             x4
+        μA(x)                0.2                 0.7                 1.0             0.4
+        μB(x)                0.6                 0.3                 0.8             0.4
+       μA (x)
+          c                  0.8                 0.3                 0.0             0.6
+       μA∪B(x)               0.6                 0.7                 1.0             0.4
+       μA∩B(x)               0.2                 0.3                 0.8             0.4
+
+
+ At x2: complement = 1 − 0.7; union = max(0.7, 0.3); intersection = min(0.7, 0.3).
+
+                                                                                           15
+Solution 3: Laws and Inclusion
+ EXERCISE 3 · SOLUTION
+
+ De Morgan’s law at x2
+
+  μ(A∪B) (x2) = 1 − max(0.7, 0.3) = 0.3
+         c
+
+
+
+  μA ∩B (x2) = min(1 − 0.7, 1 − 0.3) = 0.3
+     c   c
+
+
+
+
+ Neither set is included in the other.
+  A ⊆ B fails at x2: 0.7 > 0.3.
+  B ⊆ A fails at x1: 0.6 > 0.2.
+
+ Inclusion must hold at every element; one counterexample is sufficient.
+                                                                           16
+Exercise 4: Is the Set Convex?
+ INDIVIDUAL WORK · 2 MIN
+
+ Two fuzzy sets on the real interval X = [0, 4] are specified below.
+
+       x             0             1              2            3       4
+      μA(x)          0             1              1            0       0
+      μB(x)          0            0.8             0.2         0.8      0
+
+ Between adjacent points, interpolate linearly.
+
+ Determine whether each set is convex.
+ For a non-convex set, give a specific violating triple a < b < c.
+
+                                                                           17
+Solution 4: A Counterexample
+ EXERCISE 4 · SOLUTION
+
+
+ A is convex.
+  Its membership rises, remains at 1,
+  and then falls: no interior dip.
+
+ B is not convex.
+  Choose a = 1, b = 2, c = 3:
+  μB(2) = 0.2 < min(0.8, 0.8).
+
+ Normality and convexity are different properties.
+
+                                                     18
+Exercise 5: Fuzzy Relations
+ GROUP WORK · 4 MIN
+
+ R relates X to Y; S relates Y to Z. Rows and columns are labelled.
+
+      R           y1           y2          y3                  S               z1       z2
+      x1          0.2         0.8          0.5                 y1             0.7       0.3
+      x2          0.9         0.4          0.6                 y2             0.6       1.0
+                                                               y3             0.8       0.5
+
+ 1. Find dom R, ran R and the height h(R).
+ 2. Compute T(X, Z) using max–min composition.
+ Use the shared Y labels to pair entries; this is not ordinary matrix multiplication.
+                                                                                              19
+Solution 5: Projections
+ EXERCISE 5 · SOLUTION
+
+                                                                                        Row
+          R                   y1                   y2                  y3
+                                                                                      maximum
+          x1                 0.2                  0.8                 0.5                  0.8
+          x2                 0.9                  0.4                 0.6                  0.9
+   Column max.               0.9                  0.8                 0.6
+
+  dom R = 0.8/x1 + 0.9/x2
+  ran R = 0.9/y1 + 0.8/y2 + 0.6/y3
+  h(R) = 0.9
+ Notation μ/x pairs a grade with an element; “+” lists entries, rather than adding them.
+                                                                                                 20
+Solution 5: One Entry in Detail
+ EXERCISE 5 · MAX–MIN COMPOSITION
+
+ Compute T(x1, z1) using the three possible intermediate elements.
+
+                      Path                               Minimum along the path
+                 x1 → y1 → z1                                 min(0.2, 0.7) = 0.2
+                 x1 → y2 → z1                                 min(0.8, 0.6) = 0.6
+                 x1 → y3 → z1                                 min(0.5, 0.8) = 0.5
+
+  T(x1, z1) = max(0.2, 0.6, 0.5) = 0.6
+ The minimum limits each path; the maximum selects the strongest path.
+                                                                                    21
+Solution 5: Complete Composition
+ EXERCISE 5 · SOLUTION
+
+ T(x1, z2) = max{min(0.2, 0.3), min(0.8, 1.0), min(0.5, 0.5)} = 0.8
+ T(x2, z1) = max{min(0.9, 0.7), min(0.4, 0.6), min(0.6, 0.8)} = 0.7
+ T(x2, z2) = max{min(0.9, 0.3), min(0.4, 1.0), min(0.6, 0.5)} = 0.5
+
+
+
+                           T                   z1                  z2
+                           x1                 0.6                 0.8
+                           x2                 0.7                 0.5
+ Dimensions: (2 ×3) composed with (3 ×2) gives a 2 ×2 fuzzy relation.
+
+                                                                        22
+Key Takeaways
+ SUMMARY
+
+ Membership represents a degree of belonging.
+  Keep the universe, membership function and interpretation explicit.
+
+ Set properties use different conditions.
+  Support: > 0; core: = 1; α-cut: ≥ α.
+
+ Fuzzy operations are applied pointwise.
+  Standard complement, union and intersection use 1 − μ, max and min.
+
+ Max–min composition combines relations.
+  Match the shared variable; take path minima and then their maximum.
+
+
+                                                                        23
+Thanks for your time
+

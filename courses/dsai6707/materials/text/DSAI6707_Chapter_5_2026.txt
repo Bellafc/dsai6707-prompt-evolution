@@ -1,0 +1,1292 @@
+                                      1
+
+            Not to be redistributed
+            to Course Hero or any
+            other public websites
+
+
+
+     DSAI6707
+     Advanced
+     Computational
+     Intelligence
+     Sem 1, 2026/2027
+
+
+
+
+DSAI6707 Chapter 4
+                                                                       2
+
+
+                   Multimodal Optimization
+Problem: A simple genetic algorithm (GA) cannot maintain stable
+populations at different optima of functions with multiple, equal or
+unequal, peaks.
+
+         f                            f
+
+
+
+                                  x                            x
+Solution: To introduce a controlled competition among different
+solutions near every locally optimal region, which is accomplished
+by incorporating the concepts of niche and species into GA.
+
+                                          DSAI6707 Chapter 4
+                                                                                         3
+
+• A simple GA with no niching converges to a single optimum even
+  though multiple peaks of equal quality may exits. Nature
+  addresses such a problem through the formation of stable
+  subpopulations of organisms surrounding separate niches by
+  forcing similar individuals to share their resources.
+• Niching in general is achieved using a sharing function, which
+  creates subdivisions of the environment by degrading an
+  organism’s fitness proportional to the number of other members
+  in its neighbourhood.
+
+                                   fit_org
+                                   fit_sha = 10
+                                             6
+
+                                                                fit_sha is used in the
+                                                                selection process
+                                                  fit_org
+                                                  fit_sha = 8
+
+                           Example: search space
+                                      DSAI6707 Chapter 4
+                                                                                             4
+
+
+• The amount of sharing contributed by each organism xi into its
+  neighbour xj is determined by their proximity in the decoded
+  parameter space based on distance measure dij. Given p parameters
+  of unequal boundaries over a parameter range [xmin, xmax]
+                                             2
+                   p  xk ,i − xk , j                  x1,i             xk,i      xp,i
+         d ij =                       
+                                         
+                k =1  xk ,max − xk ,min 
+
+
+ xk,i = k-th parameter of individual i;                 x1,j              xk,j     xp,j
+ xk,j = k-th parameter of individual j;            [x1,min, x1,max] …..…. [xp,min, xp,max]
+
+ xk,max = Maximum allowable value for k-th parameter; and
+ xk,min = Minimum allowable value for k-th parameter.
+ p = number of parameters
+                                                 DSAI6707 Chapter 4
+                                                                        5
+
+
+For each dij, we can apply the sharing function s(dij) given by
+
+               s( d ij ) = 
+                                ( )
+                           1 − dij w     if d ij   share
+  s (i)     penalty (i)
+                                  share
+                             0            otherwise d (i) s (d)
+  Fitness      is  reduced     based     on   s
+The limiting distance between the individuals to bes=1,  d=0,
+                                                    shared, shareifisno i
+calculated as the average distance required to identify each niche
+distinctly in the solution space.
+
+This value can be set based on q uniformly spaced assumed peaks,
+  q (i) lamda (d) share = 0.5q − number of parameters
+                                              1
+                                                  p
+
+
+  p  (i)    ss   (i)    lamda     (i)
+The triangular sharing function with w = 1 is used as it allows equal
+degree of sharing between the neighbouring individuals.
+                                            DSAI6707 Chapter 4
+                                                               6
+
+
+
+
+      1.0
+                                   ( )
+                               1 − d ij 1 if d  
+                   s (d ij ) =   share         ij  share
+
+                                 0          otherwise
+Share
+S ( d ij )
+
+
+
+
+             0.0                            s
+                        Distance   d ij         share
+
+
+
+                   Triangular sharing function
+                         (Linear Sharing)
+
+                                          DSAI6707 Chapter 4
+                                                                                     7
+
+ s(dij)  1.0 for all dij. There is a fractional contribution sharing
+  effect when 0 < dij < share .
+ s(dij) = 1.0. When both individuals are identical, they will share
+  a full portion with each other.
+
+ dlim  s( d ij ) → 0 when the individuals are separated > share or
+     →
+     ij
+
+   far apart, they produce no effect on each other.
+
+The shared fitness of the i-th individual is given as
+                                                             Original fitness obtained
+                                     TrueFitness             from cost function
+                   SharedFitness =
+                                        s(dij )
+ Fitness used for
+ selection process
+                                         j    min = 1 , s=1, d=0
+                                              Otherwise,
+In a GA with niching/sharing, the niching/sharing algorithm is fit_sh
+employed before the selection process.
+                                             DSAI6707 Chapter 4
+                                                                                   8
+
+
+
+Evolutionary Computation for Multi-objective Optimization
+ Rationale and Motivation
+  • Many real-world problems have several (possibly conflicting) objectives to
+    be optimized
+  • Some of these problems are transformed (or aggregated) into a single-
+    objective problem (SOP) and thus are solved using single objective
+    optimization techniques
+  • Transforming multi-objective problem (MOP) into SOP requires priori
+    knowledge of relative importance of different objectives
+  • Defining the problem in multi-objective framework is more general and it
+    provides the decision maker different tradeoffs between different objectives
+  • The multi-objective optimization (also known as multi-criteria optimization)
+    aims to find a set of vectors which satisfy the given constraints and
+    optimizes a number of objective functions.
+                                              DSAI6707 Chapter 4
+                                                                                                                     9
+
+
+Example:
+A two-objective functions, f1 and f2, to be minimized are given as
+                                                       x1 = x2 =  = x8 =
+                                                                            1        which one is better?
+                                                                             8
+                              8         1  
+                                                2
+                                                   
+                             
+f1 ( x1 ,..., x8 ) = 1 − exp −   xi −      
+                              i =1       8                                                Trade-off
+                                                                                                curve
+                              8         1  
+                                                 2
+                             
+f 2 ( x1 ,..., x8 ) = 1 − exp −   xi +     
+                              i =1       8                   Pareto optimal set
+                             
+
+where -2 ≤ xi < 2                                      f2                        Unfeasible
+                                                                                  region
+The Pareto optimal front is all
+the points on the line defined
+by                   −1         1
+  x1 = x2 =  = x8                   x1                                              f1    x1 = x2 =  = x8 = −
+                                                                                                                     1
+
+                                 8               8                                                                    8
+
+
+                                                                     DSAI6707 Chapter 4
+                                                                                               10
+
+
+Formal Definitions
+ • A multi-objective optimization problem (MOP) can be written as
+
+              min 𝐹 𝒙 = 𝑓1(𝒙) 𝑓2(𝒙) ⋯ 𝑓𝑀(𝒙)
+            s𝑢𝑏𝑗𝑒𝑐𝑡 𝑡𝑜 𝐺 𝒙 = 𝑔1(𝒙) 𝑔2(𝒙) ⋯ 𝑔𝐽(𝒙) ≥ 0
+                  𝐻 𝒙 = ℎ1(𝒙) ℎ2(𝒙) ⋯ ℎ𝐾 (𝒙) = 0
+                            (𝐿)         𝑈
+                           𝑥𝑖 ≤ 𝑥𝑖 ≤ 𝑥𝑖
+
+ ➢ 𝒙 = 𝑥1 , 𝑥2 , ⋯ , 𝑥𝑁 𝑇 is the 𝑁 dimensional decision variable,
+ ➢ 𝑀 is the number of objectives 𝑓𝑖 ,
+ ➢ 𝐽 inequality and 𝐾 equality constraints,
+     (𝐿)            𝑈
+ ➢ 𝑥𝑖      and 𝑥𝑖       are respectively the lower and upper bound for each decision variable 𝑥𝑖 .
+
+
+                                                         DSAI6707 Chapter 4
+                                                                                 11
+
+
+• For an MOP, 𝑀 must be greater than unity
+• Based on the constraints, a MOP can be classified into one of the following
+  classes
+        𝐽     𝐾      (𝐿)
+                    𝑥𝑖
+                            (𝑈)
+                           𝑥𝑖                  Type of MOP
+        0     0    −∞      ∞                 Unconstrained MOP
+        0     0     𝐶1     𝐶2            Bound constrained MOP
+       >0     0      x      x           Inequality constrained MOP
+        0    >0      x      x            Equality constrained MOP
+       where 𝐶1 and 𝐶2 are some constants.
+
+• For the sake of simplicity, we use 𝑆 denotes the feasible decision space.
+  The feasible decision space is the region which satisfies the constrained in
+  decision space
+• By using this convention, an MOP can be rewritten as
+                    min 𝑓1(𝒙) 𝑓2(𝒙) ⋯ 𝑓𝑀(𝒙)
+                     𝒙∈𝑆
+                                              DSAI6707 Chapter 4
+                                                                                  12
+
+
+
+Dominance relation
+ • Definition
+     – A solution 𝒙1 is said to dominate another solution 𝒙2 (𝒙1 ≼ 𝒙2 ), if and
+       only if both of the following conditions are true:
+         • The solution 𝒙1 is no worse than 𝒙2 in all objectives
+         • The solution 𝒙1 is strictly better than 𝒙2 in at least one objective
+
+
+ • Mathematically,
+
+                                  𝑓𝑖 𝒙1 ≤ 𝑓𝑖 𝒙2 ∀𝑖 ∈ 1, … , 𝑀
+         𝒙1 ≼ 𝒙2 if and only if ൝
+                                 ∃𝑗 ∈ 1, … , 𝑀 |𝑓𝑗 𝒙1 < 𝑓𝑗 𝒙2
+
+
+
+                                              DSAI6707 Chapter 4
+                                                                        13
+
+
+Non-dominated Set
+ • Given a set of solutions, we can perform all possible pairwise
+   comparisons and find the solutions which are not dominated by any
+   solution in the set
+ • Definition - Non-Dominated Set
+       • Among a set of solutions 𝑃, the non-dominated set of solutions
+         𝑃′ are those that are not dominated by any member of the set 𝑃
+ • Definition - Pareto Optimal Set (in decision space)
+       • The set of solutions that are non-dominated in the feasible
+         objective space
+ • Definition - Pareto Optimal Front (in objective space)
+       • The set of non-dominated solutions in the feasible objective
+         space
+
+
+                                          DSAI6707 Chapter 4
+                                                                           14
+
+
+Classical Approaches
+
+ • Generating Pareto optimal solutions plays an important role in multi-
+   objective optimization. The term vector optimization is sometimes
+   used to denote the problem of identifying the Pareto optimal set
+ • Classical approaches often solve the MOP by scalarization. It means
+   converting the MOP into a single or a family of SOP with a real-valued
+   objective function
+ • We are interested in generating Pareto optimal solutions (POS)
+ • A-Posteriori Methods
+     • Generate the Pareto optimal set (or a part of it)
+     • Present it to the decision maker (DM)
+     • Let the DM select one
+
+                                         DSAI6707 Chapter 4
+                                                                                 15
+
+
+Weighted Sum Method (WSM)
+ • This method scalarizes MOP into SOP by multiplying each objective with
+   a predefined weight
+                                  𝑀
+                         min ෍        𝑤𝑚 𝑓𝑚 (𝒙)
+                          𝒙𝜖𝑆     𝑚=1
+   where 𝑤𝑚 is the weight of the 𝑚-th objective function. The weight
+   coefficients 𝑤𝑚 must be real and positive. It is usual practice that weight
+   are normalized, such that σ𝑀
+                              𝑚=1 𝑤𝑚 = 1
+ • To use WSM as a posteriori method, a set of weight vectors has to be
+   specified. The correlation and some nonlinear effects between weights
+   and MOP are not easy to be understood
+ • The advantage of WSM is that it is relatively simple and easy to use
+ • Evenly distributed weight vectors do not necessary produce an evenly
+   distributed representation of the Pareto optimal set and some of the
+   Pareto optimal solutions may fail to be found.
+
+
+                                             DSAI6707 Chapter 4
+                                                                                             16
+
+
+            Multi-objective Evolutionary Algorithms (MOEA)
+• Evolutionary Multi-objective Optimization (EMO) is an application of
+  evolutionary algorithm to solve multi-objective optimization problem
+• MOEAs are used to approximate the Pareto-optimal front of multi-objective
+  problems
+• Many MOEAs have been proposed in the literature
+     • Multi-objective Genetic Algorithm (MOGA)
+     • Non-Dominated Sorting Algorithm II (NSGAII)
+     • Incrementing Multi-objective Evolutionary Algorithm (IMOEA)
+     • Multiobjective Evolutionary Algorithm based on Decomposition (MOEA/D)
+• These algorithms mainly different in, e.g., Fitness assignment scheme; Diversity
+  preservation; Sharing and Elitism strategies
+Tan, K. C., Khor, E. F. and Lee, T. H. Multiobjective Evolutionary Algorithms and Applications,
+Springer-Verlag, United Kingdom, 2005.
+                                                        DSAI6707 Chapter 4
+                                                                                                               17
+
+
+                Multi-objective Evolutionary Algorithms (MOEA)
+
+                                             Initialization           x1, x2, …, xN
+
+
+
+                                           Fitness Evaluation         f(x1), f(x2), …, f(xN)
+                Check terminated                                                      How to select parent
+                condition                                                             solutions
+                   Termination                                             Mating Selection
+
+
+                   Selection                                                   Recombination/
+Select
+                                                                                  Crossover
+individual to                                                                                       How to
+survive                                                                                             combine
+                  Fitness Evaluation                                        Mutation
+                                                                                                    parent
+                  f(x1), f(x2), …, f(xN)                                                            solutions to
+                                                                     Perturb the generated
+                                                                                                    create
+                                                                     offspring solution
+                                                                                                    offspring
+                                                                                                    solutions
+
+
+                                                                DSAI6707 Chapter 4
+                                                                                         18
+
+           Multi-objective Evolutionary Algorithms (MOEA)
+▪ EMO needs to address several issues                   Fonseca and Fleming,1995
+                                                                         Pareto front/Non-
+    ✓ Fitness assignment, preference                                    dominated solutions
+
+    ✓ Good spread, uniform distribution,            Unfeasible
+                                                     Region
+       minimum proximity                   f2
+    ✓ Many objectives, constraints
+    ✓ Noise, dynamic landscape, robust
+       optimization…
+                                                                   f1
+▪ EA is a powerful tool for solving MO optimization problems
+
+    ✓ Population-based, and capable of searching for the global trade-off
+    ✓ Robust and applicable to a wide range of problems
+    ✓ Capable of handling discontinuous and multi-dimensional problems
+
+                                                DSAI6707 Chapter 4
+                                                                                     19
+
+
+• The Pareto ranking assigns the same smallest cost for all non-dominated
+  individuals, while the dominated individuals are ranked according to how many
+  individuals in the population dominating them
+
+• The rank of an individual x in a population can be given by rank(Fx) = 1 + qx,
+  where qx is the number of individuals dominating the individual Fx expressed
+  in the objective domain.
+
+                              non-dominated individuals
+                         f2
+                                                                 dominated individuals
+                                                   5
+      Pareto optimal              1
+      ranking                              2
+                                                             4
+                                               2
+                                       1
+                                                       1
+
+                                                                 f
+                                               DSAI6707 Chapter1 4
+                                                              20
+
+
+ What to change in a Simple GA for MO optimization?
+
+
+
+
+Modify the Fitness Computation:
+• Emphasize non-dominated
+  solutions for convergence (via
+  Pareto ranking)
+• Emphasize less crowded solutions
+  for diversity (via sharing function)
+
+
+          why sharing is needed for MO optimizat
+                                         DSAI6707 Chapter 4
+                                                                                       21
+
+                             DECISION SUPPORT
+▪ In design optimization, a set of specification or design requirements are often
+  given in a-priori
+
+▪ Goal (MOGA)
+
+    ✓ Desired value for each objective
+
+    ✓ Can be used to specify practical design
+      specification/requirements
+
+    ✓ Individuals that satisfy the goal setting
+      have a lower (better) rank
+
+ Tan, K. C., Khor, E. F., Lee, T. H. and Sathikannan, R., 'An evolutionary algorithm
+ with advanced goal and priority specification for multi-objective optimization',
+ Journal of Artificial Intelligence Research, vol. 18, pp. 183-215, 2003.
+
+                                                  DSAI6707 Chapter 4
+                                                   22
+
+
+
+MOEA minimization with a feasible goal setting
+
+
+
+
+    Gen = 5                             Gen = 70
+
+
+                              DSAI6707 Chapter 4
+                                                               23
+
+
+
+
+Feasible but extreme goal setting    Unfeasible goal setting
+
+
+
+
+                                    DSAI6707 Chapter 4
+                                                   24
+
+
+
+Logical “OR” and “AND” connectives among goals
+
+
+
+
+(G1  G2  G3  G4)               (G1  G2  G3)
+
+
+
+                           DSAI6707 Chapter 4
+                                                                    25
+
+
+▪ Priority/Preference
+  ✓ Assign relative importance of each objective
+    for practical applications
+
+  ✓ Among strings of equal rank, priority can be
+    used to determine superiority
+
+  ✓ Example: Stability in control system design
+
+
+▪ Soft/hard Objectives
+  ✓ Soft: Always considered in the evolution
+  ✓ Hard: Considered while goal is not satisfied
+  ✓ Example: SS error and actuator saturation
+
+
+                                               DSAI6707 Chapter 4
+                                                                                     26
+
+
+▪ Dynamic Population
+  ✓ Compared with SO problems, MO optimization often requires a larger
+    population size in order to cover the trade-off surface
+  ✓ Population size can be changed according to the population distribution at
+    each generation
+  ✓ Generally, we can start with a small population for initial search.
+    Subsequently increase or decrease the population size according to current
+    Pareto front in the evolution process
+  ✓ The increased individuals can be obtained via local fine-tuning by
+    generating additional “good” individuals to fill up gaps or discontinuities in
+    the current Pareto front
+
+ Tan, K. C., Lee, T. H. and Khor, E. F., 'Evolutionary algorithm with dynamic
+ population size and local exploration for multiobjective optimization', IEEE
+ Transactions on Evolutionary Computation, vol. 5, no. 6, pp. 565-588, 2001.
+
+                                              DSAI6707 Chapter 4
+                                  27
+
+
+Local Perturbation
+
+
+
+
+             DSAI6707 Chapter 4
+                                                                 28
+
+
+
+
+Population size versus generation      Population distribution
+
+
+
+
+                                    DSAI6707 Chapter 4
+                                                                                                                                29
+
+                                                          JOURNALS
+•   IEEE Transactions on Evolutionary Computation            •   IEEE Computational Intelligence Magazine
+•   Evolutionary Computation: MIT Press                      •   Computational Optimization and Applications
+•   IEEE Transaction on Cybernetics                          •   Transactions on Electronic, Information and Systems
+•   Expert Systems with Applications                         •   International Journal of Approximate Reasoning
+•   Studies in Computational Intelligence                    •   International Journal of Computational Intelligence and Applications
+•   Applied Soft Computing Journal                           •   Neurocomputing
+•   European Journal of Operational Research                 •   International Journal of Computational Intelligence Research
+•   Energy                                                   •   Soft Computing
+•   Soft Computing                                           •   Journal of Computer Science and Technology
+•   Computers and Operational Research                       •   Journal of Scheduling
+•   Engineering Applications of Artificial Intelligence      •   Journal of global optimization
+•   Information Science                                      •   Journal of Engineering Design
+•   Memetic Computing                                        •   International Transactions in Operational Research
+•   Annals of Operational Research                           •   International Journal of Computational Intelligence System
+•   Artificial Intelligence Review                           •   Journal of the Operational Research Society
+•   Natural Computing                                        •   European Transactions on Electrical Power
+•   International Journal of Innovative Computing,           •   Journal of Intelligence Manufacturing
+    Information and Control                                  •   Journal of System Architecture
+•   Engineering Optimization                                 •   Frontiers of Computer Science
+                                                                        DSAI6707 Chapter 4
+                                                                                                   30
+
+                        SOME PERFORMANCE METRICS
+
+▪ Generational Distance (GD) (Veldhuizen, 1999)
+  Measures how far the evolved solution set is from the
+  true Pareto front.
+                                                         f2
+                                                                        Non-dominated solution
+▪ Spacing (S) (Schott, 1995)
+
+
+
+
+                                                    Minimization
+                                                                         Pareto Frontier
+
+  Measures how evenly the evolved solutions
+  distribute itself.
+                                                                              Non-dominated set
+
+
+▪ Maximum Spread (MS) (Zitzler, 1999)
+  Measures how well the true Pareto front is
+  covered by the evolved solution set.
+                                                                          Minimization            f1
+▪ Hyper-Volume Ratio (HVR) (Veldhuizen, 1999)
+  Calculates the volume covered by the evolved solutions.
+
+
+
+                                                   DSAI6707 Chapter 4
+                                                                                                                                              31
+
+
+                                             PERFORMANCE ASSESSMENT
+▪ Inverted Generational Distance (IGD) (M. A. Villalobos-Arias, 2005)
+
+    ✓ Measure the proximity as well as diversity between the obtained Pareto
+      front and the Pareto Optimal front
+
+    ✓ The Euclidean distance is measured from each obtained solution to the
+      optimal solutions set
+         F2                                                                     F2                                    σ𝑁          ∗
+                                                                                                                       𝑖=1 𝑑(𝑃 − 𝑃 )𝑖
+                                                                                                                𝐼𝐺𝐷 =
+                                                                                                                             𝑁
+                                   Ev                                                            Ev
+                                        ol                                                            ol
+                                             ve                                                            ve
+                                                  d                                                             d
+              Pa                                      So                                                            So
+                                                                                 Pa                                      lu
+                   re                                      lu                         re                                      tio
+                      to                                        tio                      to                                         ns
+                           O                                          ns                      O
+                            pt                                                                 pt
+                              im                                                                 im
+                                   al                                                                 al
+                                        Fr                                                                 Fr
+                                          on                                                                 on
+                                               t                                                                    t
+                                                                           F1                                                            F1
+
+                                                                                     DSAI6707 Chapter 4
+                                                                                                                                32
+
+                                       A FEW TEST PROBLEMS
+  1
+
+0.8
+                                           Test                  Features
+0.6
+                                           Problem
+0.4                                    1   ZDT1                  Pareto front is convex.
+0.2
+                                       2   ZDT2                  Pareto front is non-convex.
+  0
+       0   0.2   0.4   0.6   0.8   1
+                                       3   ZDT3                  Pareto front consists of several noncontiguous convex parts.
+                 ZDT1
+  1
+                                       4   ZDT4                  Pareto front is highly multi-modal where there are 219 local
+0.8
+                                                                 Pareto fronts.
+0.6                                    5   ZDT6                  The Pareto optimal solutions are non-uniformly distributed
+0.4                                                              along the global Pareto front. The density of the solutions
+0.2                                                              is low near the Pareto front and high away from the front.
+  0
+       0   0.2   0.4   0.6   0.8   1
+
+
+                 ZDT2
+  1                                         1                                                  1
+
+0.5                                        0.8                                             0.8
+
+                                           0.6                                             0.6
+  0
+                                           0.4                                             0.4
+-0.5
+                                           0.2                                             0.2
+
+ -1                                         0                                                  0
+       0   0.2   0.4   0.6   0.8   1             0   0.2   0.4      0.6   0.8   1              0.2   0.4    0.6   0.8   1
+
+                 ZDT3                                      ZDT4                                            ZDT6
+
+                                                                                DSAI6707 Chapter 4
+                                                                                                                                                            33
+
+
+
+ 1
+
+0.8
+                                                                          Test               Features
+0.6
+                                                                          Problem
+0.4                                                             6         FON                Pareto front is non-convex.
+0.2
+                                                                7         KUR                Pareto front consists of several noncontiguous convex parts.
+ 0
+      0    0.2         0.4         0.6          0.8       1
+                                                                8         POL                Pareto front and Pareto optimal solutions consist of several
+                      FON                                                                    noncontiguous convex parts.
+  5
+                                                                9         TLK                Noisy landscape.
+  0
+                                                                10        TLK2               Non-stationary environment.
+ -5
+
+
+-10
+
+
+-15
+  -20     -19        -18     -17         -16        -15   -14
+
+                           KUR
+25                                                                   10                                            0.25
+
+20                                                                   8                                              0.2
+
+15                                                                   6                                             0.15
+
+10                                                                   4                                              0.1
+
+ 5                                                                   2                                             0.05
+
+ 0                                                                   0                                               0
+      0          5           10                15         20              0     0.2   0.4    0.6   0.8   1                0   0.2   0.4   0.6   0.8   1
+
+                             POL                                                       TLK                                          TLK2
+
+                                                                                                             DSAI6707 Chapter 4
+                                                                                                                                           34
+
+  1
+                                                                          SOME TEST PROBLEMS
+0.8
+
+
+0.6                                                      Problem                                    Remarks
+0.4
+                                                        (variables)
+0.2                                          1         ZDT1 (100)           Convex Pareto front
+  0
+       0   0.2   0.4   0.6   0.8   1
+                                             2         ZDT2 (100)           Concave Pareto front
+                  ZDT1
+  1
+                                             3         ZDT3 (100)           Non-continuous concave Pareto front
+0.8
+                                             4         ZDT4 (10)            Convex Pareto front and highly multi-modality
+0.6
+                                             5         ZDT6 (100)           Non-uniformity concave Pareto front
+0.4
+                                             6         DTLZ1 (20)           High-dimensionality and linear Pareto optimal front
+0.2
+
+
+  0
+                                             7         DTLZ2 (20)           High-dimensionality and spherical Pareto optimal front
+       0   0.2   0.4   0.6   0.8   1
+                  ZDT2                       8         DTLZ3 (20)           High-dimensionality and high multi-modality.
+  1
+
+
+0.5
+                                        1                                        1                               1
+
+
+  0                                                                                                             0.5
+                                       0.5                                      0.5
+
+
+-0.5                                                                             0                               0
+                                        0                                   0                               0    0                          0
+                                                                                 0
+                                        0
+ -1                                                                 0.5               0.5            0.5              0.5            0.5
+                                                 0.5
+       0   0.2   0.4   0.6   0.8   1
+                  ZDT3                                     1   1    DTLZ1                   1   1   DTLZ2                   1   1   DTLZ3
+
+
+                                                                                      DSAI6707 Chapter 4
+                                                                                                                    35
+
+
+            A COOPERATIVE CO-EVOLUTIONARY ALGORITHM
+
+▪ Decompose a complex problem into smaller problems via co-
+                                                                                                 Individuals in
+  evolving subpopulations cooperatively                                                            subpop i
+
+
+
+                                                                          Representatives
+  ✓ A divide-and-conquer strategy                                                                 Collaborate
+
+
+  ✓ Each subpopulation evolves a                         Subpop 1            Representatives   Complete solution
+                                                            for
+
+    different decision variable                         variable 1
+
+                                                                                                   Evaluate
+  ✓ Fitness is dependent on the                                       Subpop m
+                                                                                                                    Rank
+                                            Subpop i
+                                               for                       for                   Complete solution
+    collaboration between each             variable i                variable m                 and its objective
+
+
+    subpopulation                                                                               Update achive
+                                                                             Representatives
+                                                         Subpop k
+                                                            for
+                                                        variable k                                  Achive
+
+
+
+                                                                                                  Assign rank
+K. C. Tan, Y. J. Yang, C. K. Goh, “A distributed cooperative coevolutionary
+algorithm for multi-objective optimization”, IEEE Transactions on Evolutionary
+Computation, Vol. 10, No. 5, pp. 527-549, 2006.
+                                                        DSAI6707 Chapter 4
+                                                                                       36
+                         Cooperation Methods
+▪ The model of cooperation among subpopulations is an important
+  issue in cooperative co-evolution
+   ✓ The simplest approach is to select the best individual as the representative.
+     However, this approach tends to perform poorly for problems with high
+     parameter inter-dependency
+   ✓ Alternatively, a random individual can be selected as the representative.
+     However, this often results in a slower convergence rate
+
+▪ Four different methods have been examined.
+   ✓ C1: The best individual is selected as representative
+   ✓ C2: The best and a random individuals are selected as representatives. The
+     better solution resulting from the two co-operations is retained
+   ✓ C3: The best two individuals are selected as representatives. The better
+          solution resulting from the co-operations with the best representative and
+     either representative is retained
+   ✓ C4: The best two individuals are selected as the representatives.
+          Cooperation is performed with either one of the representatives
+                                                  DSAI6707 Chapter 4
+                                                                                                  37
+
+
+                                 A Distributed CCEA
+
+▪ Parallelization Strategy               Subpopulations              Peers       Central server
+
+                                                                     Peer 1
+  ✓ Subpopulations are partitioned
+                                                                 1
+    into a number of groups and
+                                                                             2
+    assigned to peer computers
+                                                  1
+  ✓ Indirect cooperation is achieved
+                                                                     Peer 2
+    through the exchange of archive       2
+                                                      3          3                    Server
+    and representatives between
+                                                                             4
+    peers and a central server            4
+
+  ✓ Peers are synchronized at fixed                   5
+                                                                     Peer 3
+    intervals to ensure better                6                  5
+    cooperation
+                                                                             6
+
+
+
+
+                                                      DSAI6707 Chapter 4
+                                                                            38
+
+▪ The DCCEA is designed and embedded in a distributed computing framework
+  named Paladin-DEC.
+  ✓ Developed upon the technology of Java 2
+    platform of Enterprise Edition (J2EE)
+  ✓ Exploit the inherent parallelism of
+    evolutionary algorithms
+  ✓ Incorporates the features of robustness,
+    security, and workload balancing
+
+
+
+
+                                               DSAI6707 Chapter 4
+                                                                                                                                                                                           39
+
+                                                        Comparative Results
+                                                            Generational Distance
+                 Generational Distance                         Generational Distance                          Generational Distance                          Generational Distance
+
+                                                                                             0.05
+                                               0.7                                                                                          0.06
+  2
+                                               0.6
+                                                                                             0.04                                           0.05
+
+ 1.5                                           0.5
+                                                                                                                                            0.04
+                                               0.4                                           0.03
+  1                                                                                                                                         0.03
+                                               0.3
+                                                                                             0.02
+                                               0.2                                                                                          0.02
+ 0.5
+                                               0.1                                                                                          0.01
+                                                                                             0.01
+
+  0                                             0                                                                                              0
+       CCEA   PAES   PESA NSGAII SPEA2 IMOEA         CCEA   PAES   PESA NSGAII SPEA2 IMOEA          CCEA   PAES PESA NSGAII SPEA2 IMOEA            CCEA   PAES   PESA NSGAII SPEA2 IMOEA
+
+
+
+                       ZDT4                                          ZDT6                                          FON                                            KUR
+Observation:                                                                                                  Generational Distance
+
+                                                                                                                                            2000
+                                                                                                                                                             Generational Distance
+
+
+
+                                                                                               2
+
+▪ CCEA escapes from local optima of ZDT4                                                                                                    1500
+                                                                                              1.5
+  and DTLZ3                                                                                                                                 1000
+                                                                                               1
+
+
+▪ CCEA scales well for high-dimensional MO                                                    0.5                                           500
+
+
+  problems                                                                                     0                                              0
+                                                                                                    CCEA   PAES   PESA NSGAII SPEA2 IMOEA          CCEA   PAES   PESA NSGAII SPEA2 IMOEA
+
+▪ CCEA performs less well for KUR due to the
+                                                                                                                  DTLZ2                                          DTLZ3
+  high parameter inter-dependency
+                                                                                                           DSAI6707 Chapter 4
+                                                                                                                                                                                        40
+
+                                                       Comparative Results
+                                                                                Spacing
+                      Spacing                                       Spacing                                       Spacing                                       Spacing
+1.6                                           4.5                                            2
+
+                                                                                            1.8
+1.4                                            4
+                                                                                                                                            2
+                                              3.5                                           1.6
+1.2
+                                               3                                            1.4
+ 1
+                                                                                            1.2                                           1.5
+                                              2.5
+0.8                                                                                          1
+                                               2
+0.6                                                                                         0.8
+                                              1.5                                                                                           1
+0.4                                                                                         0.6
+                                               1
+0.2                                                                                         0.4
+                                              0.5
+                                                                                            0.2                                           0.5
+ 0                                             0
+      CCEA   PAES   PESA NSGAII SPEA2 IMOEA         CCEA   PAES   PESA NSGAII SPEA2 IMOEA         CCEA   PAES   PESA NSGAII SPEA2 IMOEA         CCEA   PAES   PESA NSGAII SPEA2 IMOEA
+
+
+
+                     ZDT4                                          ZDT6                                          FON                                           KUR
+                                                                                                                  Spacing                                       Spacing
+                                                                                              3
+  Observation:                                                                              2.5
+                                                                                                                                          2.5
+
+
+
+                                                                                                                                           2
+
+  ▪ CCEA generally shows good performance                                                     2
+
+                                                                                                                                          1.5
+                                                                                            1.5
+    in spacing
+                                                                                              1                                            1
+
+
+  ▪ CCEA handles the non-uniform                                                            0.5
+                                                                                                                                          0.5
+
+
+    distribution of ZDT6 well                                                                 0
+                                                                                                  CCEA   PAES   PESA NSGAII SPEA2 IMOEA         CCEA   PAES   PESA NSGAII SPEA2 IMOEA
+
+
+
+                                                                                                                DTLZ2                                         DTLZ3
+
+
+                                                                                                         DSAI6707 Chapter 4
+                                                                                                                                                                                                 41
+
+                                                           Comparative Results
+                                                                        Maximum Spread
+                     Maximum Spread                                   Maximum Spread                                  Maximum Spread                                  Maximum Spread
+                                                   1                                               1
+  1                                                                                                                                                1
+
+
+0.95                                            0.995                                             0.9                                            0.95
+
+ 0.9                                             0.99                                             0.8                                             0.9
+
+0.85                                            0.985                                                                                            0.85
+                                                                                                  0.7
+
+ 0.8                                             0.98
+                                                                                                                                                  0.8
+                                                                                                  0.6
+0.75                                            0.975
+                                                                                                                                                 0.75
+                                                                                                  0.5
+ 0.7                                             0.97
+                                                                                                                                                  0.7
+       CCEA   PAES    PESA NSGAII SPEA2 IMOEA           CCEA   PAES    PESA NSGAII SPEA2 IMOEA          CCEA   PAES    PESA NSGAII SPEA2 IMOEA          CCEA   PAES    PESA NSGAII SPEA2 IMOEA
+
+
+
+                      ZDT4                                              ZDT6                                            FON                                               KUR
+                                                                                                                      Maximum Spread                                  Maximum Spread
+
+                                                                                                   1                                               1
+
+Observation:                                                                                     0.99
+                                                                                                                                                  0.9
+                                                                                                 0.98
+
+                                                                                                 0.97
+       ▪ CCEA performs competitively as                                                          0.96
+                                                                                                                                                  0.8
+
+
+                                                                                                 0.95                                             0.7
+         compared to other MOEAs                                                                 0.94
+                                                                                                                                                  0.6
+                                                                                                 0.93
+
+                                                                                                 0.92
+                                                                                                                                                  0.5
+                                                                                                 0.91
+                                                                                                        CCEA   PAES    PESA NSGAII SPEA2 IMOEA          CCEA   PAES    PESA NSGAII SPEA2 IMOEA
+
+
+
+
+                                                                                                                       DTLZ2                                            DTLZ3
+
+
+                                                                                                               DSAI6707 Chapter 4
+                                                                                                                                                                                                    42
+
+                             Behaviors of CCEA
+
+▪ ZDT4
+                                                   1                                                                              0.9
+
+                                                                                                                                  0.8
+                                                0.8
+                                                                                                                                  0.7
+ ✓ Oscillations of x1 help to sample                                                                                              0.6
+                                                0.6
+   the solutions along the Pareto
+
+
+
+
+                                                                                                                            10
+                                                                                                                                  0.5
+
+
+
+
+                                                                                                                          x ~x
+                                           1
+                                         x
+                                                                                                                                  0.4
+   front uniformly
+
+
+
+
+                                                                                                                            2
+                                                0.4
+                                                                                                                                  0.3
+
+
+ ✓ Variables x2 to x10 converge to the          0.2                                                                               0.2
+
+                                                                                                                                  0.1
+
+   optimal location gradually                      0
+                                                       0        50         100    150    200          250          300
+                                                                                                                                     0
+                                                                                                                                         0        50         100    150    200          250         300
+                                                                           Generation number                                                                 Generation number
+                                                                                                                         ZDT4
+
+▪ FON                                           0.6                                                                               0.3
+
+
+
+ ✓ All the variables oscillate and              0.4
+
+
+                                                0.2
+                                                                                                                                  0.2
+
+
+
+   converge in a similar pace                     0
+                                                                                                                                  0.1
+
+
+                                                                                                                                    0
+                                           4
+
+
+
+
+                                                                                                                             8
+                                         x ~x
+
+
+
+
+                                                                                                                           x ~x
+                                                -0.2
+
+ ✓ This behavior is related to the
+                                           1
+
+
+
+
+                                                                                                                             5
+                                                                                                                                  -0.1
+                                                -0.4
+
+
+   high inter-dependency among the              -0.6                                                          x1
+                                                                                                              x2
+                                                                                                                                  -0.2
+                                                                                                                                                                                               x5
+                                                                                                                                                                                               x6
+
+   parameters                                   -0.8                                                          x3
+                                                                                                              x4
+                                                                                                                                  -0.3                                                         x7
+                                                                                                                                                                                               x8
+                                                 -1                                                                               -0.4
+                                                       0   50        100    150    200    250   300     350        400                   0   50        100    150    200    250   300    350        400
+                                                                            Generation number                                                                 Generation number
+
+
+                                                                                                                         FON
+                                                                                 DSAI6707 Chapter 4
+                                                                                                      43
+                              Effects of the Cooperation
+                Median GD for CCEA                                  Median S for CCEA
+  Problem     C1         C2         C3         C4       Problem    C1       C2          C3    C4
+   ZDT1     4.13E-04   4.24E-04   4.04E-04   3.14E-01    ZDT1     0.1757   0.1771   0.1667   0.8240
+   ZDT2     4.05E-04   4.81E-04   6.35E-04   5.09E-01    ZDT2     0.1613   0.1553   0.1600   0.9328
+   ZDT3     1.45E-03   1.41E-03   1.27E-03   3.64E-01    ZDT3     0.2815   0.2867   0.2733   0.9952
+   ZDT4     6.98E-05   7.08E-05   1.48E-04   1.26E+00    ZDT4     0.1333   0.1436   0.1409   1.9624
+   ZDT5     1.27E-06   1.27E-06   1.26E-06   2.90E+00    ZDT5     0.7114   0.7125   0.7125   1.1676
+   ZDT6     4.89E-07   5.00E-07   4.86E-07   1.43E+00    ZDT6     0.1754   0.1822   0.1881   0.8174
+   FON      2.35E-02   2.32E-02   2.28E-02   2.13E-02    FON      0.2687   0.3497   0.5291   0.2676
+   KUR      3.55E-02   2.31E-02   2.35E-02   1.76E-02    KUR      0.7919   0.7145   0.7154   0.6817
+   TLK      4.80E-01   5.23E-01   4.90E-01   5.34E-01    TLK      1.0905   1.0284   1.0135   1.0772
+   DTLZ2    8.57E-04   4.07E-01   2.08E-02   5.44E-01   DTLZ2     0.1245   0.2658   0.1604   0.2929
+   DTLZ3    1.82E+00   2.24E+00   1.65E+00   5.82E+02   DTLZ3     0.6638   0.8103   0.7525   0.7201
+
+
+▪ C1 is the greediest method. It performs well for problems with low parameter inter-
+  dependency, but gives poor results for those with high inter-dependency
+▪ C4 is the least greedy approach. It performs well for problems with high parameter inter-
+  dependency, but gives poor results for those with low inter-dependency
+▪ C2 and C3 provide a balance between greedy search and diversity maintenance, which
+  achieve generally good and robust performances
+                                                 DSAI6707 Chapter 4
+                                                                                            44
+
+
+
+     11 PCs in LAN                                  Configurations
+
+PC          Configuration CPU   Populations                Subpopulation size 20; archive
+                                                           size 100
+          (MHz)/RAM (MB)
+                                Chromosome length          30 bits for each variable
+
+server     PIV 1600/512         Selection                  Tournament selection
+
+peer 1     PIII 800/ 512        Crossover operator         Uniform crossover
+peer 2     PIII 800/ 512
+                                Crossover rate             0.8
+peer 3     PIII 800/ 256
+peer 4     PIII 933/384         Mutation operator          Bit-flip mutation
+peer 5     PIII 933/128         Mutation rate              2/L, where L is the chromosome
+peer 6     PIV 1300/ 128                                   length
+peer 7     PIV 1300/ 128        Number of evaluation       120,000
+
+peer 8     PIII 933/ 512
+                                Exchange interval          5 generations
+peer 9     PIII 933/ 512
+                                Sync. interval             10 generations
+peer 10    PIII 933/256
+
+
+                                                 DSAI6707 Chapter 4
+                                                 45
+
+
+Generational Distance             Spacing
+
+
+
+
+  Maximum Spread            Hyper-volume Ratio
+
+
+
+
+                        DSAI6707 Chapter 4
+                                                                                                                                   46
+
+
+                          Speedup                                                           Runtime
+                                                                          300
+
+
+Number of peers   ZDT1     ZDT2    ZDT3    ZDT4    ZDT6                   250
+     2             1.52     1.70    1.47    1.23    1.01
+                                                                                                                                 ZDT1
+     3             2.01     1.99    1.88    1.47    1.11                  200
+                                                                                                                                 ZDT2
+
+
+
+
+                                                           Run time (s)
+     4             2.25     2.21    1.95    1.50    1.14
+     5             2.48     2.69    2.15    1.56    1.14                                                                         ZDT3
+                                                                          150
+     6             2.81     3.03    2.83    1.70    1.29                                                                         ZDT4
+     7             2.87     3.32    2.77    1.88    1.25                  100
+                                                                                                                                 ZDT6
+     8             3.38     3.27    2.92    1.82    1.26
+     9             3.46     3.36    2.96    1.83    1.26                  50
+     10            3.46     3.18    2.79    1.82    1.25
+                                                                           0
+                                                                                1   2   3   4      5     6      7   8   9   10
+                                                                                                Number of peers
+
+
+▪ Observation
+  ✓ Effective in reducing simulation runtime without sacrificing performance
+  ✓ Speedup achievable is more significant for large problems
+  ✓ The increase of communication cost counteracts the reduction of
+        computation cost with increasing number of peers
+                                                                                DSAI6707 Chapter 4
+

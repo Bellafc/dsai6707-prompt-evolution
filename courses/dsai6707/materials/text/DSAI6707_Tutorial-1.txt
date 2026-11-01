@@ -1,0 +1,384 @@
+Tutorial 1
+DSAI6707 Artificial Intelligence Concepts
+
+
+                                              TA: ZHANG Yajie
+                                                   DSAI
+                                        yajie.zhang@connect.polyu.hk
+                       How to search a paper?
+
+
+
+Outline                How to read a paper?
+
+
+Mainly for AI papers   How to write a paper?
+
+
+
+                       How to present a paper?
+How to search a paper
+How to search a paper
+
+• Narrow the search scope: top conferences and journals
+ • Papers are published in journals with a high Impact Factor (IF).
+ • Papers are published in conferences recommended by China Computer
+   Federation (CCF).
+How to search a paper
+• Top journals with high IFs
+  • Nature Machine Intelligence
+  • IEEE Transactions on Pattern Analysis and Machine Intelligence
+  • IEEE Transactions on Cybernetics
+
+  • IEEE Transactions on Evolutionary Computation
+  • IEEE Transactions on Neural Networks and Learning Systems
+
+  • IEEE Transactions on Image Processing
+  • IEEE Transactions on Knowledge and Data Engineering
+
+  • …
+How to search a paper
+• Top conferences recommended by CCF
+ Database/Data Mining/Content Retrieval
+
+ • ACM Knowledge Discovery and Data Mining (ACM SIGKDD)
+
+ • IEEE International Conference on Data Engineering (IEEE ICDE)
+
+ • ACM Conference on Management of Data (ACM SIGMOD)
+
+ • ……
+
+ Artificial Intelligence
+ • IEEE Conference on Computer Vision and Pattern Recognition (CVPR)
+
+ • International Conference on Computer Vision (ICCV)
+
+ • International Conference on Machine Learning (ICML)
+
+ • AAAI Conference on Artificial Intelligence (AAAI)
+
+ • …….
+ Other scopes: https://www.ccf.org.cn/Academic_Evaluation/By_category/)
+How to search a paper
+
+
+    DBLP            Google Scholar   IEEE Xplore
+    How to search a paper
+•    Online communities              • Latest research
+                                      • Discussion about preprinted/published
+     • PaperWeekly                      papers.
+
+     • AI Era
+                                     • Comments from other researchers
+     • Google AI Blog                 • Pros and Cons.
+
+     • MIT News - Machine learning    • Detailed Explanations.
+How to read a paper
+How to read a paper
+According to Andrew Ng[1]:
+
+                Compile a paper list：
+
+                • 5-20 papers: Basic understanding of the research area.
+
+                • 50-100 papers: Very good understanding about the research area.
+
+
+
+
+ [1] https://www.youtube.com/watch?v=733m6qBH-jI
+How to read a paper
+You should read paper in multiple times[1]:
+
+       The first time you read:
+
+                                   Title
+
+                                  Abstract
+
+                                  Pipelines and figures
+
+
+
+ [1] https://www.youtube.com/watch?v=733m6qBH-jI
+How to read a paper
+You should read paper in multiple times[1]:
+
+       The second time you read:
+
+                                   Introduction
+
+                                  Conclusions
+
+                                  Look at pipelines and figures again
+
+
+
+ [1] https://www.youtube.com/watch?v=733m6qBH-jI
+How to read a paper
+You should read paper in multiple times[1]:
+
+       The third time you read:
+
+                           Whole thing, but skip math.
+
+
+
+
+ [1] https://www.youtube.com/watch?v=733m6qBH-jI
+How to read a paper
+You should read paper in multiple times[1]:
+
+       The fourth time you read:
+
+                           Whole thing, but skip parts that don’t make sense.
+
+
+
+
+ [1] https://www.youtube.com/watch?v=733m6qBH-jI
+How to read a paper
+
+       When reading, keep in mind[1]:
+
+                  • What did the authors try to accomplish?
+
+                  • What are the key elements of the approach?
+                  • What can you use for your own research?
+                  • What other references do you want to follow?
+
+
+
+[1] https://www.youtube.com/watch?v=733m6qBH-jI
+How to write a paper
+How to write a paper
+• Why write paper
+
+
+    Goal: to infect the mind of your reader with
+    your idea, like a virus
+
+
+              The greatest ideas are
+              (literally) worthless if you keep
+              them to yourself
+How to write a paper
+
+          Idea   Do research   Write paper
+How to write a paper
+          Idea     Do research    Write paper
+
+
+
+          Idea     Write paper    Do research
+
+
+
+
+     • Forces us to be clear, focused
+     • Crystallises what we don’t understand
+     • Opens the way to dialogue with others:
+       reality check, critique, and collaboration
+How to write a paper
+• Paper structure
+How to write a paper: Abstract
+• One-paragraph summary of the entire study[1].
+
+  • Research background
+
+  • Research problem
+
+  • Model                                                                                              Briefly
+  • Experiment results
+
+  • Conclusion
+
+
+ [1] https://psychology.ucsd.edu/undergraduate-program/undergraduate-resources/academic-writing-resources/writing-research-papers/research-paper-
+ structure.html#References
+How to write a paper: Introduction
+
+• Background                        • Goals and methods
+
+  • What is the research context?     • What are the operational goals of this paper?
+
+  • What is the state of the art?     • How are they achieved?
+
+                                    • Results
+• Problem                             • Contributions
+
+ • What is missing?                 • Paper Overview
+                                      • Outline of the rest of the paper
+ • What are the drawbacks?
+How to write a paper: Introduction
+• Paradigm
+• Sentence 1 and Sentence 2: Establish the
+  importance of this research topic, and provide
+  general background information.
+• Sentence 3: Do the same as in Sentences 1 and 2,
+  but in a more specific/detailed way.
+• Sentence 4: Describe the general problem area
+  of the field.
+• Sentence 5 and Sentence 6 : Provide the
+  literature review.
+• Sentence 7: Describe a gap in the research.
+• Sentence 8 and Sentence 9: Describe the paper
+  itself, and give details about the methodology
+  reported in the paper.
+• Sentence 10: Announce the findings.
+How to write a paper: Methodology
+
+• Provide an overview of the method itself.
+
+• Provide details about what was done and continues to describe what was done in detail.
+
+• Mention a possible difficulty in the methodology.
+
+
+
+
+                   Proposed Model              Reason of this design
+How to write a paper: Experiment
+
+• Give a general overview of the results.
+
+• Invite the reader to view results, e.g., graph/figure/table.
+                                                                 Experiment Result
+• Select specific results in detail with explanations.
+
+• Compare with results in other research.
+
+• Mention a problem in the results.
+
+                                                                     Discussion
+How to write a paper: Conclusion
+
+
+                      • Problem
+
+
+
+Conclude this paper   • Goals and methods
+
+
+
+                      • Results
+How to write a paper: Signaling language
+• Tip: Signaling language makes the paper more logical
+How to write a paper: Signaling language
+How to write a paper: Signaling language
+How to write a paper: Review
+
+           Treat every review like gold dust
+    Be (truly) grateful for criticism as well as praise
+
+        This is really, really, really hard
+
+                       But it’s
+    really, really, really, really, really, really,
+            really, really, really, really
+                     important
+How to write a paper: Review
+
+           Treat every review like gold dust
+    Be (truly) grateful for criticism as well as praise
+
+   ü Read every criticism as a positive suggestion for
+     something you could explain more clearly
+   ü DO NOT respond “you stupid person, I meant X”. Fix
+     the paper so that X is apparent even to the stupidest
+     reader.
+   ü Thank them warmly. They have given up their time for
+     you.
+How to present a paper
+How to present a paper
+Delivering a Poster Presentation at International Conferences
+How to present a paper
+Don’ts
+
+
+     Don’t put     everything in the poster.
+
+    Don’t leave your poster during the poster session.
+
+    Don’t stand in front of your poster.
+
+    Don’t read your poster to your audience but talk to them.
+
+    Don’t bore     your audience with a long walkthrough, no more than 3 minutes.
+How to present a paper
+Dos
+
+
+          Use           Use your poster as a tool for communicating with your audience.
+
+
+       Prepare          Prepare a brief but informative way to present the information in your poster.
+
+
+
+        Stand           Stand to the left of your poster at the beginning of your walkthrough and to the
+                        right of your poster at the end.
+
+
+
+      Stand by Stay by your poster to meet and interact with poster session attendees.
+How to present a paper
+
+                        • Introduce yourself and your research topic.
+                        • Provide a brief introduction to the study (perhaps 2-3 sentences)
+                            e.g. “Previous studies have demonstrated A, but seldom efforts have been
+                            made in the intersection of A and B. The goal of the research is to narrow
+                            this research gap”.
+                        • Explain briefly the methods you used.
+                        • Describe results with a rationale conclusion
+                           e.g. “We first decided to examine... To investigate this we...
+                           We found that... This means that...”.
+                        • Summarize the main conclusions of your study, usually 2-4
+       Effective          points.
+                        • Provide a brief statement about future directions.
+  Poster Presentation   • Thank your visitors for stopping by your poster.
+Research with large language model
+ Searching a Paper:
+ q Find relevant information on a wide range of topics.
+ Reading a Paper:
+ q Assist in understanding complex language or concepts
+   in a paper.
+ Writing a Paper:
+ q Help generate content for the paper based on the
+   information provided.
+ q Particularly in structuring the paper, formulating
+   arguments, and ensuring the language is clear and
+   concise.
+ Presenting a Paper:
+ q Prepare a presentation by providing tips on how to
+   structure the talk, what points to emphasize, and how
+   to engage the audience.
+Research with large language model
+ Searching a Paper:
+ q Find relevant information on a wide range of topics.
+ Reading a Paper:
+ q Assist in understanding complex language or concepts
+   in a paper.
+ Writing a Paper:
+ q Help generate content for the paper based on the
+   information provided.
+ q Particularly in structuring the paper, formulating
+   arguments, and ensuring the language is clear and
+   concise.
+ Presenting a Paper:
+ q Prepare a presentation by providing tips on how to
+   structure the talk, what points to emphasize, and how
+   to engage the audience.
+    May the journey of
+your research be filled with
+ insightful discoveries and
+    prolific publications
+
+  Thank you.
+
+                            TA: ZHANG Yajie
+                                 DSAI
+                      yajie.zhang@connect.polyu.hk
+

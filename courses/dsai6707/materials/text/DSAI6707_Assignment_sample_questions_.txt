@@ -1,0 +1,127 @@
+      Final Examination: DSAI6707 Advanced
+    Computational Intelligence (Sample Questions)
+
+                    Subject Lecturer: Dr. Xingyu Wu
+
+        Department of Data Science and Artificial Intelligence
+              The Hong Kong Polytechnic University
+
+
+1     Multiple-Choice Questions (30 Marks)
+Instructions: This section consists of 10 questions. Each question carries 3
+marks. For each question, please select the single best answer from the
+choices given. Only one answer is correct for each question. Mark your answers
+clearly in the examination booklet.
+
+    1. Which of the following fundamental benchmark problems cannot be clas-
+       sified correctly by Frank Rosenblatt’s single-layer perceptron due to the
+       lack of linear separability?
+       (a) Two-input logical AND
+       (b) Two-input logical OR
+       (c) Two-input logical NAND
+       (d) Two-input logical XOR (Exclusive-OR)
+
+    2. Consider the representational capacity of single-layer perceptron, two-layer
+       MLP and three-layer MLP (with non-linear differentiable activation). Which
+       comparison is correct?
+       (a) Single-layer perceptron: arbitrary decision regions; two-layer MLP:
+           half-plane; three-layer MLP: convex regions
+       (b) Single-layer perceptron: half-plane (linear separation); two-layer MLP:
+           convex regions; three-layer MLP: arbitrarily complex decision regions
+           (bounded by neuron count)
+       (c) All three architectures have identical expressive power given sufficient
+           training epochs
+       (d) XOR problem can be solved by single-layer perceptron when using
+           logistic activation function
+
+
+
+
+                                        1
+2     Part II: Written-response Questions (70 Marks)
+Instructions: This section consists of 6 computational and analytical prob-
+lems. Please answer all questions and show your calculation steps and deriva-
+tions clearly.
+
+    1. (10 Marks) Consider a one-dimensional linear regression problem where
+       the model hypothesis is defined as:
+
+                                           ŷ = wx + b.                                      (1)
+
+      The objective is to minimize the Mean Squared Error (MSE) loss function
+      over the dataset:
+                                          m
+                                       1 ∑︂ (i)
+                            J(w, b) =        (ŷ − y (i) )2 .             (2)
+                                      2m i=1
+
+      For an individual training sample (x(i) , y (i) ), the instantaneous loss is
+      defined as:
+                                             1
+                                L(i) (w, b) = (wx(i) + b − y (i) )2 .          (3)
+                                             2
+      You are given a small training dataset consisting of m = 3 samples: D =
+      {(1, 2), (2, 3), (3, 5)}.
+      Questions:
+      (1) (3 Marks) Analytical Closed-Form Solution (Normal Equation): For-
+      mulate the design matrix X and target vector y. Compute the optimal
+      parameter vector θ∗ = [b∗ , w∗ ]T directly using the Normal Equation:
+
+                                     θ∗ = (X T X)−1 X T y.
+
+      (2) (4 Marks) Iterative Optimization via Stochastic Gradient Descent
+      (SGD): Suppose the model parameters are initialized to w0 = 0.0 and
+      b0 = 0.0, with a fixed learning rate of η = 0.1. Train the model for one
+      complete epoch using SGD, presenting the samples sequentially in the
+      order:
+
+           (x(1) , y (1) ) = (1, 2) → (x(2) , y (2) ) = (2, 3) → (x(3) , y (3) ) = (3, 5).
+
+      For each iteration step t ∈ {1, 2, 3}, explicitly compute:
+      – The predicted value ŷ (i) .
+      – The prediction error e = ŷ (i) − y (i) .
+      – The updated parameters wt and bt .
+      (3) (3 Marks) Discussion & Comparison:
+      Briefly compare the computational time complexity of the Normal Equa-
+      tion versus Gradient Descent with respect to the number of features d.
+
+
+
+                                              2
+2. (12 Marks) Consider a binary classification problem on a one-dimensional
+   feature space with the following four training exemplars:
+  Class 1 (Desired output d = 1): x(1) = 0.5,     x(2) = 2.0
+  Class 2 (Desired output d = 0): x(3) = −1.0,      x(4) = −2.0
+  To incorporate the bias parameter b, use the augmented input vector x′ =
+  [1, x]T and the augmented weight vector w′ = [b, w]T . The neuron utilizes
+  the standard hard-limiter activation function:
+                                     {︄
+                                        1, w′T x′ ≥ 0
+                         y = f (v) =                                     (4)
+                                        0, w′T x′ < 0
+
+  The perceptron weight vector is updated according to the Perceptron
+  Learning Algorithm:
+                            ′
+                           wnew = w′ + η(d − y)x′ .
+
+  where η is the learning rate. Assume the initial weight vector is initialized
+  to w0′ = [−1.5, −2.0]T , and the learning rate is set to η = 1.0. The training
+  exemplars are presented sequentially in the order: x(1) → x(3) → x(2) →
+  x(4) to complete one training epoch.
+  Questions:
+  (1) (8 Marks) Step-by-step Execution of Epoch 1: Trace the perceptron
+  learning algorithm across all 4 iterations in the first epoch. For each step
+  k ∈ {1, 2, 3, 4}, explicitly compute: The augmented input vector x′ ; The
+  linear combiner output (induced local field) v = w′T x′ ; The actual output
+  y; The error signal (d − y); and The updated weight vector wk′ .
+  (2) (4 Marks) Convergence and Decision Boundary: Determine whether
+  the perceptron algorithm has converged after this single epoch. If so,
+  verify the model on all four training instances and derive the final decision
+  boundary (the specific value of x where the boundary lies).
+
+
+
+
+                                     3
+

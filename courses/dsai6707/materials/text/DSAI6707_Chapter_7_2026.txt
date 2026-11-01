@@ -1,0 +1,1317 @@
+                                      1
+
+            Not to be redistributed
+            to Course Hero or any
+            other public websites
+
+
+
+     DSAI6707
+     Advanced
+     Computational
+     Intelligence
+     Sem 1, 2026/2027
+
+
+
+
+DSAI6707 Chapter 6
+                                                                                         2
+
+Extension Principles (EP)                                  y
+                                                                       R
+
+      Fuzzy                        Fuzzy set R  A
+                          f
+      set A                        B = f(A)
+
+                                                                               x
+                                                                           A
+    What is the output for a fuzzy input
+                                               A, Fuzzy Relation R → R  A
+     or fuzzy function or both ?
+                                            f(A) = B = f(1/x1 + 2/x2 +….+ n/xn)
+ Example:                                         = 1/f(x1) + 2/f(x2) +….+ n/f(xn)
+                              f = 2x + 1
+         X = {1, 2, 3}                              Y = {3, 5, 7}
+              2       A                        B       5
+                  1                                            3
+                          3                                        7
+      A = 1/1 + 0.5/2                  B = 1/y1 + 2/y2 = 1/3 + 0.5/5
+                                            DSAI6707 Chapter 6
+                                                                        3
+
+ (Def) Extension Principle
+                                                            f(x)
+                    f : X →Y                       X                Y
+                    y = f ( x)
+                                                    A               B
+Let A be a fuzzy set in X. Then,
+                     B = f ( A)
+                                                          f--1(y)
+  is defined to be a fuzzy subset in Y with
+                    max
+             
+                 sup      
+              x f ( y ) A
+                     −1      ( x )   if f −1
+                                             ( y)  
+   B ( y) = 
+              
+                      0          Otherwise
+
+
+           or     B ( y ) = m ax  A ( x )
+                              f ( x )= y
+                                              DSAI6707 Chapter 6
+                                                                                                            4
+
+ E.g., Suppose y = f(x) = 2x + 1 and A = approx _ 3 = e − ( x − 3 ) / x
+                                                                             
+                                                                                         2
+
+
+
+                                                                             X
+              Find f(approx_3)?
+
+                                                     Solution:  B ( y ) = sup x f −1 ( y )  A ( x )
+
+                                                                                                     y −1
+                                                                      y = 2x + 1  x =
+                          Y                                                                            2
+                                                                              y −1
+e
+    − ( y − ) 
+                                                     f ( approx _ 3) =   A      / y
+                                                                         Y
+                                                                               2 
+                                                                                  1
+                                                                                 − ( y −7 ) 2
+                                                                        = e      4
+                                                                                                /y
+                                                                            Y
+                                                      X
+                                                 
+                                  e − ( x − )
+
+
+
+
+                              3                           X
+                                                              DSAI6707 Chapter 6
+                                                                            5
+ Let f: X → Y, define A = 1/x1 + 2/x2 +….+ n/xn on universe X, for a
+  function f that maps one element in X to one element in universe Y,
+
+                 f(A) = f(1/x1 + 2/x2 +….+ n/xn)
+                      = 1/f(x1) + 2/f(x2) +….+ n/f(xn)
+
+ What if e.g., f(x1) = f(x3) in the above equation?
+  → If more than one element of X is mapped to the same element y in Y
+    by f (many to one mapping), then
+
+                        f ( A ) ( y ) = max [  A ( xi )]
+                                        xi  X
+                                       f ( xi ) = y
+
+
+  where xi are the elements that are mapped to the same y.
+ E.g., Given that y = f(x) = (x – 3)2 + 2 and a fuzzy set Around-4 for x
+  as Around-4 = 0.3/2 + 0.6/3 + 1/4 + 0.6/5 + 0.3/6
+  Using E.P., f(Around-4) = 0.3/3 + 0.6/2 + 1/3 + 0.6/6 + 0.3/11
+                          = 0.6/2 + 1/3 + 0.6/6 + 0.3/11
+                                                      DSAI6707 Chapter 6
+                                                                                              6
+
+
+ Example:
+                                           X
+                               0.5                             1       Y
+
+                           1                                       
+                                   a                     0
+                     0.9                         0.9           
+                               b
+                    0.4
+                           c                   0.4       
+                                                                   Max (0.5, 0.9)
+                                                                   = 0.9
+                     d
+
+
+              y = f (x)
+                                                 A = 0 .5 / a + 1 / b + 0 .9 / c + 0 .4 / d
+       x X     a    b     c       d             B = f ( A) = ?
+
+       y Y                                      = 1 /  + 0 .9 /  + 0 .4 / 
+
+                                                             DSAI6707 Chapter 6
+                                                                                          7
+ (Def) General Extension Principle:
+  Given:                  X = X1  X 2   X n
+                          f = X →Y
+                          y = f ( x ) = f ( x1 , x2 ,  , xn )
+  For each i = 1, 2 ,  , n let Ai  X i
+  Then B = f ( A , A  ,  , An ) is a fuzzy subset in Y with
+
+    B ( y) =       max
+                y = f ( x , x ,... x )
+                                       min{  1 ( x1 ),  2 ( x 2 ),...,  n ( x n )}
+                      1   2    n
+
+    X1
+
+     A1                                                             Y
+                          B=f(A1, A2)
+    X2                                         min[(A1), (A2)]/f(A1, A2)
+
+     A2
+              Take max of                 for similar f(A1, A2)
+                                                  DSAI6707 Chapter 6
+                                                                                 8
+
+ Example: If A1 = 0.2/1 +1/2 + 0.7/4 and A2 = 0.5/1 + 1/2, then
+         A1·A2 = min(0.2, 0.5)/1 + max[min(0.2, 1), min(0.5,1)]/2 +
+                   max[(min(0.7, 0.5), min(1, 1)]/4 + min(0.7, 1)/8
+                = 0.2/1 + 0.5/2 + 1/4 + 0.7/8
+
+ Application of E.P.: Mapping of an ordered pairs from input universes
+  X1 = {a, b} and X2 = {1, 2, 3} to an output universe, Y = {x, y, z}.
+   E.g., define a fuzzy set A on universe X1 and fuzzy set B on universe X2 as
+   A = 0.6/a + 1/b and B = 0.2/1 + 0.8/2 + 0.4/3 The mapping is predefined
+   and given by the crisp relation,
+                                                              1 2 3
+                                                          a  x z x
+   C(z) = max[min(0.8, 0.6), min(0.4, 1)] = 0.6        R= 
+                                                          b  x y z 
+  C(y) = max[min(0.8, 1)] = 0.8
+  C(x) = max[min(0.2, 0.6), min(0.2, 1), min(0.4, 0.6)] = 0.4
+  i.e., C = 0.4/x + 0.8/y + 0.6/z          DSAI6707 Chapter 6
+                                                                         9
+
+                         Expert Systems
+• There are five roles in an expert system
+  development team: Domain expert,
+  Knowledge engineer, Programmer,
+  Project manager, End-user.
+• The success of an expert system depends
+  on how well the members collaborate
+  with each other.
+
+
+
+
+                                    Complete structure of a rule-based
+                                    expert system
+
+
+
+                                             DSAI6707 Chapter 6
+                                                                          10
+
+
+
+Structure of Rule-based Expert System
+ • In the early seventies, Newell and Simon from Carnegie-Mellon
+   University proposed a production system model - the foundation of
+   the modern rule-based expert systems.
+ • It is based on the idea that humans solve problems by applying their
+   knowledge (expressed as production rules) to a given problem
+   represented by problem-specific information.
+ • The production rules are stored in the long-term memory and the
+   problem-specific information or facts in the short-term memory.
+
+
+
+
+                                         Production System Model
+
+
+                                          DSAI6707 Chapter 6
+                                                                                11
+
+
+Basic Structure of a Rule-based Expert System
+
+
+
+
+• The knowledge is represented as
+  a set of rules in the IF (condition)                   The database
+                                                         contains a set of
+  THEN (action) structure.
+                                                         facts used to match
+• Each rule may specify a relation,                      against the IF
+  recommendation, strategy,                              (condition) parts of
+  heuristic, etc.                                        rules stored in the
+• When the condition part of a rule                      knowledge base.
+  is satisfied, the rule is said to fire
+  and the action part is executed.
+
+                                           DSAI6707 Chapter 6
+                                                                                 12
+
+
+Basic Structure of a Rule-based Expert System
+
+
+
+ • The inference engine runs the
+   reasoning whereby the expert
+   system reaches a solution.
+ • It links the rules given in the
+   knowledge base with the facts
+   provided in the database.
+
+ • The explanation facilities enable the                        The user interface
+   user to ask the expert system:                               allows a user
+     • how a conclusion is drawn                                seeking a solution
+     • why a fact is needed                                     to a problem to
+ • An expert system will explain its                            communicate with
+   reasoning and justify its advice,                            an expert system.
+   analysis or conclusion.
+                                           DSAI6707 Chapter 6
+                                                           13
+
+
+Characteristics of Expert Systems
+ • Expert systems apply expert heuristics to guide
+   the reasoning and thus reduce the search area
+   for a solution.
+ • Expert systems employ symbolic reasoning
+   when solving a problem. Symbols are used to
+   represent different types of knowledge such as
+   facts, concepts and rules.
+ • A unique feature of an expert system is its
+   explanation capability. It enables the expert
+   system to review its own reasoning and explain
+   its decisions.
+                                        Trustable AI
+                                      DSAI6707 Chapter 6
+                                                                                   14
+
+Inference Engine
+• In a rule-based expert system, the domain knowledge is represented by a set
+  of IF-THEN production rules and data is represented by a set of facts about the
+  current situation.
+• The inference engine compares each rule stored in the knowledge base with
+  facts contained in the database.
+• When the IF (condition) part of the rule matches a fact, the rule is fired and
+  its THEN (action) part is placed in the agenda for execution.
+• The matching of the rule IF parts to the facts produces inference chains,
+  which indicates how an expert system applies the rules to reach a conclusion.
+
+
+
+
+                                              Inference Engine
+
+
+
+                                              DSAI6707 Chapter 6
+                                               15
+
+
+An Example of Inference
+
+
+
+
+                          DSAI6707 Chapter 6
+                                                                                 16
+
+
+Inference Engine
+ • The inference engine determines the execution of the rules by the
+   following cycle:
+     • Conflict resolution: select the rule with the highest priority from the
+        agenda
+     • Execution (act): perform the action on the consequent of the
+        selected rule and remove it from the agenda
+     • Match: update the agenda via adding rules whose antecedents are
+        satisfied to the agenda and removing the rules with non-satisfied
+        agendas
+ • The cycle ends when no more rules are on the agenda, or when and
+   explicit stop command is encountered.
+ • Knowledge is represented as multiple rules that specify what should or
+   not be concluded from different situations.
+
+
+                                             DSAI6707 Chapter 6
+                                                                         17
+
+
+Conflict Resolution
+ • What if two rules share the same IF? These rules represent a
+   conflict set.
+ • Conflict Resolution: a method to choose a rule to fire when
+   multiple rules can be fired in a given cycle.
+     • By Priority: The priority can be heuristically set (by experts)
+       and established by placing the rules in an appropriate order in
+       the knowledge base.
+     • By Specificity: A specific rule processes more domain-specific
+       information than a general one.
+     • By Data Freshness: The expert system first fires the rule
+       whose antecedent uses the data most recently added to the
+       database.
+
+                                        DSAI6707 Chapter 6
+                                                                          18
+
+                          Fuzzy Inference
+• In traditional logic, main tools of reasoning are tautologies: e.g.,
+                           Premise : A is true
+                           Implication : If A then B
+• What about…              Conclusion : B is true
+
+                  the tomato is very red,
+                  if the tomato is red then the tomato is ripe,
+                  → the tomato is very ripe
+
+ Extensions: (1) Allow statements that are characterized by Fuzzy sets;
+              (2) Relax (slightly) the identity of Premise A
+                     Premise : x is true A
+                     Implication : If x is A then y is B
+                     Conclusion : y is ...
+ Approximate Reasoning  Fuzzy Logic
+                                            DSAI6707 Chapter 6
+                                                                                            19
+
+• (Def) Notion of a linguistic variable:  X, TX, , MX 
+   X : name of the linguistic variable, e.g., age, error…
+   TX: the set of linguistic values (Term set)
+       – For age, TX = {old, very old, not so old, very young}
+       – An arbitrary element of this set is denoted by TX, e.g., old
+
+     : the actual physical domain over which the X takes its crisp values
+       – E.g., For age, it can be the interval [0, 120]
+  MX : TX → TX a membership function to give each TX with a meaning
+
+
+        Example:
+                       0                     x  [0,50 ]
+                                        −1                    old(x)
+         old ( x ) =   x − 50  
+                                    −2
+
+                       1 +  5          x  [50 ,100 ]
+                                     
+
+                                                                                        x
+                                                                   DSAI6707 Chapter 6
+                                                                                                   20
+
+Example:               E                                                    U
+                  E, TE,  , ME                                   U, TU, U , MU 
+                 E: error                                          U: control output
+                 e.g., TE = {NB, NM, NS, ZO, PS, PM, PB} = TU
+                   e.g., TE = {NB}                                 e.g., TU = {ZO}
+                          e.g.,               = [-6, 6]                =U
+                 ME : TE → TE                                      MU : TU → TU
+
+      NB    NM        NS         ZO       PS           PM          PB
+
+                                                                                The shape for each
+                                                                                membership function
+                                                                                here is only an example
+
+
+
+ -6    -5   -4    -3 -2     -1    0   1    2       3       4   5        6
+
+                                                       DSAI6707 Chapter 6
+                                                                                                      21
+
+
+Fuzzy If-then Statements
+ • A fuzzy conditional or a fuzzy if-then production rule is symbolically
+   expressed as if < fuzzy proposition > then <fuzzy proposition >
+
+       E.g., “If E is NB ‘and’ E is PB then U is NS ”
+ “Knowledge = organized collection of propositions”
+ • Conjunction/Disjunction over different space variables:
+    E.g.,
+            E is NB with     ( e) / e ;
+                               NB                     E is PS with           ( e) / e
+                                                                                   PS
+
+    Note that the linguistic variables e and e are defined on different space
+     and  . Then,
+                   is PS 
+      E is NB and E                  ( e, e ) =        min  NB ( e ),  PS ( e )  /( e, e )
+                                                   
+
+                  is PS 
+      E is NB or E                   ( e, e ) =  max  NB ( e ),  PS ( e )  /( e, e )
+                                                   
+                                                          DSAI6707 Chapter 6
+                                                                                               22
+
+•   How to describe fuzzy if-then rule ?, e.g., if E is A then U is B
+                                                     u         R(  U )
+                if E is A then U is B                 B
+
+
+
+
+                             
+     fuzzy relation R(  U )
+                                                              A            e
+•    The fuzzy conditional is therefore a fuzzy relation R such that
+
+              e    u  U :  R ( e, u ) =  A ( e )   B (u )
+     * denotes a Fuzzy Implication operator
+
+             if e is PM      then         u is NS
+       1              PM           1       b        NS      Mamdani Implication
+                               a
+                                                                   ( a , b ) = min a , b 
+
+
+                e*
+                                                      DSAI6707 Chapter 6
+                                                                                                    23
+                                     Fuzzy Inference
+                                                                        The process is cal
+  1
+                   if e is PM
+                            PM
+                                     then
+                                              1
+                                                     u is NS
+                                                         b      NS
+                                                                         Graphical Approa
+                                      a
+                                                                      Mamdani Implication
+                                                                        ( a , b ) = min a , b 
+                      e*
+
+
+Rule: If x is A, then y is B                      x  X, y  Y                         x is A’,
+Fact: x is A’,                                                                         x R y,
+Conclusion:                y is B’         R ( x , y ) = min  A ( x ),  B ( y )    y is B’
+
+                                                      Mathematical Approach!
+ B '( y ) = ( A ' R )
+                                                      or Compositional Rule of
+        = max min ( A '( x), R ( x, y ) )               for all y  Y
+            x X
+
+                                                               DSAI6707 Chapter 6
+                                                                                                              24
+
+Representing a Set of Rules
+ • The result of fuzzy inference for one rule is a clipped (C) fuzzy set:
+                   if e is PM                                then u is NS
+     1                           PM              1                      NS
+
+                                                                CNS ( u ) = min ( PM ( e* ),  NS ( u ) )
+                         e*
+ • In a System of n Rules,
+         R(k): if e is TE(k) then u is TU(k), k = 1, …, n
+    The whole set of rules is defined as:
+
+                                                                                                   
+                     n
+
+                    R               or  R ( e, u ) = max min (TE ( k ) ( e), TU ( k ) (u ) )
+                                                              n
+               R=             (k )
+                                                             k =1
+                    k =1
+
+
+
+  U = E  R where R ( k ) = min (TE ( e), TU (u ) ) (k )               (k )
+
+
+                                                                        DSAI6707 Chapter 6
+                                                                                                 25
+
+1. For all inputs, take the ‘min’ (‘and’) or ‘max’ (‘or’) operation according
+   to the rule statements;
+     2. For each input and output:R ( k ) = min TE ( k ) ( e), TU ( k ) (u )
+                                                                                    n
+                  3. Combine all individual output by ‘union’: R =              
+                                                                                k =1
+                                                                                        R (k )
+                   ‘and’
+        e                  e
+                             •               u
+
+   R                  NB         NS                  PB
+
+
+
+                        e               e                 u
+
+
+             NM    ‘and’               NB            PM        Fuzzy expert system
+   R
+
+
+                  e*    e        e*         e            u
+
+                                                  PM PB
+
+
+
+
+                                                               DSAI6707 Chapter 6
+                                                                                                           26
+
+
+Defuzzification
+ Center-of-Area/Gravity:                                                              4
+               Discrete: U = {u1, …, um}
+                                   m                                     2    3
+                                   u   (u )i       U       i
+                                                                   1                           5
+                          u * = i =1m
+                                      (u )
+                                       i =1
+                                                  U       i         U1   U2    U3     U4     U5        U
+                                                                                    U*
+  This method determines the center       U1  1 + U 2  2 + U 3  3 + U 4  4 + U 5  5
+  of the area below the combined    U *
+                                        =
+                                                     1 + 2 + 3 +  4 + 5
+  membership function.
+  Example: Let the common normalized domain U = {1, 2, …, 8} and
+           U = 0/1 + 0.2/2 + 0.5/3 + 0.8/4 +1/5 + 0.5/6 + 0.2/7 +0/8
+           Then, u*(Center-of-Area) =
+               0  1 + 0 .2  2 + 0 .5  3 + 0 .8  4 + 1  5 + 0 .5  6 + 0 .2  7 + 0  8
+                                                                                            = 4 . 53
+                             0 + 0 .2 + 0 .5 + 0 .8 + 1 + 0 .5 + 0 .2 + 0
+                                                                  DSAI6707 Chapter 6
+                                                                                           27
+
+A Fuzzy Inference Example : The Basic Tipping Problem
+• Given a number between 0 and 10 that represents the quality of service
+  and quality of food respectively at a restaurant (where 10 is excellent),
+  what should the tip be?
+
+service       input                              output
+                           Black box
+ food                                                   tip
+
+      Using fuzzy approach, a rule-based for this problem is defined:
+             Service                    Food                    Service/Food
+ 1.   if service is poor then   If food is rancid then If service is poor or the food is
+      tip is cheap              tip is cheap           rancid then tip is cheap
+ 2.   if service is good then                          if service is good then tip is
+      tip is average                                   average
+ 3.   if service is excellent   If food is delicious If service is excellent or food is
+      then tip is generous      then tip is generous   delicious then tip is generous
+
+                                                   DSAI6707 Chapter 6
+                                                                                                 28
+
+
+                       Rule 1 If service is poor or food is
+                              rancid then tip is cheap
+ Input 1
+ Service (0-10)
+                       Rule 2 If service is good                             Output
+                              then tip is average                             Tip (0-30%)
+ Input 2
+ Food (0-10)
+                                If service is excellent or
+                       Rule 3
+                                food is delicious then tip is
+                                generous
+
+
+
+The inputs are crisp       All rules are evaluated          The results of the The result is a
+numbers limited to a       in parallel using fuzzy          rules are combined crisp number.
+specific range.            inference.                       and defuzzified.
+
+The point of all fuzzy logic systems is to map an input space to an output
+space. The primary tool for doing this is a list of if-then statements. All rules
+are fired in parallel.
+
+                                                       DSAI6707 Chapter 6
+                                                                                  29
+
+There are a few distinct parts to the process
+
+
+   rule                      rancid                cheap
+                poor
+
+                           rule 2 has no             average
+   rule                    dependency on
+                good       input 2
+                                                                Aggregation
+               excellent   delicious            generous
+   rule
+
+
+
+
+          Service = 3           food = 8
+            Input 1              Input 2                        Defuzzification
+                                              Tip = 18.1%
+                                                 Output
+
+                                           DSAI6707 Chapter 6
+                                                                            30
+
+Step 1: Fuzzify the inputs
+   Fuzzification is the process of assigning a degree of truth to
+   statements about the input variables (all those statements in
+   the if part, or antecedent, of the rule). The membership
+   functions associated with the input variables determine this
+   degree of truth. Any statement in the antecedent evaluates to a
+   number between 0 and 1.
+
+
+                                                  result of fuzzification
+                                          0.7
+                                                  (for each input fuzzy
+                                                  membership function)
+               delicious
+
+                    food is delicious
+
+                           food = 8
+                             input
+                                        DSAI6707 Chapter 6
+                                                                                31
+
+ Step 2. Fuzzy inference
+   Apply fuzzy operator: If the antecedent is made up of multiple
+   statements joined by connectives (‘and’ = min) or (‘or’ = max),
+   then the fuzzy operator resolves the multiple statements
+   antecedent into a number between 0 and 1.
+
+
+   excellent                       delicious                  generous
+                          or
+
+                          and
+if service is excellent         food is delicious             tip is generous
+
+   Apply implication operator: The implication method is defined
+   as the shaping of the consequent (a fuzzy set) based on the
+   antecedent (a single number). Implication occurs for each rule.
+
+                                               DSAI6707 Chapter 6
+                                                                         32
+
+
+                                                                output
+Step 3. Aggregate output across all rules
+The above operations occur for all rules, and each
+rule results in a clipped output fuzzy set. Joining all
+these clipped output fuzzy sets into a single
+combined output membership function is known as
+aggregation and it is performed by the aggregation
+(max) operator.
+
+
+
+                                   apply aggregation
+                                   operator (max)
+
+
+
+                        result of aggregation
+
+                                                DSAI6707 Chapter 6
+                                                                          33
+
+
+Step 4. Defuzzify the aggregated output fuzzy set
+
+    The aggregated membership function needs to be reduced to a crisp
+    value. The defuzzification method returns this value given from the
+    sometimes oddly shaped aggregate.
+
+
+                         Defuzzify the
+                         aggregated output
+
+
+
+
+                          e.g., tip = 16.7%
+
+
+
+                                              DSAI6707 Chapter 6
+                                             34
+
+The Tipper Problem: Rule Surface Viewer
+
+
+
+
+                        DSAI6707 Chapter 6
+                                                                          35
+
+A Fuzzy Control Problem – Inverted Pendulum
+ Design and analyse a fuzzy controller for a simplified version of the
+  inverted pendulum.
+ The differential equation describing the system is given as
+                                                             
+
+            d 2
+       − ml 2
+                 + ( m gl ) sin(  ) =  = u ( t )
+ (1)        dt 2
+                                                      
+
+
+
+   m = mass of the pole located at the tip point of the pendulum
+   l = length of the pendulum
+    = deviation angle from vertical in the clockwise direction
+    = u(t) = torque applied to the pole
+   t = time; g = gravitational acceleration constant
+                                                     DSAI6707 Chapter 6
+                     36
+
+
+
+
+DSAI6707 Chapter 6
+                                                                                                  37
+
+ Let us consider a simple FKBC system:
+                                                        d 2
+                                                   − ml 2
+                                                           2
+                                                             + ( m gl ) sin(  ) =  = u ( t )
+                                              (t)      dt
+                                             (t )
+                (t),                         u(t)                        (t+1),  (t + 1)
+                              FKBC
+
+
+ For simplicity and easy calculation, assuming x1 =  and x2 = d/dt, and
+  sin() = , l = g, m = 180°/(·g2), h = 1
+                          dx1 x1 ( k + 1) − x1 ( k )
+                                                                                                 (2)
+                             =                        = x2
+                          dt             h
+                              x1 ( k + 1) − x1 ( k ) = x2 ( k )
+                              x1 ( k + 1) = x1 ( k ) + x2 ( k )                 k is iteration in
+                        dx2
+                ( 1) & ( 2 )= ( g / l ) x1 − (1/ ml 2 )u (t ) = x1 − u (t )
+           from         dt
+                         x2 ( k + 1) − x2 ( k ) = x1 ( k ) − u ( k )
+                         x2 ( k + 1) = x1 ( k ) + x2 ( k ) − u ( k )
+                                                            DSAI6707 Chapter 6
+                                                                                     38
+
+ Therefore,
+                                                                         u t s of F K B C
+                                                                      inp utput of FK
+                     x1 ( k + 1) = x1 ( k ) + x 2 ( k )
+                     x 2 ( k + 1) = x1 ( k ) + x 2 ( k ) − u ( k )
+                                                                           o
+ Assume that the universe of discourse for the two variables are:
+
+                -2°  x1  2° and –5dps  x2  5dps
+
+ Step 1: Construct three membership functions for x1 and x2 on its
+  universe, positive (P), zero(Z) and negative (N)
+
+
+                       N                 Z                    P
+
+
+
+
+                           -2    -1       0       1        2         x1
+                                                       DSAI6707 Chapter 6
+                                                                           39
+
+
+               N                       Z                   P
+
+
+
+
+             -5 -4 -3 -2 -1         0       1   2   3   4       5 x2
+
+
+
+ Step 2: To partition the control space (output), we construct five
+  membership functions for u(k) on its universe.
+
+                    NB      N          Z       P       PB
+
+
+
+
+         -24 -20 -16 -12 -8 -4 0            4   8 12 16 20 24          u
+
+                                                DSAI6707 Chapter 6
+                                                                                      40
+
+ Step 3: Construct 9 rules in a 3  3 Fuzzy rule-based table, which
+  involves  and  in order to stabilize the inverted pendulum system.
+  The entries are control actions, u(k).
+                      x2 P      Z          N
+                 x1
+                 P      PB      P          Z
+                                                             By default, Table form
+                 Z      P       Z          N                 rules mean the
+                 N      Z       N          NB                connective is “and”
+
+
+ Given that the initial conditions are x1(0) = 1° and x2(0) = -4 dps,
+
+                       N               Z                P
+
+                                     0.5
+
+                           -2   -1         0    1    2       x1
+
+                                 x1(0) = 1°         DSAI6707 Chapter 6
+                                                                                                        41
+
+          N                       Z                    P
+                               0.8
+                               0.2
+       -5 -4 -3 -2 -1          0       1   2   3   4        5 x2
+                       x2(0) = -4 dps,                  N                 Z                   P
+
+                                                                        0.5
+
+                                                            -2     -1         0      1     2       x1
+                                                                                  x1(0) = 1°
+ Step 4: We simulate the system for 4 cycles, i.e., k = 0, 1, 2, 3
+If (x1 = P) and (x2 = Z) then (u = P) min(0.5, 0.2) = 0.2 (P)                   x
+                                                                              x1 2 P       Z       N
+If (x1 = P) and (x2 = N) then (u = Z) min(0.5, 0.8) = 0.5 (Z)                 P    PB      P       Z
+If (x1 = Z) and (x2 = Z) then (u = Z) min(0.5, 0.2) = 0.2 (Z)                 Z    P       Z       N
+If (x1 = Z) and (x2 = N) then (u = N) min(0.5, 0.8) = 0.5 (N)                 N Z          N       NB
+                                                       DSAI6707 Chapter 6
+                                            42
+
+R1   P        P                        PB
+R2
+     P        Z                        P
+
+R3   P        N                        Z
+
+R4   Z        P                        P
+
+R5   Z        Z                        Z
+
+R6
+     Z        N                        N
+
+R7   N        P                        Z
+
+R8   N        Z                        N
+
+R9   N        N                        NB
+
+         x1       x2                    u
+                       DSAI6707 Chapter 6
+                                                                                                           43
+                                             N       Z           P
+
+                                 0.5
+                                         0.2
+                               -16 -12 -8 -4 0             4     8 12 16 u
+           0.25(-14) + 0.5(-12 - 10 - 8 - 6 - 4 - 2 + 0) + 0.5(2 + 4) + 0.25(6) + 0.2(8 + 10 + 12 + 14)
+      u* =
+                                                         5.8
+           − 11 .2
+         =          − 2 (Center-of-area)
+            5 .8
+ The 1st simulation cycle is completed. Find the initial conditions for next iteration:
+     x1(1) = x1(0) + x2(0) = 1 – 4 = -3               x1 ( k + 1) = x1 ( k ) + x 2 ( k )
+      x2(1) = x1(0) + x2(0) – u(0) = 1 – 4 – (-2) = -1 x 2 ( k + 1) = x1 ( k ) + x 2 ( k ) − u ( k )
+
+For second cycle,                                                                   x
+                                                                                  x1 2 P         Z        N
+If (x1 = N) and (x2 = N) then (u = NB) min(1, 0.2) = 0.2 (NB)                     P    PB        P        Z
+                                                                                  Z    P         Z        N
+If (x1 = N) and (x2 = Z) then (u = N)            min(1, 0.8) = 0.8 (N)
+                                                                                  N Z            N        NB
+                                                               DSAI6707 Chapter 6
+                                                                                     44
+
+
+      The defuzzified value is u = -9.6, and x1(2) = -4, x2(2) =5.6
+
+      Proceed with the calculation, we get
+      x1(3) = 1.6, x2(3) = 1.6
+        x1(4) = 3.2, x2(4) = -2.08
+
+
+
+
+x1(0) = 1°       x1(1) = -3°      x1(2) = -4°      x1(3) = 1.6°       x1(4) = 3.2°
+
+x2(0) = -4 dps   x2(1) = -1 dps   x2(2) = 5.6 dps x2(3) = 1.6 dps x2(4) = -2.08 dps
+
+
+                                                DSAI6707 Chapter 6
+                                                                                     45
+
+
+
+
+                     Any methods to improve the perform
+
+1.   Increase the number of fuzzy sets (instead of only 3 for inputs and 5 for output).
+
+2.   Increase the number of if-then rules.
+
+3.   Tune the shape of the membership functions.
+
+4.   Tune the entries of the fuzzy rule-base table.
+
+
+
+
+                                                  DSAI6707 Chapter 6
+                                                                                 46
+
+                    Fuzzy Nonlinear Simulation
+          Input X            Non-linear System           Output Y
+
+• Fuzzy rule-based system (FRBS) is useful for representing both simple
+  and complex systems. A FRBS consists of
+   • a set of rules representing the behavior of the system
+   • a set of input data observed going into the system
+   • a set of output data coming from the system
+• Example: Develop a fuzzy rule-based system using four simple fuzzy
+  rules to approximate the output y for a non-linear function y = 10sinx.
+  The universe of discourse for x is [-180°, 180°], y is [-10, 10].
+       Rule 1: If x = Z or PB, THEN y is Z    Four simple rules for y = 10sinx
+       Rule 2: If x = PS, THEN y is PB           x   NB NS Z      PS PB
+       Rule 3: If x = Z or NB, THEN y is Z       y   Z NB Z       PB Z
+       Rule 4: If x = NS, THEN y is NB
+                                             DSAI6707 Chapter 6
+                     47
+
+
+
+
+DSAI6707 Chapter 6
+                                                                                48
+
+
+                           NB        NS  Z             PS      PB
+
+
+
+
+                      -180°       -90°        0       90°     180°    x
+
+                  NB                             Z                  PB
+
+
+
+
+                -10                           0                      10    y
+• Let us choose four crisp singletons as the input:
+                           1, 2, 3 1, 2   Rule 1: If x = Z or PB, THEN y is Z
+   x = {-135°, -45°, 45°, 135°}           Rule 2: If x = PS, THEN y is PB
+         3, 4    1, 3, 4                  Rule 3: If x = Z or NB, THEN y is Z
+                                          Rule 4: If x = NS, THEN y is NB
+                                                      DSAI6707 Chapter 6
+                                                                                                  49
+                  For input x = -135°, rules 3 and 4 are fired
+
+        (x)                                      (y)
+NB       1 Z          PB                                 Z
+
+
+
+-135°           90°          x             -10                   10    y
+                 rule 3: If x = Z or NB, THEN y is Z
+
+                                                       (y)                      (y)
+                  (x)
+          NS                              NB
+
+
+
+-180° -135°              x                  -10                   y        -10               10    y
+                                                             0
+                 rule 4: If x = NS, THEN y is NB                            y Approx. = -2.2
+
+                                  − 0.5(10 + 7.5 + 5 + 2.5) + 0.5( 2.5 + 5) + 0.25(7.5)
+        Center-of-area       y                                                          −2.2
+                                                       3.5 + 0.25
+                                                     DSAI6707 Chapter 6
+                                                                                                    50
+                       For input x = -45°, rules 1, 3 and 4 are fired
+        (x)                                      (y)
+         1 Z                                             Z
+
+
+
+    -45°                    x               -10                   10    y
+                                If x = Z or PB, THEN y is Z
+                rules 1, 3: If x = Z or NB, THEN y is Z
+
+                                                       (y)                       (y)
+                  (x)
+         NS                                NB
+
+
+
+-180°    -45°          x                    -10               0    y        -10                10   y
+                rule 4: If x = NS, THEN y is NB                               y Approx. = -2.2
+                                − 0.5(10 + 7.5 + 5 + 2.5) + 0.5( 2.5 + 5) + 0.25(7.5)
+    Center-of-area         y                                                          −2.2
+                                                     3.5 + 0.25
+                                                         DSAI6707 Chapter 6
+                                                                                                         51
+                             For input x = 45°, rules 1, 2 and 3 are fired
+
+       (x)                                          (y)
+        1 Z                                                 Z
+
+
+
+          45°                  x               -10               10       y
+                                   If x = Z or PB, THEN y is Z
+                   rules 1, 3: If x = Z or NB, THEN y is Z
+
+(x)                                         (y)                                (y)
+
+ 1            PS                                     PB
+
+
+
+        45°              x                                10        y      -10                  10   y
+                    rule 2: If x = PS, THEN y is PB                           y Approx. = 2.2
+                                    0.5(10 + 7.5 + 5 + 2.5) − 0.5( 2.5 + 5) − 0.25(7.5)
+Center-of-area                 y                                                        2.2
+                                                        3.5 + 0.25
+                                                            DSAI6707 Chapter 6
+                                                                                            52
+                           For input x = 135°, rules 1 and 2 are fired
+
+(x)                                               (y)
+   1           PB                                         Z
+
+
+
+         135°               x              -10                10    y
+                 rule 1: If x = Z or PB, THEN y is Z
+
+  (x)                                   (y)                              (y)
+
+   1      PS                                       PB
+
+
+
+               135°    x                                10     y     -10               10   y
+                 rule 2: If x = PS, THEN y is PB                        y Approx. = 2.2
+
+                                0.5(10 + 7.5 + 5 + 2.5) − 0.5( 2.5 + 5) − 0.25(7.5)
+Center-of-area             y                                                        2.2
+                                                    3.5 + 0.25
+                                                     DSAI6707 Chapter 6
+                                                                                      53
+
+• Results for approximation of y = 10sinx using fuzzy system (with four
+  rules and four simulation points)
+
+                         x         -135°        -45°     45°    135°
+                         y         -2.2         -2.2     2.2     2.2
+
+      10
+
+       8
+                                                                       10sinx
+       6
+
+       4
+
+
+       2                                                               Fuzzy system
+       0
+
+
+      -2
+
+      -4
+                                                               Any methods to imp
+      -6
+
+
+      -8
+
+
+     -10
+           -150   -100       -50     0     50      100   150
+
+
+                                                          DSAI6707 Chapter 6
+                                                              54
+
+
+
+
+            Any methods to improve the mapping
+
+1. Increase the number of fuzzy sets (instead of only 5 for
+   input and 3 for output).
+2. Increase the number of if-then rules.
+3. Increase the number of input data points (instead of 4
+   points).
+4. Tune the shape of the membership functions.
+5. Tune the entries of the fuzzy rule-base table.
+
+
+
+                                  DSAI6707 Chapter 6
+                                                                    55
+
+A Gyro-mirror LOS Control Problem (Case Study)
+Gyro-mirror LOS (gyroscope) is a two-degree-of-freedom plant that
+often used for tracking and targeting purposes.
+Basic coordinate system of a gyro-mirror:
+ yaw axis
+ pitch axis
+
+
+
+                                (1,2)
+
+                          pitch angle
+
+                    yaw angle
+            (0,0)
+
+
+
+
+                                            DSAI6707 Chapter 6
+                                                                                                           56
+
+ Nonlinear model of the plant
+             M 1 (  ) 1 + F1 (  ,  ) + G 1 (  ,  ) =  1
+             M (  )  + F (  ,  ) + G (  ,  ) = 
+                 2         2       2                  2                 2
+  where
+                                                     1                 1
+       M 1 = ( A + D ) + ( B − D + H ) cos 2  2 +     ( E + G ) + ( G − E ) sin  2
+                                                     2                 2
+                                                  1
+       F1 = − ( B − D + H )  1 2 sin 2  2 + ( G − E )  1 2 cos  2 + J  1 2 sin  2 cos  2
+                                                  2
+       G 1 = J  2  3 cos  2
+                       F
+       M2 = C + + H
+                       4
+             1                                  1
+       F2 = ( B − D + H )  12 sin 2  2 − ( G − E )  12 cos  2 − J  12 sin  2 cos  2
+             2                                  4
+       G 2 = − J  1  3 cos  2
+
+ This is a nonlinear multivariable plant with high coupling effect
+  among its two input channels
+                                                          DSAI6707 Chapter 6
+                                                                        57
+
+ To apply fuzzy control for the gyroscope
+ There are several challenges in the design:
+   highly nonlinear
+   high coupling effect between its channels
+   there are a large number of parameters to be determined, which is
+    difficult to be solved by trial-and-error method
+   the signals are very noisy
+ A full matrix fuzzy controller
+
+
+
+
+                                      DSAI6707 Chapter 6
+                                                                             58
+
+ The FLC configuration
+
+                 Error
+       Change of Error                   FLC                             U
+
+
+                   NB          NS         ZE         PS             PB
+                                     1
+
+
+
+
+                          2        1         1          2
+                                         (a)
+
+
+                                    1
+
+
+                    NB         NS         ZE              PS         PB
+
+
+
+                          2    1              1             2
+                                         (b)
+
+
+
+
+                                                     DSAI6707 Chapter 6
+                                                  59
+
+ The Closed-loop response
+
+
+
+
+ The control action
+
+
+
+
+                             DSAI6707 Chapter 6
+                                                                                     60
+
+ The block diagram of hardware implementation
+
+
+
+
+                                                        Data Acquisition Card
+     Gyro-mirror           Controller board
+     plant
+
+                                                                                PC
+
+
+
+         Sensors           Low-pass filter
+
+
+
+ The full matrix fuzzy controller sub-program in Labview
+
+                                         LabVIEW 5.0 & Fuzzy Logic toolkit
+
+
+
+
+                                              DSAI6707 Chapter 6
+                                                           61
+
+
+ Implemented closed-loop responses
+
+
+
+
+                                      DSAI6707 Chapter 6
+

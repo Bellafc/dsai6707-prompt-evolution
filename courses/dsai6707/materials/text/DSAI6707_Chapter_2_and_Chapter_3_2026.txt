@@ -1,0 +1,1215 @@
+                                      1
+
+            Not to be redistributed
+            to Course Hero or any
+            other public websites
+
+
+
+     DSAI6707
+     Advanced
+     Computational
+     Intelligence
+     Sem 1 2026/2027
+
+
+
+
+DSAI6707 Chapter 2
+                                                                      2
+
+
+                   Searching Techniques
+
+What is searching?
+   • Searching is the process of looking for the solution of a
+     problem through a set of states.
+   • Search conditions include
+      • Current state: the step of where we are
+      • Goal state: the step where the solution is found
+      • Actions: move one state to another
+      • Cost: how many steps needed to find the solution.
+   • Solution: A path from the current state to the goal state.
+
+                                      DSAI6707 Chapter 2          2
+                                                                   3
+
+
+What searching matters?
+• An agent can find a sequence of actions that achieves its
+  goals when no single action will do.
+
+
+
+
+    Linear Search algorithm              Binary Search algorithm
+
+
+                                    DSAI6707 Chapter 2
+                                                                             4
+
+
+• Almost every AI problem depends on a search procedure to find the
+  solution. Searching proceeds as follows:
+        • Check the current state (reach the goal?);
+        • Execute allowable actions to move to the next state;
+        • Check if the new state is the goal state.
+            • Yes. Done!
+            • No. The new state becomes the current state.
+
+                        No                   The process is repeated until
+       Formulate                             a solution is found or the
+                             Reach           state space is exhausted.
+                              the
+Loop                         goal?
+         Search
+
+
+        Execute              End
+                                         DSAI6707 Chapter 2              5
+                                                                                  5
+
+
+Graph and Tree Representation
+  • Nodes: the states in a searching process
+  • Edges: transitions between states (actions).
+  • And-Or Graph:
+     • ‘And’ node: a node with all edges emanating
+        from it connected by a curved line.
+     • ‘Or’ node: a node has no line connecting its
+        edges to indicate that any emanating path
+        can be a solution.
+
+
+
+
+                                               Traveling Salesman Problem (TSP)
+
+
+
+
+                                           DSAI6707 Chapter 2                8
+                     6
+
+
+
+
+DSAI6707 Chapter 2
+                                                                              7
+
+
+
+              Informed (Heuristic) Search
+• AI problem solver employs heuristics in two situations:
+    • A problem may not have an exact solution because of ambiguities in
+        problem statement or available data. Example: medical diagnosis.
+    • A problem may have an exact solution, but the computational cost of
+        finding it may be prohibitive.
+• Uninformed (blind) searches are normally very inefficient. Information
+   about the problem can sometimes be used to guild the search more
+   efficiently.
+• Informed search explores the node that is most “likely” to be the nearest
+   to a goal state.
+• Informed search works successfully in many cases, but its success is not
+   guaranteed.
+
+
+                                          DSAI6707 Chapter 2
+                                                                      8
+
+
+
+               Informed (Heuristic) Search
+•   Hill Climbing
+•   A* Algorithm Search
+•   Simulated Annealing
+•   Genetic Algorithm
+•   …..
+
+
+
+
+                           A simplified road map of part of Romania
+
+                                   DSAI6707 Chapter 2
+                                                                                   9
+
+
+
+Hill Climbing
+  • Consider an eager but blind mountain climber: go uphill along the
+    steepest possible path until can go no further up.
+  • Hill-climbing expands the current state and evaluates its children.
+       • The best child is selected for further expansion; neither its siblings
+          nor its parent are retained.
+  • Because it keeps no history, the algorithm cannot recover from failures of
+    its strategy.
+  • Hill climbing performs well if the distance estimate (quality measurement)
+    is locally consistent. That is, the node with the shortest distance estimate
+    will eventually lead to the goal.
+  • Hill climbing may encounter the problem of stuck/trap at local optima.
+
+
+
+                                            DSAI6707 Chapter 2
+                                                                        10
+
+
+Problems with Hill Climbing
+                 Input: 𝐼𝑡𝑒𝑟𝑚𝑎𝑥 , ProblemSize (Minimization)
+                 Output: Current
+                 Current ← RandomSolution(ProblemSize);
+                 for each 𝑖𝑡𝑒𝑟𝑖 ∈ 𝐼𝑡𝑒𝑟𝑚𝑎𝑥 do
+                              Candidate ← RandomNeighbour(Current);
+                              if Cost(Candidate) ≤ Cost(Current) then
+                                           Current ← Candidate;
+     Plateaus                 end
+                 end
+                 return Current;
+
+
+  Local Maxima
+
+
+
+
+                      DSAI6707 Chapter 2
+                                                                            11
+
+
+                        The A* Search
+• A* is an algorithm that uses heuristic to guide search while
+  ensuring that it will compute a path with minimum cost.
+
+                                                          “estimated cost”
+• A* computes the function f(n) = g(n) + h(n)
+                                                          “actual cost”
+  • The h(n) value guides search toward heuristically promising states
+    while the g(n) value prevents search from persisting indefinitely on
+    a fruitless search.
+  • The function h(n) relies upon some heuristic information available
+    from the problem domain. It changes from heuristic to heuristic,
+    and from problem to problem.
+  • The design of good heuristics is a difficult, empirical problem. h(n)
+    in general weights how close node n is to the goal.
+                                         DSAI6707 Chapter 2
+                                                                              12
+
+
+                                  A* Search
+
+• A*: minimize f(n) = g(n) + h(n)
+   • g(n) = “cost from the starting node to reach n”
+   • h(n) = “estimate of the cost of the cheapest path from n to the goal node”
+
+                                                       h(n)
+                        20
+     g(n)                     15         n
+            10
+                         5
+             15
+                             18
+              20      25
+
+                   33
+
+                                             DSAI6707 Chapter 2
+                                               13
+
+
+
+
+A simplified road map of part of Romania
+
+                          DSAI6707 Chapter 2
+                                                                                    14
+                                  Values of ℎ𝑆𝐿𝐷 : straight-line Arad         366
+                                       distances to Bucharest Bucharest       0
+Stages in an A∗ search for Bucharest.                           Craiova       160
+Nodes are labeled with f = g + h.                               Drobeta       242
+                                                                 Eforie       161
+                                                                Fagaras       176
+                                                                Giurgiu       77
+                                                                Hirsova       151
+                                                                  Iasi        226
+                                                                 Lugoj        244
+                                                               Mehadia        241
+                                                                Neamt         234
+                                                                Oradea        380
+                                                                Pitesti       100
+                                                             Rimnicu Vilcea   193
+                                                                 Sibiu        253
+                                                               Timisoara      329
+                                                                Urziceni      80
+                                                                 VasIui       199
+                                                                Zerind        374
+                                               DSAI6707 Chapter 2
+                                                                                    15
+                                  Values of ℎ𝑆𝐿𝐷 : straight-line Arad         366
+                                       distances to Bucharest Bucharest       0
+Stages in an A∗ search for Bucharest.                           Craiova       160
+Nodes are labeled with f = g + h.                               Drobeta       242
+                                                                 Eforie       161
+                                                                Fagaras       176
+                                                                Giurgiu       77
+                                                                Hirsova       151
+                                                                  Iasi        226
+                                                                 Lugoj        244
+                                                               Mehadia        241
+                                                                Neamt         234
+                                                                Oradea        380
+                                                                Pitesti       100
+                                                             Rimnicu Vilcea   193
+                                                                 Sibiu        253
+                                                               Timisoara      329
+                                                                Urziceni      80
+                                                                 VasIui       199
+                                                                Zerind        374
+                                               DSAI6707 Chapter 2
+                                                                                                                                          16
+
+                               Stages in an A* Search for Bucharest
+                                                                                              Arad       (d) After expanding Rimnicu Vilcea
+                       Arad         (a) The initial state
+                   366=0+366                                                       Sibiu      Timisoara           Zerind
+                       Arad          (b) After expanding Arad                          447=118+329              449=75+374
+                                                                           Arad Oradea
+                                                                                                                       Craiova
+                        Timisoara             Zerind                646=280+366 671=291+380
+           Sibiu                                                                                                      526=366+160 Pitesti
+                                                                            Fagaras       Rimnicu Vilcea                         417=317+100
+      393=140+253 447=118+329               449=75+374
+                                                                                                                          Sibiu
+                                                                             415=239+176
+                       Arad         (c) After expanding Sibiu                                Arad                     553=300+253
+                                                                                                          (e) After expanding Fagaras
+          Sibiu         Timisoara             Zerind                                         Timisoara
+                                                                                  Sibiu                          Zerind
+                      447=118+329           449=75+374                                 447=118+329             449=75+374
+   Arad     Oradea                                                     Arad     Oradea
+646=280+366 671=291+380                                                                                             Craiova
+                                                                    646=280+366 671=291+380                                             Pitesti
+        Fagaras      Rimnicu Vilcea                                                                                526=366+160
+                                                                 Sibiu      Fagaras       Rimnicu Vilcea                            417=317+100
+      415=239+176         413=220+193            Arad                                                                 Sibiu
+                                                             591=338+253                     Bucharest
+                                                                                                                   553=300+253
+                                                                                             450=450+0
+                                    Sibiu        Timisoara     Zerind
+                                         447=118+329         449=75+374
+                         Arad     Oradea                                                     Bucharest
+                                                                  Craiova                    418=418+0        (f) After expanding Pitesti
+                      646=280+366 671=291+380                                      Pitesti
+                                                                 526=366+160
+                   Sibiu      Fagaras       Rimnicu Vilcea                                           Rimnicu Vilcea
+                                            Bucharest               Sibiu            Craiova         607=414+193
+           591=338+253
+                                            450=450+0           553=300+253       615=455+160
+
+                                                                                  DSAI6707 Chapter 2
+                                                                            17
+
+                          Properties of A*
+• A* generates an optimal solution if h(n) is admissible (never
+  overestimates the cost to reach the destination node, i.e., the cost it
+  estimates to reach the goal is not higher than the lowest possible cost
+  from the current point in the path).
+
+• A* generates an optimal solution if h(n) is consistent, i.e., for every
+  node n and for every successor node n’ of n:
+
+                                        n            h(n)
+       h(n) ≤ c(n, n’) + h(n’)                                       d
+                                     c(n, n’)               h(n’)
+                                                   n’
+
+
+    • If h(n) is consistent, f along any path is non-decreasing.
+    • If h(n) is consistent, then h(n) is admissible.
+                                                DSAI6707 Chapter 2
+                                                                        18
+
+
+                      Optimization
+
+  • What is an optimization problem?
+                                                 What are the
+                                                 values of x and y
+                                                 such that z is equal
+                                                 to the value at the
+z = f (x, y)                                     peak?
+
+                                                       maximization
+                                                       minimization
+               x                        y
+
+                                       DSAI6707 Chapter 2
+                                                                                19
+
+    An Optimization Problem
+                              y = f ( x) = x 2 where   x  [0, 10]
+
+                              Find the value of x that gives the minimum of y
+
+y
+
+
+
+
+              x
+
+
+
+
+                                         DSAI6707 Chapter 2
+                                    20
+
+
+
+
+                 Cost function or
+A String         Fitness function
+
+
+
+
+                 Not practical to
+                 evaluate ALL
+                 combinations!
+
+
+
+
+DSAI6707 Chapter 2
+                                    21
+
+
+
+
+                 Cost function or
+A String         Fitness function
+
+
+
+
+                 Not practical to
+                 evaluate ALL
+                 combinations!
+
+
+
+
+DSAI6707 Chapter 2
+                                                                              22
+
+
+Conventional methods – single point search
+
+ • Optimization problem: Finding a Po where
+
+                      
+                 Po = Po  S | f ( Po ) = min f ( Pi )
+                                          Pi S
+                                                         
+ • Gradient-driven search
+       f
+                                             Limitations?
+                                                      f
+                                       Pn +1 = Pn − 
+                             f                       P P = Pn
+                                =0
+                             P                     is a small positive
+                                         P            value – learning rate
+                            Pn
+
+                                         DSAI6707 Chapter 2
+                                                              23
+
+
+• Limitations 1. Function must be continuous/differentiable
+
+               2. Local optima
+
+
+
+               3. Performance depends on the starting point
+
+
+
+
+                                   DSAI6707 Chapter 2
+                                                                          24
+
+                     Simulated Annealing
+• What is simulated annealing? Main idea is to avoid local minima by
+  accepting moves to worse solutions probabilistically
+    • One of the first stochastic local search methods
+    • Inspired by the analogy to physical annealing
+• Physical annealing:
+    • A process for obtaining the minimum energy state of a solid,
+      whereby the melted solid is slowly cooled down until reaching its
+      ground state
+    • A specific schedule is used to cool down the solid very slowly.
+• Computer simulation:
+    • Metropolis algorithm is a simulation algorithm for the physical
+      annealing process
+• Can be applied to solve optimization problems!
+
+                                         DSAI6707 Chapter 2
+                                                                              25
+
+
+
+Metropolis Algorithm
+ •   Generates a sequence of states:
+      • Current state 𝑠𝑖 and next state 𝑠𝑗 with energies: Ei , E j
+      • If 𝐸𝑗 ≤ 𝐸𝑖 , then accept 𝑠𝑗 ; otherwise, accept 𝑠𝑗 with probability
+                     E j − Ei
+         p = exp(−              )
+                      k BT
+         k B : Boltzmann constant, T: temperature
+
+ • If temperature is lowered slow enough, the solid may reach thermal
+   equilibrium at each temperature.
+
+ • What about in the context of optimization?
+
+
+
+                                                    DSAI6707 Chapter 2
+                                                                                 26
+
+                    Simulated Annealing (SA)
+• Notations:
+   • 𝒮: Set of candidate solutions
+   • 𝑠: Solution in 𝒮
+   • 𝑓: Cost function
+   • 𝑓 𝑠 : Cost function value of solution 𝑠
+   • 𝒩 𝑠 : Neighborhood of 𝑠
+Without loss of generality, minimization problem is assumed.
+1.   Generate neighboring solutions 𝑠𝑖 from 𝒩(𝑠)
+2.   Accept new solution if it is better in cost value, i.e., when 𝑓 𝑠𝑖 < 𝑓(𝑠)
+3.   Otherwise, make the decision whether or not to accept:
+     •   Yes: Replace current solution with the new (worse) solution
+     •   No: Discard the new solution
+4.   Probabilistic decision making based on:
+     •   Difference between new and old cost values
+     •   Control parameter T
+                                              DSAI6707 Chapter 2
+                                                                                                         27
+
+                                  SA: Pseudo-code
+Algorithm SIMULATED-ANNEALING
+Begin
+  𝑠0 = Initial state / solution
+  𝑇0 = Initial temperature [positive value]
+  while (Not yet frozen) do
+           while (Not yet at equilibrium at this temperature) do
+                         Choose 𝑠′ from the neighborhood of 𝑠, 𝒩(𝑠)
+                         Δ𝐹 = 𝑓 𝑠′ − 𝑓(𝑠)
+                         if (Δ𝐹 < 0) then (downhill move)
+                                     𝑠 = 𝑠′
+                         else (probabilistic uphill move)
+                                                                   Δ𝐹
+                                     with probability 𝑝 = 𝑒𝑥𝑝 −
+                                                                    𝑇
+                                                                        , 𝑠 = 𝑠′   Random(0,1) < e(-x)
+                         end if
+                         [Might wish to update best-seen solution.]
+           End.
+  Update temperature 𝑇
+End.
+                                                        DSAI6707 Chapter 2
+                                                                                                                                                28
+
+
+
+                                                  Simple illustration of SA
+
+                                                                                Generation of neighborhood solution:
+                   AT INIT_TEMP   Unconditional Acceptance                          • Generate a random neighboring solution
+                                                                                    • Systematically generate neighboring
+                                                                                       solution, ensuring that neighborhood
+                                  HILL CLIMBING                Move accepted with
+                                                                  probability
+                                                                                       space is totally explored.
+                                                                    = e-(^C/temp)
+COST FUNCTION, C
+
+
+
+
+                                                    HILL CLIMBING                  Acceptance criterion:
+                                                                                        • Metropolis criterion is often used:
+                                                                                        • If f ( s ')  f (s) then accept s '
+                                                                       HILL CLIMBING    • Otherwise, accept it with probability
+                                                                                                                         f ( s ') − f ( s )
+                                                                                                             p = exp(−                      )
+                                                                                                                                 T
+                                                                                             AT FINAL_TEMP
+
+
+
+
+                                            NUMBER OF ITERATIONS
+
+
+
+
+                                                                                    DSAI6707 Chapter 2
+                                                                                 29
+
+
+                       Genetic Algorithms
+• A genetic algorithm is a search-based algorithm based on natural selection,
+  which can be used for solving AI optimization problems.
+• Some basic terminologies:
+   • Population: This is a subset of all the probable solutions that can solve
+      the given problem.
+   • Chromosomes: A chromosome/string is one of the solutions in the
+      population.
+   • Gene: This is an element in a chromosome.
+   • Fitness function: This is a function that uses a specific input to
+      produce an improved output. The solution is used as the input while
+      the output is in the form of solution suitability.
+   • Genetic operators: Genetic operators such as Selection, Crossover,
+      Selection, are used for changing the genetic composition of
+      chromosomes.
+                                            DSAI6707 Chapter 2
+                                                                                        30
+
+           Genetic Algorithm – The Ingredients
+    t                                                                          t+1
+
+
+                                    selection
+
+
+
+
+                mutation
+                                                   Crossover/Recombination
+
+•   A genetic algorithm repeatedly modifies a population of individual solutions. At each
+    step, the genetic algorithm selects individuals at random from the current population
+    to be parents and uses them to produce the children for the next generation. Over
+    successive generations, the population "evolves" toward an optimal solution.
+                                                  DSAI6707 Chapter 2
+                                                                                                                       31
+
+
+                           A Simple Genetic Algorithm
+
+                 Initial/random                Final optimized
+                 designs coded                     designs
+                                                                              Selection
+                                                                                                     f(P 3)
+
+              f(P 1: 1 2 0 9 0 2 1 7)=5%
+                                                                                                              f(P 1)
+                             f(P 2: 4 0 0 3 0 1 6 1)=60%
+    fitness                              f(P 3: 0 1 6 4 1 8 0 1)=35%                               f(P 2)
+
+
+chromosome
+or string                                      Decoding
+                                              Evaluation                         New
+                                                                              generation
+                                              Simulation
+                                                                                                 Crossover
+                                                                           Mutation           P 2: 4 0 0 3 0 1 6 1
+                                                                       P 2: 4 0 0 3 0 1 6 1   P 2: 4 0 0 3 0 1 6 1
+                                                                       P 2’:4 0 1 3 0 8 0 1
+                                                                       P 3’:0 1 6 4 1 1 6 1   P 3: 0 1 6 4 1 8 0 1
+
+
+                                        Fitness landscape
+
+
+
+                                                                             DSAI6707 Chapter 2
+                                                                     32
+
+                                                         1
+      How genetic algorithms work?          fitness 
+                                                        cost
+
+                                        Selection
+
+   fitness
+
+
+
+chromosome
+or string
+
+
+                                                         Crossover
+                                     Mutation
+
+
+
+
+                                     DSAI6707 Chapter 2
+                                                                                                      33
+                           How genetic algorithms work?
+                Operations                         Chromosomes                   Fitness
+Initial population:      Example of coded P1: 1 2 0 9 0 2 1 7          f(P1) = 5 %
+parameter     sets     forming   an   initial P2: 4 0 0 3 0 1 6 1      f(P2) = 60 %
+population with size 3. The performance of P3: 0 1 6 4 1 8 0 1         f(P3) = 35 %
+each parameter set is simulated and then                               (N.B. The above fitness
+assigned a fitness.                                                    values are examples)
+Reproduction:        A simple scheme is to P2: 4 0 0 3 0 1 6 1
+allow the chromosomes to reproduce off- P2: 4 0 0 3 0 1 6 1            Evolution in progress (No
+spring according to their respective fitness.                          need to re-calculate fitness
+Thus P1 has low probability of producing                               here).
+children, P2 has a probability of producing P3: 0 1 6 4 1 8 0 1
+two and P3 one.
+Crossover:    Some portion of a pair of P2: 4 0 0 3 0 1 6 1            No fitness calculations
+chromosomes is exchanged at the dotted P2’: 4 0 0 3 0 8 0 1            needed here.
+position randomly specified.                    P3’: 0 1 6 4 1 1 6 1
+Mutation:     The binary values of some P2: 4 0 0 3 0 1 6 1            A new generation is now
+genes of some chromosomes are inverted. P2”: 4 0 1 3 0 8 0 1           formed and the fitness
+The value which has been changed as an P3’: 0 1 6 4 1 1 6 1            needs to be evaluated for
+example is highlighted by an underline.                                the next cycle.
+
+
+                                                           DSAI6707 Chapter 2
+                                                                  34
+
+
+
+              Basic Operations of a Simple GA
+
+
+Make initial population;
+Evaluate the fitness of all initial chromosomes;
+REPEAT
+  Reproduce children from parents (selection);
+  Apply crossover to some chromosomes;
+  Apply mutation to some chromosomes;
+  Preserve some elite individuals;
+UNTIL satisfactory result found
+Decode the best chromosome found.
+
+
+                                             DSAI6707 Chapter 2
+                                                                             35
+
+
+              Details of Genetic Algorithms
+                 Structure of population in a GA
+Fitness function                                             An individual
+ f1    Gene    Gene Gene      Gene    f2      Gene    Gene Gene      Gene
+              Chromosome 1                           Chromosome 2
+ f3    Gene    Gene   Gene    Gene    f4      Gene    Gene Gene      Gene
+              Chromosome 3                           Chromosome 4
+
+
+fn-3   Gene    Gene Gene       Gene   fn-2    Gene    Gene Gene       Gene
+              Chromosome n - 3                       Chromosome n - 2
+fn-1   Gene    Gene Gene       Gene   fn      Gene    Gene Gene      Gene
+              Chromosome n - 1                       Chromosome n
+
+                                             Constant population size = n
+
+                                              DSAI6707 Chapter 2
+                                                                             36
+
+
+  Designing a Representation
+   • We have to come up with a method of representing an individual as a
+
+binary, decimal, real, order-based?
+      genotype.
+
+   • When choosing a representation, we have to bear in mind how the
+      genotypes will be evaluated and what the genetic operators might be.
+
+  Example: Binary Representation           numerical or combinat
+                            CHROMOSOME / STRING
+
+
+
+
+                                                      Bit or Binary number
+                                    GENE
+                                             DSAI6707 Chapter 2
+                                                                        37
+
+
+
+ f we have 10 parameters?
+                    for 1 parameter
+                                                      Phenotype
+ow many 8bits
+           bitsin total?
+                Genotype
+                                                        • Integer
+                                                        • Real number
+                               0-255
+              1*27 + 0*26 + 1*25 + 0*24 + 0*23 + 0*22 + 1*21 + 1*20
+
+              =128 + 32 + 2 + 1 = 163
+                                               Phenotype:
+                                                   = 163 (integer)
+
+                                                DSAI6707 Chapter 2
+                                                                          38
+
+
+
+                                               for 1 parameter: x
+
+                                Genotype:
+                                                             Phenotype:
+Could be a real number,
+                                                       = 13.9609
+e.g., a number between
+                                                       (real number)
+the range of 2.5 to 20.5                 max     min
+             min    max
+                                   163
+using 8 binary bits      x = 2.5 +     ( 20.5 − 2.5 ) = 13.9609
+                                    255
+                        min                max value for 8 bits
+
+               • What is x if the string is: 00000000 ?
+               • What is x if the string is: 11111111 ?
+
+                                        DSAI6707 Chapter 2
+                                                                        39
+
+                   Mutation Operators
+Some important points are:
+ • At least one mutation operator should allow every part of the
+   search space to be reached.
+ • The size of mutation is important and should be controllable.
+ • Mutation should produce valid chromosomes.
+                                        Is mutation critical in
+before    1 1 1 1 1 1 1
+
+
+after     1 1 1 0 1 1 1
+                                 Mutation usually happens with small
+                                 probability pm (e.g., 0.02) for each gene.
+          mutated gene
+                                    DSAI6707 Chapter 2
+                                                                          40
+
+
+Example: Mutation for order-based representation (Swap)
+           Randomly select two different genes and swap them.
+                          7 3 1 8 2 4 6 5
+
+
+                          7 3 6 8 2 4 1 5
+Example: Mutation for tree-based representation
+     Randomly select one node and replaces it with another random node.
+                 *                                   *
+           2          *                        p          *
+
+                 r         r                         r          r
+                                           DSAI6707 Chapter 2
+                                                                              41
+
+
+Example: Crossover for Discrete/Binary Representation
+
+                                                         ...
+                  Whole Population:
+
+
+
+            cut                   cut
+                                                   parents
+     1 1 1 1 1 1 1         0 0 0 0 0 0 0
+
+
+                                                   offspring
+     1 1 1 0 0 0 0         0 0 0 1 1 1 1
+
+
+•   The child should inherit something from each parent. If this is not the
+    case then the operator is a mutation operator.
+•   Crossover should produce valid chromosomes.
+                                              DSAI6707 Chapter 2
+                                                                                    42
+
+
+Uniform Crossover
+   a b c d e f g h                                a b C d E f g H
+   0   0   1   0   1   0   0   1
+   A B C D E F G H                                A B c D e F G h
+Recombination for order-based representation (example):
+• Choose an arbitrary part from the first parent and copy this to the first child
+• Copy the remaining genes (from the second parent) that are not in the copied
+  part to the first child:
+    • Starting right from the cut point of the copied part
+    • Using the order of genes from the second parent
+    • Wrapping around at the end of the chromosome
+• Repeat this process with the parent roles reversed
+
+                                              DSAI6707 Chapter 2
+                                                           43
+
+
+
+Example: Recombination for order-based representation
+
+     Parent 1                  Parent 2
+      7 3 1 8 2 4 6 5           4 3 2 8 6 7 1 5
+
+                     7, 3, 4, 6, 5
+                                                   order
+           1 8 2                         4, 3, 6, 7, 5
+
+     Child 1
+      7 5 1 8 2 4 3 6
+                                     DSAI6707 Chapter 2
+                                                                              44
+
+
+
+Example: Recombination for tree-based representation
+
+                                              *
+                                                               2 * (r * r )
+                                        2          *
+
+                                              r            r
+    *
+
+p       +
+                p * (r + (1 / r))
+
+    r       /       Two random sub-trees are selected for swapping.
+
+
+        1       r
+                                      DSAI6707 Chapter 2
+                                                                          45
+
+
+
+Selection Strategy
+
+  •   We want to have some way to ensure that better individuals have
+      a better chance of being parents than less good individuals.
+  •   This will give us selection pressure which will drive the
+      population forward.
+  •   We have to be careful to give less good individuals at least some
+      chance of being parents – since they may include some useful
+      genetic material.
+  •   The most commonly used selection methods include Roulette
+      Wheel Selection, Rank Selection, Tournament Selection etc.
+
+
+
+
+                                           DSAI6707 Chapter 2
+                                                                           46
+
+
+           Example: Fitness proportionate selection
+Probability of xi being selected for mating is: f i f
+
+     fi = fitness of xi   f i f = total fitness in the population
+
+
+• Better (fitter) individuals have:
+   • more space
+   • more chances to be selected
+
+
+Disadvantages:
+  • Danger of premature convergence because outstanding individuals take
+     over the entire population very quickly.
+  • Low selection pressure when fitness values are near each other.
+
+                                                DSAI6707 Chapter 2
+                                                                        47
+
+
+                         Elitism in GA
+• Should fitness be constantly improved?
+   • Re-introduce in the population previous best-so-far (elitism).
+   • For example, keep the best 10% of parent population and re-
+     introduce them in the next generation by replacing the worst 10%
+     children population.
+   • In GA, elitism tends to improve on the results.
+
+
+
+
+                                           Example of a
+                                           convergence trace
+
+
+
+
+                                       DSAI6707 Chapter 2
+                                                                         48
+
+                         Stopping Criterion
+•   The optimum is reached!
+•   Limit on CPU resources: maximum number of fitness evaluations.
+•   Limit on the patience: after some generations without improvement.
+•   Never draw any conclusion from a single run
+     • Use statistical measures (e.g., average, standard deviation).
+     • Obtain results from a number of independent runs.
+
+
+
+
+                Moving Optimum                     Comparison
+                                             DSAI6707 Chapter 2
+                                                                        49
+
+
+Advantages of genetic algorithms
+• It has excellent parallel capabilities.
+• It can optimize various problems such as discrete functions, multi-
+  objective problems, and continuous functions.
+• It provides answers that improve over time.
+• A genetic algorithm does not need derivative information.
+
+Limitations of genetic algorithms
+• They are not effective in solving simple problems.
+• Lack of proper implementation may make the algorithm converge to a
+  solution that is not optimal.
+• The quality of the final solution is not guaranteed.
+• Repetitive calculation of fitness values may make some problems to
+  experience computational challenges.
+
+                                            DSAI6707 Chapter 2
+                                                                    50
+
+
+
+
+Question: Why such an evolution process will lead to better solutions?
+                                       DSAI6707 Chapter 2
+                                           51
+
+
+                        xi
+
+   GA         String
+                             Application
+(selection,
+crossover,                (simulations)
+mutation)
+              Fitness
+                   fi
+
+
+
+                   DSAI6707 Chapter 2
+                                                            52
+
+
+             A GA’s View of a Population
+
+          String        Objective function value
+          10111                    10
+          01000                     5
+          11010                     3
+          00011                    20
+
+   Task: Maximize objective function value
+Question: Can you guess what is a better string might be?
+
+                                 DSAI6707 Chapter 2
+                                                           53
+
+
+                    Schemata Theorem
+
+• A schema is a set of strings that share certain values
+• Example: **1** matches strings {11101, 11100, 01101,…}
+
+
+         Schema        **1**        *1**1         1*10*
+          11101          ✓            ✓              ✓
+          11100          ✓                           ✓
+          01101          ✓            ✓
+
+
+
+                                      DSAI6707 Chapter 2
+                                                                          54
+
+
+The Schemata Theorem – The processing power of GA is understood in
+  more rigorous terms by examining the growth rates of the various
+  schemata or similarity templates contained in a population.
+ A schema matches a string if at every location in the schema a “1”
+  matches a “1”, a “0” matches a “0” or a “*” matches either.
+ For cardinality “k”, there are (k+1)l schemata in a string; l is the
+  length of the string, eg., k =2 (binary coding), l = 4 → 81 schemata.
+ Order of a schema, o(S) is defined as the number of fixed positions.
+  The defining length, d(S) of a schema is the distance between the
+  first and the last specific fixed position.
+ E.g., S1 = *1001*, S2 = 1****0, then O(S1) = 4, O(S2) = 2, d(S1) = 3,
+  d(S2) = 5
+                                          DSAI6707 Chapter 2
+                                       55
+
+
+
+
+                     (k+1)l = (2+1)3 = 27
+
+
+
+DSAI6707 Chapter 2
+                                                                                     56
+
+
+Let us consider the individual and combined effect of genetic operators:
+Effect of Selection
+Fitness of a schema fit(S) = averaging the fitness values of all strings in
+the population that match this schema
+                 r
+
+                 fit ( x )      k       r = ns(t) is the number of strings matching S
+  fit ( S ) =   k =1
+                                         in the current generation
+                            r
+Considering the i-th string xi is selected with the probability
+
+                        fit ( xi )       N is the total number of strings
+          Pi = N
+                                         in the population
+                  fit( x )
+                     j =1
+                                     j
+
+
+                                                       DSAI6707 Chapter 2
+                                                                     57
+
+
+
+• Probability of xi to be selected:
+
+                                                             f(xi)
+       fitness of xi     fit ( xi )
+  Pi =               = N
+       total fitness
+                        fit( x j )
+                        j =1
+
+
+
+
+• Number of xi to be selected for a population size of N:
+
+                                            fit ( xi )
+               Nr ( xi ) = N  Pi = N  N
+                                       fit( x )
+                                       j =1
+                                                         j
+
+
+
+
+                                      DSAI6707 Chapter 2
+                                                                                                   58
+
+The number of strings matching S in the next population equals
+                                            r
+total fitness of
+                        r                  fit( x ) k
+                        fit( x )
+strings matching S
+                               k        r k =1                 fit ( S )               fit ( S )
+    ns (t + 1) = N  kN=1           =            r       =r              = ns ( t ) 
+                                          N
+                                                               fit                   fit 
+total fitness of all
+                        fit( x )
+                       j =1
+                               j          fit( x )
+                                          j =1
+                                                     j
+
+strings in the pop.
+                                                 N
+A particular schema grows as the ratio of the average fitness of the
+schema to the average fitness of the population → Schemata with
+fitness values above the population average will receive an increasing
+number of samples in the next generation and vice versa.
+Assume that a particular schema remains above average with an
+amount <fit>, then
+                                                                      Grows up exponentially
+                                     fit  +  fit 
+             ns (t + 1) = ns (t )                     = (1 +  )ns (t )
+                                           fit 
+                                                         DSAI6707 Chapter 2
+                                                                         59
+
+
+
+Effect of Crossover
+Assuming that the crossover point is uniformly distributed across
+the string, the probability of destruction of S depends upon the
+defining length of the schema = d ( S )
+                                     l −1                            5
+                                                Examples:
+                                                                     6
+                                                  H1 = * 1 * * * * 0
+                                        d (S )
+The probability of survival of S is 1 −           H2 = * * * 1 0 * *
+                                                                     1
+                                        l −1
+                                                                    6
+Crossover occurs at probability of Pcross , so the probability of
+survival of S is higher and equal to (l = length of the string):
+                                  d (S )
+                       1 − Pcross
+                                  l −1
+                                           DSAI6707 Chapter 2
+                                                                      60
+
+
+So, the combined effect of reproduction and crossover is:
+                                     fit ( S )            d (S ) 
+             ns (t + 1) = ns (t )             1 − Pcross        
+                                     fit                l −1 
+
+Effect of Mutation
+With the mutation probability Pm, the survival of schema is equal to
+                                              Example:
+                  Psurvival = (1 − Pm )
+                                       o( S )
+                                                  H=*1**0**
+                                                     (1- Pm)(1- Pm)
+Assuming Pm << 1, the following approximation holds
+
+                  (1 − Pm )   o( S )
+                                       = 1 − Pmo( S )
+                                                 DSAI6707 Chapter 2
+                                                                              61
+
+
+Combined effect of selection, crossover and mutation:
+
+                              fit ( S )            d (S ) 
+      ns (t + 1) = ns (t )             1 − Pcross        (1 − Pmo( S ) )
+                              fit                l −1 
+                              fit ( S )             d (S )              
+      ns (t + 1)  ns (t )              1 − Pcross        − Pm o ( S ) 
+                              fit                 l −1                
+
+   Schema Theorem - Short defining length, low order and above-
+   average schemata receive exponentially increasing trials in
+   subsequent generations.
+
+Low order, short defining length, highly fit schemata are called the
+building blocks of the search. When the building blocks are pieced
+together, similar to solving the “Jigsaw Puzzle”, the solution emerges.
+
+                                                    DSAI6707 Chapter 2
+

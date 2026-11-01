@@ -1,0 +1,47 @@
+   DSAI6707 Assessment Details and Important Dates
+
+Dear students,
+
+
+Thank you for taking DSAI6707. Now that we are more than halfway through the course, we would
+like to formally announce the assessment details.
+
+
+
+1 Research Project 40%
+The requirements for the project, “Evolutionary Computation for Emerging AI,” have already been
+posted in the Files section on Canvas. Please email all required submission materials to Yajie
+Zhang (23036271R@connect.polyu.hk) by 2 November.
+Project presentations will take place on 4, 11, and 18 November. Each student will have six minutes
+to introduce their project. Individual presentation slots are listed in Fig. 1.
+
+
+
+2 Assignment 20%
+An assignment PDF has been uploaded to Canvas. It contains two multiple-choice questions and
+two calculation questions. Please complete the assignment after class and email your answers in
+PDF format to Yinsong Yan (23038884R@connect.polyu.hk) by 23 November.
+This assignment also serves as a set of sample questions to help you become familiar with the
+question formats for the final examination.
+
+
+
+3 Final Examination 40%
+To give you sufficient time to revise, the final examination is scheduled as follows:
+• Date: 25 November
+• Time: 08:30–11:30
+• Venue: HHB201, our usual classroom
+The examination will carry 100 marks and consist of:
+• 10 multiple-choice questions: 3 marks each, totalling 30 marks.
+• 6 longer questions: worth 10, 10, 10, 10, 10, and 20 marks, respectively, totalling 70 marks.
+You may bring a calculator and one A4 sheet of notes. You may decide what content to include on
+the sheet.
+
+
+Please take note of these deadlines and arrangements, and plan your work and revision accordingly.
+
+
+Best regards,
+The DSAI6707 Teaching Team
+Fig 1. Individual presentation slots (grouped by Canvas)
+

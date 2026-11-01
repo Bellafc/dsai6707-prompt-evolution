@@ -1,0 +1,601 @@
+                        1
+
+
+
+
+    DSAI6707
+    Advanced
+    Computational
+    Intelligence
+     Sem 1, 2026/2027
+
+
+
+
+DSAI6707 Chapter 1
+                                                               2
+
+
+Course Information
+ • Instructor: WU Xingyu (https://wuxingyu-ai.github.io/)
+         WeChat: wuxingyu-uestc
+         Email: xingy.wu@polyu.edu.hk
+
+ • Teaching Assistants:
+    – YAN Yinsong (23038884R@connect.polyu.hk)
+    – ZHANG Yajie (23036271R@connect.polyu.hk)
+
+ • Class Time: Every Wednesday
+                 8:30 AM – 10:20 AM (Lecture)
+                 10:30 AM – 11:20 AM (Tutorial)
+
+ • Lecture Location: HHB201
+
+ • Consultation Hour: Anytime, Office: AG414
+
+                                          DSAI6707 Chapter 1
+                                                                                 3
+
+
+Thanks Prof TAN Kay Chen’s Course Materials
+  • All materials related to this course will be posted on the course page. It
+    is your own responsibility to check for updated information and
+    announcements on the course page.
+
+  • In addition to the course page, sometimes the instructors may send
+    emails to students for issues related to this course, so check your email
+    regularly and reply promptly in case we ask you to do something.
+
+  • You do not own the copyright of the course materials even though you
+    can download them from the course page.
+
+  • You SHOULD NOT redistribute any of the course materials to anyone
+    else who are not taking this course.
+
+
+                                            DSAI6707 Chapter 1
+                                                                          4
+
+Course Planner (Tentative)
+Week   Date                 Topics
+1      Sep 2                Some Concepts in Computational Intelligence
+2      Sep 9                Searching and Optimization
+3      Sep 16               Genetic Algorithm
+4      Sep 23               Evolutionary Algorithm
+5      Sep 30               Knowledge Representation
+6      Oct 7 (Project)      Fuzzy Logic
+7      Oct 14               Fuzzy Expert System
+8      Oct 21               Artificial Neural Network
+9      Oct 28               Guest Lecture/ Artificial Neural Network
+10     Nov 4 (Assignment)   Guest Lecture/ Deep Learning/ Applications
+11     Nov 11               Test
+12     Nov 18               Assignment Presentation
+13     Nov 25               Assignment Presentation
+                                          DSAI6707 Chapter 1
+                                                                                          5
+                              AI is Everywhere
+                       self-driving car online shopping smart home
+      engineering
+
+                                                                        medical
+
+
+
+
+                                                                                  recognition
+smart phone
+
+
+
+  logistics                                                               smart camera
+
+
+
+              navigation                                    logistics
+                            Finance       education
+                                                 DSAI6707 Chapter 1
+                                                                 6
+
+
+
+
+Learning Outcomes
+
+ • Understand fundamental principles and algorithms of
+   Computational Intelligence.
+ • Analyze and evaluate strengths/weaknesses of various CI
+   methodologies.
+ • Apply computational algorithms in engineering data analytic
+   and optimization.
+ • Design and implement computational intelligence techniques
+   to solve practical problems.
+
+
+
+                                   DSAI6707 Chapter 1
+                                                                                        7
+
+
+Reference Books
+• NO official textbook. Lecture notes and tutorials will be provided.
+• Reference books:
+    – D. B. Fogel, D. R. Liu, J. M. Keller (2016), Fundamentals of Computational
+      Intelligence: Neural Networks, Fuzzy Systems, and Evolutionary Computation,
+      Wiley-IEEE Press.
+    – S. Russell and P. Norvig (2009), Artificial Intelligence: A Modern Approach,
+      Prentice-Hall, 3rd edition.
+    – S. Haykin (2008), Neural Networks and Learning Machines, Prentice Hall, 3rd
+      edition.
+    – E. Trillas and L. Eciolaza (2015), Fuzzy Logic: An Introductory Course for
+      Engineering Students, Springer.
+    – E. Cuevas, V. Osuna, D. A. Oliva (2017), Evolutionary Computation Techniques: A
+      Comparative Perspective, Springer.
+    – Technical journals, such as IEEE TPAMI/TNNLS/TEVC, JMLR, AIJ.
+    – Conference Proceedings, such as AAAI, IJCAI, ICML, NeurIPS, ICLR, WCCI.
+                                                DSAI6707 Chapter 1
+                                                                             8
+
+
+
+Prerequisites
+ Better if you have the following background:
+    •   Calculus
+    •   Probability and Statistics
+    •   Linear Algebra
+    •   Programming (preferably Matlab and/or Python)
+
+
+
+
+Grade Assessment Scheme
+    •   Test (40%): Test questions are similar to these tutorial exercises
+    •   Assignment & Presentation (20%)
+    •   Project (40%)
+
+
+                                         DSAI6707 Chapter 1
+                                                                         9
+
+
+• In the era of big data, we are embracing the 4th
+  revolution of industry, industry 4.0, which is to
+  make our daily life more intellectual.                  Industry 4.0
+                                                       Intellectualization
+                                       Industry 3.0
+                                     Informatization
+                    Industry 2.0
+                   Electrification
+ Industry 1.0
+Mechanization
+
+
+
+
+                                       DSAI6707 Chapter 1
+                                                                                10
+
+
+            What is Artificial Intelligence?
+Definition of Artificial by Merriam-Webster:
+humanly contrived, often on a natural model.
+
+      In the 1950s, Minsky and McCarthy described
+      artificial intelligence as any task performed by a
+      program or a machine that, if a human carried
+      out the same activity, we would say the human
+      had to apply intelligence to accomplish the task.
+            John McCarthy
+                            Artificial intelligence (AI), sometimes called machine
+                            intelligence, is intelligence demonstrated
+                            by machines, in contrast to the natural
+                            intelligence displayed by humans and other animals.
+
+
+                                             DSAI6707 Chapter 1
+                                                                                                        11
+                         Artificial Intelligence
+         AI
+Perceptron    1958
+
+   1974       BP ANNs
+
+
+     CNNs     1998
+                                           Intelligence Demonstrated by Machines
+              Google Brain
+   2012       Project
+
+
+                              Big Data              HPC          Large Storage Adv. Algorithms
+                             The time required to train a large image classification system on cloud
+                             infrastructure has fallen from about 3h in Oct 2017 to about 88s in Jul
+                             2019. During the same period, the cost to train such a system has fallen
+                             similarly.
+                                                          DSAI6707 Chapter 1
+                                                   12
+
+
+Multidisciplinary in AI
+                  Computer
+                  Science     Recognize
+
+
+
+            Statistic             Cognize
+
+
+
+        Neuroscience               Analyze
+
+
+
+             Social Science     Decide
+
+
+
+                              DSAI6707 Chapter 1
+                                                                                               13
+
+
+AlphaFold
+• Resolving proteins’ 3D structures is essential to reveal their functions and
+  applications (e.g. disease treatment development), but stood as a grand
+  challenge for the past 50 years.
+
+• Google’s AlphaFold provides a solution to this protein folding problem.
+  AlphaFold is AI models to predict 3-dimensional structures of proteins by
+  their acid sequence.
+                                                                      128 TPU cores (100-200 GPUs)
+                                                                      A few weeks to train the model
+                                                                      on publicly available data.
+
+
+
+
+Brute force calculations do not work
+(~ 10^300 possible conformations for
+a typical protein.                   Nature 596, 583–589 (2021)
+                                                         DSAI6707 Chapter 1
+                                                                            14
+
+
+
+
+AI: Engineering or Science?
+
+ Engineering
+
+    • Building intelligent systems to solve problems in the world
+    • Understanding mechanisms, algorithms, representations for
+      building intelligent systems.
+
+ Science
+
+    • Understanding nature of intelligence (human or otherwise).
+    • Implementing models of intelligence to evaluate and understand.
+    • Exploring consequences of different algorithms and representations.
+
+
+                                         DSAI6707 Chapter 1
+                                                                          15
+
+
+   The Foundations of AI - Computer Engineering
+                               The Turing test, developed by Alan
+                               Turing in 1950, is a test of a machine's
+                               ability to exhibit intelligent behavior
+Respondents                    equivalent to, or indistinguishable
+ Questioner                    from, that of a human.
+
+
+
+
+     • Cares about how to build
+       powerful machines to make
+       AI possible.
+     • E.g., Self-driving cars are
+       possible thanks to advances
+       in computer science and AI.
+                                              DSAI6707 Chapter 1
+                                                 16
+
+
+
+
+A deep neural network consists of a hierarchy
+of layers, whereby each layer transforms the
+input data into more abstract representations
+(e.g., edge -> nose -> face). The output layer
+combines those features to make predictions.
+
+
+
+  DSAI6707 Chapter 1
+                                                           17
+
+
+
+Expert System
+
+
+
+
+                              Mostly with
+       How to construct the
+                              handcrafted rules!
+       expert system?
+
+
+
+
+                                      DSAI6707 Chapter 1
+                                                                    18
+
+
+Data-Driven Methods ➔ Machine Learning
+ • Better models?
+    • With more variables to fit data!
+    • Rule-based → Statistical → Deep Learning
+ • Better computing resource?
+    • More powerful RAM, CPU, GPU, etc.
+ • Also importantly, more data!
+    • Huge volume of data is available to do analytics
+      and discover valuable information from it!
+
+Big Data
+  Big data is a collection of data sets so large and complex that
+  it becomes difficult to process using on-hand database
+  management tools or traditional data processing applications.
+                                         DSAI6707 Chapter 1
+                                                                                                         19
+
+
+                Application                  Model                       Computing
+               Complexity++                  Size ++                    Efficiency ++
+
+
+
+  HPC                           ~25,000 GPUs: ~6 months
+                2023
+                                             ~1.7 Trillion params
+               GPT-4
+   Adv.         2022
+                                  ~175B params
+Algorithms    ChatGPT
+                2018
+                              ~110M/340M params
+             Bert & GPT             Big Model Era
+                1998
+ Large                                                                   Open
+               CNNs
+Storage                                                                 Source
+                1974
+  Big          ANNs
+ Data           1958           ~ Hundreds/thousands params
+             Perceptron            Pre Deep Learning Era
+
+                AI               Scale                                  Distributed computing platform
+
+                                                             DSAI6707 Chapter 1
+                                                                                   20
+
+GPT (Generative Pre-trained Transformer)
+• GPT-4 is the latest version of Generative Pre-trained Transformers: A type of
+  deep learning model used for natural language processing and text generation.
+                                               GPT-4 has 1.7 trillion parameters
+
+
+
+
+                                              A milestone in AI,
+                                              particularly in NLP.
+
+
+                       GPT4, OpenAI in March, 2023
+
+                                               DSAI6707 Chapter 1
+                                                                                           21
+                                     medical data       logistic data
+                traffic data
+
+                                                                             bioscience data
+
+
+weather data
+
+                                                                             chemical data
+
+                                           Big Data
+
+system data
+
+
+
+
+              education data                                             finance data
+
+                               manufacturing data   Internet/shopping data
+
+                                                      DSAI6707 Chapter 1
+                                                                                                          22
+
+ Characteristics of Big Data: 4V
+       Volume                    Velocity                   Variety                   Veracity
+
+
+
+
+                           Batch data, real-time      Structured, semi-         Uncertainty due to
+From terabytes to
+                           data, streaming data,      structured,               data inconsistency &
+exabyte to zetabytes of
+existing data to process   milliseconds to            unstructured, text,       incompleteness,
+                           seconds to respond         pictures, multimedia      ambiguities, deception,
+                                                             Text      Images   model approximation
+
+
+
+                           Sharing over 2.5 billion         Videos     Audio
+8 billion TB in 2015,      content items per day,                      s
+40 ZB in 2020              new data over 500TB
+5.2TB per person           per day
+
+                                                           DSAI6707 Chapter 1
+                                                                         23
+
+
+Data Mining
+  • Discovery of patterns and models that are:
+      • Valid: hold on new data with some certainty
+      • Useful: should be possible to act on the item
+      • Unexpected: non-obvious to the system
+      • Understandable: humans should be able to interpret the pattern
+
+Data Mining Tasks
+      • Descriptive Methods
+          • Find human-interpretable patterns that describe the data
+          • E.g., Milk and Bread
+      • Predictive Methods
+          • Use some variables to predict unknown or future values of
+            other variables
+          • E.g., weather prediction
+      • How to learn from the data? machine learning!
+                                          DSAI6707 Chapter 1
+                                                                             24
+                                        • Machine Learning: Allows machine to
+                                          learn new things from the data.
+How to learn?                           • Deep Learning: More complex model to
+                                          fit large-scale data.
+                                                            Input Layer
+  Data Collection
+
+Data Pre-processing
+                          Handcrafted                             Hidden layers
+ Feature Extraction
+                          Features
+ Feature Selection
+                                                            Output layers
+ Statistical Models
+                                           A multi-layer perceptron model
+   Classical Machine Learning                         Deep Learning
+
+
+   Feature Extraction to Fit Data            Automatic Feature Learning
+
+
+                                           DSAI6707 Chapter 1
+                                                                             25
+
+
+         Taxonomy of machine learning methods
+Supervision             Unlabeled Data     Clusters       Topic Discovery
+
+        Unsupervised
+        Learning
+
+
+
+                        Labeled Data     Predict Labels   Price Prediction
+
+        Supervised
+        Learning
+
+
+                           Rewards       Good Actions      Dog Training
+        Reinforcement
+        Learning
+
+
+
+
+                                           DSAI6707 Chapter 1
+                                               26
+
+
+Supervised Learning (Regression)
+
+
+
+
+                          DSAI6707 Chapter 1
+                                               27
+
+
+Supervised Learning (more features)
+
+
+
+
+                          DSAI6707 Chapter 1
+                                                 28
+
+
+Supervised Learning (a lot of features)
+
+
+
+
+                            DSAI6707 Chapter 1
+                                                 29
+
+
+Regression vs. Classification
+
+
+
+
+                            DSAI6707 Chapter 1
+                                                                    30
+
+
+
+Unsupervised Learning
+ • Dataset contains no labels: 𝑥(1),..… 𝑥(n)
+ • Goal: To find interesting structures or patterns from the data
+
+
+
+
+                                       DSAI6707 Chapter 1
+                                                               31
+
+
+
+Reinforcement Learning
+• Agent and environment interact at discrete time steps:
+  𝑡 = 1, 2, 3, … , 𝑇. At step 𝑡, the agent
+     • Observes state (environment)
+     • Produces actions
+     • Gets resulting reward
+     • And produces the next state
+
+
+                                              Improve the policy
+Try the policy and  Data
+                                Training      based on the
+collect feedbacks collection
+                                              feedbacks (rewards)
+
+                                   DSAI6707 Chapter 1
+                                                                                                  32
+
+                                  What is next?
+                                      AI Evolution
+
+
+
+
+Artificial Narrow Intelligence Artificial General Intelligence   Artificial Super Intelligence
+             (ANI)                          (AGI)                             (ASI)
+
+ Focus on some specific         Human level intelligence,        Nick Bostrom defines ASI as
+ tasks, such as AlphaGO,        such as able ability to think,   AI that is smarter than the
+ speech recognition,            plan, understand and solve       cleverest human. All
+ image recognition,             complex issues, fast             theoretically possible
+ language translation, AI       learning from past               technologies could be
+ tutors, self-driving cars,     experience, self-adaptation,     developed, e.g., medical
+ etc.,                          etc.,                            nanotechnology,
+                                                                 self‐replicating robots, etc.,
+
+                                                       DSAI6707 Chapter 1
+

@@ -1,0 +1,783 @@
+                                      1
+
+            Not to be redistributed
+            to Course Hero or any
+            other public websites
+
+
+
+     DSAI6707
+     Advanced
+     Computational
+     Intelligence
+     Sem 1, 2026/2027
+
+
+
+
+DSAI6707 Chapter 7
+                                                                               2
+
+
+             What is a Neural Network (NN)?
+• A neural network is a massively parallel distributed processor that has a
+   natural propensity for storing experimental knowledge and making it
+   available for use.
+• It resembles the brain in two respects:
+     • Knowledge is acquired by the network through a learning process.
+     • Inter-neuron connection strengths known as synaptic weights are used
+        to store the knowledge.
+• Artificial neural networks are parameterized computational nonlinear
+   algorithms for (numerical) data/signal/image processing. These algorithms
+   are either implemented on a general-purpose computer or are built into a
+   dedicated hardware.
+
+                                             DSAI6707 Chapter 7
+                                                                                3
+
+
+Benefits of Neural Networks?
+ • High computational power
+     • Generalization: Producing reasonable outputs for inputs not
+        encountered during training (learning).
+     • Has a massively parallel distributed structure.
+
+ • Useful properties and capabilities
+     • Nonlinearity: Most physical systems are nonlinear.
+     • Adaptivity: Has built-in capability to adapt their synaptic weights to
+        changes in the environment.
+     • Fault tolerance: If a neuron or its connecting links are damaged, the
+        overall response may still be ok (due to the distributed nature of
+        information stored in a network).
+
+
+                                           DSAI6707 Chapter 7
+                                                                                4
+
+
+      What are Biological Neural Networks?
+• Biological neurons, the basic building blocks of the brain, are slower than
+  silicon logic gates. The neurons operate in milliseconds (10-3) which is
+  about 106 times in magnitude slower that the logic gates operating in the
+  nanosecond (10-9) range.
+• The brain makes up for the slow rate of operation with two factors:
+    • A huge number of nerve cells (neurons) and interconnections
+       among them. The number of neurons is estimated to be in the
+      range of 1010 with 60 ·1012 synapses (interconnections).
+    • A function of a biological neuron seems to be much more complex
+      than that of a logic gate.
+• Summary: The brain is a highly complex, non-linear, parallel information
+  processing system. It performs tasks such as pattern recognition and
+  perception many times faster than the fastest digital computers.
+
+                                            DSAI6707 Chapter 7
+                                                               5
+
+
+
+Biological Neuron
+• A typical biological neuron is
+  composed of:
+    1. A cell body;
+    2. A tubular axon: a long thin
+        tube that splits into branches
+        terminating in little end bulbs
+        that almost touch the
+        dendrites of other cells;
+    3. A multitude of hair-like
+        dendrites that form a very fine
+        filamentary brush surrounding
+        the body of the neuron;
+
+
+
+                                          DSAI6707 Chapter 7
+                                                                                       6
+
+
+                                                                      Dendrites
+
+
+
+• Synapses:
+    1. Small gap between an end bulb
+       and a dendrite.                                           Nucleus
+    2. Basic structural and functional
+                                                       Cell
+       units that mediate the                          body    Axon
+       interactions between neurons.               Synapses            Synapses (to
+    3. Can impose excitation (active) or         (from other          other neurons)
+       inhibition (inactive) on the                neurons)
+       receptive neurons.
+
+
+                                      Dendrites (of
+                                      other neurons)
+
+
+                                            DSAI6707 Chapter 7
+                                                                                      7
+                             Model of a Neuron
+                    number of input data
+   { x1, x2,… xn}
+            x1                          bk (bias)
+                       wk1
+
+
+            x2        wk2           +1
+
+                       wk3                   vk        (•)
+   Inputs
+
+
+
+
+            x3                                                    Output yk
+                       wk4                          Activation
+                                                     function
+            x4        wkm
+
+                                                    m
+
+            xm
+                     Synaptic weights      uk =  wkj x j         yk =  (uk + bk )
+                                                    j =1
+
+dimension of input data
+                                                  DSAI6707 Chapter 7
+                                                                                   8
+                              Model of a Neuron
+• Three basic components for the model of a neuron:
+   1. A set of synapses or connecting links: characterized by a weight or
+        strength of its own.
+   2. An adder for summing the input signals, weighted by the respective
+        synapses of the neuron (a linear combiner).
+   3. An activation function for limiting the amplitude of the neuron output,
+        e.g., it limits the permissible amplitude range of the output signal,
+        typically [0, 1] or [-1, 1].
+
+• Mathematically, for a neuron k,
+                                               vk
+               m
+         uk =  wkj x j and         yk =  (uk + bk )
+               j =1
+
+  where x1, x2,…, xm are the input signals; wk1, wk2,…, wkm are the synaptic weights
+  of neuron k; uk is the linear combiner output due to the input signals; bk is the
+  bias; φ(•) is the activation function; and yk is the output signal of the neuron.
+                                               DSAI6707 Chapter 7
+                                                                                       9
+
+
+• Effect of bias bk : affine transformation to uk          vk
+                                                                bk > 0
+• Definition: “induced local field”, vk = uk + bk                        bk = 0
+                                                                            bk < 0
+     Affine transformation produced by the
+               bias (vk = bk at uk = 0)
+                                                                                  uk
+
+
+
+
+• Alternatively, we may reformulate the model as follows:
+                 m
+           vk =  wkj x j and             yk =  (vk )
+                 j =0
+
+  Note: we have added a new synapse: x0 = +1 and its weight is wk0 = bk .
+  The new formulation is shown in the graph below:
+
+                                               DSAI6707 Chapter 7
+                                                                          10
+                         Model of a Neuron
+
+Fixed x = +1
+input 0            wk0 = bk (bias)
+
+
+             x1    wk1
+
+                   wk2                vk      (•)
+             x2                                            Output yk
+                   wk3                     Activation
+    Inputs
+
+
+
+
+                                            function
+             x3    wkm
+
+                                             m
+             xm   Synaptic weights    vk =  wkj x j       yk =  (vk )
+                   (including bias)          j =0
+
+
+
+
+                                      DSAI6707 Chapter 7
+                                                                                        11
+
+                     Type of Activation Functions
+• Threshold function (Hard limiter)                      (v )
+
+                    +1 if v  0                     +1
+            (v ) = 
+                     0 if v  0
+                                                            0          v
+• Sigmoid function (s-shaped)
+   • Strictly increasing function; Asymptotically approach the saturation
+      values; Continuous & differentiable everywhere
+
+          1
+                                                     Logistic function:
+                                                                         1
+    (v) 0.5                                                (v ) =
+                                      Increasing a                    1 + e −av
+          0                                           where a is the slope parameter.
+               -10            0                 10
+                              v
+                                                DSAI6707 Chapter 7
+                                                                                  12
+
+                                       Example
+• An example of the logistic function is defined by
+                                        1
+                          (v ) =
+                                  1 + exp(−av)
+  whose limiting values are 0 and 1. Show the derivative of  (v)
+  with respect to v. What is the value for this derivative at the origin?
+
+                         1
+• Solution:  (v) =
+                     1 + e − av
+                        ae − av                               du     dv
+             (v) =                                 d u
+                                                               v −u
+                     (1 + e − av ) 2                          dx     dx
+                                                         =       2
+                                                     dx  v     v
+                       e − av  1
+                   = a          
+                             − av     − av
+                       1+ e 1+ e
+                   = a(1 −  (v)) (v)           So ’(0) = a(1-1/2)(1/2) = a/4
+
+                                                 DSAI6707 Chapter 7
+                                                                                      13
+
+                          Network Architectures
+• Single node is insufficient for many practical problems; networks with a large no.
+   of nodes are frequently used;
+• Network architecture defines how nodes are connected;
+• Layered Networks: Nodes are partitioned into subsets called layers; No
+   connections lead from layer k to layer j if k > j; Intra-layer connections may exist.
+
+
+
+
+                       Layer 0       Layer 1    Layer 2   Layer 3
+                       (input layer)                      (output layer)
+                                          Hidden layer
+
+                                                      DSAI6707 Chapter 7
+                                                                               14
+
+
+
+
+• Single-Layer Feedforward Networks
+   • Here, the layer refers to the output layer of
+      computation nodes (neurons).
+   • Do not count the input layer of source nodes
+      because no computation is performed there.
+
+
+                                                                    layer of
+                                                     Input layer
+                                                                    output
+                                                                    neurons
+
+
+
+                                               DSAI6707 Chapter 7
+                                                                                  15
+
+
+
+• Multilayer Feedforward Networks
+
+   • Most common
+   • Neurons in each layer of the network
+     have as their inputs the output signals of
+     the preceding layer only.
+
+
+       • One or more hidden layers
+         whose computation nodes are
+         called hidden neurons.
+                                                  Input     layer of   layer of
+       • Function of hidden neurons is            layer     hidden     output
+         to intervene between the                           neurons    neurons
+         external input and the network
+         output in some useful manner.
+                                             DSAI6707 Chapter 7
+                                                                             16
+
+                                 Perceptron
+• A machine that learns, using examples, to assign input vectors (samples)
+  to different classes (Rosenblatt, 1958).
+• Perceptron is built around a nonlinear neuron (the hard limiter model).
+                          Linear            Non-linear
+
+
+
+                 x1      w1        Bias, b
+                 x2      w2
+                                        v    (·)
+     Inputs                                              Output, y
+                        wm            Hard limiter
+
+                 xm                     1
+
+
+                          m
+                      v =  wi xi + b
+                          i =1
+
+                                                    DSAI6707 Chapter 7
+                                                                                   17
+
+• Goal: To correctly classify the set of externally applied stimuli x1, x2,…, xn
+  into one of two classes, C1 and C2.
+• Define:
+    • the input vector:
+         • x’(n) = [+1, x1(n), x2(n),…, xm(n)]T
+    • the weight vector:
+         • w’(n) = [b(n), w1(n), w2(n),…, wm(n)]T
+  where n denotes the iteration step.
+         Fixed Input, x0= +1
+                                  w0 = b
+                           x1
+                                  w1
+                           x2     w2
+                                              v      (·)
+               Inputs                                            Output, y
+                                  wm              Hard limiter
+                                     Linear
+                           xm      combiner         DSAI6707 Chapter 7
+                                                                                 18
+
+
+                                                          x2    o    o
+• The linear combiner output is:                                    o o
+
+                           w’.x’<0, y=?
+        v(n) = w’T(n) ·x’(n)                                    Class C2
+
+                           w’.x’>0, y=?        Class C1
+
+                                                                           x1
+• The equation w’Tx’ = 0, plotted in an         x    x
+                                                    x x
+  m-dimensional space (plotted for
+  some prescribed bias) with
+                                                    Decision boundary
+  coordinates x1, x2,…, xm, defines a
+                                                    w1x1 + w2x2 + b = 0
+  hyperplane as the decision surface
+  between 2 different classes of inputs.        Figure: Illustration of the
+                                             hyperplane (in this example, a
+                                           straight line) as decision boundary
+      w’Tx’ ≥ 0 (class 1, e.g., y = 1)       for a two-dimensional, 2-class
+      w’Tx’ < 0 (class 2, e.g., y = 0)       pattern-classification problem.
+
+
+                                           DSAI6707 Chapter 7
+                                                                                    19
+
+
+• Selection of weights for the perceptron: In order for the perceptron to
+  perform a desired task, its weights must be properly selected. In general,
+  two basic methods can be employed to select a suitable weight vector:
+    • By off-line calculation of weights. If the problem is relatively simple, it
+      is often possible to calculate the weight vector from the specification
+      of the problem.
+    • By learning procedure. The weight vector is determined from a given
+      (training) set of input-output vectors (exemplars) in such a way to
+      achieve the best classification of the training vectors.
+
+
+• Selection of weights by off-line calculations - Example
+    • Consider the problem of building the NAND gate using a perceptron.
+      In this case the desired input-output relationship is specified by the
+      following truth-table and the related plot.
+
+                                               DSAI6707 Chapter 7
+                                                                                      20
+
+
+
+
+• The input patterns (vectors) belong to two classes and are marked in the input
+  space {the plane (x1, x2)} with  and , respectively. The decision plane is the
+  straight line described by the following equation
+                        x1 + x2 = 1.5 or    − x1 − x2 + 1.5 = 0
+• In order for the weight vector to point in the direction of y = 1 patterns, we
+  select it as: w = (1.5, −1, − 1). For each input vector, the output signal is now
+  calculated as
+                                      1
+                                                  0 if v  0
+                  v = 1.5 − 1 − 1 x1  ; y = 
+                                                    1 if v  0
+                                       x2 
+                                                DSAI6707 Chapter 7
+                                                                                  21
+
+
+
+• Example: What if we have the following truth table (AND gate)?
+
+
+                             x1    0        0   1     1
+                             x2    0        1   0     1
+                              y    0        0   0     1
+
+
+             Fixed Input x0 = +1       -1.5
+
+
+        x1 + x2 - 1.5 = 0     x1       +1             v    (·)
+                                                                      Output, y
+                                       +1              Hard limiter
+                              x2
+
+
+                                                    DSAI6707 Chapter 7
+                                                                                             22
+
+
+• Example: Consider 2-dimensional samples (0, 0), (0, 1), (1, 0), (-1, -1) that
+  belong to one class, and samples (2.1, 0), (0, -2.5), (1.6, -1.6) that belong to
+  another class. A two-class partition of the input space and a perceptron
+  that separates samples of opposite classes are as follows:
+
+
+         x2                               Fixed Input
+                          x1 - x2 = 2     x0 = +1          -2
+
+                                                   x1      +1
+                          (2.1, 0)
+                                                                       v     (·)
+                                     x1
+                                                                        Hard limiter
+                                                           -1
+              (0, -2.5)                            x2
+
+                                          Output = 1 if (x1 - x2 - 2)  0 and 0 otherwise.
+
+
+                                                        DSAI6707 Chapter 7
+                                                                                     23
+
+
+Equivalent Perceptrons
+ Fixed Input                               Fixed Input
+ x0 = +1                                   x0 = +1
+                  -400                                      -2.6
+
+          x1      +200                               x1    +1.3
+                              v (·)                                    v (·)
+
+                  -200      Hard limiter                    -1.3      Hard limiter
+
+          x2                                         x2
+
+
+               There are infinitely many sets of weights that describe the
+               same two-class classifier:
+
+               x1 - x2 = 2  2x1- 2x2 = 4  100x1- 100x2 = 200  ….
+
+
+                                                 DSAI6707 Chapter 7
+                                                                                             24
+
+
+Definition: Linearly Separable
+   Two classes are linearly separable if and only if there exists a weight vector
+   w based on which the perceptron can correctly perform the classification.
+
+                                Decision
+                                boundary
+
+        Class                                            Class
+        C1                  Class                        C1           Class
+                            C2                                        C2
+
+
+
+                   (a)                                        (b)
+
+ (a) A pair of linearly separable patterns; (b) A pair of non-linearly separable patterns.
+
+                                                   DSAI6707 Chapter 7
+                                                                           25
+
+
+                    Example: Linearly separable?
+ 2-input “AND” logic function
+
+
+                              (1,1)                   Legend
+ (x1, x2)=(0,1)
+                                                           1
+         (0,0)                    (1,0)                    0
+
+
+ 2-input “OR” logic function              XOR function
+
+                              (1,1)           (0,1)            (1,1)
+         (0,1)
+
+
+         (0,0)                    (1,0)       (0,0)                (1,0)
+
+              x1 + x2 – 0.5 = 0
+                                              DSAI6707 Chapter 7
+                                                                              26
+
+
+• How about the linearly separable case where we have 3 or more input
+  dimensions?
+• Hyperplane in m dimensions is defined by the equation
+    • w0 + w1x1 + w2x2 + … + wmxm = 0
+    • Dividing m-dimensional space into two regions
+         w0 + w1x1 + w2x2 + … + wmxm > 0
+         w0 + w1x1 + w2x2 +…+ wmxm < 0
+• For 2-dimensional input spaces, it is easy to determine by geometric
+  construction whether two classes are linearly separable and to find a
+  two-class classifier. However, it is not so straightforward for 3-
+  dimensional input spaces and beyond.
+• If two classes are linearly separable, is there a mechanical procedure to
+  obtain the weights of a suitable perceptron?
+
+                                           DSAI6707 Chapter 7
+                                                                               27
+
+                        Perceptron Learning
+• Now, suppose that the input variables of the perceptron originate from 2
+  linearly separable classes C1 and C2.
+• We know if C1 and C2 are linearly separable, there exist weight vector w’*
+  such that
+        w’*T·x’ > 0 for  x  C1                       (1)
+        w’*T·x’ < 0 for  x  C2                       (2)
+• Given a training set X = X1 X2 (X1 X2 = 0) where
+        X1  class C1
+        X2  class C2
+• Training problem: Find a weight vector w’* such that the perceptron can
+  correctly classify the training set X.
+
+
+                                            DSAI6707 Chapter 7
+                                                                                    28
+
+
+              Perceptron Learning Algorithm
+Algorithm Perceptron;
+ Start with a randomly chosen weight vector w’0;
+ Let k = 1;
+ while there exist input vectors that are misclassified by w’k-1, do
+     Let x’ be a misclassified input vector;
+                                                              w’k = w’k-1 -  x’
+     Update the weight vector to w’k = w’k-1 + (d - y)x’
+                                                                       or
+                                                              w’k = w’k-1 + x’
+                          1 if x belongs to class C1
+     where  > 0 and d = 
+                         0 if x belongs to class C2
+     Increment k
+ end-while
+
+                                         DSAI6707 Chapter 7
+                                                                                  29
+
+
+• The algorithm updates the weight vector w’ so that finally the input patterns
+  lie on both sides of the line decided by the perceptron.
+                               w’k = w’k-1 + (d - y)x’
+
+                            w’T x’ = 0
+                                    n=0            w’T x’  0
+                            n=3 n=2
+
+                         n=1                                +
+                        -
+                  w’T x’ 0
+                                     Example
+
+                                                DSAI6707 Chapter 7
+                                                                                       31
+Example: Let us consider a simple classification problem where the input
+space is one-dimensional space, i.e., a real line:
+                                                              +1      b
+            Class 1 (d = 1) : x = 0.5, 2                                    f(·)
+                                                         x’           w            y
+            Class 2 (d = 0) : x = -1, -2                          x
+
+The activation function f is the threshold function, i.e.
+                                       1 if v  0
+                              f (v ) =                       1
+
+                                       0 otherwise
+Solution:
+Let’s choose  = 1 and w’0 = [-1.5, -2]T
+Order of presentation: x’ = (1, 0.5)T, (1, -1)T, (1, 2)T , (1, -2)T
+                                       1 
+                   y = f  − 1.5 − 2   = 0  (d = 1)
+                                        0.5  
+Iteration 1: When x’ = (1, 0.5)T ,
+                             1   − 0.5        w’1 = w’0 + (1- 0)x’
+                 w’1 = w’0 +  =        
+                              0.5
+                                    − 1.5          DSAI6707 Chapter 7
+                                                                                    32
+
+
+                                                           1 
+Iteration 2: When x’ = (1, -1)T,     y = f  − 0.5 − 1.5   = 1  (d = 0)
+                                                            − 1 
+                                               1   −1.5 
+    w’2 = w’1 + (0 - 1)x’           2 = w 1 −
+                                    w拻             =     
+                                                −
+                                                 −0.5 
+                                                 1
+
+                                                          1
+Iteration 3: When x’ = (1, 2)T,      y = f  − 1.5 − 0.5   = 0  (d = 1)
+                                           
+                                                           2
+                                                1   − 0.5 
+    w’3 = w’2 + (1 - 0)x’          w’3 = w’2 +  =     
+                                                 2   1.5 
+
+                                                       1 
+Iteration 4: When x’ = (1, -2)T,    y = f  − 0.5 1.5   = 0 = d
+                                          
+                                                        − 2
+                                   w’4 = w’3
+
+                                                DSAI6707 Chapter 7
+                                                                                                       33
+
+• We now completed the first epoch. We then reuse the training data and
+   repeat the above training procedure, and it shows that the algorithm actually
+   converges after the first epoch (i.e., w’4 is the solution) for this problem.
+
+                                            1   − 0.5 
+                                            4 = 
+                                w’3 = w’2 +w’              
+                                             2
+                                                    1.5  
+            1
+
+           0.8            w·
+                           x+b=0
+           0.6             x = -b/w
+           0.4
+                     2nd                     0th 1st         3rd decision point
+           0.2
+
+            0
+                      -3       -2      -1      -1/3      1/3 0.5                  2
+          -0.2
+
+                 −
+                     1.5            w’0 − 1.5                0.5
+                                                                 w’3
+          -0.4                                2
+                     0.5                                     1.5
+          -0.6       w’2                           0.5
+                                               −
+          -0.8                                     1.5
+                                                   w’1
+            -1
+                     -3        -2       -1               0            1           2     3
+
+                                                                                  DSAI6707 Chapter 7
+                                                                              34
+
+
+• Example: There are two classes of patterns surrounding (1, 2) and (3, 1)
+   as shown in the following figure. For each class there is 5 data points:
+                         2
+
+
+
+
+                        1.5
+
+
+
+
+                         1
+
+
+
+
+                        0.5
+                          0.5   1       1.5     2        2.5   3
+
+
+
+
+• Using the perceptron learning algorithm, after 100 epochs, the weight vector is
+
+                                         0.0041 
+                                    w? =  − .0349 
+                                          0.0534 
+
+
+                                                         DSAI6707 Chapter 7
+                                                                      35
+
+
+• Thus the decision line is computed as
+
+                    0.0041 − 0.0349 x1 + 0.0534 x 2 = 0
+
+• The classification result is shown below,
+
+
+
+
+ x2                                       err
+
+
+
+
+                   x1                                        epochs
+
+                                                DSAI6707 Chapter 7
+                                                                                    36
+
+• Perceptron Convergence Theorem
+   If C1 and C2 are linearly separable, then the perceptron training algorithm
+   “converges” in the sense that after a finite number of steps, w’ remains
+   unchanged and the perceptron correctly classifies all elements of the training set.
+• If the problem cannot be solved using a perceptron (e.g., non-linearly separable
+  patterns), then, if we apply the perceptron learning algorithm, cycling will
+  occur; that is, after many epochs, the algorithm will return to a w’ vector that it
+  already tried… thus leading to an infinite loop.
+• Although  can be chosen to be any positive value, choosing it properly will
+  dictate how fast the learning algorithm converge to a right solution. If it is
+  chosen very large and applied to the jth example, then learning is excellent as
+  far as that example is concerned, but at the cost of spoiling the learning that
+  has taken place earlier with respect to other examples. Thus, a large value of 
+  is not necessarily good. If an extremely small value is chosen for , that also
+  leads to slow learning. Some intermediate value is the best. Usually, the choice
+  is dependent on the problem being solved.
+                                                DSAI6707 Chapter 7
+

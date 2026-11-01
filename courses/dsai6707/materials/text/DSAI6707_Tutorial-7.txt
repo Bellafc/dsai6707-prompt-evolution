@@ -1,0 +1,382 @@
+Tutorial 7
+Extension Principles and Fuzzy Inference
+DSAI6707: Advanced Computational Intelligence
+
+
+                                                Yinsong Yan
+                                            Department of DSAI
+                                       yinsong.yan@connect.polyu.hk
+Outline
+
+
+ 1. Review the main concepts
+  Extension principles, rule-based expert systems and fuzzy inference.
+
+
+ 2. Solve five exercises
+  Map fuzzy inputs, trace rules and calculate Mamdani outputs.
+
+
+ 3. Interpret the final output
+  Aggregate rule conclusions and obtain a crisp value.
+
+
+                                                                         2
+Extension Principle
+ REVIEW
+
+
+ A crisp function can map a fuzzy input to a fuzzy output.
+
+ Let f: X → Y and B = f(A), where X is finite.
+
+
+  μB(y) = max { μA(x) : x ∈ X and f(x) = y }
+
+ Each input carries its membership grade to the mapped output.
+ If several inputs give the same y, retain their maximum grade.
+
+ If no input maps to y, then μB(y) = 0.
+                                                                  3
+Extension with Two Inputs
+ REVIEW
+
+
+ Let z = f(x, y), with fuzzy inputs A on X and B on Y.
+
+ 1. Evaluate every input pair (x, y).
+   Assign the pair the grade min{μA(x), μB(y)}.
+
+
+ 2. Combine pairs with the same output z.
+
+ μC(z) = max { min[μA(x), μB(y)] : f(x, y) = z }
+
+
+ Throughout this tutorial, use the standard max–min extension principle.
+                                                                           4
+Rule-based Expert Systems
+ REVIEW
+
+
+  Component                          Function
+
+  Knowledge base                     Stores IF–THEN rules.
+
+  Working memory                     Stores facts about the current situation.
+
+  Inference engine                   Matches rules, selects a rule and executes it.
+
+  Explanation facility               Shows how a conclusion follows from the rules.
+
+
+ Several eligible rules form a conflict set.
+
+ Conflict resolution may use priority, specificity or data freshness.
+                                                                                      5
+Linguistic Variables and Rules
+ REVIEW
+
+ A linguistic variable takes values described by fuzzy sets.
+
+ Example: service quality on [0, 10], with terms poor, good and excellent.
+
+
+ IF service is excellent OR food is delicious, THEN tip is generous.
+
+          Antecedent connective                           Firing strength
+                A AND B                                α = min{μA(x), μB(y)}
+                A OR B                                 α = max{μA(x), μB(y)}
+
+                                                                               6
+Mamdani Fuzzy Inference
+ REVIEW
+
+
+  Stage                          Calculation
+
+  1. Fuzzification               Evaluate membership grades at the input values.
+
+  2. Rule activation             Use min for AND and max for OR to obtain αk.
+
+  3. Implication                 Clip each consequent: μCk(u) = min{αk, μBk(u)}.
+
+  4. Aggregation                 Combine rule outputs: μout(u) = maxk μCk(u).
+
+  5. Defuzzification             Convert the aggregated fuzzy output to a crisp value.
+
+
+
+ Mamdani inference evaluates all applicable rules and combines their outputs.
+                                                                                         7
+Discrete Centroid
+ REVIEW
+
+
+ For a finite output universe U = {u1, …, um}:
+
+
+
+   u* = [Σj uj μout(uj)] / [Σj μout(uj)]
+
+ The numerator weights each output value by its membership grade.
+ The denominator is the sum of all aggregated membership grades.
+
+
+ The denominator must be positive. Continuous outputs require an integral.
+                                                                             8
+Exercise 1: A Many-to-one Map
+ INDIVIDUAL WORK 3 MIN
+
+
+ Let X = {−2, −1, 0, 1, 2}, Y = {0, 1, 4} and f(x) = x2.
+
+         x                 −2               −1                0     1     2
+       μA(x)               0.3              0.6               1.0   0.8   0.5
+
+
+ 1. Determine B = f(A) using the extension principle.
+
+ 2. Explain how the two inputs −1 and 1 contribute to μB(1).
+
+ The notation μ/x pairs a membership grade with an element.
+                                                                                9
+Solution 1: Merging Outputs
+ EXERCISE 1 SOLUTION
+
+
+          x                 −2               −1                 0        1     2
+     f(x) = x2               4                1                 0        1     4
+       μA(x)               0.3               0.6               1.0       0.8   0.5
+
+ μB(0) = 1.0
+ μB(1) = max(0.6, 0.8) = 0.8
+ μB(4) = max(0.3, 0.5) = 0.5
+
+
+ B = 1/0 + 0.8/1 + 0.5/4. Repeated outputs use max, rather than a sum.
+                                                                                     10
+Exercise 2: Fuzzy Multiplication
+ PAIR WORK 3 MIN
+
+
+ Let A = 0.4/1 + 1/2 + 0.6/3 and B = 0.7/1 + 1/2.
+
+ Define C through the crisp function z = f(x, y) = xy.
+
+
+ 1. List the six input pairs and their products.
+
+ 2. Compute the membership grade of each pair.
+
+ 3. Combine repeated products and write C in fuzzy-set notation.
+
+
+                                                                   11
+Solution 2: Pairwise Evaluation
+ EXERCISE 2 SOLUTION
+
+        x               y                  xy   min{μA(x), μB(y)}
+        1               1                  1    min(0.4, 0.7) = 0.4
+        1               2                  2    min(0.4, 1.0) = 0.4
+        2               1                  2    min(1.0, 0.7) = 0.7
+        2               2                  4    min(1.0, 1.0) = 1.0
+        3               1                  3    min(0.6, 0.7) = 0.6
+        3               2                  6    min(0.6, 1.0) = 0.6
+
+ At z = 2: μC(2) = max(0.4, 0.7) = 0.7.
+ C = 0.4/1 + 0.7/2 + 0.6/3 + 1/4 + 0.6/6
+                                                                      12
+Exercise 3: Rule Selection
+ PAIR WORK 2 MIN
+
+ Initial facts: temperature is high and humidity is high.
+
+  Rule      IF–THEN statement                                                    Priority
+
+  R1        IF temperature is high, THEN cooling is needed.                      1
+            IF temperature is high AND humidity is high,
+  R2                                                                             3
+            THEN heat stress is present.
+  R3        IF heat stress is present, THEN an alert is required.                2
+
+ At each cycle, fire the eligible rule with the highest priority.
+ Each rule fires once. Which rules are eligible initially, and in what order do the rules
+ fire?
+                                                                                            13
+Solution 3: Inference Trace
+ EXERCISE 3 SOLUTION
+
+
+   Cycle        Eligible rules          Selected rule                  New fact
+
+      1             R1, R2                     R2             Heat stress is present.
+
+      2             R1, R3                     R3              An alert is required.
+
+      3                R1                      R1               Cooling is needed.
+
+
+ Initially, R3 cannot fire because its antecedent is not yet a fact.
+ R2 has the highest priority. Its conclusion makes R3 eligible.
+ After cycle 3, no unfired eligible rules remain.
+                                                                                        14
+Exercise 4: Relational Inference
+ PAIR WORK 3 MIN
+
+ One rule: IF x is A, THEN y is B.
+
+         X              x1         x2              Y              y1    y2    y3
+        μA(x)          1.0         0.5            μB(y)           0.2   1.0   0.6
+       μA′(x)          0.4         1.0
+
+ A′ is the observed fuzzy input.
+ 1. Construct the Mamdani relation R(x, y) = min{μA(x), μB(y)}.
+
+ 2. Find μB′(y) = maxx min{μA′(x), R(x, y)}.
+
+                                                                                    15
+Solution 4: Max–min Composition
+ EXERCISE 4 SOLUTION
+
+              R                  y1                  y2    y3
+              x1                 0.2                 1.0   0.6
+              x2                 0.2                 0.5   0.5
+
+ μB′(y1) = max{min(0.4, 0.2), min(1.0, 0.2)} = 0.2
+
+ μB′(y2) = max{min(0.4, 1.0), min(1.0, 0.5)} = 0.5
+
+ μB′(y3) = max{min(0.4, 0.6), min(1.0, 0.5)} = 0.5
+
+ B′ = 0.2/y1 + 0.5/y2 + 0.5/y3
+                                                                 16
+Exercise 5: A Tipping System
+ GROUP WORK DATA
+
+ After fuzzification, the current service and food scores give:
+
+  Input              Linguistic terms and membership grades
+  Service            poor: 0.6     good: 0.4     excellent: 0.1
+  Food               rancid: 0.2    delicious: 0.7
+
+
+ R1 IF service is poor OR food is rancid, THEN tip is cheap.
+
+ R2 IF service is good, THEN tip is average.
+
+ R3 IF service is excellent OR food is delicious, THEN tip is generous.
+
+                                                                          17
+Exercise 5: Output Calculation
+ GROUP WORK 4 MIN
+
+ Use the finite output universe U = {0, 10, 20, 30}, in percent.
+
+        Tip u (%)                0               10                20    30
+          Cheap                 1.0              0.6               0     0
+         Average                 0               0.5               1.0   0
+        Generous                 0                0                0.5   1.0
+
+ 1. Calculate the three firing strengths.
+ 2. Clip each output set, then aggregate with max at each u.
+ 3. Compute the discrete centroid of the aggregated output.
+                                                                               18
+Solution 5: Firing Strengths
+ EXERCISE 5 RULE ACTIVATION
+
+
+     Rule                        Antecedent calculation                     Firing strength
+
+      R1                                max(0.6, 0.2)                          α1 = 0.6
+
+      R2                             μgood(service) = 0.4                      α2 = 0.4
+
+      R3                                max(0.1, 0.7)                          α3 = 0.7
+
+
+ Both compound antecedents use OR, so their operator is max.
+
+ Each firing strength sets the clipping level for that rule’s output set.
+                                                                                              19
+Solution 5: Clipping and Aggregation
+ EXERCISE 5 MAMDANI OUTPUT
+
+ For each rule k: μCk(u) = min{αk, μBk(u)}.
+
+                 Tip u (%)                            0              10      20    30
+         R1: cheap, clipped at 0.6                   0.6            0.6      0     0
+        R2: average, clipped at 0.4                   0             0.4      0.4   0
+       R3: generous, clipped at 0.7                   0              0       0.5   0.7
+         Aggregated output (max)                     0.6            0.6      0.5   0.7
+
+
+
+ At u = 20%: max(0, 0.4, 0.5) = 0.5. Aggregate across rules at the same u.
+                                                                                         20
+Solution 5: Defuzzification
+ EXERCISE 5 DISCRETE CENTROID
+
+
+ The aggregated grades at u = 0, 10, 20, 30 are 0.6, 0.6, 0.5, 0.7.
+
+
+ Numerator = 0 × 0.6 + 10 × 0.6 + 20 × 0.5 + 30 × 0.7
+              = 37
+
+ Denominator = 0.6 + 0.6 + 0.5 + 0.7 = 2.4
+
+ u* = 37 / 2.4 ≈ 15.42%
+
+                                                                      21
+Interpretation of the Output
+ EXERCISE 5 DISCUSSION
+
+
+                      1.0
+
+                      0.8                                                   Crisp tip: 15.42%
+   Membership grade
+
+
+
+
+                                                           0.7
+                            0.6   0.6
+                      0.6                         0.5
+                      0.4
+                                                                            The centroid uses every
+                      0.2                                                   aggregated grade.
+                      0.0
+                            0     10              20        30              The largest grade occurs at 30%,
+                                        Tip (%)                             but it does not determine the
+                                                                            centroid alone.
+ This calculation uses the stated finite universe, without interpolation.
+                                                                                                          22
+Key Takeaways
+ SUMMARY
+
+ Extension principles propagate membership through a function.
+  Use min across input grades and max over repeated outputs.
+
+
+ A rule-based expert system reasons with rules and current facts.
+  Conflict resolution selects an eligible rule to execute.
+
+
+ Mamdani inference combines fuzzy rule conclusions.
+  Clip each consequent, aggregate with max and defuzzify the result.
+
+
+                                                                       23
+Questions
+
+
+
+
+            Thanks for attention!
+
+
+
+                                    24
+

@@ -1,0 +1,237 @@
+Tutorial 4
+DSAI6707: Artificial Intelligence Concepts
+
+
+                                              Yinsong Yan
+                                           Department of DSAI
+                                      yinsong.yan@connect.polyu.hk
+Outlines
+
+1. A previous exercise on evolutionary algorithm
+
+2. Review
+
+3. Code demo for SGD and Linear Regression
+
+4. Exercise
+
+
+
+
+                                                   2
+   Exercise 4
+By considering the individual and combined effect of reproduction, crossover and mutation in
+genetic algorithms, derive the schemata theorem to examine the growth rates of various schemata
+or similarity templates contained in a population. The schemata theorem is given as,
+                                       fit ( S )            d (S )             
+             n s (t + 1)  n s (t )             1 − Pcross        − Pm o( S ) 
+                                       fit                l −1               
+A population contains the following strings and fitness values at generation 0:
+      #       String Fitness
+      1       10001 20
+      2       11100 10
+      3       00011 5
+      4       01110 15
+The probability of mutation is Pm = 0.01 and the probability of crossover is Pcross = 1. Using the
+schemata theorem to estimate the expected number of schemata of the form 1**** in generation 1.
+Exercise 4
+From the schemata theorem,
+                                        fit ( S )             d (S )              
+              n s (t + 1)  n s (t )              1 − Pcross        − Pm o ( S ) 
+                                        fit                 l −1                
+The number of schemata at generation 0 is 2, i.e., ns(t) = 2 and the length of the
+string l = 5.
+For schema of 1****, the defining length d(S) = 0, the order o(S) = 1, fit(S) = 15 and
+<fit> = 50/4. Hence the expected number of schemata at generation 1 is given as,
+
+                                      15( 4)
+                        n s (1) = 2         (1 − 0 − 0.01) = 2.376
+                                       50
+Review
+Machine learning
+➢ Supervised learning, Unsupervised learning, and Reinforcement learning
+Linear regression and Classification
+➢ hypothesis class
+   ➢ Linear functions
+➢ loss function
+   ➢ Regression: squared, absolute, deviation.
+   ➢ Classification: zero-one, hinge, logistic.
+➢ optimization
+   ➢ Gradient descent: 𝐰 ← 𝐰 − 𝜂∇TrainLos𝑠(𝐰)
+   ➢ Stochastic gradient descent: randomly iterate on samples.
+
+
+                                                                           5
+Code demo
+Preparation
+1. Environment
+   1. Install conda / miniconda (install-conda)
+   2. Create and activate environment
+       - conda create --name *** python=x.x
+       - conda activate ***
+2. Install Jupyter Lab (install-jupyter-lab)
+       - pip install jupyterlab
+       - jupyter lab
+3. Install necessary packages:
+        numpy, matplotlib, pandas, seaborn, hvplot, scikit-learn, SciencePlots
+       - pip3 install numpy matplotlib pandas seaborn hvplot scikit-learn SciencePlots
+
+
+                                                                                    7
+Exercise
+Exercise 1: Regression
+ Consider the following dataset:
+ 1.   Calculate the mean of 𝑋 and 𝑌.
+ 2.   Calculate the slope (𝛽1 ) and the intercept (𝛽0 ) of the regression line using the least squares method.
+ 3.   Determine the regression line equation.
+ 4.   Predict the value of 𝑌 when 𝑋 = 6.
+
+
+       𝑋                𝑌
+       1                3
+       2                5
+       3                7
+       4                9
+       5                11
+
+
+
+                                                                                                          9
+Exercise 1: Regression
+ Consider the following dataset:
+ 1.   Calculate the mean of 𝑋 and 𝑌.
+ 2.   Calculate the slope (𝛽1 ) and the intercept (𝛽0 ) of the regression line using the least squares method.
+ 3.   Determine the regression line equation.
+ 4.   Predict the value of 𝑌 when 𝑋 = 6.
+
+
+       𝑋                𝑌                   1.   Mean of 𝑋: (1 + 2 + 3 + 4 + 5) / 5 = 3
+       1                3                        Mean of 𝑌: (3 + 5 + 7 + 9 + 11) / 5 = 7
+       2                5
+       3                7
+       4                9
+       5                11
+
+
+
+                                                                                                          10
+Exercise 1: Regression
+ Consider the following dataset:
+ 1.   Calculate the mean of 𝑋 and 𝑌.
+ 2.   Calculate the slope (𝛽1 ) and the intercept (𝛽0 ) of the regression line using the least squares method.
+ 3.   Determine the regression line equation.
+ 4.   Predict the value of 𝑌 when 𝑋 = 6.
+                                     2.   To calculate 𝛽1 and 𝛽0 :
+                                          1) Calculate the deviations:
+       𝑋                𝑌                     𝑋 − 𝑋mean = [-2, -1, 0, 1, 2] and 𝑌 − 𝑌mean = [-4, -2, 0, 2, 4]
+       1                3                 2) Calculate the sum of the products of deviations:
+       2                5                             ∑ 𝑋 − 𝑋mean × 𝑌 − 𝑌mean = 20
+                                          3) Calculate the sum of squared deviations of 𝑋 :
+       3                7
+                                                             ∑ 𝑋 − 𝑋mean 2 = 10
+       4                9
+                                          4) Calculate the slope:
+       5                11                               ∑ 𝑋 − 𝑋mean × 𝑌 − 𝑌mean
+                                                   𝛽1 =                          2
+                                                                                          =2
+                                                                ∑ 𝑋 − 𝑋mean
+                                          5) Calculate the intercept:
+                                                            𝛽0 = 𝑌mean − 𝛽1 × 𝑋mean                      11
+Exercise 1: Regression
+ Consider the following dataset:
+ 1.   Calculate the mean of 𝑋 and 𝑌.
+ 2.   Calculate the slope (𝛽1 ) and the intercept (𝛽0 ) of the regression line using the least squares method.
+ 3.   Determine the regression line equation.
+ 4.   Predict the value of 𝑌 when 𝑋 = 6.
+
+
+       𝑋                𝑌             3.   Regression line equation:
+       1                3                                     𝑌 = 𝛽0 + 𝛽1 ∗ 𝑋 = 1 + 2 ∗ 𝑋
+       2                5             4.   Predicted value of Y when X = 6:
+                                                                  𝑌 = 1 + 2 ∗ 6 = 13
+       3                7
+       4                9
+       5                11
+
+
+
+                                                                                                          12
+Exercise 2: Gradient Descent
+ Consider the following quadratic cost function:
+                                 𝐽(𝜃) = 𝜃² − 4𝜃 + 4
+ Apply gradient descent to find the minimum of this function by iteratively updating
+ the parameter 𝜃. Use an initial value of 𝜃 = 0 and a learning rate 𝛼 = 0.1. Perform
+ three iterations.
+
+
+
+
+                                                                              13
+Exercise 2: Gradient Descent
+ Consider the following quadratic cost function:
+                                 𝐽(𝜃) = 𝜃² − 4𝜃 + 4
+ Apply gradient descent to find the minimum of this function by iteratively updating
+ the parameter 𝜃. Use an initial value of 𝜃 = 0 and a learning rate 𝛼 = 0.1. Perform
+ three iterations.
+
+ 1.   Define the cost function:
+                                        𝐽(𝜃) = 𝜃² − 4𝜃 + 4
+ 2.   Initialize the parameters:
+                                           𝜃 = 0 (initial value)
+ 3.   Set the learning rate and the number of iterations:
+                                         𝛼 = 0.1 (learning rate)
+                                         Iterations = 3
+
+
+
+                                                                              14
+Exercise 2: Gradient Descent
+ Consider the following quadratic cost function:
+                                 𝐽(𝜃) = 𝜃² − 4𝜃 + 4
+ Apply gradient descent to find the minimum of this function by iteratively updating
+ the parameter 𝜃. Use an initial value of 𝜃 = 0 and a learning rate 𝛼 = 0.1. Perform
+ three iterations.
+
+ 4.   Perform gradient descent iterations:
+      Repeat for 𝑖 = 1 to Iterations:
+          Calculate the derivative (𝜕𝐽/𝜕𝜃):
+                                           𝜕𝐽/𝜕𝜃 = 2𝜃 – 4
+          Update the parameter 𝜃:
+                                                        𝜕𝐽
+                                         𝜃 ∶= 𝜃 − 𝛼 ∗
+                                                       𝜕𝜃
+
+
+
+                                                                              15
+Exercise 2: Gradient Descent
+ Consider the following quadratic cost function:
+                                 𝐽(𝜃) = 𝜃² − 4𝜃 + 4
+ Apply gradient descent to find the minimum of this function by iteratively updating
+ the parameter 𝜃. Use an initial value of 𝜃 = 0 and a learning rate 𝛼 = 0.1. Perform
+ three iterations.                                             5
+
+
+
+
+ • three iterations, the updated values of 𝜃 are as follows:   4
+
+
+    ➢ Iteration 1: 𝜃 := 𝜃 − 𝛼 ∗ (𝜕𝐽/𝜕𝜃)
+        𝜃 ∶= 0 − 0.1 ∗ ((2 ∗ 0) − 4) = 0.4                     3
+
+
+    ➢ Iteration 2: 𝜃 := 𝜃 − 𝛼 ∗ (𝜕𝐽/𝜕𝜃)
+                                                               2
+        𝜃 ∶= 0.4 − 0.1 ∗ ((2 ∗ 0.4) − 4) = 0.72
+    ➢ Iteration 3: 𝜃 := 𝜃 − 𝛼 ∗ (𝜕𝐽/𝜕𝜃)                        1
+        𝜃 ∶= 0.72 − 0.1 ∗ ((2 ∗ 0.72) − 4) = 0.976
+ • The minimum value of the cost function is achieved at       0
+
+   𝜃 = 0.976 after three iterations.
+                                                               -1
+                                                                -0.5   0   0.5   1   1.5   2   2.5   3   3.5        4
+
+                                                                                                               16
+Thanks for your time
+

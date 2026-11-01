@@ -1,0 +1,1195 @@
+                                      1
+
+            Not to be redistributed
+            to Course Hero or any
+            other public websites
+
+
+
+     DSAI6707
+     Advanced
+     Computational
+     Intelligence
+     Sem 1, 2026/2027
+
+
+
+
+DSAI6707 Chapter 5
+                                                                              2
+
+                             Fuzzy Sets
+Some preliminaries on Fuzziness
+
+                A 1500 kg mass is
+                approaching your
+                                                           LOOK OUT !!!
+                head at 45.3 m/sec
+
+
+
+
+         Precision                                Significance
+                      Grill Chicken
+                     Take the chicken out of the oven when the temperature
+                     inside the oven reaches 375F
+
+                     Take the chicken out when the top of the chicken turns
+                     light brown
+                                            DSAI6707 Chapter 5
+                                                       3
+
+
+Some examples      • Question: 44 + 33 = ? (5 marks)
+                   • Human logic is ambiguous…
+                     - Slow down when it is raining…
+                     - Planning a schedule…
+                     - Fuzziness of Man and Woman…
+
+
+
+
+       Adorable?
+
+
+                      DSAI6707 Chapter 5
+                                                                                 4
+
+
+
+              • Born in Iran
+              • Graduated from University of Tehran, Department of Electricity
+                  • Master degree at MIT
+                  • PhD at Colombia University
+Lotfi Zadeh   • He was a Professor at the University of California, Berkeley
+
+
+  As complexity rises, precision statements lose
+meaning and meaningful statements lose precision
+
+• Known as the Father of Fuzzy Logic
+• Recipient of IEEE Gold Medal Award in 1995
+
+
+
+
+                                             DSAI6707 Chapter 5
+                                                                       5
+
+
+
+Example of Membership Function
+
+  Albert: The car is going ‘fast’
+  Ben:    What do you mean by ‘fast’
+  Albert: I mean ‘fast’ when it is driving at 80 kmph
+  Ben:    What about if it is at 79 kmph, does it mean it is ‘slow’?
+  Albert: OK, I shall say ‘fast’ if it is at 75 kmph
+  Ben:    Then, what about if it is at 74 kmph, does it mean it is
+          ‘slow’?
+
+               How to appropriately define the word ‘fast’?
+
+                                         DSAI6707 Chapter 5
+                                                                          6
+
+
+        Fast 1
+           0.9
+
+           0.8
+
+           0.7
+
+           0.6
+
+           0.5
+
+           0.4
+
+           0.3
+
+           0.2
+
+           0.1
+
+             0
+                 0   10   20   30   40   50   60     70   80   90   100
+                                    Speed (kmph)
+
+
+One useful definition:
+   A membership function ranges from 0 – 1, with a larger
+   value indicating a higher degree of truth.
+
+                                                   DSAI6707 Chapter 5
+                                                                                             7
+
+ Fuzzy system is a convenient way to map an input space to an output space
+
+                            x            Knowledge               y
+      Present                                                             Conclusion
+                                         Inference
+      Condition
+                                         If … then ...
+
+        Input Space (all possible                                    Output Space (all
+        service quality ratings, 0-10)                               possible tips, 5-30%)
+
+
+
+
+                                                 Black                         $$$
+                                                  Box
+            Service quality                                           The “right” tips
+
+
+
+
+        What could go into the black box?
+         - Mathematic model, e.g., dy = ...
+                                               dx                Fuzzy Logic?
+         - Look-up table
+         - Neural network ...                            DSAI6707 Chapter 5
+                                                                               8
+
+ Fuzzy logic applications…
+
+
+                                    Fuzzy-ATO (Automatic Train Operation)
+
+                                        Riding comfort
+                                      Stopping accuracy   Fuzzy   Speed
+                                    Energy conservation Inference
+   Sendai Subway System (1987)
+
+
+
+
+                                    Fuzzy Washing Machine
+
+                                    Deg_of_ Dirt
+                                                       Fuzzy       Wash_time
+                                                     Inference
+                                    Type_of_dirt
+
+ Washing Machine (National, 1925)             DSAI6707 Chapter 5
+                      9
+
+
+
+
+  Fuzzy Rice Cooker
+
+
+
+
+DSAI6707 Chapter 5
+                                                                              10
+                      A Pole Balancing Control Problem
+                     ee
+                      
+                                   Error e
+                                                     Fuzzy           U
+                                                   inference
+                                   Error-dot e
+                                             
+      U
+
+
+              (A)                     (B)                      (C)
+
+
+      U                        U                        U
+
+
+
+(A) If err is neg_large and err-dot is neg_large    then force is pos_large
+(B) If err is zero      and err-dot is pos_small    then force is neg_small
+(C) If err is pos_large and err-dot is neg_small    then force is neg_small
+                                             DSAI6707 Chapter 5
+                                                                               11
+
+Crisp Sets and Fuzzy Sets
+
+Crisp Sets: A brief overview
+In crisp sets , such as binary sets, variables are either True or False
+   - On or Off, Full or Empty, Correct or Wrong, Black or White
+ Let X denotes the universe of discourse, or the universal set.
+ The set A whose elements are a1, a2,…, an is written as A = {a1, a2,…, an}
+ The number of elements that belong to a set A is called the cardinality of
+  the set and is denoted as A
+ The family of sets consisting of all the subsets of a particular set A is
+  referred to as the power set of A and is indicated by P(A)
+ What is the power set of A = {a, b, c} and the cardinality of this
+  power set?
+               P(A) = { Ø , {a}, {b}, {c}, {a, b}, {a, c}, {b, c}, A }
+                P( A) = 23 = 8
+    → The cardinality of the power set is        P( A) = 2 A
+                                                DSAI6707 Chapter 5
+                                                                                      12
+
+ Mapping of Crisp Sets to Functions
+                                  What is the elements in set A
+  Characteristic function A is defined by
+                                                           A(x)
+                                                                     On
+                1 if and only if x  A                         1
+     A ( x) = 
+                0 if and only if x  A              Off
+                                                                0         x
+
+
+Basics of Fuzzy Sets
+   The real-world is complex:
+    − Uncertainty, fuzziness inherent in our natural language
+    − A “Tall person?”, e.g., > 1.6 m or > 1.7 m
+    − “Fast”, e.g., speed > 50 km/h or speed > 80 km/h
+
+   Fuzzy set theory uses linguistic variables, rather than quantitative variables,
+  to represent imprecise concepts:
+       E.g., “nearly 6-feet tall”, “very hot”, “rather small”
+                                                DSAI6707 Chapter 5
+                                                                      13
+
+
+
+ How to represent the concept such as “hot ” so that machines can
+  communicate with humans?
+
+ How strongly do you agree that a given number (Temperature)
+  ← [0, 100] is a “hot” temperature that belongs to “Hot”?
+
+  3 Types:
+    (1) Threshold type
+
+                                          C
+
+
+                                 C                      C
+
+
+                         Hot = { x | x ≥ 40°C }
+                                                 DSAI6707 Chapter 5
+                                                                                14
+
+
+(2) Conservative type                             ?
+
+                            C        C  C                     C
+
+
+
+                    Not Hot                                 Hot
+
+
+
+(3) Compromiser type
+
+
+                                                                  degree of
+                                                                  “agreement”
+
+
+
+                    C            C  C                C
+
+                                                      DSAI6707 Chapter 5
+                                                                                         15
+     A fuzzy set is a set containing elements that have varying degrees of
+      membership in the set.
+     Larger values of the membership denotes higher degrees of the
+      membership, and such a function is called a membership function.
+     The membership function A by which a fuzzy set A is usually defined
+      has the form A : X → [0, 1]. ( Compared to A : X → {0, 1} )
+
+     A   x1                             Fuzzy set A = approximately equal to 3
+         x2                                    A (x )
+         x3                                                         3.2: How much close to 3?
+          ..
+                                        1.0
+         xn          0       0.5    1
+               X                        0.7
+
+X
+               x3        A
+                    x1
+                                                  2 2.6 2.8 3       3.6     4
+                               x2             2.8: How much close to 3?
+                                                          A (2.8) = 0.7
+                                                 DSAI6707 Chapter 5
+                                                                                          16
+  A possible membership function for the fuzzy set of real numbers close
+   to 0 can be defined as:
+                                           A(x)
+                                               1
+
+                         1
+        A(x) =                                                  A(x) =     1
+                     1 + 10 x 2                                            1+ x2
+
+                          1?
+              Why 10? not
+                                          -2        2        x
+
+   Triangular membership function: Depends on three parameters
+                            0   xa
+                       x −a
+                               a xb
+     ( x; a, b, c ) =  b − a
+                           c−x
+                                b xc
+                        c−b                                      popular due to its simplicity
+                           0   cx
+
+The parameters a and c locate the
+base of the triangle and the
+parameter b locates the peak.                       a
+                                                   DSAI6707bChapterc5
+                                                                       17
+
+
+ Trapezoidal membership function: Depends on four parameters
+
+
+                               0 xa
+                          x−a
+                                 a xb
+                           b − a
+     ( x; a, b, c, d ) =  1 b  x  c
+                          d − x
+                          d − c c  x  d
+                               0 dx
+                          
+                                             a        b      c d
+
+ The parameters a and d locate the base of the trapezoid and
+  the parameters b and c locate the shoulders.
+
+
+ Example: Suggest a membership function for a fuzzy set of positive
+  small real numbers with a universe of discourse X  [0, 10].
+
+                                             DSAI6707 Chapter 5
+                                                                              18
+
+Representation of Fuzzy Sets
+  Fuzzy set A for a discrete and finite universe of discourse X is
+   A = A(x1)/x1 +  A(x2)/x2 + … +  A(xn)/xn
+           n
+       =   A ( xi ) / xi
+          i =1
+                                                   1
+                                          1 / 2 VS   = 0 .5
+  E.g. Integer close to 10                         2
+
+         = 0.1/7 + 0.5/8 + 0.8/9 + 1/10 + 0.8/11 + 0.5/12 + 0.1/13
+
+
+  For continuous and infinite is:      A =   A ( x) / x
+                                             x
+
+                                    
+                                             0 ,             0  x  40
+                                                         −1
+    E.g. Fuzzy set Old   A ( x ) =                −2 
+                                           x − 40  
+                                    1 +                  , 40  x  120
+                  continuous form     
+                                      5           
+
+                                                 DSAI6707 Chapter 5
+                                               19
+
+
+
+  Example: What is the fuzzy set A?
+
+A(x)
+    1
+
+
+  0.5
+
+
+    0        10 20 30 40 50           x
+
+
+         A = 0.5/20 + 1/30 + 0.5/40
+
+
+
+                          DSAI6707 Chapter 5
+                                                                               20
+
+ (Def) Height of a fuzzy set A is hgt(A) = the maximum value of the
+membership function, i.e., supreme{A(x)} = sup{A(x)} = max{A(x)}
+         : ‘Normal’ if hgt(A) = 1
+         : ‘Subnormal’ if hgt(A) < 1
+ (Def) Support of a fuzzy set A, Supp(A) is the crisp set of all x  X such
+  that A(x) > 0, Supp(A) = {x  X | A(x) > 0}
+
+ (Def) Core of a fuzzy set A, Core(A) is the crisp set of all x  X such
+  that A(x) = 1, Core(A) = {x  X | A(x) = 1}
+                          A(x)
+
+
+
+                                        Core
+                     1
+                                        Height
+
+                      0                Support           x
+
+                                                  DSAI6707 Chapter 5
+                                                                               21
+
+ (Def) The -cut of a fuzzy set A is a crisp set A that contains all the
+  elements of the universal set X that have a membership grade in A
+  greater than or equal to the specified value of :
+
+        A = {x  X | A(x)  }
+
+        Strong -cut : A + = {x  X | A(x) > }
+
+       A (x )
+                                                  A ≥ 0 A=0 = X
+           1
+                                                  A ≥ 1 A=1 = Core(A)
+                                  -cut
+                                                  A > 0 A + =0 = Supp ( A)
+
+                                                  A > 1 A + =1 = 
+                       A                  X
+
+                                               DSAI6707 Chapter 5
+                                                                                     22
+
+  Elements (ages)   adult    young     old
+  5                 0        1         0
+                                              Supp(adult) =
+  10                0        1         0
+  20                0.8      0.8       0.1    {20, 30, 40, 50, 60, 70, 80}
+  30                1        0.5       0.2
+                                              Supp(young) =
+  40                1        0.2       0.4                                   A(x) > 0
+  50                1        0.1       0.6     {5, 10, 20, 30, 40, 50}
+  60                1        0         0.8
+  70                1        0         1      Supp(old) =
+  80                1        0         1       {20, 30, 40, 50, 60, 70, 80}
+
+                                               = 0.2
+                                               young0.2 = {5, 10, 20, 30, 40}
+
+                            adult(*)           = 0.8
+A(Age)
+                            young(o)
+                                               young0.8 = {5, 10, 20}
+                            old(+)                                           A(x)  
+                                               = 1.0
+                                               young1.0 = {5, 10}
+                                                DSAI6707 Chapter 5
+                                                                                 23
+ (Def) Level set: The set of all levels   [0, 1] that represent distinct -
+   cut of a fuzzy set A is  A = α  A ( x) = α for some x  X 
+                      adult =   0, 0.8, 1
+                     young    = 0, 0.1, 0.2, 0.5, 0.8, 1
+                        old   = 0, 0.1, 0.2, 0.4, 0.6, 0.8, 1
+ (Def) Convex Fuzzy Sets: For any elements a, b, and c in a fuzzy set A, the
+relation a < b < c implies that,
+                           A(b)  min[A(a), A(c)]
+  then A is said to be a convex fuzzy set.
+  (x)                                    (x)
+            A convex                                    A     non-convex
+     1                                       1
+
+
+
+
+     0    a b c                  x           0       a b c            x
+                                                 DSAI6707 Chapter 5
+                                                     24
+
+
+            Example: Is A Convex?
+
+   A(x)
+       1
+
+
+
+
+       0           a    b   c             x
+
+
+Yes… the membership function of a convex fuzzy set
+
+            A(b)  min[A(a), A(c)] ✓
+
+                                DSAI6707 Chapter 5
+                                                                                 25
+
+  Fuzzy Sets as Collections of Crisp Sets
+
+                                            
+    1
+                      A
+                                                                     A
+    
+
+
+               A
+                                        0                                    X
+
+ Decomposition Theorem:
+         A fuzzy set A can be represented by     A =  α  Aα
+                                                      α0,1
+        ·A denotes the algebraic product
+        of a scalar  with the -cut A; U Fuzzy Set            Crisp Sets
+        denotes the union operation.
+
+ Question: Is decomposition theorem applicable to non-convex fuzzy set?
+                                                DSAI6707 Chapter 5
+                                                                                   26
+
+    (Def) Scalar Cardinality
+     SC ( A) = A =     ( x)
+                     x X
+                            A
+
+
+    (Def) Relative Cardinality           A = level set of A
+                  SC ( A)       A
+    RC ( A) =                 =         | A | = cardinalit y of ( α - cut of A)
+               Universal Set    X
+    (Def) Fuzzy Cardinality                                      Example
+     FC ( A) =  / | A |                                       (ages) old
+                 A                                            5      0
+ Scalar Cardinality SC(A)                                       10     0
+  old = 0 + 0 + 0.1 + 0.2 + 0.4 + 0.6 + 0.8                    20     0.1
+           + 1 + 1 = 4.1                                         30     0.2
+                                                                 40     0.4
+ Relative Cardinality RC(A)                                     50     0.6
+             4 .1
+  old =         = 0.4556                                       60     0.8
+              9                                                  70     1
+ Fuzzy Cardinality FC(A)                                        80     1
+  old = 0.1/7 + 0.2/6 + 0.4/5 + 0.6/4 + 0.8/3 + 1/2
+                                                DSAI6707 Chapter 5
+                                                                                      27
+
+Fuzzy Complement, Union, Intersection
+                        Properties of Fuzzy Sets
+        Involution              A =A
+        Commutativity           AB=BA
+                                                           Extension from crisp set
+
+                                AB=BA
+        Associativity           A  (B  C) = (A  B)  C
+                                A  (B  C) = (A  B)  C
+        Distributivity          A  (B  C) = (A  B)  (A  C)
+                                A  (B  C) = (A  B)  (A  C)
+        Idempotency             AA=A
+                                AA=A
+        Identity                A=A           A=
+                                AX=A           AX=X
+        Transitivity            If A  B  C, then A  C
+                                               DSAI6707 Chapter 5
+                                                                                        28
+
+ De Morgan’s laws:        A B = A  B
+                       A B = A  B
+ Fuzzy Inclusion and equality
+ A  B (A is a subset of B) if A(x)  B(x), for every x  X.
+ A  B (A is a proper subset of B) if A(x)  B(x) for every x  X and A(x) < B(x)
+ for at least one x  X.
+ A = B (A is equal to B) if A(x) = B(x), for every x  X.
+ A  B (A and B are not equal) if A(x)  B(x), for at least one x  X.
+
+ Fuzzy Complement
+ (Def) A complement of a fuzzy set A is specified by a function c : [0, 1] → [0, 1],
+ which assigns a value c(A(x)) to each membership grade A(x), where c(A(x))
+ = (x) = 1 - A(x) (unless otherwise specify) for a normal fuzzy set. Note that
+ the fuzzy complement operator is also referred to as C-norm.
+                                                    DSAI6707 Chapter 5
+                                             29
+
+
+
+
+Example:
+
+   
+    1
+                                Is A = B ?
+               B
+                                Is A  B ?
+           A
+                                Is A  B ?
+
+
+                     x
+
+
+
+                   DSAI6707 Chapter 5
+                                                                              30
+
+                     
+
+                      1
+                                   A       A
+
+
+
+                      0
+                                                  x
+
+
+           Or
+
+
+
+                              A             A
+
+ old = 0/5 + 0/10 + 0.1/20 + 0.2/30 + 0.4/40 +0.6/50 +0.8/60 + 1/70 + 1/80
+  NOT old = 1/5 + 1/10 + 0.9/20 +0.8/30 + 0.6/40 +0.4/50 +0.2/60
+
+                                           DSAI6707 Chapter 5
+                                                                                  31
+
+ We have mentioned that c(a) = 1 – a, but must it always be 1 – a?          No
+
+ A fuzzy complement function must at least satisfy:
+   1. c(0) = 1 and c(1) = 0
+   2. For all A(x), A(y)  [0, 1], if A(x)  A(y), then c(A(x))  c(A(y))
+
+
+       E.g. A threshold-type complement function: c ( a ) 1 for a  t ,
+                                                          
+                                                             0 for a  t ,
+         where a  [0, 1] and t  [0,1); t is called the threshold of c.
+
+                 c
+                 1
+
+
+
+                  0              t               1               a
+                                            DSAI6707 Chapter 5
+                                                                                                         32
+
+
+
+ In addition, the following axioms should be satisfied (as noted in some textbooks):
+
+  3. c is a continuous function
+                                                                                     monotonically decreasing
+         e.g ., c ( a ) = 12 (1 + cos  a )         C(a)
+
+
+
+
+                                                                            a
+
+  4. c is involutive, i.e., c(c(a)) = a for
+                                                                                           = -.9
+     all a  [0, 1]
+                                                                                 = -.5
+
+
+                                                                     =0
+                                            1− a     C(a)
+      e.g., Sugeno class:       c ( a ) =
+                                           1 + a                   =2
+         where   (-1, )
+                                                                    = 10
+
+
+                                                             DSAI6707 Chapter
+                                                                       a      5
+                                                                              33
+
+ In this course, a function must satisfy the above 4 axioms in order to be
+  regarded as a fuzzy complement function.
+ Example: Sugeno class with  = 1 (e.g., checked for involutive)
+                        1− a
+            c =1 ( a ) =
+                        1+ a
+                            1− a
+                         1−
+            cc( a ) =     1 + a = 2a = a
+                            1− a                        c [c(a)] = a ✓
+                         1+          2
+                            1+ a
+ Example: Is c(a) = 1 – a (e.g.,  = 0) satisfies the 4 axioms?
+
+  c(a)                          The function satisfies all the four axioms.
+    1                           For example, (checked for involutive)
+                  YES, why?
+
+                                        c [c(a)] = 1 – (1 – a) = a ✓
+
+                   1        a                DSAI6707 Chapter 5
+                                                                                          34
+
+ (Def) An equilibrium of a fuzzy complement c is defined as any value a
+for which c(a) = a .
+      E.g., For the fuzzy complement c(a) = 1 – a, equilibrium = ?
+
+                      c(a) = 1 – a = a  a = 0.5
+ (Def) Any membership grade represented by the real number a  [0, 1]
+  such that
+                  c(a) – a = a – c(a)
+  is called a dual point of a with respect to c.
+
+       E.g., For the fuzzy complement c(a) = 1 – a, dual point = ?
+                          c(a) – a = a – c(a)              What is the equilibrium
+                       (1 – a) – a = a – (1 – a)                                1− a
+                       4a = 2                             point for c ( a ) =        ?
+                                                                                 1+ a
+                       a = 0.5
+
+ For the fuzzy complement c(a) = 1 – a, equilibrium = dual point = 0.5
+                                                   DSAI6707 Chapter 5
+                                                                                        35
+  Fuzzy Union
+   (Def) The union of two fuzzy sets A and B is specified by a function of the
+   form u : [0, 1]  [0, 1] → [0, 1]. For every x  X, (x) = max[A(x), B(x)] =
+   A  B = A  B (unless otherwise specify). The fuzzy union operator is
+   often referred to as S-norm.
+
+  E.g., young = 1/5 + 1/10 + 0.8/20 +0.5/30 + 0.2/40 +0.1/50
+         old = 0.1/20 + 0.2/30 + 0.4/40 +0.6/50 +0.8/60 + 1/70 + 1/80
+
+     young  old = 1/5 + 1/10 + 0.8/20 +0.5/30 + 0.4/40 +0.6/50
+                   + 0.8/60 + 1/70 + 1/80
+                                                          
+ Fuzzy union must satisfy:                                       AB
+                                                          1
+  1. u(0, 0) = 0; u(0, 1) = u(1, 0) = u(1, 1) = 1                A         B
+
+  2. u(a, b) = u(b, a)
+  3. If a  a and b  b, then u(a, b)  u(a, b)
+                                                          0
+  4. u(u(a, b), c) = u(a, u(b, c))                                                  x
+                                                      DSAI6707 Chapter 5
+                                                                                        36
+
+ Fuzzy Intersection
+
+   (Def) The fuzzy intersection of two fuzzy sets A and B is specified by a
+   function i : [0, 1]  [0, 1] → [0, 1]. For every x  X, (x) = min{A(x), B(x)} =
+   A  B = A  B (unless otherwise specify). Fuzzy intersection operator is
+   also referred to as T-norm.
+
+ E.g.    young = 1/5 + 1/10 + 0.8/20 +0.5/30 + 0.2/40 +0.1/50
+           old = 0.1/20 + 0.2/30 + 0.4/40 +0.6/50 +0.8/60 + 1/70 + 1/80
+          young  old = 0.1/20 + 0.2/30 + 0.2/40 + 0.1/50
+
+ Fuzzy intersection must satisfy:                        
+                                                                     AB
+  1. i(1, 1) = 1; i(0, 1) = i(1, 0) = 0                   1
+                                                                 A         B
+  2. i(a, b) = i(b, a)
+  3. If a  a and b  b, then i(a, b)  i(a, b)
+  4. i(i(a, b), c) = i(a, i(b, c))                        0
+                                                                                   x
+                                                      DSAI6707 Chapter 5
+                                                     37
+
+
+Fuzzy Intersection Example: Safe Speed
+
+
+
+
+                                DSAI6707 Chapter 5
+                                                                                                   38
+
+ What is wrong about the following definitions (as used in some text books)?
+                  A B ( x ) =  A ( x ) +  B ( x ) −  A ( x )   B ( x )
+                            A B ( x) =  A ( x)   B ( x)
+                                         Others…
+
+
+
+                              Nothing is wrong!
+                                                                         like a membership function
+                                                                         that is defined by the user
+  If one interprets a degree of membership as a degree of truth of
+  any proposition, and if (, , –) plays the role of logical connectives
+  in a sensible way, any definition can be a plausible candidate for
+  modeling these connectives. In this course, unless otherwise
+  specify, the standard (, , –) = (max, min, negation) is used.
+                                                           DSAI6707 Chapter 5
+                                                                                                          39
+
+ Example 1: How easy is it for a prisoner to escape from his prison cell?
+   Case 1                concrete        Case 2               concrete
+                                                                                    Easiness to
+      glass                                  glass
+                                                                                    escape
+ w1           w2                        w1                         w2               w1 0.1
+                                                                                    w2 0.3
+
+      min (0.1,0.3) = 0.1                    max (0.1,0.3) = 0.3
+
+ Example 2: How easy is it for sunlight to come into a prison cell?
+                                                                                                  Why?
+        Case 1               concrete                 Case 2             concrete
+
+                                                          glass                             Easiness to
+            glass
+                                                                                            penetrate
+      w1            w2                               w1                      w2            w1 0.6
+                                                                                           w2 0.9
+
+
+           0.6  0.9 = 0.54                   (0.6 + 0.9 ) − (0.6  0.9 ) = 0.96
+                                                                  DSAI6707 Chapter 5
+                                                                                      40
+
+   Fuzzy Relations, Fuzzy Compositions
+
+ If speed is slow then pressure should be high               if A then B
+                                                                  know the relationship
+    - How do we determine the output if we know the inputs?
+
+ Crisp relation represents the presence or absence of connection
+  between elements of two or more sets, e.g., (John, Robert) - brother
+                                                        brother-in-law ?
+
+    E.g. given a f : X → Y , the         E.g.  is also a relation
+    graph G(f) is a relation.
+                                            Y          xy
+        Y        G( f )
+                                                   ×
+                                           
+                                                          ×
+
+
+                           X                                      X
+                                                DSAI6707 Chapter 5
+                                                                                                 41
+
+ Fuzzy relation allows relationship between elements of two or more sets
+  to take an infinite number of relationship degrees.
+             A fuzzy relation R: x is approximately equal to y
+
+ The whole graph,
+ not a single point or line
+                                                                                  − ( x − y )2
+                                                        e.g.,  R ( x , y ) = e
+
+ y             G( f )         y = f ( x)        z
+                                                                              G( f )
+                         1
+                              0.9
+                                    0.4 0.1
+
+
+
+
+           Fuzzy Relation Graph: G( f )             x                                    y
+                                           x
+                                               DSAI6707 Chapter 5
+                                                                                              42
+
+ Both crisp relation and fuzzy relation are defined on Cartesian Product.
+ (Def) Cartesian Product:
+  – An ordered sequence of n elements, written in the form (x1, x2, x3, …, xn),
+    is called an ordered n-tuples;
+
+  – For crisp sets, X1, X2, …, Xn, the set of all n-tuples is called the
+    Cartesian product of X1, X2, …, Xn;
+
+  – E.g. The elements in two sets A and B are given as A = {0, 1} and B =
+    {a, b, c}, various Cartesian products of these two sets are:
+
+                A  B = {(0, a), (0, b), (0, c), (1, a), (1, b), (1, c)}
+
+     Crisp relation is a subset, e.g., R(A, B) = {(0, c), (1, a)}      Cartesian product =
+     Fuzzy relation, e.g., R(A, B) = 0.5/(0, c) + 0.3/(1, a)           Universal set for
+                                                                       crisp/fuzzy relation
+        B  A = {(a, 0), (a, 1), (b, 0), (b, 1), (c, 0), (c, 1)}
+         A  A = {(0, 0), (0, 1), (1, 0), (1, 1)} DSAI6707 Chapter 5
+                                                                                 43
+
+
+Crisp Relations
+ (Def) A relation among crisp sets X1  X2  …  Xn is a subset of the
+  Cartesian product, which is denoted by R(X1  X2  …  Xn)
+  – E.g., Relation between two sets → binary
+  – In general: Relation defined on n sets → n-ary
+
+ The Cartesian product X1  X2  …  Xn represents the universal set
+
+                                  1 if and only if ( x1 , x2 ,..., xn )  R ,
+        R ( x1 , x2 ,..., xn ) = 
+                                  0            otherwise
+
+
+
+
+                                                  DSAI6707 Chapter 5
+                                                                                  44
+
+Fuzzy Relations
+ (Def) A fuzzy relation is a fuzzy set defined on the Cartesian product of
+  crisp sets X1, X2, …, Xn, where tuples (x1, x2, x3, …, xn) may have varying
+  degrees of membership [0, 1], indicating the strength of the
+  relationship present between the elements of the tuple.
+                       e.g., x is similar to y;
+                             x is almost equal to y;
+                             x is much greater than y.
+
+ E.g., Let R be a fuzzy relation between the two sets X = {New York City,
+  Paris} and Y = {Beijing, New York City, London} that represents the
+  relational concept “very far”. This relation can be written as,
+                                                                    NYC   Paris
+ R(X,Y) = 1/NYC, Beijing + 0/NYC, NYC +
+          0.6/NYC, London + 0.9/Paris,                     Beijing  1  0 .9 
+                                               R ( X , Y ) = NYC  0 0.7
+          Beijing + 0.7/Paris, NYC +                                        
+                                                            London 0.6 0.3
+          0.3/Paris, London                                                 
+                                               DSAI6707 Chapter 5
+                                                                                                                            45
+
+                                     Other representation of binary relations, e.g., sagittal diagrams
+                                               y1   y2   y3     y4   y5                   x1            0.9
+                                           x1 0.9 1     0      0  0                                     1     y1
+                                                                                          x2
+                                           x2  0 0.4    0      0  0    R(X, Y)                 0.4           y2
+                                                                                         x3             1
+                                           x3  0  0     1     0.2 0                                           y3
+                                                                                        x4              0.2
+                                           x4  0  0     0      0 0.4                            0.4           y4
+                                           x5  0  0     0      0 0.5                    x5
+                                                                                                0.5           y5
+                                           x6  0  0     0      0 0.2                    x6             0.2
+Only defined for binary relations
+
+
+
+
+                                       (Def) Domain R is a fuzzy set on X, dom R, with  dom R ( x ) = m ax  R ( x , y )
+                                                                                                                     yY
+                                       for each x  X         dom R = 1/x1 + 0.4/x2 + 1/x3 + 0.4/x4 + 0.5/x5 + 0.2/x6
+
+                                       (Def) Range R is a fuzzy set ran R with  ra n R ( y ) = max
+                                                                                                x X
+                                                                                                      R ( x, y )
+                                       for each y  Y         ran R = 0.9/y1 + 1/y2 + 1/y3 + 0.2/y4 + 0.5/y5
+
+                                       (Def) Height R is a number h ( R ) = max max  R ( x , y ) h(R) = 1
+                                                                                    yY    x X
+                                                                                      DSAI6707 Chapter 5
+                                                                                                    46
+
+Projection of Fuzzy Relations
+    Projects a fuzzy ternary relation onto a fuzzy binary relation;
+                    fuzzy binary relation onto a fuzzy set;
+    (Def) For binary relation:
+         Proj [R(X × Y); X] =  max
+                                 yY
+                                      R ( x, y ) / x      Proj [R; Y] =  max
+                                                                           x X
+                                                                                 R ( x, y ) / y
+                                X                                          Y                range
+                                                domain
+             Y
+                                                                     Y
+                                          0.1
+                                    0.2                                        R
+                                 0.5
+                                0.9
+                                1
+                                                                                   X
+
+                                                                               Proj[R, X]
+
+
+   1.0                                          X
+
+
+            1.0                                          DSAI6707 Chapter 5
+                                                                                      47
+
+
+
+
+ Example:
+                                                                             domain
+
+                         y1    y2    y3   y4 Proj on X
+                                                              max  ( x , y ) / x
+                                                             X
+                                                                 yY
+                                                                         R
+                    x1   .8    1     .1   .7       1
+                    x2   0    .8     0    0              Proj [R; X] =
+                                                  .8
+                                                            1/x1 + 0.8/x2 + 1/x3
+                    x3   .9    1     .7   .8       1
+           Proj on Y     .9    1     .7   .8
+
+      max  ( x , y ) / y range
+     Y
+         x X
+                R
+
+
+
+ Proj [R;Y]
+ =      0.9/y1 + 1/y2 + 0.7/y3 + 0.8/y4
+
+
+                                               DSAI6707 Chapter 5
+                                                                                     48
+
+Cylindrical Extension
+ Extends a fuzzy set to fuzzy binary relation
+            fuzzy binary relation to fuzzy ternary relation
+
+ (Def) Cylindrical Extension for binary relation:
+   ce(A) (A is a fuzzy set on X) on X  Y is     ce ( A) =   A ( x ) /( x , y )
+                                                             X Y
+
+    ce(B) (B is a fuzzy set on Y) on X  Y is    ce ( B ) =   B ( y ) /( x , y )
+                                                             X Y
+
+
+                                                Ce(A)
+                                    Y
+
+
+
+                                         A          X
+
+
+
+                                                 DSAI6707 Chapter 5
+                                                                                            49
+ Consider the fuzzy set A = Proj of R on X = 1/x1 + 0.8/x2 + 1/x3
+  Its cylindrical extension to the fuzzy relation XY is given by
+                                 y1   y2    y3   y4
+                            x1    1    1     1   1
+
+                  ce(A) = x2     .8    .8   .8   .8    ce ( A) =   A ( x ) /( x , y )
+                                                                   X Y
+                            x3    1    1     1   1
+
+
+ Consider the fuzzy set B = Proj of R on Y = 0.9/y1 + 1/y2 + 0.7/y3 + 0.8/y4
+  Its cylindrical extension to the fuzzy relation XY is given by
+                                 y1   y2    y3   y4
+                            x1   .9    1    .7   .8
+                            x2   .9    1    .7   .8     ce ( B ) =   B ( y ) /( x , y )
+                  ce(B) =                                           X Y
+                            x3   .9    1    .7   .8
+ E.g., The use of cylindrical extension
+    Age: fuzzy set old                   E.g., how to compute old  hot ?
+    Temperature: fuzzy set hot                ➔ Fuzzy Composition
+                                                 DSAI6707 Chapter 5
+                                                                                        50
+      Fuzzy Composition
+
+            A(X)           R(X,Y)          B(Y) = A o R           Composition
+
+              If A then B, with a fuzzy relation R(X,Y)
+
+         E.g., R: John is some what taller than Albert
+                                                                     Albert is medium
+               A(X): John is rather tall
+ Rules of Operation (e.g., a bit like matrix multiplication):
+
+               Fuzz set    o    Fuzzy relation    =    Fuzz set
+                1n                 nm                  1m
+                 A(X)               R(X,Y)            B(Y) = A o R
+
+
+             Fuzzy relation    o    Fuzzy relation        =   Fuzzy relation
+    or                                 mk
+                nm                                               nk
+                P(X,Y)                 R(Y,Z)                 Q(X,Z) = P o R
+                                                 DSAI6707 Chapter 5
+                                                                                                              51
+
+ (Def) Operation of Fuzzy Composition (max-min):
+
+          R(X, Y) o S(Y, Z) =   max min[  R ( x , y ),  S ( y , z )]
+                                  yY
+
+
+               R            S                             Let, R =                R ( x , y ) /( x , y )
+                                                                           X Y
+
+                                                          and S =                 S ( y , z ) /( y , z )
+                                                                          Y Z
+      X             Y                   Z
+                                                    Ce( R ) =                  R ( x , y ) /( x , y , z )
+                                                                    X Y  Z
+     Extension onto X  Y  Z
+                                                    Ce( S ) =                  S ( y , z ) /( x , y , z )
+                                                                   X Y  Z
+
+
+       Ce( R )  Ce( S ) =            min  R ( x , y ),  S ( y , z )/( x , y , z )
+                            X Y  Z
+
+             so, R  S = Proj Ce( R )  Ce( S ) onto X  Z
+
+                         =      max min ( R ( x , y ),  S ( y , z ) )/( x , z )
+                            X  Z yY
+                                                             DSAI6707 Chapter 5
+                                                                             52
+
+
+           R(X, Y) o S(Y, Z) = max min[  R ( x , y ),  S ( y , z )]
+                                yY
+
+
+
+Example:
+
+                                      +{×}
+     1 1            1 2                 4 6
+   A=             B=               AB =      
+     1 1            3 4                  4 6 
+
+
+      0 . 1 0 .2           0.1 0.2 max{min} 0.2 0.2
+   A=                   B=              A B =              
+      0 . 2 0 . 1          0 . 3 0 . 4          0 . 1 0 . 2 
+
+                         max{min(.1, .1), min(.2, .3)} = max {.1, .2} = .2
+
+                                              DSAI6707 Chapter 5
+                                                                                                                       53
+ Example:
+                                             10        20       30
+                                        10  1 0.4 0 
+   1 / 10 + 0.6 / 20 + 0.2 / 30 o       20 0.5 1 0.4              =   1 /10 + 0.6 / 20 + 0.4 / 30
+                                        30  0 0.4 1 
+        John is young                 John and Albert are                 Albert is also young
+                                    approximately same age
+ Example:
+       x
+                               y                            z                 Composition : R = P  Q
+       1
+                0.5
+                   0.7
+                                             0.6                                 x        z              R ( x ,z )
+                               a                            
+       2        1                                0.8                             1                       0.6
+                                         1                                       1                       0.7
+                         1     b                                                2                       0.6
+       3                                 0.9
+               0.4                                                               2                       0.8
+                      0.3       c            Q                                   3                       1
+       4             P                                                           4                       0.4
+
+                                                                     DSAI6707 Chapter 5
+
