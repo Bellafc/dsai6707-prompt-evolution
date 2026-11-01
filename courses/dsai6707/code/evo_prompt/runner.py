@@ -91,8 +91,9 @@ def run_search(method: str, seed: int, args, cache, ledger, out_root: Path) -> d
               "knee": metrics_of(knee_ind.ev) if knee_ind else None,
               "api_calls_total": ledger.calls, "spent_usd_total": round(ledger.spent, 4)}
     if knee_ind is not None:
-        RESULTS_DIR.joinpath("best_prompts").mkdir(parents=True, exist_ok=True)
-        (RESULTS_DIR / "best_prompts" / f"{method}_s{seed}_knee.txt").write_text(
+        best_dir = out_root.parent / "best_prompts"  # results/best_prompts by default; follows --out
+        best_dir.mkdir(parents=True, exist_ok=True)
+        (best_dir / f"{method}_s{seed}_knee.txt").write_text(
             knee_ind.pset.render() + "\n# metrics\n" + json.dumps(metrics_of(knee_ind.ev), indent=1) + "\n",
             encoding="utf-8")
         if args.heldout:
