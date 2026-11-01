@@ -28,6 +28,16 @@ the Confirmation single-pass text for exp01 arm C (`flatten`, proof removed, obs
 them) and the multi-turn agent conversation for C-agent. Items version 3 recentres the backdrop (unemployment around
 the 4.5% natural rate, inflation skewed towards the 2% target) after the pilot-v2 review found 72% of backdrops above
 4.5% unemployment.
+
+Prompt version 5 (after the Opus review of pilot v4, research/teacher_pilot/opus_review.md): no instruction that the
+teacher echoed ("weigh the event more", "as this school reads it"); the data are declared pre-event and may not be read
+as the event's effect; scenario probabilities and confidence levels get definitions instead of defaults; signals name
+their asset referents and may not rest on minority scenarios; foreign events may not be judged with US data. The
+validator rejects the echoes, proofs over 8 lines and proofs whose L5 step misses the most likely scenario, and the
+batch report flags repeated probability tuples, one dominant confidence level and phrases shared by many items.
+Items version 4: fewer negative-growth backdrops, the curve tied to the policy path and inflation, oil tied to CPI,
+lagged and smoothed series (M2 a year earlier, 4-quarter growth, nominal GDP), and levels the event states imposed on
+the backdrop.
 """
 
 from __future__ import annotations
@@ -45,8 +55,8 @@ from mosaic.prompts import build_messages, read_prompt
 from mosaic.tools import EPISODES, TOOL_SPECS, EpisodeTable, MacroFacts, ToolBox
 
 SCHOOLS = ("keynesian", "austrian", "monetarist")
-PROMPT_VERSION = 4  # 4: real tools through function calling, [Proof] block (3: rule for the second [Think])
-ITEMS_VERSION = 3  # the item generator (templates, backdrop); imports rebuild items, so this must match
+PROMPT_VERSION = 5  # 5: pilot-v4 review fixes; 4: real tools through function calling, [Proof] block
+ITEMS_VERSION = 4  # the item generator (templates, backdrop); imports rebuild items, so this must match
 TEMPLATES = ROOT / "configs/teacher/templates.toml"
 MARKERS = ["[Think]", "[ToolCall: query_episode_db]", "[Observe]", "[Think]", "[ToolCall: get_macro_data]",
            "[Observe]", "[Think]", "[Output]"]
@@ -77,14 +87,18 @@ def template_list(cfg: dict) -> list[tuple[str, str, str]]:
 
 
 def macro_snapshot(rng: random.Random) -> dict:
-    """A random US/global backdrop (no real date) that hangs together: rates, curve and spreads agree, unemployment
-    and volatility move against growth (Okun-style), money growth loosely tracks inflation."""
+    """A random US/global backdrop (no real date) that hangs together: the 2y follows the expected policy path, the
+    10y stays near inflation plus a term premium, unemployment and volatility move against growth (Okun-style), oil
+    and money growth loosely track inflation, and smoothed or lagged series let the agent see direction."""
     ffr = rng.choice([0.125, 0.5, 1.0, 1.75, 2.5, 3.25, 4.0, 4.75, 5.5])
-    two = round(max(0.05, ffr + rng.uniform(-0.75, 0.5)), 2)
-    ten = round(max(0.3, two + rng.uniform(-1.0, 2.0)), 2)
-    growth = round(rng.uniform(-6.0, 6.0), 1)
+    growth = round(rng.triangular(-6.0, 6.0, 2.0), 1)
+    trend = round(min(4.0, max(-3.0, 0.5 * growth + 1.0 + rng.uniform(-0.8, 0.8))), 1)
     cpi = round(rng.triangular(-0.5, 8.0, 2.2), 1)
+    unemp = round(min(10.0, max(3.3, 4.4 - 0.35 * growth + rng.uniform(-1.0, 1.2))), 1)
+    two = round(max(0.05, ffr + 0.12 * growth - 0.15 * max(0.0, unemp - 4.5) + rng.uniform(-0.4, 0.4)), 2)
+    ten = round(max(0.3, 0.5 * two + 0.5 * (cpi + 1.0) + rng.uniform(-0.8, 1.2)), 2)
     vix = min(60, max(11, round(22 - 2 * growth + rng.uniform(-8, 12))))
+    m2 = round(min(20.0, max(-4.0, cpi + rng.uniform(-4.0, 8.0))), 1)
     return {
         "US policy rate (%)": ffr,
         "US 2y yield (%)": two,
@@ -92,14 +106,42 @@ def macro_snapshot(rng: random.Random) -> dict:
         "US 2y-10y spread (bp)": round((ten - two) * 100),
         "US CPI inflation y/y (%)": cpi,
         "US core PCE y/y (%)": round(max(-0.3, cpi - rng.uniform(-0.5, 1.5)), 1),
-        "US unemployment rate (%)": round(min(10.0, max(3.3, 4.4 - 0.35 * growth + rng.uniform(-1.0, 1.2))), 1),
+        "US unemployment rate (%)": unemp,
         "US real GDP growth q/q saar (%)": growth,
-        "US M2 growth y/y (%)": round(min(20.0, max(-4.0, cpi + rng.uniform(-4.0, 8.0))), 1),
+        "US real GDP growth 4-quarter average (%)": trend,
+        "US nominal GDP growth y/y (%)": round(trend + cpi, 1),
+        "US M2 growth y/y (%)": m2,
+        "US M2 growth y/y a year earlier (%)": round(min(20.0, max(-4.0, m2 + rng.uniform(-4.0, 4.0))), 1),
         "VIX": vix,
         "US high-yield spread (bp)": round(200 + 15 * vix + rng.uniform(-80, 80)),
         "DXY": rng.randint(85, 115),
-        "WTI oil ($/bbl)": rng.randint(25, 130),
+        "WTI oil ($/bbl)": int(min(140, max(25, 45 + 8 * cpi + rng.uniform(-20, 25)))),
     }
+
+
+def align_backdrop(text: str, snap: dict, rng: random.Random) -> dict:
+    """Impose levels the event text states on the backdrop (pilot-v4 review: an event saying inflation is 2.5pp above
+    target came with a CPI of 1.6%). Only US-level statements are imposed; foreign events keep the US backdrop."""
+    snap = dict(snap)
+    cpi_key = "US CPI inflation y/y (%)"
+    m = re.search(r"the Federal Reserve cuts rates by \d+bp while inflation is still ([\d.]+)pp above target", text)
+    if m:
+        snap[cpi_key] = round(2.0 + float(m.group(1)) + rng.uniform(-0.2, 0.3), 1)
+    if "Headline CPI turns negative year on year" in text:
+        snap[cpi_key] = round(-rng.uniform(0.1, 1.0), 1)
+    if "Volatility indices spike above 40" in text:
+        snap["VIX"] = rng.randint(41, 60)
+        snap["US high-yield spread (bp)"] = round(200 + 15 * snap["VIX"] + rng.uniform(-80, 80))
+    if "The yield curve inverts to its deepest level in decades" in text:
+        snap["US 2y yield (%)"] = round(max(snap["US 2y yield (%)"], 2.5 + rng.uniform(0, 2.5)), 2)
+        snap["US 10y yield (%)"] = round(snap["US 2y yield (%)"] - rng.uniform(0.8, 1.5), 2)
+    if "Mortgage rates rise to their highest level in two decades" in text:
+        snap["US 10y yield (%)"] = round(max(snap["US 10y yield (%)"], rng.uniform(4.5, 5.5)), 2)
+    snap["US 2y-10y spread (bp)"] = round((snap["US 10y yield (%)"] - snap["US 2y yield (%)"]) * 100)
+    snap["US core PCE y/y (%)"] = round(min(snap["US core PCE y/y (%)"], snap[cpi_key] + 1.5) if snap[cpi_key] < 0
+                                        else snap["US core PCE y/y (%)"], 1)
+    snap["US nominal GDP growth y/y (%)"] = round(snap["US real GDP growth 4-quarter average (%)"] + snap[cpi_key], 1)
+    return snap
 
 
 def fill(text: str, slots: dict, rng: random.Random) -> str:
@@ -118,8 +160,9 @@ def make_items(n_per_school: int, seed: int = 0, cfg: dict | None = None) -> lis
         for i in range(n_per_school):
             tid, cat, text = temps[order[i % len(temps)]]
             rng = random.Random(f"{seed}:{school}:{i}")
-            ev = Event(id=f"syn-{school[0]}{i:04d}", text=fill(text, cfg["slots"], rng), category=cat,
-                       macro_context=macro_snapshot(rng), template_id=tid)
+            event_text = fill(text, cfg["slots"], rng)
+            ev = Event(id=f"syn-{school[0]}{i:04d}", text=event_text, category=cat,
+                       macro_context=align_backdrop(event_text, macro_snapshot(rng), rng), template_id=tid)
             items.append(Item(school, tid, cat, ev))
     return items
 
@@ -197,6 +240,11 @@ ASSETS = {"equities": r"equit(?:y|ies)", "government bonds": r"(?:government |so
           "credit": r"credit|high[- ]yield"}
 META = re.compile(r"\b(as instructed|the (?:prompt|instructions)|I (?:must|should|need to) (?:reason|stay|think|write)"
                   r" (?:as|within|in))\b", re.I)
+# Phrases the pilot-v4 teachers echoed from the prompt or the school profile (rejected from prompt version 5 on).
+ECHO = re.compile(r"\bweigh(?:t|s|ing)?\b[^.\n]{0,25}\bthe event\b|\bthe event dominates\b|\bone sentence on\b|"
+                  r"\b(?:this|the) school(?:'s)?\b|\bschool's rule\b", re.I)
+SCENARIO = re.compile(r"^[ \t]*(S\d+)[^:\n]*:[ \t]*([01](?:\.\d+)?|\.\d+)[ \t]*$", re.M)
+CONF_LEVEL = re.compile(r"^[ \t]*Confidence[ \t]*:[ \t]*(high|moderate|low)\b", re.I | re.M)
 
 
 def _segment(text: str, start: str, after: int = 0) -> str:
@@ -444,48 +492,60 @@ def _sha256(path: Path) -> str:
 
 
 def teacher_messages_v4(item: Item, cfg: dict) -> list[dict]:
-    """The teacher's prompt for a real-tool trajectory: the school, the event and the protocol, no backdrop values
-    (they come from get_macro_data). Wording avoids phrases the pilot-v2 teachers echoed into the trajectories."""
+    """The teacher's prompt for a real-tool trajectory (prompt version 5): the school, the event and the protocol,
+    no backdrop values (they come from get_macro_data). The wording avoids every phrase the pilot-v4 teachers echoed
+    ("weigh the event more", "as this school reads it") and defines probabilities, confidence and the asset referents
+    instead of leaving defaults to the teacher."""
     sch = cfg["school"][item.school]
+    name = item.school.capitalize()
     names = ", ".join(item.event.macro_context)
     system = (
         "You write training data for a tool-using economist agent that reasons within one school of thought. You act "
         "as the agent: your visible text is its reasoning, and your tool calls are executed for real, with the results "
         "returned to you. It must read like a careful analyst at work, not a checklist: use the one or two mechanisms "
-        "of the school that matter for this event, not every concept the school has. Never state an indicator value or "
-        "a historical episode that a tool did not return; nothing after 2024 exists for you.")
+        "that matter for this event, not every concept the school has. Write in the first person as the economist; never "
+        "call yourself the school. Never state an indicator value or a historical episode that a tool did not return; "
+        "nothing after 2024 exists for you.")
     user = (
-        f"School: {item.school.capitalize()}.\n"
-        f"How this school diagnoses: {sch['diagnosis']}\n"
-        f"Mechanisms it may draw on (pick what fits, do not list them all): {', '.join(sch['concepts'])}.\n"
-        f"Typical stance: {sch['signals']}. The school is not always bearish; it reads these as good news: "
+        f"School: {name}.\n"
+        f"How a {name} economist diagnoses: {sch['diagnosis']}\n"
+        f"Mechanisms to draw on (pick what fits, do not list them all): {', '.join(sch['concepts'])}.\n"
+        f"Typical stance: {sch['signals']}. It is not always bearish; it reads these as good news: "
         f"{'; '.join(sch['good_news'])}.\n\n"
         f"Event (category: {item.category}): {item.event.text}\n\n"
-        "Tools: query_episode_db returns dated historical episodes; get_macro_data returns US/global indicators known "
-        f"at the analysis date. Indicator names: {names}.\n\n"
+        "Tools: query_episode_db returns dated historical episodes, all earlier than the event; get_macro_data returns "
+        f"US/global indicators known before the event (there are no data for other economies). Indicator names: {names}."
+        "\n\n"
         "Work in three messages, one tool call per message:\n"
-        '1. Start with "[Think]" on its own line: is the event good or bad news for growth and for inflation as this '
-        "school reads it, and how large is it, judged from what the event says? Then call query_episode_db with a "
-        "short description of the situation.\n"
-        '2. Start with "[Think]": which returned episodes fit this event, where they differ from it, and which data '
-        "would decide between the readings. Then call get_macro_data with the indicators that decide it.\n"
-        '3. Start with "[Think]": combine the event, the episodes and the data. If the event concerns another economy, '
-        "say how it reaches US and global assets. If the data and the event point different ways (for example on the "
-        "yield curve or inflation), say so in one sentence and weigh the event more. Claim no trend that one set of "
-        "values cannot show unless the event states it. Then write, each tag on its own line:\n"
+        '1. Start with "[Think]" on its own line: is the event good or bad news for growth and for inflation, and how '
+        "large is it, judged from what the event says? Then call query_episode_db with a short description of the "
+        "situation.\n"
+        '2. Start with "[Think]": which returned episodes fit this event and where they differ (describe them only as '
+        "far as the tool text goes), and which data would decide between the readings. Then call get_macro_data with "
+        "those indicators and every indicator your signals will rely on (for example WTI for oil).\n"
+        '3. Start with "[Think]": combine the event, the episodes and the data. The data predate the event, so never read '
+        "a yield, spread, rate or growth figure as the event's effect. Mention a contradiction only when the event "
+        "states a level the data contradict, and say which you rely on. If the event concerns another economy, say how "
+        "it reaches US and global assets and which foreign variable you lack; never judge another economy with US data. "
+        "Annualise monthly figures before comparing them with yearly rates. Then write, each tag on its own line:\n"
         "[Output]\n"
-        "Causal chain: event -> ... -> outcome, in the school's terms.\n"
-        "Scenarios: 2-4 lines 'S1 (event-specific name; growth up/down, inflation up/down): 0.xx', no colon inside "
-        "the parentheses, the numbers summing to 1 and set from the evidence, not from a fixed pattern.\n"
-        "Signals: one line each for equities, government bonds, US dollar, gold, oil and credit, as "
-        "'asset: LONG|SHORT|NEUTRAL (conviction 1-5) - reason naming the scenario or chain step', all for US or global "
-        "markets. Weigh every scenario by its probability: when likely scenarios point different ways, lower the "
-        "conviction or use NEUTRAL. No asset has a default direction, gold included.\n"
+        f"Causal chain: event -> ... -> outcome, in {name} terms.\n"
+        "Scenarios: 2-4 lines 'S1 (event-specific name; growth up/down/flat, inflation up/down/flat): 0.xx' for the "
+        "US/global economy against a no-event baseline, each scenario differing in direction, no colon inside the "
+        "parentheses, the numbers summing to 1 and set by this event: a small, contained or well-precedented event can "
+        "put 0.6-0.85 on its base case, an ambiguous or large one spreads the mass.\n"
+        "Signals: one line each for equities (broad US index), government bonds (US Treasuries), US dollar (DXY), "
+        "gold, oil and credit (US high yield), as 'asset: LONG|SHORT|NEUTRAL (conviction 1-5) - reason', the reason "
+        "naming what in this event moves the asset and which scenarios carry the call. A call resting on scenarios "
+        "that total under 0.4 is NEUTRAL or conviction 1; a call driven by the data rather than the event says so and "
+        "has conviction 2 or less; a small or remote event gets NEUTRAL. No asset has a default direction.\n"
         "[Proof]\n"
         "4-7 lines in reasoning order, each '- Lk [ref]: claim': L1 with an indicator name get_macro_data returned, L2 "
-        "with an episode id query_episode_db returned (like EP-1994-02), L3 with the school's name for the mechanism "
-        "it applies, L5 with the scenario it concludes (S1, S2, ...). At least one line of each of the four kinds.\n"
-        "Confidence: high|moderate|low; weakest link: the step or missing evidence that limits it.\n\n"
+        "with an episode id query_episode_db returned (like EP-1994-02), L3 with the name of the mechanism you apply, "
+        "and one L5 with the most likely scenario (S1, S2, ...). At least one line of each kind.\n"
+        "Confidence: high when the data, the episodes and the mechanism agree; low when the deciding link is "
+        "unobserved or the episodes fit poorly; otherwise moderate. Write 'Confidence: high|moderate|low; weakest "
+        "link: ...'.\n\n"
         "Write about what the event says, not about what it omits, and do not mention other schools or these "
         "instructions.")
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
@@ -521,14 +581,19 @@ def flatten(turns: list[dict], proof: bool = False) -> str:
     return text if proof else strip_proof(text)
 
 
-def proof_problems(final: str, l1: set[str], l2: set[str], facts: MacroFacts) -> list[str]:
-    """The [Proof] block must type every step by layer and cite only what the tools returned (grounded)."""
+def proof_problems(final: str, l1: set[str], l2: set[str], facts: MacroFacts, max_steps: int = 10,
+                   modal: str | None = None) -> list[str]:
+    """The [Proof] block must type every step by layer and cite only what the tools returned (grounded); from prompt
+    version 5 on it has at most 8 steps and an L5 step naming the most likely scenario (`modal`)."""
     i = final.find("[Proof]")
     if i < 0:
         return ["missing [Proof] block"]
     block = final[i + len("[Proof]"):]
     steps = PROOF_STEP.findall(block) + [(k, f"[{r}]", c) for k, r, c in PROOF_BARE.findall(block)]
-    problems = [] if 4 <= len(steps) <= 10 else [f"{len(steps)} proof steps (4-10 accepted)"]
+    problems = [] if 4 <= len(steps) <= max_steps else [f"{len(steps)} proof steps (4-{max_steps} accepted)"]
+    if modal and not any(k == "L5" and modal in REF_SPLIT.split(" ".join(PROOF_REF.findall(refs)))
+                         for k, refs, _ in steps):
+        problems.append(f"no L5 step names the most likely scenario {modal}")
     kinds = {k for k, _, _ in steps}
     problems += [f"proof has no {k} step" for k in ("L1", "L2", "L3", "L5") if k not in kinds]
     for k, refs, _ in steps:
@@ -546,7 +611,8 @@ def proof_problems(final: str, l1: set[str], l2: set[str], facts: MacroFacts) ->
     return problems
 
 
-def check_v4(item: Item, turns: list[dict], episodes: EpisodeTable) -> tuple[list[str], list[dict]]:
+def check_v4(item: Item, turns: list[dict], episodes: EpisodeTable,
+             prompt_version: int = PROMPT_VERSION) -> tuple[list[str], list[dict]]:
     """(problems, normalised turns) for one v4 conversation. The tool calls are executed again here, so a result that
     does not match the deterministic tools (or an edited table) is caught, and the proof is checked against the refs
     the tools really returned. The text checks of version 3 run on the flattened conversation."""
@@ -579,7 +645,17 @@ def check_v4(item: Item, turns: list[dict], episodes: EpisodeTable) -> tuple[lis
             problems.append(f"tool result of {fn['name']} differs from a re-run of the tool")
         refs.setdefault(res.layer, set()).update(res.refs)
     problems += validate(flatten(turns), item)
-    problems += proof_problems(turns[4]["content"], refs["L1"], refs["L2"], facts)
+    final = turns[4]["content"]
+    if prompt_version >= 5:
+        said = " ".join(turns[i].get("content") or "" for i in (0, 2, 4))
+        echoes = sorted({m.group(0).lower() for m in ECHO.finditer(said)})
+        if echoes:
+            problems.append(f"repeats a prompt phrase: {', '.join(echoes)}")
+        scen = SCENARIO.findall(final[final.rfind("[Output]"):]) if "[Output]" in final else []
+        modal = max(scen, key=lambda x: float(x[1]))[0] if scen else None
+        problems += proof_problems(final, refs["L1"], refs["L2"], facts, max_steps=8, modal=modal)
+    else:
+        problems += proof_problems(final, refs["L1"], refs["L2"], facts)
     return problems, turns
 
 
@@ -624,7 +700,7 @@ def collect_v4(items: list[Item], results: list[list[dict]], teacher: str, out_d
     agent: dict[str, list[dict]] = {s: [] for s in SCHOOLS}
     rejects = []
     for it, turns in zip(items, results):
-        problems, turns = check_v4(it, turns, episodes) if turns else (["no reply"], turns)
+        problems, turns = check_v4(it, turns, episodes, prompt_version) if turns else (["no reply"], turns)
         if problems:
             rejects.append({"school": it.school, "event_id": it.event.id, "template_id": it.template_id,
                             "problems": problems, "turns": turns})
@@ -639,9 +715,56 @@ def collect_v4(items: list[Item], results: list[list[dict]], teacher: str, out_d
                 f.writelines(json.dumps(r, ensure_ascii=False) + "\n" for r in recs)
     with (out_dir / "rejects.jsonl").open("w", encoding="utf-8") as f:
         f.writelines(json.dumps(r, ensure_ascii=False) + "\n" for r in rejects)
-    report = signal_report(single)
+    report = signal_report(single, dominant=0.65 if prompt_version >= 5 else 0.7)
+    report["batch"] = batch_report(agent)
+    report["warnings"] += report["batch"]["warnings"]
     (out_dir / "report.json").write_text(json.dumps(report, indent=1) + "\n")
     counts: dict = {s: len(v) for s, v in single.items()}
     counts["rejected"] = len(rejects)
     counts["warnings"] = report["warnings"]
     return counts
+
+
+STRUCTURAL = set("think output proof signals signal scenarios scenario causal chain confidence weakest link conviction "
+                 "long short neutral growth inflation up down flat equities bonds government dollar us gold oil credit "
+                 "the a an of and to in on for is it as by with that this from at or be".split())
+
+
+def batch_report(kept: dict[str, list[dict]], phrase_share: float = 0.25) -> dict:
+    """Calibration and repetition per school (pilot-v4 review): the share of items whose most likely scenario sits in
+    0.40-0.55, probability tuples used more than twice, the confidence levels, and 5-word phrases (not made of format
+    words) shared by more than `phrase_share` of the items. Records in the agent format."""
+    from collections import Counter
+
+    out: dict = {"schools": {}, "warnings": []}
+    for school, recs in kept.items():
+        if not recs:
+            continue
+        tops, tuples, conf, grams = [], Counter(), Counter(), Counter()
+        for r in recs:
+            said = [m.get("content") or "" for m in r["messages"] if m["role"] == "assistant"]
+            final = said[-1]
+            probs = [float(p) for _, p in SCENARIO.findall(final[final.rfind("[Output]"):])] if "[Output]" in final else []
+            if probs:
+                tops.append(max(probs))
+                tuples[tuple(sorted(probs, reverse=True))] += 1
+            m = CONF_LEVEL.search(final)
+            conf[m.group(1).lower() if m else "missing"] += 1
+            words = re.findall(r"[a-z][a-z']*", " ".join(said).lower())
+            grams.update({tuple(words[i:i + 5]) for i in range(len(words) - 4)})
+        n = len(recs)
+        mid = sum(0.40 <= t <= 0.55 for t in tops) / n
+        repeated = {"/".join(f"{x:g}" for x in k): v for k, v in tuples.items() if v > 2}
+        common = [(" ".join(g), round(c / n, 2)) for g, c in grams.most_common(2000)
+                  if c / n > phrase_share and sum(w in STRUCTURAL for w in g) <= 2][:10]
+        top_level, top_n = conf.most_common(1)[0]
+        out["schools"][school] = {"n": n, "modal_in_0.40_0.55": round(mid, 2), "repeated_tuples": repeated,
+                                  "confidence": dict(conf), "common_phrases": common}
+        if mid > 0.6:
+            out["warnings"].append(f"{school}: most likely scenario at 0.40-0.55 in {mid:.0%} of items")
+        if repeated:
+            out["warnings"].append(f"{school}: probability tuples used more than twice: {repeated}")
+        if top_n / n > 0.7:
+            out["warnings"].append(f"{school}: confidence '{top_level}' in {top_n / n:.0%} of items")
+        out["warnings"] += [f"{school}: phrase '{g}' in {sh:.0%} of items" for g, sh in common[:5]]
+    return out

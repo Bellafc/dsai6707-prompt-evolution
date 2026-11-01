@@ -485,3 +485,45 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
   `configs/prompts/*.txt` still start with the PLACEHOLDER line / the arm A/C prompts are missing, so the v4 records
   carry placeholder system prompts / the records are rebuilt from the stored conversations once the human commits the
   originals (`mosaic teacher-import` again); `mosaic doctor`'s placeholder check should be verified on the next pod.
+
+### 2026-11-01 — RQ2/Task A: agent spike, Qwen3-8B as prompted agent with the real tools
+- hypothesis: a prompted Qwen3-8B can follow the agent contract (episode tool, macro tool, [Output], [Proof]).
+- change: none (measurement only); report `research/agent_spike.md`.
+- command: `python -m mosaic agent-spike --n 10` and `... --thinking` (A40, ~9 min each)
+- run_ids: `runs/agent-spike/non-thinking`, `runs/agent-spike/thinking` (not versioned)
+- result: 0/30 pass all checks in both modes. Tool calls parse (0 malformed), but protocol 0/30 both modes (final
+  message lacks [Think]; 5/30 thinking conversations call both tools in one message), signals malformed in 25–30/30,
+  proof valid 0/30 (non-thinking) vs 5/30 (thinking), 0 scenario probabilities found in 25–30/30. One non-thinking
+  conversation put all 13 indicator names into a single string (tool error). Time 530 s / 557 s.
+- deviation: the teacher (qwen3.8-max) passed every check on its smoke conversation after normalisation; the 8B
+  starting point is 0 %. No harness bug found (tools run, transcripts complete), so no code change.
+- decision: keep as the A-agent baseline; no prompt tuning (Task A rule 3).
+- next: human decides on normalisation / format example / rejection-sampling SFT. READY FOR HUMAN: agent spike.
+
+## For the human (2026-11-01, Task A)
+- The prompted 8B agent reaches 0 % on the strict contract in both modes; see `research/agent_spike.md` for the
+  failure types and the suggested (untested) prompt changes. The checks may be stricter than a reader needs: say if
+  you want a lenient variant to separate "wrong form" from "wrong content".
+- The pod GPU showed 100 % utilisation and 558 MiB in use before I started anything (another process on the card?);
+  the timings above may be slightly inflated.
+
+### 2026-11-01 — D11: Opus review of pilot v4; teacher prompt version 5, items version 4
+- result: review of the 57 kept v4 conversations (`research/teacher_pilot/opus_review.md`, three Opus 5.5 reviewers,
+  evaluation only): five shared criteria 4.01 (v2 4.12, v1 3.61), school fidelity 4.61, grounding 3.54 (new), verdict
+  "with changes" from all three. Tool honesty is fixed by construction; new problems: the step-3 echo "weigh the
+  event" (52/57 by regex), "this/the school" (44/57), pre-event data read as effects, S1 at 0.40-0.50 and repeated
+  tuples, "Confidence: moderate" 57/57, residual credit SHORT and gold or bond defaults, signals on minority
+  scenarios, the US backdrop used for foreign events, implausible backdrops.
+- change: prompt version 5 (no echoed instructions; data declared pre-event; contradictions only against levels the
+  event states; scenario, confidence and asset-referent definitions; minority-scenario and backdrop-only calls capped;
+  foreign events not judged with US data; indicators behind the signals requested); school profiles (Keynesian terms
+  defined, the quotable supply-shock line rewritten; Austrian stance made conditional on real rates and money
+  creation, natural-rate comparison; Monetarist 3.5-4.5% band, implied velocity, supply-shock argument restricted);
+  validator from version 5 on: echo phrases rejected, at most 8 proof steps, an L5 step must name the most likely
+  scenario; batch report: modal-probability band, repeated tuples, confidence levels, shared 5-word phrases,
+  direction warning at 65%. Items version 4: growth draws skewed positive (37% negative, was ~50%), curve tied to the
+  policy path and inflation, oil tied to CPI, three lagged or smoothed series, event-stated US levels imposed.
+  Episode table +7 (86): money-fund and stablecoin runs, PBoC reserve-requirement cuts, HOLC and the 2009
+  modification programme, the SNB floor. Tool: indicator names joined in one string are split (agent spike).
+  99 offline tests pass.
+- next: pilot v5 (20 per school), automatic checks against the v4 echo counts, then the Opus review.

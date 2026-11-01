@@ -33,7 +33,7 @@ credit: SHORT (conviction 2) - defaults rise in S2
 [Proof]
 - L2 [{ep}]: a comparable shock deepened the slowdown before policy responded.
 - L1 [{ind}]: the indicator shows how much slack there is.
-- L3 [{school}]: the school's mechanism links lower spending to lower income.
+- L3 [{school} multiplier]: lower spending lowers income through the multiplier.
 - L5 [S1]: slow growth is the most likely outcome.
 Confidence: moderate; weakest link: the analog only partly fits the event.
 """
@@ -90,7 +90,7 @@ def test_v4_requests_carry_tools_and_backdrop_but_no_values_in_the_prompt(tmp_pa
     assert "US policy rate (%)" in prompt  # the names are given ...
     assert not any(f"{k}: {v}" in prompt for k, v in req["backdrop"].items())  # ... the values are not
     man = json.loads((tmp_path / "manifest.json").read_text())
-    assert man["prompt_version"] == 4 and man["episodes"]["sha256"]
+    assert man["prompt_version"] == teacher.PROMPT_VERSION >= 4 and man["episodes"]["sha256"]
 
 
 def test_converse_runs_the_tools_and_import_writes_both_formats(tmp_path):
@@ -205,3 +205,48 @@ def test_proof_ref_variants_and_scenario_layout_seen_in_pilot_v4():
         assert teacher.check_v4(item, turns, EpisodeTable.load())[0] == [], v
     turns, _ = api.converse(job, fake_send(FINAL.replace("- L1 [{ind}]:", "- L1 [US 2s10s spread (bp)]:")))
     assert any("2s10s" in p for p in teacher.check_v4(item, turns, EpisodeTable.load())[0])
+
+
+def test_v5_rejects_echoes_long_proofs_and_an_l5_off_the_modal_scenario():
+    item = teacher.make_items(1)[0]
+    job = {"body": {"model": "x", "messages": teacher.teacher_messages_v4(item, teacher.load_templates()),
+                    "tools": teacher.TOOL_SPECS}, "backdrop": item.event.macro_context}
+    eps = EpisodeTable.load()
+    echo = FINAL.replace("The data confirm slack", "I weigh the event more; the data confirm slack")
+    turns, _ = api.converse(job, fake_send(echo))
+    assert any(p.startswith("repeats a prompt phrase") for p in teacher.check_v4(item, turns, eps)[0])
+    assert not any(p.startswith("repeats") for p in teacher.check_v4(item, turns, eps, prompt_version=4)[0])
+    tail = FINAL.replace("- L5 [S1]: slow growth is the most likely outcome.", "- L5 [S3]: a rebound is possible.")
+    turns, _ = api.converse(job, fake_send(tail))
+    assert "no L5 step names the most likely scenario S1" in teacher.check_v4(item, turns, eps)[0]
+    extra = "\n".join(f"- L3 [{{school}} multiplier]: extra step {i}." for i in range(5))
+    long_proof = FINAL.replace("- L5 [S1]:", extra + "\n- L5 [S1]:")
+    turns, _ = api.converse(job, fake_send(long_proof))
+    assert "9 proof steps (4-8 accepted)" in teacher.check_v4(item, turns, eps)[0]
+
+
+def test_batch_report_flags_templated_calibration_and_shared_phrases(tmp_path):
+    jobs, out = tmp_path / "jobs", tmp_path / "out"
+    run_jobs(jobs, n=3)  # the scripted teacher repeats itself: same tuple, same confidence, same phrases
+    teacher.import_results(jobs, jobs / "results.jsonl", out)
+    rep = json.loads((out / "report.json").read_text())["batch"]
+    k = rep["schools"]["keynesian"]
+    assert k["n"] == 3 and k["repeated_tuples"] == {"0.47/0.33/0.2": 3} and k["confidence"] == {"moderate": 3}
+    assert any("confidence 'moderate' in 100%" in w for w in rep["warnings"]) and k["common_phrases"]
+
+
+def test_backdrop_v4_follows_stated_levels_and_has_lagged_series():
+    import random
+
+    snap = teacher.macro_snapshot(random.Random(1))
+    assert {"US M2 growth y/y a year earlier (%)", "US real GDP growth 4-quarter average (%)",
+            "US nominal GDP growth y/y (%)"} <= set(snap)
+    a = teacher.align_backdrop("the Federal Reserve cuts rates by 50bp while inflation is still 2.5pp above target.",
+                               snap, random.Random(2))
+    assert 4.3 <= a["US CPI inflation y/y (%)"] <= 4.8
+    inv = teacher.align_backdrop("The yield curve inverts to its deepest level in decades.", snap, random.Random(3))
+    assert inv["US 2y-10y spread (bp)"] <= -80 and inv["US 2y-10y spread (bp)"] == round(
+        (inv["US 10y yield (%)"] - inv["US 2y yield (%)"]) * 100)
+    ecb = teacher.align_backdrop("the ECB cuts rates by 50bp while inflation is still 2.5pp above target.", snap,
+                                 random.Random(2))
+    assert ecb["US CPI inflation y/y (%)"] == snap["US CPI inflation y/y (%)"]  # a foreign statement is not imposed

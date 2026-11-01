@@ -637,3 +637,62 @@ name = "Large downward payroll benchmark revision"
 country = "US"
 tags = ["employment", "revision", "labour market", "data surprise"]
 what = "The preliminary benchmark revision lowered past payroll levels substantially, reinforcing expectations that the Fed would start cutting rates."
+
+# Added 2026-11-01 after the pilot-v4 review (money substitutes, reserve-requirement cuts, mortgage relief, a
+# central bank selling its own currency).
+
+[[episode]]
+id = "EP-1933-06"
+date = "1933-06-13"
+name = "Home Owners' Loan Corporation created"
+country = "US"
+tags = ["housing", "mortgage relief", "foreclosures", "government programme"]
+what = "The US created a public corporation that bought defaulted mortgages and refinanced them on longer terms, stemming foreclosures during the Depression."
+
+[[episode]]
+id = "EP-2008-09-16"
+date = "2008-09-16"
+name = "Reserve Primary Fund breaks the buck"
+country = "US"
+tags = ["money market fund", "run", "money substitute", "liquidity", "guarantee", "banking"]
+what = "A large money-market fund's share value fell below one dollar after losses on Lehman debt; investors ran on prime money funds and the Treasury guaranteed money-fund balances days later."
+
+[[episode]]
+id = "EP-2009-02-18"
+date = "2009-02-18"
+name = "US mortgage modification programme announced"
+country = "US"
+tags = ["housing", "mortgage relief", "foreclosures", "government programme"]
+what = "The US announced a programme to modify the mortgages of borrowers at risk of foreclosure; take-up was slower than planned and foreclosures stayed high."
+
+[[episode]]
+id = "EP-2011-09"
+date = "2011-09-06"
+name = "Swiss National Bank sets a minimum exchange rate"
+country = "Switzerland"
+tags = ["currency", "intervention", "peg", "safe haven", "central bank", "selling own currency"]
+what = "The SNB set a floor for the franc against the euro and pledged unlimited franc sales to defend it, which stopped the franc's safe-haven rise until the floor was abandoned in 2015."
+
+[[episode]]
+id = "EP-2015-02"
+date = "2015-02-04"
+name = "PBoC cuts reserve requirements for all banks"
+country = "China"
+tags = ["China", "reserve requirement", "easing", "liquidity", "capital flight"]
+what = "The PBoC cut the reserve requirement ratio for all banks, its first broad cut since 2012, as growth slowed and capital outflows drained liquidity."
+
+[[episode]]
+id = "EP-2019-01"
+date = "2019-01-04"
+name = "PBoC announces a two-step reserve requirement cut"
+country = "China"
+tags = ["China", "reserve requirement", "easing", "trade", "liquidity"]
+what = "The PBoC announced a reserve requirement cut in two steps in January, partly replacing maturing medium-term lending, to support growth during the trade war."
+
+[[episode]]
+id = "EP-2023-03-11"
+date = "2023-03-11"
+name = "USDC loses its dollar peg after SVB"
+country = "US"
+tags = ["stablecoin", "run", "peg", "money substitute", "banking", "deposit guarantee"]
+what = "The stablecoin USDC fell below its dollar peg after its issuer disclosed reserves held at SVB; the peg was restored once all SVB deposits were guaranteed."

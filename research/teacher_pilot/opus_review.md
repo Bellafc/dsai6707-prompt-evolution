@@ -75,3 +75,50 @@ Remaining, for prompt version 4:
    gold never SHORT for any school.
 8. **School toolkits** to sharpen: Keynesian real rate and zero bound, Austrian real policy rate, Monetarist trend
    growth, velocity and the natural rate (now absent).
+
+# Review of pilot v4 (prompt version 4: real tools, [Proof] block)
+
+Three Opus 5.5 reviewers (evaluation only), the v1/v2 rubric plus a sixth criterion, **grounding** (uses the returned
+episodes and indicators correctly, cites nothing else, proof steps match the reasoning). 57 kept conversations
+(`opus_review/review_v4_<school>.json`; data `data/trajectories/pilot-v4/agent/`, not versioned). Verdict of all
+three: train "with changes".
+
+| School | n | school fidelity | causal coherence | event responsiveness | output consistency | factual hygiene | grounding |
+|---|---|---|---|---|---|---|---|
+| Keynesian | 20 | 4.30 | 3.80 | 3.95 | 3.40 | 4.30 | 3.50 |
+| Austrian | 18 | 4.78 | 3.83 | 4.06 | 3.39 | 4.22 | 3.67 |
+| Monetarist | 19 | 4.79 | 3.79 | 3.89 | 3.58 | 4.11 | 3.47 |
+| all, v4 | 57 | 4.61 | 3.81 | 3.96 | 3.46 | 4.21 | 3.54 |
+| all, v2 (n-weighted) | 51 | 4.39 | 3.92 | 3.90 | 3.75 | 4.65 | — |
+
+Mean of the five shared criteria: v1 3.61, v2 4.12, v4 4.01. The v4 reviewers could check every number against the
+tool results, so factual hygiene and output consistency were judged more strictly than in v2; different reviewer
+instances add noise.
+
+**Fixed by the real tools**: no backdrop value before get_macro_data, no episode id or value the tools did not return
+(0/57), every real-rate computation correct; analogs are weighed (fit and misfit) instead of listed; signal reasons
+weigh the scenario distribution (S1-only reasons fell from ~90% to under 10%); the v2 echoes ("no bp", "newest
+information") and the 0.55/0.25/0.20 tuple are gone; good news gets risk-on calls.
+
+**Problems found by all three reviewers** (the prompt-v5 work list):
+1. A new prompt echo: step 3's "say so in one sentence and weigh the event more" gives "weigh the event" (or "the
+   event dominates") in 52/57 by a regex count, mostly on manufactured tensions; "this/the school" in 44/57;
+   school-profile sentences quoted near-verbatim.
+2. Pre-event backdrop values read as the event's effects (the curve as "the market's verdict" on the event).
+3. Templated calibration: S1 at 0.40–0.50 in most items, repeated probability tuples (0.45/0.30/0.25), "Confidence:
+   moderate" in 57/57.
+4. Directional defaults remain in part: credit SHORT 44/57, Keynesian bonds LONG 16/20, Austrian gold LONG 15/18;
+   reviewers judged about a third of them defaults. New failure mode: a signal takes the school's direction from a
+   minority scenario with reduced conviction instead of NEUTRAL; some reasons cite scenarios whose tags point the
+   other way; some assets are signalled without their indicator having been requested.
+5. One stock mechanism per school (Austrian: policy rate minus CPI in 18/18; Monetarist: "relative-price shock,
+   inflation only if money accommodates" in 19/19; Keynesian: the paradox of thrift in 11/20, often misused).
+6. The US backdrop applied to foreign events (US real rate to judge the BoE or RBA).
+7. Claims beyond the tool text bring errors (SVB, Malaysia, Plaza, 2019 money growth); the stand-in table lacks
+   money-substitute runs, RRR cuts, mortgage relief and an SNB floor.
+8. Backdrop generator: implausible mixes (low CPI with high oil), negative GDP in about half the draws, no lagged
+   series (lags only asserted), event-stated levels not reflected (inflation "2.5pp above target" vs CPI 1.6%).
+9. Proofs longer than the prompt's 4–7 lines in 16/57 (the validator accepted up to 10); an L5 naming a tail.
+
+The Task A spike (`research/agent_spike.md`) found the prompted Qwen3-8B at 0/30 on the same contract (tool calls
+valid, format contract failed), so the format the teacher sets is what agent SFT must teach.

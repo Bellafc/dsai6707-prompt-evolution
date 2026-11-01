@@ -1,0 +1,336 @@
+{
+  "school": "austrian",
+  "items": [
+    {
+      "id": "syn-a0000",
+      "template_id": "T04-01",
+      "scores": {"school_fidelity": 4, "causal_coherence": 4, "event_responsiveness": 3, "output_consistency": 3, "factual_hygiene": 5, "grounding": 4},
+      "flags": [
+        "payroll beat read as more malinvestment; 'genuine strength' S4 only 0.05",
+        "first [Think] calls policy both 'easy-money' and 'staying restrictive'",
+        "bonds SHORT 4 ignores S2 (0.30, liquidation, inflation down)",
+        "gold LONG 4: partly justified by -4.6% real rate, but claims S3 normalisation (rising real rates) reinforces it",
+        "credit SHORT 3: partly default - from 768bp backdrop and S2+S3; the beat itself is credit-positive",
+        "equities SHORT 2 after a beat, defensible only via -2.1% GDP",
+        "EP-2001-01 'late-cycle employment strength' gloss not in tool text",
+        "oil LONG 2 without fetching WTI",
+        "Proof 8 lines (spec 4-7); L5 says S1+S3 drive credit short, reason cites S2/S3",
+        "legacy: S1 = 0.45; 'event vs data' ritual; signals weigh several scenarios (no S1-only)"
+      ]
+    },
+    {
+      "id": "syn-a0001",
+      "template_id": "T12-05",
+      "scores": {"school_fidelity": 4, "causal_coherence": 3, "event_responsiveness": 3, "output_consistency": 3, "factual_hygiene": 3, "grounding": 3},
+      "flags": [
+        "rent rise now treated as relative price, not monetary inflation (v2 fix)",
+        "time preference direction reversed ('present consumption' -> 'lower time preference')",
+        "[Think] rejects 'credit premium removed'; causal chain keeps it",
+        "scarcity diagnosis vs S2 'housing malinvestment liquidates' at 0.33",
+        "claims US rents were not rising in 2006 (rent inflation reached ~4% in 2006-07)",
+        "says event and data diverge on inflation, then that they agree",
+        "USD SHORT 4 from the DXY level; 2.1% CPI / 1.5% core called 'unsound money'",
+        "gold LONG 4: default - shelter scarcity is no gold channel; 'S1, S2 and S3 alike'",
+        "credit SHORT 3: weak - routed through EP-2014-11 energy high yield",
+        "broad equities SHORT 3 and oil SHORT 3 for a sectoral rent move",
+        "Cantillon line built on DXY 89, no channel",
+        "Proof L5 says S1 drives all positions; credit reason rests on liquidation (S2)",
+        "legacy: probabilities 0.42/0.33/0.25 (same as syn-a0017); 'event vs data' ritual"
+      ]
+    },
+    {
+      "id": "syn-a0002",
+      "template_id": "T04-05",
+      "scores": {"school_fidelity": 5, "causal_coherence": 4, "event_responsiveness": 4, "output_consistency": 4, "factual_hygiene": 4, "grounding": 3},
+      "flags": [
+        "openings as entrepreneurs' forward commitments, early stages abandoned first: strong Austrian read",
+        "invents a prior rate cut ('even after the cut'), repeated in Proof",
+        "'market already prices official support' unsupported (2y not fetched, curve +132bp)",
+        "oil SHORT 3 leans on EP-2014-11 glut; WTI ($112) never fetched",
+        "gold LONG 3: partly justified - hedge for S2+S4 (0.40), S1 deflationary drag acknowledged",
+        "credit SHORT 4: justified by the openings collapse, -3.7% GDP and M2 -0.8%",
+        "weak retrieval (no labour episodes), honestly called 'uneven'",
+        "Archegos (EP-2021-03-26) cited for credit, weak",
+        "legacy: probabilities 0.45/0.30/0.15/0.10 = v1 template; signals weigh scenarios; 'weigh the event' ritual"
+      ]
+    },
+    {
+      "id": "syn-a0004",
+      "template_id": "T07-06",
+      "scores": {"school_fidelity": 5, "causal_coherence": 4, "event_responsiveness": 4, "output_consistency": 3, "factual_hygiene": 4, "grounding": 4},
+      "flags": [
+        "relative-price vs general inflation and monetary validation: textbook Austrian",
+        "assumes capacity was built at prior near-zero/negative real rates (not in data)",
+        "broad equities/credit SHORT 3 contradict own 'modest, concentrated' sizing (v2 flag persists)",
+        "bonds LONG says S3 'dominates' though S3 is 0.25 and S1+S2 (0.75) are inflation-up",
+        "gold LONG 3: default - 'hard asset that prices a scarcity signal'; +1.6% real rate argues against",
+        "credit SHORT 3: default - rests on S3 (0.25)",
+        "manufactured tension (curve pricing easing vs input scarcity) + 'weigh the event more'",
+        "5.3% unemployment called 'rising' and 'little slack'",
+        "oil NEUTRAL well argued (lithium-specific, WTI $30)",
+        "legacy: probabilities 0.45/0.30/0.25 (used in 4 items)"
+      ]
+    },
+    {
+      "id": "syn-a0005",
+      "template_id": "T01-09",
+      "scores": {"school_fidelity": 5, "causal_coherence": 4, "event_responsiveness": 4, "output_consistency": 4, "factual_hygiene": 4, "grounding": 3},
+      "flags": [
+        "discount rate below time preference, Cantillon via sterling: strong",
+        "US real rate (-2%) and US slack used to judge a UK policy change",
+        "EP-2022-09-23 was fiscal (unfunded tax cuts); applied to monetary dovishness without saying so",
+        "Governor term given as five years (statutory eight-year term since 2013)",
+        "oil LONG via softer sterling contradicts own DXY LONG",
+        "DXY LONG correct sign (v1 error fixed); equities LONG and credit NEUTRAL: no default",
+        "gold LONG 4: justified - -2% real rate, 10.9% M2, debasement; conviction high for a BoE change",
+        "bonds SHORT 3 on US paper via 'global term premium', a stretch",
+        "legacy: probabilities 0.42/0.30/0.28 (same as syn-a0010); 'weigh the event more'"
+      ]
+    },
+    {
+      "id": "syn-a0006",
+      "template_id": "T09-01",
+      "scores": {"school_fidelity": 5, "causal_coherence": 4, "event_responsiveness": 4, "output_consistency": 3, "factual_hygiene": 4, "grounding": 3},
+      "flags": [
+        "'what funded it' test; boom on legacy credit with financing switched off: strong",
+        "EP-2020-07 (record fall, reopening rebound) called closest analog and described as liquidity-driven",
+        "credit SHORT 2: default - S1+S3 compression (0.55) outweighs S2 (0.35), called 'nearly as likely'",
+        "gold LONG 3: partly justified - -2.05% real rate and S3; ignores modal S2 where real rates rise",
+        "equities NEUTRAL and bonds SHORT fit a hot print",
+        "DXY 106 called 'sound-money strength' at a -2% real rate",
+        "honest weakest link (2y below policy rate contradicts S2)",
+        "legacy: probabilities not templated; 'weigh the event more'"
+      ]
+    },
+    {
+      "id": "syn-a0008",
+      "template_id": "T01-01",
+      "scores": {"school_fidelity": 4, "causal_coherence": 3, "event_responsiveness": 4, "output_consistency": 3, "factual_hygiene": 5, "grounding": 4},
+      "flags": [
+        "hike read as removal of intervention; data overturn the boom reading: good",
+        "front end up + long end down called 'steepening' (deeper inversion); [Think] said 'flattens'",
+        "US real rate (+4%) used to judge the RBA stance (admitted in confidence line)",
+        "USD LONG 3 though a hawkish RBA lifts AUD; AUD not in DXY",
+        "'forced saving rises' misuses Hayek's boom-phase term",
+        "gold NEUTRAL argued from +4% real rate: no default",
+        "S3 '1994-style, expansion continues' at 0.25 vs GDP -4.0%",
+        "credit SHORT 4: justified by -4% GDP and 650bp; large for an Australian event",
+        "'two of five fit and two do not', then sets three aside",
+        "Proof 8 lines (spec 4-7)",
+        "legacy: probabilities 0.45/0.30/0.25; 'event dominates the data' ritual"
+      ]
+    },
+    {
+      "id": "syn-a0009",
+      "template_id": "T09-06",
+      "scores": {"school_fidelity": 5, "causal_coherence": 4, "event_responsiveness": 4, "output_consistency": 3, "factual_hygiene": 4, "grounding": 4},
+      "flags": [
+        "productivity read as good news: equities LONG, USD LONG, bonds NEUTRAL via a higher natural rate",
+        "gold LONG 2: default - from S2 (0.37) while S1+S3 (0.63) raise real yields; contradicts USD LONG",
+        "credit SHORT 2: S2 bullish for equities but counted as liquidation for credit (horizon mismatch)",
+        "EP-1996-12 called 'exactly the configuration'; late-1990s real policy rate was ~3%",
+        "+0.2% real rate called 'effectively free' credit",
+        "Proof labels a productivity claim 'L3 sound money'",
+        "legacy: probabilities 0.38/0.37/0.25 not templated; 'weigh the event more'"
+      ]
+    },
+    {
+      "id": "syn-a0010",
+      "template_id": "T10-03",
+      "scores": {"school_fidelity": 5, "causal_coherence": 3, "event_responsiveness": 4, "output_consistency": 3, "factual_hygiene": 5, "grounding": 4},
+      "flags": [
+        "state-directed capital as malinvestment; small package as amplifier: good",
+        "sizes 150bn as 'limited', yet S1 commodity impulse 0.42 vs S3 'too small' 0.28",
+        "after sizing it small, weighs the event over the curve's weak-demand signal",
+        "GDP (-6.0%), unemployment (7.4%) and VIX never fetched; S1 'growth up' unchecked",
+        "HY 645bp read as 'benefits from cheap credit'",
+        "4 of 6 signals cite only S1; Proof L5 says S1 drives them",
+        "gold LONG 4: partly justified - -4.8% real rate (backdrop); high for a small package",
+        "equities and credit NEUTRAL: no default",
+        "oil LONG 3: infrastructure demand is mostly metals",
+        "legacy: S1-only signals remain here; probabilities 0.42/0.30/0.28 (same as syn-a0005)"
+      ]
+    },
+    {
+      "id": "syn-a0011",
+      "template_id": "T13-04",
+      "scores": {"school_fidelity": 5, "causal_coherence": 4, "event_responsiveness": 5, "output_consistency": 4, "factual_hygiene": 5, "grounding": 4},
+      "flags": [
+        "+4.9% real rate correctly turns the read into a correction, not a boom",
+        "duration mismatch marked against a 5.93% 10y: sharp mechanism",
+        "gold LONG 2: partly justified - S2 backstop (0.38) against ~5% real yields, offsets named",
+        "credit SHORT 3: justified - the event is a credit repricing",
+        "pairs EP-2008-09 with EP-1997-07 after defining them as different families",
+        "'misallocation created when rates were distorted low' asserted without data",
+        "legacy: probabilities not templated; signals weigh S1+S3 vs S2; 'weigh the event' ritual"
+      ]
+    },
+    {
+      "id": "syn-a0012",
+      "template_id": "T13-06",
+      "scores": {"school_fidelity": 5, "causal_coherence": 4, "event_responsiveness": 4, "output_consistency": 4, "factual_hygiene": 4, "grounding": 4},
+      "flags": [
+        "intervention substituted for liquidation; AT1 write-off as partial loss allocation: strong",
+        "credit SHORT 3: partly justified - but says S1 backstop widens spreads, against its own 'backstop supports prices'",
+        "gold LONG 3: justified - bailout plus -3.9% real rate",
+        "S1 'inflation up' at 0.50 with M2 4.1% rests on the expected backstop (admitted)",
+        "EP-2023-03-10 facility said to keep real rates negative (the Fed kept hiking in 2023)",
+        "oil SHORT 3 without fetching WTI; Proof says S1 sets it, reason is contraction",
+        "Proof: -3.9% computed from 4.1% core PCE (about -4.0%)",
+        "legacy: probabilities 0.50/0.28/0.22 (same as syn-a0019); 'weigh the event' ritual"
+      ]
+    },
+    {
+      "id": "syn-a0013",
+      "template_id": "T10-02",
+      "scores": {"school_fidelity": 5, "causal_coherence": 4, "event_responsiveness": 5, "output_consistency": 3, "factual_hygiene": 4, "grounding": 3},
+      "flags": [
+        "zero-floor point vs EP-1998-08 and Evergrande as a serial default: good",
+        "real rate called negative; with core PCE -0.3% it is about +0.4%",
+        "M2 6.5% against 0.4% CPI called 'not expansionary'",
+        "S2 assumes US zero-bound QE answers a Chinese developer default",
+        "manufactured tension + 'I weigh the event more'",
+        "USD LONG via offshore dollar debt: good event channel",
+        "gold LONG 2: default - S2 (0.30) vs S1+S3 (0.70) and own USD LONG",
+        "credit SHORT 3: justified as a credit event; US HY referent unclear under a 'contained' S1",
+        "names LatAm, Japanese and Asian crises before any tool return",
+        "legacy: probabilities 0.45/0.30/0.25"
+      ]
+    },
+    {
+      "id": "syn-a0014",
+      "template_id": "T01-06",
+      "scores": {"school_fidelity": 5, "causal_coherence": 3, "event_responsiveness": 4, "output_consistency": 2, "factual_hygiene": 4, "grounding": 2},
+      "flags": [
+        "administered price of time, zombie refinancing, yen Cantillon: strong Austrian",
+        "treats EP-2016-09 (before the analysis date; a 2023 episode in the same result) as 'the event itself'",
+        "imports the zero peg and negative short rate from EP-2016-09; the event states neither",
+        "reads the pre-existing US backdrop (10y 2.19%, HY 413, VIX 11) as the new peg's carry effect",
+        "bonds SHORT rests on S3 (0.25); own carry channel bids US Treasuries in S1",
+        "credit SHORT 2: default - S1+S2 (0.75) 'compress further'",
+        "S1 and S2 near-duplicates (peg holds / printing defends peg)",
+        "Proof has no L5 for modal S1 and no EP-2016-09 line",
+        "gold LONG 3: partly justified - yen debasement, but own USD LONG is a headwind",
+        "equities LONG and USD LONG well argued",
+        "legacy: probabilities 0.45/0.30/0.25; 'weigh the event more'"
+      ]
+    },
+    {
+      "id": "syn-a0015",
+      "template_id": "T11-04",
+      "scores": {"school_fidelity": 5, "causal_coherence": 5, "event_responsiveness": 5, "output_consistency": 4, "factual_hygiene": 4, "grounding": 4},
+      "flags": [
+        "gold SHORT 3 overrides the hard-asset preference from a +5.3% real rate: model behaviour",
+        "idiosyncratic vs systemic read correctly from VIX 18, HY 458, DXY 99",
+        "credit SHORT 3 means EM credit; says EM spreads widen 'in every branch' though S2 funds the peg",
+        "S2 'inflation up' vs chain's 'in both branches the US receives lower inflation'",
+        "US Treasury rescue fits Mexico 1994, not Thailand 1997",
+        "assumes prior near-zero US real rates financed the peg boom",
+        "Proof 8 lines (spec 4-7)",
+        "legacy: S1 = 0.45; signals weigh scenarios; 'event dominates' ritual"
+      ]
+    },
+    {
+      "id": "syn-a0016",
+      "template_id": "T06-06",
+      "scores": {"school_fidelity": 4, "causal_coherence": 4, "event_responsiveness": 3, "output_consistency": 3, "factual_hygiene": 4, "grounding": 4},
+      "flags": [
+        "tariff as added intervention and protected malinvestment; size called narrow",
+        "gold LONG 3: default - top-conviction call for a 5% lithium duty, no monetary channel",
+        "gold reason 'the one signal not split across scenarios' = unweighted",
+        "broad equities and credit SHORT 2 for a duty called 'not a macro shock'",
+        "assumes a US tariff ('concerns the US directly'); event names no country",
+        "no [Proof] line supports the gold call",
+        "EP-2018-03 'passed costs through' beyond tool text",
+        "bonds, USD and oil NEUTRAL well argued",
+        "legacy: probabilities 0.40/0.28/0.17/0.15 not templated; 'weigh the event' ritual"
+      ]
+    },
+    {
+      "id": "syn-a0017",
+      "template_id": "T14-04",
+      "scores": {"school_fidelity": 5, "causal_coherence": 5, "event_responsiveness": 5, "output_consistency": 4, "factual_hygiene": 4, "grounding": 4},
+      "flags": [
+        "stablecoin as unsound private money; Terra vs reserve-backed distinction is precise",
+        "gold SHORT 2 from +3.9% real rate and deflationary S1/S3: not a default",
+        "USD LONG via the premium on base money: event-specific",
+        "merges episodes: SVB guaranteed deposits (not all creditors); Continental had no new facility",
+        "credit SHORT 3: partly justified - S1 (0.42) 'contained inside crypto', S2 (0.33) narrows",
+        "reserve portfolio assumed 'largely government paper', then used as a premise for S1",
+        "Lehman described as 'a money-market liability failing'",
+        "legacy: probabilities 0.42/0.33/0.25 (same as syn-a0001); 'weigh the event' ritual"
+      ]
+    },
+    {
+      "id": "syn-a0018",
+      "template_id": "T01-04",
+      "scores": {"school_fidelity": 5, "causal_coherence": 3, "event_responsiveness": 4, "output_consistency": 4, "factual_hygiene": 4, "grounding": 4},
+      "flags": [
+        "reversal of a withdrawal; Cantillon first recipients; yen leg, not a US credit leg: good",
+        "wrong sign: a weaker yen lowers US import prices; chain says US inflation up",
+        "GDP (-3.5%), unemployment (6.8%) and VIX (35) never fetched before equities/credit LONG",
+        "gold LONG 2: default - cites a 'soft-dollar base' against own USD LONG; +3.25% real rate",
+        "1,200bn called 'moderate' though tiny against the BoJ balance sheet (admitted)",
+        "EP-2013-04 called a restart 'after a period of restraint' (beyond tool text)",
+        "equities and credit LONG: no default",
+        "legacy: probabilities not templated; 'weigh the event more'"
+      ]
+    },
+    {
+      "id": "syn-a0019",
+      "template_id": "T11-05",
+      "scores": {"school_fidelity": 5, "causal_coherence": 4, "event_responsiveness": 4, "output_consistency": 4, "factual_hygiene": 5, "grounding": 5},
+      "flags": [
+        "price system dismantled, reform as the cure (EP-1923-11): classic Mises",
+        "says the frontier hard-asset bid is too small to move oil, yet gold LONG 3 on the same bid",
+        "gold LONG 3: justified by the event (flight to hard assets); conviction high for its size",
+        "after calling the US impact second-order, weighs the event over calm VIX/HY",
+        "US term premium from frontier printing is a weak link; bonds SHORT rests on core 5.2%",
+        "'a more extreme version of a condition at the centre' overreach at a ~0 real rate",
+        "credit SHORT 2: mild, probability-weighted",
+        "Proof mentions 'volatility calls' that do not exist",
+        "legacy: probabilities 0.50/0.28/0.22 (same as syn-a0012); 'weigh the event more'"
+      ]
+    }
+  ],
+  "summary": {
+    "mean_scores": {
+      "school_fidelity": 4.78,
+      "causal_coherence": 3.83,
+      "event_responsiveness": 4.06,
+      "output_consistency": 3.39,
+      "factual_hygiene": 4.22,
+      "grounding": 3.67
+    },
+    "main_strengths": [
+      "Tool honesty is fixed: no backdrop value before get_macro_data, no value of an unrequested indicator, and no episode id the tool did not return (0/18). Every real-rate subtraction and every quoted probability sum is correct.",
+      "Analogs are weighed, not just listed: each item says which returned episodes fit and where they differ, and uses misfits for a limited point (Terra had no reserve portfolio; the Credit Suisse AT1 write-off as partial loss allocation; the 2008 China package far larger than 150bn; the zero floor vs the 1998 cuts; EP-2023-07-01 as a warning against calling a fast collapse).",
+      "School fidelity is high and specific to each event: the add-or-remove-intervention test runs through every item, with one or two fitting mechanisms each: relative-price vs monetary inflation (lithium), Cantillon via the exchange rate (BoE, BoJ), moral hazard (bank merger), private money substitutes (stablecoin), price-system breakdown (hyperinflation).",
+      "Data can overturn the prior: in 5 items a positive real rate turns the boom reading into a correction or a contained shock. Gold is SHORT twice and NEUTRAL once with explicit arithmetic ('the school's usual preference for hard assets must yield to the arithmetic').",
+      "Good news is handled better: the productivity jump, dovish BoE, YCC and BoJ purchases get equities LONG; the GDP beat and the China stimulus get equities NEUTRAL. Signal reasons mostly weigh named scenario sums, and S1-only reasoning survives in one item (syn-a0010).",
+      "The v2 prompt echoes are gone ('the event gives no bp', 'newest information', 'a single backdrop' in 0/18), and the weakest-link lines name a real missing input (foreign data, the policy reaction function, the reserve portfolio)."
+    ],
+    "main_problems": [
+      "Gold LONG 15/18 and credit SHORT 15/18 (v2 had gold LONG in 15/19). Conviction is lower (gold LONG 4 in 4 items vs 11 in v2), but the direction is unchanged. Gold is argued from the event and data in 3 items (dovish BoE, bank rescue, hyperinflation) and partly in 6 (a backdrop real rate or a minority debasement branch). It is a default in 6 (rents, lithium closure, productivity, Chinese default, 5% lithium tariff, BoJ purchases), and 4 of the LONGs come at clearly positive real rates (+0.9% to +4.9%). Credit SHORT is justified by the event in 5 items, partly in 5, and a default in 5 (GDP beat, productivity, lithium closure, 5% tariff, YCC). The template's 'Typical stance: favours hard assets and expects corrections after credit booms' outweighs 'No asset has a default direction, gold included'.",
+      "New failure mode: a signal takes the school's direction from a minority scenario and cuts conviction to 2-3 instead of going NEUTRAL. Examples: bonds or credit from S3 at 0.25 (syn-a0004, syn-a0014); gold from S2 at 0.30-0.37 against 0.63-0.70 (syn-a0009, syn-a0013); credit SHORT against 0.55 of compression (syn-a0006).",
+      "Prompt echo: the instruction 'say so in one sentence and weigh the event more' produces an event-vs-data 'tension' resolved for the event in 18/18 items ('weigh the event' 16/18, 'the event dominates' 2/18). The tension is often manufactured (syn-a0004, syn-a0013) or contradicts the item's own sizing of a small event (syn-a0010, syn-a0019). 'This school' self-reference appears in 17/18.",
+      "Templated numbers: 0.45/0.30/0.25 appears in 4 items, and 10/18 items share an exact probability tuple with another item. S1 is 0.45 in 7/18 and between 0.40 and 0.50 in 15/18. 'Confidence: moderate' appears in 18/18. 0.55/0.25/0.20 is gone, but the v1 tuple 0.45/0.30/0.15/0.10 returns once.",
+      "One-formula diagnosis: policy rate minus CPI is the deciding test in 18/18 ('artificially cheap' in 17/18), and the natural rate appears once. A past cheap-credit boom is asserted where the data show none (lithium closure, interbank stress, EM peg), and a +0.2% real rate is called 'effectively free'.",
+      "US backdrop misapplied to foreign events: the US real rate is used to judge the BoE and the RBA, US zero-bound QE is assumed as the answer to a Chinese default, and the pre-existing US backdrop is read as the new BoJ peg's effect. EP-2016-09 is taken as 'the event itself' although a 2023 episode came back in the same result.",
+      "Economic slips: a weaker yen said to raise US import prices (sign error); front end up and long end down called steepening; time preference direction reversed; 'forced saving' in a tightening; the real rate misread with negative core PCE; M2 at 6.5% with 0.4% CPI called 'not expansionary'.",
+      "Grounding slips: an invented rate cut; episode details merged (SVB vs Continental Illinois); a fiscal mini-budget used as the analog for monetary loosening; EP-2020-07 as a misfit analog; claims beyond the tools (2006 rents, late-1990s 'same configuration'). Some items signal assets they never fetched: oil SHORT with an unseen $112 WTI, equities and credit LONG with unseen -3.5% GDP and VIX 35, 'growth up' with unseen -6.0% GDP. The Proof has 8 lines in 3/18, omits the modal scenario once and gives no support for a top-conviction gold call once."
+    ],
+    "would_you_train_on_this": "with changes",
+    "suggested_prompt_or_template_changes": [
+      "Austrian 'Typical stance': drop 'favours hard assets and expects corrections after credit booms'. Replace it with a conditional: 'hard assets gain when real rates are negative and money is being created, and lose when real rates are positive and the event is deflationary; a correction needs a credit boom that the data show'.",
+      "Replace 'say so in one sentence and weigh the event more' with 'if the data really contradict the event, say which you trust and why; do not invent a tension'. Warn when a batch repeats the phrase.",
+      "Signal rule: sign each signal by its probability-weighted direction. When the scenarios for and against are within about 0.2 of each other, use NEUTRAL, and do not let a reason rest only on scenarios totalling under 0.4. Batch check: warn when one direction exceeds 60% for any asset within a school (gold, credit).",
+      "Probabilities and confidence: reject an exact probability tuple used more than twice per batch, and warn when S1 is between 0.40 and 0.50 in over half the items. Define the confidence levels (high: event, analog and data agree; low: the deciding datum is missing or the analogs misfit) and warn when one level exceeds 70%.",
+      "Austrian diagnosis: add 'compare the real rate with trend growth and productivity (the natural rate), not only with zero' and 'do not assume a past credit boom unless the data or the event show one'.",
+      "Foreign events: add 'the backdrop is US; do not use the US policy rate to judge a foreign central bank; name the foreign variable you lack'. In the episode DB, drop or label episodes that duplicate the event (BoJ YCC -> EP-2016-09), and state that the event comes after every returned episode.",
+      "Define asset referents and scale: equities = broad US index; credit = US high yield (or add an EM credit line). A sector-level shock needs a stated macro channel before any non-NEUTRAL broad call.",
+      "Data and Proof checks: require get_macro_data to include the indicator behind any signal of conviction 3 or more (WTI for oil, GDP for growth labels), or simply return the full backdrop. Enforce 4-7 Proof lines, an L5 line for the modal scenario, and a Proof line for every signal of conviction 3 or more.",
+      "Rephrase 'as this school reads it' in the prompt so the student does not learn to write 'in this school's terms' (17/18)."
+    ]
+  }
+}

@@ -1,0 +1,508 @@
+{
+ "school": "keynesian",
+ "items": [
+  {
+   "id": "syn-k0000",
+   "template_id": "T13-01",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 4,
+    "event_responsiveness": 5,
+    "output_consistency": 4,
+    "factual_hygiene": 4,
+    "grounding": 4
+   },
+   "flags": [
+    "bonds LONG: justified (bank run -> flight to quality and priced easing, as in the SVB analog)",
+    "credit SHORT: justified (bank-run credit channel into regional-bank and CRE exposure)",
+    "gold LONG at conviction 4, the item's highest call, on 'no counterparty' logic; S3's blocked easing cuts against it",
+    "Proof: SVB guarantee 'stopped the contagion within days' is beyond the tool and wrong (First Republic failed May 2023)",
+    "'elevated multiplier offset by capacity constraints' is muddled; the multiplier is small near full capacity",
+    "equities SHORT 3 is strong for a contained modal case on a 3.4%-growth economy",
+    "'real 10y yield negative' computed against headline CPI without saying it is a proxy",
+    "legacy checks: no default signals, signals weigh S1-S3, probabilities 0.52/0.22/0.26 not templated; echo 'I weigh the event more' with no real conflict"
+   ]
+  },
+  {
+   "id": "syn-k0001",
+   "template_id": "T07-07",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 4,
+    "event_responsiveness": 5,
+    "output_consistency": 4,
+    "factual_hygiene": 4,
+    "grounding": 4
+   },
+   "flags": [
+    "good news read as good news: equities LONG, gold SHORT (the batch's only gold SHORT)",
+    "bonds NEUTRAL and credit NEUTRAL: well argued (EP-2014-11 energy-credit offset), not defaults",
+    "oil LONG 2 rests on an unstated buy-the-dip horizon against the chain's 'lower crude'",
+    "USD LONG on a US oil 'import bill' (the US is a net petroleum exporter)",
+    "Proof L5 cites the 0.25 tail S3, not the scenario the reasoning concludes",
+    "S3 'failed release' tagged growth down / inflation up against a no-event baseline",
+    "manufactured event-vs-data tension, then 'I weigh the event more'",
+    "meta: 'in this school's language', 'which this school reads as good news'; 'a single point-in-time reading' echo",
+    "get_macro_data called with the inexact name 'US unemployment rate'",
+    "legacy checks: no defaults, multi-scenario signals; modal S1 at 0.45 again"
+   ]
+  },
+  {
+   "id": "syn-k0002",
+   "template_id": "T03-01",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 3,
+    "event_responsiveness": 3,
+    "output_consistency": 3,
+    "factual_hygiene": 4,
+    "grounding": 3
+   },
+   "flags": [
+    "0.6% m/m (~7.4% annualised) is above the 4.7% y/y pace, yet read as opening an easing path (the v1/v2 flaw persists)",
+    "chain calls the real rate 'restrictive'; it is -0.7% on CPI, as the gold line itself says",
+    "oil SHORT 3 says only S4 offsets, but S1 (0.45) is also growth up; backdrop-driven",
+    "'negative output gap of ~1.6pp' is the unemployment gap",
+    "EP-2001-01 recast as a 'softening price picture' (not in the tool text)",
+    "EP-1994-02 called a tight labour market (unemployment was ~6.6%)",
+    "'WTI at $41 ... reversal already underway' reads a trend from a level",
+    "bonds LONG: justified (contraction, 6.1% unemployment, downside surprise; capped by 4.7% CPI)",
+    "credit NEUTRAL: reasoned (S1 tightens, S3 widens)",
+    "legacy checks: signals weigh scenario mass; modal 0.45; echoes 'single print' x3, 'for this school', 'I weigh the event more'"
+   ]
+  },
+  {
+   "id": "syn-k0003",
+   "template_id": "T07-04",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 3,
+    "event_responsiveness": 4,
+    "output_consistency": 3,
+    "factual_hygiene": 4,
+    "grounding": 4
+   },
+   "flags": [
+    "invented doctrine: 'in this school the price-side gap measure is the more reliable one'",
+    "4.3% GDP growth and 3.3% unemployment never reconciled with a 'substantial demand shortfall'",
+    "'paradox of thrift' mislabels precautionary saving after a real-income loss",
+    "bonds LONG: teacher default (0.80 inflation-up mass; the reason credits S4, a no-change scenario)",
+    "credit SHORT: weak, near default (US is a grain exporter, growth 4.3%, HY 429bp, VIX 11)",
+    "claims food is a smaller consumption share than energy (US CPI: food ~13%, energy ~7%)",
+    "good: liquidity trap at a 0.5% policy rate, real rate +0.3%, oil NEUTRAL at conviction 1",
+    "honest weakest link names the unemployment-vs-core-PCE contradiction (the backdrop itself is incoherent)",
+    "legacy checks: no equity/oil defaults; modal 0.45; echoes 'a supply shock first', 'a single set of readings'"
+   ]
+  },
+  {
+   "id": "syn-k0004",
+   "template_id": "T05-08",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 4,
+    "event_responsiveness": 5,
+    "output_consistency": 4,
+    "factual_hygiene": 5,
+    "grounding": 4
+   },
+   "flags": [
+    "positive shock gets risk-on calls: equities/credit LONG, USD SHORT, with correct scenario sums",
+    "bonds NEUTRAL (0.50 vs 0.50) and credit LONG: well reasoned, no default",
+    "oil SHORT at conviction 4 assumes a war premium in $94 WTI; the event never ties the war to oil",
+    "gold NEUTRAL although its reason lists two negatives",
+    "oil reason counts S2 (growth up) as 'reinforcing lower demand'",
+    "S1 tagged inflation up although the chain lowers oil and headline inflation",
+    "Proof has 10 lines (limit 4-7) and two L5 lines",
+    "good analog triage: SVB set aside, EP-2003-03 noted as the start of a war",
+    "legacy checks: no defaults, untemplated 0.42/0.33/0.17/0.08; meta 'for this school', 'this school's axes'; 'I weight the event over the curve'"
+   ]
+  },
+  {
+   "id": "syn-k0005",
+   "template_id": "T05-07",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 3,
+    "factual_hygiene": 5,
+    "grounding": 4
+   },
+   "flags": [
+    "0.65 of mass on an implemented blockade though the event only raises the risk (its own weakest link says so)",
+    "S2 'blockade implemented' tagged core inflation down",
+    "bonds LONG: justified (risk-off shock, core PCE 0.7%, inverted curve)",
+    "credit SHORT: justified at conviction 2 (energy-issuer offset noted)",
+    "unemployment 3.4% discounted via 'the 1990 configuration', read from one 1.7% growth level",
+    "'paradox of thrift if firms hoard cash' is loose",
+    "Proof has 8 lines (limit 4-7)",
+    "good: 1973 (hot) vs 1990 (decelerating) starting points used to split the scenarios",
+    "legacy checks: oil LONG 4 and gold LONG are event-driven, not defaults; meta 'for this school', 'this school's own diagnostic'; 'I weigh the event and the price data more'"
+   ]
+  },
+  {
+   "id": "syn-k0006",
+   "template_id": "T08-05",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 5,
+    "factual_hygiene": 3,
+    "grounding": 3
+   },
+   "flags": [
+    "bonds LONG 4: justified (-4.7% GDP, +2.6% real policy rate, inflation 1.4%)",
+    "credit SHORT 4: justified (contraction, M2 -0.8%, HY 574bp)",
+    "EP-1994-02 called a front-end inversion 'against high inflation' (no inversion; CPI ~2.5-3%; not in the tool)",
+    "Proof L1 attributes the +2.6% real rate to the 2.91% 10y (it is policy minus CPI)",
+    "Proof has 9 lines (limit 4-7)",
+    "event-vs-backdrop contradiction (-91bp vs 'deepest in decades') named but resolved by fiat",
+    "good: EP-2023-07-01 no-recession caution addressed; zero bound framed conditionally",
+    "signals are what any deep contraction would get; little that is specific to the inversion",
+    "legacy checks: scenario-weighted signals, modal 0.50; 'this school reads' meta; 'Confidence: moderate. Weakest link' format drift"
+   ]
+  },
+  {
+   "id": "syn-k0007",
+   "template_id": "T01-04",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 3,
+    "event_responsiveness": 4,
+    "output_consistency": 3,
+    "factual_hygiene": 4,
+    "grounding": 4
+   },
+   "flags": [
+    "modal S1 'Fed follows' (0.42) credits the RBA for easing that the US gap would drive anyway",
+    "S2 'US conditions unchanged' tagged growth up; the gold reason says S2 lowers real rates",
+    "AUD weakness cited as moving DXY (AUD is not in DXY)",
+    "'liquidity trap' invoked at a 2.5% US policy rate (Proof L3)",
+    "US data used to call the RBA move 'correct for the world economy'",
+    "missed: the 2y at 2.64% sits above the 2.5% policy rate despite -4.7% GDP",
+    "good sizing: 300bn AUD ~ 200bn USD, small for Treasuries; surprise vs the expected balance-sheet path",
+    "bonds LONG: justified (dovish global impulse into a -4.7% contraction)",
+    "credit LONG: consistent with easing, not a default",
+    "legacy checks: no defaults; modal 0.42; 'the school's favourable case' meta; manufactured tension + 'I weigh the event more'"
+   ]
+  },
+  {
+   "id": "syn-k0008",
+   "template_id": "T11-03",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 4,
+    "factual_hygiene": 5,
+    "grounding": 4
+   },
+   "flags": [
+    "the 75bp hike is never compared with the steep overnight hikes in the returned analogs",
+    "credit SHORT 4: direction justified, conviction not (rests on contagion S2 at 0.25)",
+    "bonds LONG: partly justified (flight to quality) but counts stagflationary S3 as bond-positive with core PCE 5.1%",
+    "gold NEUTRAL: well argued (dollar strength vs negative real rate)",
+    "prompt echo: 'the school's rule applies: a supply shock is a supply shock first'",
+    "'paradox of thrift operates internationally' stretched to foreign holders exiting",
+    "Proof L5 names the tail S2, not the modal S1",
+    "templated tension (+32bp curve vs the event, 'I weigh the event more'); 'a single set of values' echo",
+    "legacy checks: no gold default; modal 0.40; scenario mass used correctly elsewhere"
+   ]
+  },
+  {
+   "id": "syn-k0009",
+   "template_id": "T05-06",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 4,
+    "event_responsiveness": 3,
+    "output_consistency": 3,
+    "factual_hygiene": 4,
+    "grounding": 3
+   },
+   "flags": [
+    "excellent sizing: 3 days ~1% of annual spending, mostly deferred; circular-flow framing",
+    "bonds LONG 3: teacher default (driven by the US slump, not by a 3-day Latin American outage)",
+    "credit SHORT: teacher default (the Proof rests it on S4 at 0.05)",
+    "gold LONG admits 'no incremental case if S1 holds' (S1 = 0.55)",
+    "contained S1 only 0.55 despite the CrowdStrike analog's 'limited impact'; all four scenarios growth down",
+    "says the +42bp curve prices easing; the implied 2y of 3.66% is above the 3.25% policy rate",
+    "manufactured tension: a 3-day outage 'weighed more' than US core PCE of 4.2%",
+    "Proof has 8 lines (limit 4-7); EP-2001-09 cited to support the US bond long",
+    "Confidence 'moderate' (as in all 20) where the small, contained effect merits high",
+    "legacy checks: equities and USD NEUTRAL are proportional; backdrop defaults remain in bonds, gold and credit"
+   ]
+  },
+  {
+   "id": "syn-k0010",
+   "template_id": "T11-06",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 3,
+    "event_responsiveness": 4,
+    "output_consistency": 4,
+    "factual_hygiene": 3,
+    "grounding": 3
+   },
+   "flags": [
+    "reads the pre-event HY 684bp, VIX 27 and DXY 110 as proof the shock 'has already crossed into US credit'",
+    "Malaysia 1998 said to have 'kept' its peg; the tool says it pegged the ringgit together with the controls",
+    "contagion S2 made modal (0.42) on that misreading",
+    "S3 'Argentina case' tagged inflation down; the scenario tags mix EM and US frames",
+    "bonds LONG 4: justified (US recession, 1.0% policy rate, flight to quality)",
+    "credit SHORT 4: direction plausible, conviction rests on the contagion misread",
+    "good: trilemma framing; liquidity trap and fiscal multiplier at a 1.0% policy rate",
+    "Mexico 1994 lumped in as a 'global' credit event",
+    "legacy checks: gold NEUTRAL, no gold default; modal 0.42; '+61bp ... I weigh the event more' template; 'this school's toolkit' meta"
+   ]
+  },
+  {
+   "id": "syn-k0011",
+   "template_id": "T14-01",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 5,
+    "event_responsiveness": 5,
+    "output_consistency": 4,
+    "factual_hygiene": 5,
+    "grounding": 4
+   },
+   "flags": [
+    "bonds LONG: justified (lockdown demand shock, EP-2020-03, 10y at 6.16%)",
+    "credit SHORT 4: justified (administrative revenue stops on 676bp spreads)",
+    "good: lockdowns remove buyer and seller at once, so quantity dominates price",
+    "liquidity trap correctly ruled out at 5.5%; real rate 1.0% computed",
+    "gold LONG reason says S1 favours it, then that S1 disinflation removes the bid",
+    "prompt echo: 'One sentence on the conflict:' then 'I weigh the event more'",
+    "meta: 'this school weighs first', 'this school's usual prescription'",
+    "legacy checks: an all-growth-down set fits this event; modal 0.45 with the same vector as k0019 (0.45/0.30/0.15/0.10)"
+   ]
+  },
+  {
+   "id": "syn-k0012",
+   "template_id": "T05-05",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 4,
+    "event_responsiveness": 3,
+    "output_consistency": 2,
+    "factual_hygiene": 4,
+    "grounding": 3
+   },
+   "flags": [
+    "USD LONG while its own reason says S1 and S3 (0.60) remove the bid",
+    "credit SHORT: teacher default (the reason says spreads are unchanged in S1/S3 and energy names gain in S2)",
+    "oil LONG counts S1 as carrying a premium; the Proof's L5 calls S1 the 'faded political premium'",
+    "bonds LONG 3: teacher default (rests on the US stall and credits the 'walked-back' S1)",
+    "speculative: $26 oil 'explains' why the exit party won",
+    "Greece 2015 called a 'union-exit vote' (tool: a referendum on bailout terms)",
+    "good: promise vs completed exit; devaluation as a positive supply branch for importers",
+    "Proof has 8 lines (limit 4-7)",
+    "legacy checks: signals cite scenario mass but contradict it; modal 0.42; echoes 'a supply shock first', 'strict order', 'from the event alone', 'I weigh the event more'"
+   ]
+  },
+  {
+   "id": "syn-k0013",
+   "template_id": "T04-06",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 4,
+    "factual_hygiene": 4,
+    "grounding": 3
+   },
+   "flags": [
+    "Keynes-style reading: wage deceleration as an AD contraction inside deflation, not cost relief",
+    "analog switch justified by the data (EP-2009-03 over EP-2024-08-21 at the floor)",
+    "invents the miss size ('roughly 0.1pp below expectation')",
+    "'paradox of thrift' used for debt deflation (falling wages vs fixed nominal debt)",
+    "misreads the 2y at 1.02% (equal to the 1.0% policy rate) as pricing aggressive front-end easing",
+    "EP-2009-03 recast as demand collapse; the tool says energy-driven with core positive (here core PCE is -0.3%)",
+    "'I weigh the event more' where event and data agree",
+    "bonds LONG 4: justified (deflation, contraction, real 10y ~2.9%)",
+    "credit SHORT 3: justified (real debt burden with HY at 717bp)",
+    "gold NEUTRAL 'nearly offset at 0.61 against 0.39' leans SHORT",
+    "legacy checks: no defaults; modal 0.48; 'a single monthly earnings print' echo"
+   ]
+  },
+  {
+   "id": "syn-k0014",
+   "template_id": "T14-03",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 4,
+    "event_responsiveness": 5,
+    "output_consistency": 3,
+    "factual_hygiene": 5,
+    "grounding": 3
+   },
+   "flags": [
+    "event-specific: transformer replacement, payments/GPS timing, continent frame, Quebec 1989 as the lower bound",
+    "bonds NEUTRAL: well reasoned (a 6.82% 10y prices inflation and fiscal supply)",
+    "S1 'prolonged outage' 0.35 > S2 0.30, yet the Proof says mutual aid makes S2 more likely",
+    "oil LONG cites EP-1973-10 for diesel substitution (the embargo was a supply cut)",
+    "gold LONG: a +0.65% real rate called 'cheap to hold'",
+    "credit SHORT: justified (608bp, contraction, payments-plumbing tail)",
+    "Proof has 8 lines (limit 4-7); 'a supply shock is treated as a supply shock first' echo",
+    "meta: 'in this school's terms', 'this school fears most', 'this school cares most about'",
+    "legacy checks: no bond default; modal 0.35, the least compressed in the batch"
+   ]
+  },
+  {
+   "id": "syn-k0015",
+   "template_id": "T11-04",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 4,
+    "event_responsiveness": 3,
+    "output_consistency": 2,
+    "factual_hygiene": 5,
+    "grounding": 3
+   },
+   "flags": [
+    "strong local mechanics: sudden stop, compressed absorption, austerity multiplier; US exposure 'a rounding error'",
+    "bonds LONG: teacher default (contradicts its own 'absorbed without changing the US path' and the restraint diagnosis)",
+    "credit SHORT 3: teacher default (treats EM sovereign spreads as US high yield)",
+    "gold LONG 3 rests on the backdrop's negative real rate although the chain calls for restraint",
+    "contained S1 only 0.52 though VIX 11 and HY 410bp price no contagion",
+    "scenario tags mix frames (S1 frontier pass-through, S4 US overheating); growth-down mass 1.00",
+    "Proof cites Thailand 1997, a contagion case per the tool, as the pattern for contained S1",
+    "good: overheating diagnosed (unemployment 3.3%, real rate -1.0%); honest weakest link (no frontier data)",
+    "legacy checks: equities and USD NEUTRAL; backdrop defaults in bonds, gold and credit; 'this school's terms' meta"
+   ]
+  },
+  {
+   "id": "syn-k0016",
+   "template_id": "T03-03",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 4,
+    "factual_hygiene": 5,
+    "grounding": 4
+   },
+   "flags": [
+    "bonds SHORT 4: the batch's only bonds SHORT, justified (real rate -4.7%, positive gap)",
+    "overheating diagnosed correctly; 'the zero floor does not mean policy cannot act' nuance",
+    "PPI 4.0% never compared with CPI 4.8% (pipeline pressure below current consumer inflation)",
+    "gold LONG says S3 has persistent inflation (S3 is inflation down) and ignores the real-rate rise behind bonds SHORT",
+    "'sticky wages' label used for second-round wage pressure",
+    "credit SHORT 2: acceptable (tightening ahead, 431bp leaves little cushion)",
+    "templated tension + 'I weigh the event more'; 'the school reads' meta",
+    "legacy checks: no bond default; modal 0.45 (0.45/0.25/0.20/0.10)"
+   ]
+  },
+  {
+   "id": "syn-k0017",
+   "template_id": "T01-09",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 3,
+    "event_responsiveness": 3,
+    "output_consistency": 3,
+    "factual_hygiene": 4,
+    "grounding": 3
+   },
+   "flags": [
+    "applies the US policy rate, CPI, GDP and unemployment to the UK in the causal chain",
+    "bonds LONG 3: teacher default (contradicts its own 'bear-steepening rather than a clean rally'; inflation-up mass 0.72)",
+    "Proof L1 says the impulse misses the short end; the bonds reason relies on the front end falling",
+    "gold reason says S2 lowers real rates, then that S2 argues against",
+    "'paradox-of-thrift signature' used for shrinking real money balances (monetarist logic)",
+    "equities LONG 2 and credit LONG 2: consistent with a dovish shift",
+    "good analog contrast: 2013/2015 had inflation below target; 2022 kept as the tail",
+    "sterling-in-DXY channel correct; Proof has 8 lines (limit 4-7)",
+    "legacy checks: credit not SHORT; modal 0.46; 'I weigh the event's demand-support logic' template"
+   ]
+  },
+  {
+   "id": "syn-k0018",
+   "template_id": "T12-02",
+   "scores": {
+    "school_fidelity": 5,
+    "causal_coherence": 4,
+    "event_responsiveness": 4,
+    "output_consistency": 4,
+    "factual_hygiene": 5,
+    "grounding": 4
+   },
+   "flags": [
+    "names the event-vs-backdrop contradiction (two-decade-high mortgage rates vs a 0.3% 10y)",
+    "does not explore what it implies (a record mortgage spread is itself credit stress)",
+    "EP-2023-10 used well: quantities adjust before prices (sticky prices, lock-in)",
+    "bonds LONG 3: partly justified (negative gap) but the event is itself a rate rise and the 10y is at 0.3%",
+    "gold LONG from the backdrop's negative real rate, not from the event",
+    "credit SHORT 3: direction justified, conviction rests on the 0.25 tail S2",
+    "liquidity trap at a 0.5% policy rate used correctly",
+    "legacy checks: modal 0.42; 'a supply shock first' echo; 'I weigh the event'"
+   ]
+  },
+  {
+   "id": "syn-k0019",
+   "template_id": "T03-04",
+   "scores": {
+    "school_fidelity": 4,
+    "causal_coherence": 4,
+    "event_responsiveness": 3,
+    "output_consistency": 2,
+    "factual_hygiene": 4,
+    "grounding": 3
+   },
+   "flags": [
+    "credit SHORT 3: teacher default (conflicts with the modal S1, easing and growth up)",
+    "oil SHORT 3 driven by the backdrop contraction, not the survey; S1 growth up ignored",
+    "Proof L5 says S1 (easing, growth up) drives the credit and oil shorts",
+    "bonds LONG 3: teacher default (0.60 inflation-up mass on an expectations shock; the long end would sell off in S1/S3)",
+    "force-fits weak analogs (EP-2023-10 as 'rate-regime expectations', EP-2024-08-21 as 'slack understated')",
+    "prompt echoes: 'the school's rule', 'a supply shock is a supply shock first', 'Read in the school's terms'",
+    "good: reflation reading at a negative gap; policy-error risk; real rate 1.9% on core",
+    "gold LONG: justified (expectations up, real rate must fall)",
+    "legacy checks: modal 0.45 with the same vector as k0011; 'I weigh the event more'"
+   ]
+  }
+ ],
+ "summary": {
+  "mean_scores": {
+   "school_fidelity": 4.3,
+   "causal_coherence": 3.8,
+   "event_responsiveness": 3.95,
+   "output_consistency": 3.4,
+   "factual_hygiene": 4.3,
+   "grounding": 3.5
+  },
+  "main_strengths": [
+   "Real tools fixed tool honesty: 0/20 items cite a backdrop value before get_macro_data (every early numeric hit is an episode id or the 4.5% benchmark), every L1/L2 Proof ref is a returned indicator or episode, all quoted values match the tool output, and 20/20 compute the real policy rate correctly.",
+   "Analog triage is the best so far: each item says which returned episodes fit and where they differ, sets aside off-topic ones (SVB for the peace deal, Argentina for the bank run, the house-price peak for PPI, BoJ YCC for the inversion) and switches analog when the data demand it (k0013 prefers EP-2009-03 to EP-2024-08-21 at the floor; k0006 weighs the 2023 no-recession inversion).",
+   "The Keynesian toolkit is sharper than in v2: the liquidity trap / zero bound is applied at policy rates of 0.5-1.0% (k0003, k0010, k0013, k0018) and explicitly ruled out at 2.5-5.5%; overheating is diagnosed and restraint prescribed (k0000, k0001, k0015, and k0016 with the batch's only bonds SHORT); wage deceleration is read as an AD contraction in deflation (k0013); reconstruction spending as a multiplier into idle capacity (k0014); a 3-day outage is sized through the circular flow (k0009).",
+   "Signals now weigh the distribution: 101/120 signal reasons cite more than one scenario, with correct probability sums (v2: 86/90 started from S1); only 5 cite S1 alone. Good news gets risk-on calls (k0001 SPR: equities LONG, gold SHORT; k0004 peace: equities and credit LONG, USD SHORT; k0007 and k0017 credit LONG) and small events get NEUTRALs (k0009, k0015).",
+   "Old artefacts are gone: 'no bp/pp' and 'newest information' 0/20, the 0.55/0.25/0.20 template 0/20, probabilities sum to 1.00 in 20/20, foreign events state their US channel, and real event-vs-backdrop contradictions are named (k0003, k0006, k0018)."
+  ],
+  "main_problems": [
+   "Bonds LONG 16/20 (NEUTRAL 3, SHORT 1) and credit SHORT 15/20. The event and data justify them in about 8 and 6 items (bank run, blockade risk, pandemic, deep contractions with restrictive real rates, deflation) and partly in 2 and 4. They are teacher defaults in 6 and 5. Bonds: k0003, k0009, k0012, k0015, k0017, k0019 (four with inflation-up mass >= 0.6; k0017 against its own 'bear-steepening' text). Credit: k0003, k0009, k0012, k0015, k0019 (k0012's own reason says spreads are unchanged in 0.60 of the mass; k0015 treats EM sovereign spreads as US HY; k0009 rests on a 0.05 tail). Bonds are LONG in 6 of the 8 positive-gap backdrops, 3 of them with no event reason (k0003, k0012, k0015). Gold is LONG 14/20, about 4 of them on the backdrop alone (k0009 admits no event case).",
+   "A new prompt echo replaces the old ones. Step 3's 'say so in one sentence and weigh the event more' yields 'I weigh the event more' in 18/20, mostly bolted onto manufactured tensions (k0009 weighs a 3-day Latin American outage against US core PCE; k0013 uses it where event and data agree; k0011 writes 'One sentence on the conflict:'). 'this school'/'the school's' appears in 16/20, the profile's 'A supply shock is a supply shock first' near-verbatim in 8/20 (k0008 and k0019 call it 'the school's rule'), and 'single print/set of values' in 5/20.",
+   "Calibration is templated in a new place: Confidence is 'moderate' in 20/20, and the modal scenario sits in 0.35-0.55 in 20/20 (0.42 or 0.45 in 12; 0.45/0.30/0.15/0.10 twice). So a 3-day outage (0.55), a frontier IMF request (0.52) and a pandemic (0.45) carry the same confidence, and tails are overweighted (an implemented blockade gets 0.65 in k0005 though the event only raises the risk).",
+   "Signal reasons mis-assign their own scenarios: k0002 oil ('only S4 offsets' though S1 is growth up), k0003 bonds (S4 is a no-change scenario), k0004 oil (growth-up S2 as 'lower demand'), k0007 gold (S2 'US unchanged' lowers real rates), k0008 bonds (stagflationary S3), k0012 USD/credit/oil (the reasons argue against the calls), k0016 gold (S3 is inflation down), and k0019 (the Proof says the easing-and-growth S1 drives the credit and oil shorts).",
+   "Proof discipline: 7/20 Proofs have 8-10 lines against the prompt's 4-7 (proof_problems accepts 4-10). L5 names a tail in k0001 (S3) and k0008 (S2); the Proof contradicts the weights in k0014 and the signals in k0017 and k0019; k0006 derives the real rate from the 10y.",
+   "Claims added beyond the tool text bring in errors: SVB's guarantee 'stopped the contagion within days' (k0000), 1994 as an inversion 'against high inflation' (k0006), Malaysia 'kept' its peg (k0010), AUD as part of DXY (k0007), food a smaller consumption share than energy (k0003), an invented 0.1pp miss (k0013), a US oil 'import bill' (k0001). EP-2009-03 and EP-2001-01 are recast against their own tool text (k0013, k0002).",
+   "Value and frame misreads: the curve is said to price easing when the 2y is at or above the policy rate (k0009, k0013); the pre-event backdrop is read as proof that the event has already spread to US credit (k0010); trends are read from single levels (k0002 '$41 reversal underway', k0005 'the 1990 configuration'); US rates and the US gap are applied to the UK and Australia (k0017, k0007); scenario tags mix foreign and US frames (k0010, k0015), with growth-down mass 1.00 in k0009 and k0015.",
+   "Concept stuffing has moved to the paradox of thrift: 11/20 use it (v2: 0/15) and about 6 misuse it (precautionary saving k0003, debt deflation k0013, shrinking real money balances k0017, firms hoarding cash k0005, foreign exit k0008, austerity k0015). Also: 'liquidity trap' at a 2.5% rate (k0007), the unemployment gap called the output gap (k0002), and an invented doctrine that 'the price-side gap measure is more reliable' (k0003).",
+   "Missed event-vs-data checks: 0.6% m/m (about 7.4% annualised) against 4.7% y/y is still read as an easing signal (k0002, the flaw from v1 and v2); PPI 4.0% is never compared with CPI 4.8% (k0016); a 75bp emergency hike is never compared with the steep hikes in its own analogs (k0008). Backdrops are still sometimes incoherent (unemployment 3.3% with 4.3% growth and 0.0% core PCE; a 0.42% 10y with 4.8% CPI; the 2y above the policy rate in -4% contractions), and 11/20 show negative GDP (7 at -3% or worse), which feeds the bonds LONG habit."
+  ],
+  "would_you_train_on_this": "with changes",
+  "suggested_prompt_or_template_changes": [
+   "teacher_messages_v4 step 3: replace 'If the data and the event point different ways ... say so in one sentence and weigh the event more' with 'Only if a returned value contradicts what the event states (e.g. the event says the curve inverted and the spread is positive), state the contradiction and which you rely on; otherwise say nothing about it.' Add META rejects for 'weigh the event', 'One sentence on', 'this school', 'the school's', 'school's rule' and 'single (print|set|point-in-time)', and have the batch report flag any 5-gram found in more than 25% of a school's items.",
+   "templates.toml, Keynesian diagnosis: rewrite the quotable 'A supply shock is a supply shock first; its demand effects come second' as 'separate the price effect of a supply shock from its income effect on demand, and say which dominates here'. In step 1, replace 'as this school reads it' with 'for growth and inflation'. Define the concepts the model misuses: paradox of thrift (higher desired saving lowers income, so total saving does not rise; not debt deflation, falling real balances or austerity), liquidity trap (policy rate at or near zero), and output gap vs unemployment gap (Okun, about 2:1).",
+   "Signals: require each reason to name what in this event moves the US asset (not the backdrop alone), and make 'NEUTRAL (conviction 1-2) - event too small or too remote to move US <asset>' the expected call for small foreign events. Validator flags: bonds LONG with inflation-up mass >= 0.6; credit or equities SHORT with growth-down mass < 0.5; a reason that cites a scenario whose growth/inflation tag points the other way (e.g. a growth-up scenario behind an oil or credit SHORT); conviction >= 4 resting on a scenario below 0.3. The existing 70% batch warning would fire here (bonds 80%, credit 75%, gold 70%) and should block a batch, not only report it.",
+   "Calibration: tie the confidence level and the modal probability to the event: 'a small, contained or well-precedented event: base case 0.6-0.85 and confidence high; an ambiguous or large event: spread the mass and confidence low'. Warn when one confidence level covers more than 70% of a school's items (20/20 'moderate' now) or the modal probability stays in 0.40-0.55 in more than 60%.",
+   "Scenarios: tag growth/inflation for the US/global economy against a no-event baseline, allow 'flat', and describe the foreign economy only in the causal chain. Add: 'no data for other economies were returned; never use US values for them' (k0007, k0017).",
+   "Proof: bring proof_problems in line with the prompt (4-7 steps, not 4-10), require exactly one L5 naming the modal scenario (a tail only when marked 'tail'), and check that the numbers in a Proof line come from the refs it cites (k0006).",
+   "Step 3 should check the event against the data: annualise m/m figures and compare them with the y/y rate; compare PPI with CPI; compare a stated move (bp or %) with the magnitudes in the returned episodes; read the 2y against the policy rate before saying what the market prices; and remember that the backdrop predates the event and cannot show its effects.",
+   "Episodes: 'describe a returned episode only as far as the tool text goes; add no later outcomes or mechanisms' (SVB, Malaysia, 1994, EP-2009-03). Define the asset referents in the prompt: US Treasuries, DXY (EUR, JPY, GBP, CAD, SEK, CHF; no AUD), US high yield (not EM sovereign spreads).",
+   "macro_snapshot: tie the 2y to the expected policy path (below the policy rate when growth is negative and unemployment is above 4.5%), keep the 10y within a band around inflation, keep core PCE consistent with the gap, and cut the share of negative-GDP draws (11/20 here, 7 at -3% or worse).",
+   "Before training, regenerate or repair the default-signal items (bonds: k0003, k0009, k0012, k0015, k0017, k0019; credit: k0003, k0009, k0012, k0015, k0019) and strip the 'I weigh the event more' and 'this school' sentences, ideally by regenerating after the prompt fix. The reasoning core (analog triage, real-rate and zero-bound checks, overheating diagnosis) is worth keeping."
+  ]
+ }
+}
