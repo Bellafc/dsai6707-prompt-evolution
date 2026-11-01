@@ -18,6 +18,13 @@ Claude Docs document); Confirmation-era material and context are in `docs/projec
 | GenAI: AI-generated material must be identified; the student is accountable; GenAI must not write the work | PolyU Student Guide on GenAI (rev. 2026-01-05) | §6: thesis prose by the author; agent output logged in `research/AI_USE_LEDGER.md` |
 | Before submission: 7 credits, GPA ≥ 2.70, AIE, Research Seminars I & II (≥ 10 seminars + ≥ 1,500-word report per year), English per RLSA, National Education online course | DSAI 5.1–5.9 | Checklist item in the timeline (§5) |
 
+**Scope rule (human, 2026-11-01): completion before breadth.** A finished thesis on three schools beats an
+unfinished one on many. No new trained schools, domains or experiment arms are added; the prompted candidate
+frameworks appear only in the disagreement check that validates the three schools; extensions (development
+economics, a regime-type axis, pmpol's quantitative frameworks, test-time training, RL) go to Ch. 7 as future work.
+A new idea enters the plan only if it costs no new runs (a sentence, a limitation, a descriptive number from
+outputs we already produce).
+
 ## 2. Working title, research questions, contributions
 
 **Working title**: *Macro-MOSAIC: Multi-School Language-Model Reasoning for Macroeconomic Event Analysis and
@@ -107,12 +114,13 @@ autoencoder (exp06), a leakage-free history long enough for exp03, and LoRA tool
 | Qwen2.5-7B-Instruct (Confirmation) | Optional reproduction arms A7/C7 (amendment 4, Change 4) | Continuity with Confirmation Table 4.3, only if the original trajectories exist |
 | **Qwen3.5-27B** (2026-02-24, Apache-2.0) + school LoRA | exp01b (RQ1 on a stronger 2026 base) and the exp06 replication; exp03 secondary subset (≥ 2026-03) and exp05 (D7) | The only 2026 model with a public SAE trained on the post-trained model itself (64 layers); bf16 LoRA ≈ 56 GB (80 GB card); hybrid Gated DeltaNet needs spike S4 |
 | Qwen3.6-27B, Qwen3.8-27B, Gemma 4 31B (Google, 2026-03-31, Apache-2.0) | exp05 prompted references (optional); Gemma 4 31B as an optional cross-family check of H1 (P2) | Newer or comparable, but no public SAE and little or no leakage-free history; Gemma 4 31B bf16 LoRA exceeds 80 GB |
-| Gemma 3 (2025-03) + Gemma Scope 2 (Google, 2025-12: SAEs for PT and IT models, transcoders) | Fallback for exp06 if the Qwen-Scope base-model SAEs fail gate S0 | The most mature open SAE suite (SAELens, Neuronpedia) |
+| Gemma 3 (2025-03) + Gemma Scope 2 (Google, 2025-12: SAEs for PT and IT models, transcoders) | Not used: no substitute SAE suite and no SAE training (human, 2026-11-01); if Qwen-Scope fails gate S0, exp06 reports the failure as a limitation | The most mature open SAE suite (SAELens, Neuronpedia) |
 | Qwen-Scope SAEs (Qwen, 2026-05) | exp06 instrument (Part I reader) and mechanism (Part II) | Residual stream, every layer, TopK (L0 50 / 100), 64K–80K features; "qwen" licence, research use |
 | Decision models (TypeSafe Jev; open Vega, Kev incl. Kev-27B on Qwen3.8; Ollama `/v1/systemone`) | Measurement only (D8): a second, open, reproducible judge (score type, per-level probabilities); a decision head over scenario bins in exp05 only | Per-option probabilities with a fitted temperature; vendor calibration claims must be verified (pmpol survey §13); Jev is closed; Kev fine-tuning needs ~1,000 labels; Qwen3.5/3.8 bases know 2025–26, so not for historical exp03 |
 | Claude Opus 5.5 | Arm D (frontier reference), the exp01 judge, exp06 feature labels | Evaluation and analysis only. Not a teacher: the Consumer Terms (§3.2) bar using the service to train models |
 | RL with proper-scoring rewards (GRPO/ReMax on Brier; Turtel et al., TMLR 2025; Mantic 2026) | Future work / PhD | Published systems used ~10k–110k resolved questions; exp03 yields hundreds. exp03's dataset is the seed for it |
 | Activation steering of school directions | exp06 Part III (optional, dev only) | A third way between prompting and fine-tuning; expected to trail prompting (AxBench, ICML 2025) |
+| Test-time training: weights updated per test input at inference (Sun et al., 2020; TENT, Wang et al., 2021; per-task LoRA, Akyürek et al., 2025; TTT on retrieved neighbours, Hardt & Sun, 2024) | Considered and deliberately not adopted (human, 2026-11-01); related work and limitations in Ch. 2 and 7 | (1) Per-event weights leave no single model to compare across prompted, SFT and SFT+RFT (RQ1), and move the weights further from the Qwen-Scope SAEs. (2) Entropy-minimising adaptation sharpens predictions, against RQ3's calibration. (3) The shift we face is time, and the L1/L2 tools already adapt at test time without touching weights: retrieved evidence goes into the context, where every reference can be checked (RQ2); TTT-NN puts the same neighbours into the weights, where they cannot. (4) One training run per event × school × seed, and a rewrite of the frozen test protocol. Kept: test-time compute without weight changes (repeated sampling, the exp03 samples pool) |
 
 ## 5. Timeline (target submission 2027-06-15; hard limit = end of Normal Period)
 
@@ -185,6 +193,7 @@ autoencoder (exp06), a leakage-free history long enough for exp03, and LoRA tool
 | What do you do when the schools disagree? | L3 rule (side by side, not adopted); exp03 H6 tests disagreement as an uncertainty signal |
 | Is the agent's explanation faithful, or a story written after the fact? | exp07: counterfactual tool results (behaviour), SAE proof faithfulness (inside), proof validity (`Proof.check`, grounding) |
 | Is theoretical diversity better than other sources of diversity (personas, models, sampling)? | exp03 H8, equal ensemble size |
+| Why not adapt the model at test time (test-time training)? | §4a: considered and rejected; it breaks RQ1's fixed-model comparison and RQ3's calibration, and the L1/L2 tools already adapt at test time in an auditable way |
 
 ## 8. Decisions pending (human)
 
@@ -204,7 +213,13 @@ those decisions say.
 - **D8** Decision models as measurement tools (second judge Kev-27B; decision head in exp05): yes/no.
 - **D9** Who reviews the L3 school entries (`kb/L3/schools.yaml`, two-person rule) before freeze.
 - **D10** exp06 scope: Parts I and II (default; Part I registered with the exp01 freeze) or Part I only;
-  Part III (ablation, steering, data audit) optional.
+  Part III (ablation, steering, data audit) optional. Decided 2026-11-01: public Qwen-Scope SAEs only, no SAE
+  training or substitute suite; a failed gate S0 is reported as a limitation, not worked around.
 - **D11** Training data: the original 1,500 GPT-4o trajectories if they were kept (preferred), otherwise
   regenerated (GPT-4o if still offered, or an open-weight teacher whose licence allows training on its outputs);
   and whether to run the Qwen2.5-7B reproduction arms A7/C7.
+- **D12** Test-time training. Decided 2026-11-01: considered and deliberately not adopted (reasons in §4a); written up
+  as related work and a limitation, not run.
+- **D13** Scope. Decided 2026-11-01: completion before breadth (rule after §1). Design-note decision 2 follows from it:
+  no extra trained or evaluated L3 frameworks; New Keynesian, New Classical and Post-Keynesian stay prompted-only
+  inside the disagreement check; development-economics schools are future work.

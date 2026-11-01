@@ -158,7 +158,9 @@ Implement the checks from the draft with tests; run on the calibration window on
 
 ## Task 5 — exp06 SAE instrument (P1; after Task 0; must be ready before the exp01 freeze)
 
-Follow `research/prereg_drafts/exp06_sae.md`. Complete `src/mosaic/sae.py` and `mosaic sae gate|select|score|
+Follow `research/prereg_drafts/exp06_sae.md`. Never train, continue or fine-tune an SAE and never switch to another
+SAE suite (human, 2026-11-01): if gate S0 fails for a state at every scanned layer, log it, drop that state's SAE
+analysis and move on; S0 and the layer scan get one session at most. Complete `src/mosaic/sae.py` and `mosaic sae gate|select|score|
 internal|diff` with offline tests on small random tensors. Run gate S0 on dev and probe data for the reader and the
 A, B, C states. Draft the keyword-free paraphrases (20 per school + 20 neutral, automatic lexicon check) for the
 author to approve; never use test events. Select F_s and F_s^kf, label features (Opus calls: ≤ 150 per day,

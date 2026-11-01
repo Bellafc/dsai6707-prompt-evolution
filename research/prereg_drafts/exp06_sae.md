@@ -40,9 +40,13 @@ For each **state** — reader; A (school prompt); B (school prompt + exemplars);
 A layer passes for a state if FVU ≤ 0.40, CE recovered ≥ 0.80 and FVU ≤ 1.5 × the reader's FVU at that layer
 (thresholds to be confirmed at registration from the reader's own values, never from test data). Analysis layers:
 the three layers with the highest school separability (DiffMean AUROC on the keyword-free probe set, below) among
-those that pass for every state, at least 4 layers apart. If the C state fails everywhere, Part II is reported as
-not valid and the fallback is to continue training the SAE for a short time on activations of all states from
-the training trajectories and the neutral corpus (never test data), then re-run S0 and the feature selection.
+those that pass for every state, at least 4 layers apart.
+
+**No SAE is trained, continued or fine-tuned in this thesis, and no other SAE suite is substituted** (human decision,
+2026-11-01: use the public Qwen-Scope SAEs and do not persist when they fit badly). If a state fails at every scanned
+layer, its SAE results are not reported as evidence: Part II drops that state, Part I (reader) and the non-SAE
+baselines (DiffMean, linear probes) carry the analysis, and the failure is reported as a limitation. Effort cap: gate
+S0 and the layer scan take at most one pod session (6 GPU-hours); there are no further attempts.
 
 ## Probe sets (built and frozen before registration)
 

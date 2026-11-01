@@ -1,0 +1,41 @@
+# Candidate L3 frameworks for the disagreement check (design note decision 2): prompted only, never trained.
+# Same fields as the school profiles in configs/teacher/templates.toml, which supply the three trained schools.
+# Draft by the orchestrator (2026-11-01) for the author's review; the wording is meant to be neutral, not a strawman.
+
+[framework.new_keynesian]
+label = "New Keynesian (central-bank consensus)"
+concepts = ["the Taylor rule", "the output gap", "the New Keynesian Phillips curve", "anchored inflation expectations",
+            "forward guidance", "the natural rate of interest (r*)", "price stickiness", "central-bank credibility"]
+diagnosis = "Read the output gap and inflation expectations first. The central bank sets the policy rate by a Taylor-type rule: it raises the real rate when inflation runs above target or the gap is positive and lowers it otherwise. Sticky prices make policy matter in the short run, and credibility keeps expectations anchored. Fiscal policy matters most when the policy rate is at its lower bound."
+signals = "expects the central bank to lean against inflation and slack; asset prices follow the expected policy path and the term premium"
+good_news = ["inflation returning to target with expectations anchored", "a positive supply shock that lowers inflation without hurting output", "a credible policy move that closes the gap"]
+
+[framework.new_classical]
+label = "New Classical / real business cycle"
+concepts = ["rational expectations", "policy ineffectiveness", "real business cycles", "technology and productivity shocks",
+            "Ricardian equivalence", "intertemporal substitution", "the Lucas critique", "time inconsistency"]
+diagnosis = "Ask first whether the event is a real shock (productivity, supply, preferences) or a monetary one. Agents form rational expectations, so anticipated policy has little real effect and only surprises move output. Fluctuations are mostly efficient responses to real shocks. Government spending crowds out private spending, and debt-financed tax cuts are offset by expected future taxes."
+signals = "sceptical of stabilisation policy; reads real shocks as the driver of output and prices as responding to money surprises"
+good_news = ["a productivity gain", "a credible rule that removes policy surprises", "deregulation that raises supply"]
+
+[framework.post_keynesian]
+label = "Post-Keynesian / Modern Monetary Theory"
+concepts = ["endogenous money", "functional finance", "sectoral balances", "fundamental uncertainty",
+            "cost-push and conflict inflation", "financial instability (Minsky)", "a job guarantee", "the fiscal space of a currency issuer"]
+diagnosis = "Money is created endogenously by bank lending and government spending. A government that issues its own currency faces no financing constraint, only a real-resource limit that shows up as inflation. Demand drives output and employment; inflation comes from costs, conflict over income shares or demand beyond capacity, not from money growth. Interest rates are a policy choice whose effects on demand are uncertain, and private debt build-ups are the main source of instability."
+signals = "favours fiscal support and full employment; reads public deficits as the private sector's surplus and warns of private debt build-ups"
+good_news = ["fiscal support that uses idle capacity", "rising wages that sustain demand", "falling private leverage"]
+
+# Positions on two established dimensions (CHES-style expert coding, 1-5), drafts for two coders (the author and one
+# economist) to code independently before use:
+#   state_market: 1 = state intervention ... 5 = free market (the economic left-right dimension of the Chapel Hill
+#                 Expert Survey; the "political core" in Lavoie 2014, ch. 1; economists' ideology: Javdani & Chang 2023)
+#   orthodoxy:    1 = mainstream ... 5 = heterodox (orthodox vs heterodox presuppositions, Lavoie 2014, ch. 1; the
+#                 schools of Chang 2014, ch. 4, and Snowdon & Vane 2005)
+[positions]
+keynesian = {state_market = 2, orthodoxy = 2}
+austrian = {state_market = 5, orthodoxy = 5}
+monetarist = {state_market = 4, orthodoxy = 2}
+new_keynesian = {state_market = 3, orthodoxy = 1}
+new_classical = {state_market = 5, orthodoxy = 1}
+post_keynesian = {state_market = 1, orthodoxy = 5}

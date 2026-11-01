@@ -578,3 +578,61 @@ READY FOR HUMAN: register exp03 (draft `research/prereg_drafts/exp03_market_fore
 - cost note: one review round (three reviewers on ~57 items) uses about 0.9M Opus tokens of the human's subscription;
   the human hit the 5-hour and monthly limits twice today. Later rounds: automatic checks first, then one reviewer on a
   stratified sample.
+
+### 2026-11-01 — D11: pilot v7 (prompt version 7, items version 5)
+- command: `scripts/teacher_api.py research/teacher_runs/pilot-v7 --n 10 … --model qwen3.8-max` (30/30), import.
+- result: 29/30 kept (K 10, A 9, M 10); the one reject repeats "the school's". Calibration moved for two schools:
+  Keynesian and Monetarist evidence decisive 5 / mixed 5, confidence high 5 / moderate 5, modal at 0.40-0.55 in 50%
+  (v6 88% and 70%); Austrian still mixed 7/9, modal at 0.40-0.55 in 89%, one tuple used three times. Direction
+  warnings: Keynesian bonds LONG 9/10 and gold LONG 7/10, Monetarist bonds LONG 7/10; read item by item, the bond
+  calls cite event channels (bank-run flight to safety, SPR disinflation, a below-consensus CPI, EM capital flight, a
+  Fed cut, a PMI collapse, CRE losses), with one remote-event LONG at conviction 1 that the rule says should be NEUTRAL.
+- decision: prompt version 7 is the candidate for the full run. The full run waits for the human's confirmation of
+  the teacher's terms; if the teacher changes, a short pilot and one compact review are repeated with the new teacher.
+
+### 2026-11-01 — decision (human): no SAE training; do not persist when public SAEs fit badly
+- decision: exp06 uses the public Qwen-Scope SAEs only. No SAE is trained, continued or fine-tuned and no other suite
+  (Gemma Scope 2) is substituted; if gate S0 fails for a state at every scanned layer, that state's SAE analysis is
+  dropped and reported as a limitation, with Part I (reader) and the non-SAE baselines carrying the analysis. S0 and
+  the layer scan get one pod session (6 GPU-hours) at most.
+- change: exp06 draft (S0 fallback replaced), THESIS_DESIGN §4a (Gemma row) and §8 (D10), program.md Task 5.
+
+### 2026-11-01 — decision (human): test-time training considered, deliberately not adopted
+- decision: no test-time training (per-input weight updates at inference) in any experiment. Reasons (THESIS_DESIGN
+  §4a): per-event weights leave no fixed model for RQ1 and drift from the Qwen-Scope SAEs; entropy-minimising
+  adaptation sharpens predictions against RQ3's calibration; the time shift is already handled at test time by the
+  L1/L2 tools, whose evidence stays in the context and checkable (RQ2); cost and the frozen test protocol. Repeated
+  sampling (test-time compute, no weight change) stays in exp03.
+- change: THESIS_DESIGN §4a row, §7 oral-exam row, §8 D12. A related-work and future-work scan for the thesis runs
+  next; verified candidates go to the reference session for the bibliography.
+
+### 2026-11-01 — related-work and future-work scan
+- command: three parallel search agents (RQ1 + TTT; RQ2/RQ3; economics, ideology, disagreement matrix, future work),
+  each checked against LIBRARY.md and the .bib files.
+- result: `research/related_work_scan_2026-11-01.md`, about 50 works missing from the library, with priority A/B/F.
+  Two sources cited in `configs/frameworks.toml` (Javdani & Chang 2023; Lavoie 2014) were missing from the library.
+  No peer-reviewed SAE study of economic-school concepts was found (exp06 would be the first). Gordon & Dahl (2013)
+  is a counter-hypothesis to "position distance predicts disagreement" and goes into the matrix write-up.
+- next: hand-off to the reference session for BibTeX and verification; four cheap in-design uses listed as proposals
+  for the human (graded counterfactual edits in exp07, error correlation per H8 arm, the base-model tilt control,
+  a pre/post-cutoff leakage check).
+
+### 2026-11-01 — decision (human): completion before breadth
+- decision: the human set the scope rule "completion matters most; covering everything is unrealistic". Recorded as
+  THESIS_DESIGN D13 (rule after §1): no new trained schools, domains or arms; prompted candidate frameworks only in
+  the disagreement check; extensions to Ch. 7. A new idea enters only if it costs no new runs.
+- change: design-note decision 2 closed by the rule; of the scan's four cheap uses, the error correlation per H8 pool
+  (exp03 draft, descriptive), the Gordon & Dahl counter-hypothesis with the base-model tilt (matrix write-up) and the
+  claimed-cutoff limitation are adopted; graded counterfactual edits in exp07 are not (more runs).
+
+### 2026-11-01 — disagreement matrix (six frameworks × 30 events, qwen3.8-max, evaluation only)
+- command: `scripts/teacher_api.py research/divergence … --model qwen3.8-max` (240/240 after two retry passes),
+  `mosaic.divergence.analyze` (now with an exact permutation test and a per-asset breakdown).
+- result (`research/divergence/RESULTS.md`): the three schools disagree about twice the noise floor (signal
+  disagreement 0.21–0.28 vs 0.12–0.14); New Keynesian duplicates Keynesian (0.14, at noise); New Classical is the most
+  distinct framework (left out under D13, Ch. 7). Literature positions do not predict disagreement (ρ = +0.28, exact
+  p = 0.19 over 720 relabellings; R² = 0.05), as Gordon & Dahl (2013) would expect. Disagreement sits on oil, gold,
+  the dollar and bonds, not on equities and credit. MDS: two dimensions carry 69% (exploratory reading: mechanism,
+  not political position).
+- deviation: the design planned the test on two-coder positions; it ran on the single draft coding. Impact: the
+  ρ and p may change. Proposal: rerun `analyze` after the two coders, report the permutation p only.

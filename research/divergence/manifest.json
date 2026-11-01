@@ -1,0 +1,18 @@
+{
+ "n_events": 30,
+ "seed": 11,
+ "model": "qwen3.8-max",
+ "frameworks": [
+  "keynesian",
+  "austrian",
+  "monetarist",
+  "new_keynesian",
+  "new_classical",
+  "post_keynesian"
+ ],
+ "repeats": [
+  "keynesian",
+  "new_keynesian"
+ ],
+ "requests": 240
+}
