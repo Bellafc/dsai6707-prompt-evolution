@@ -6,6 +6,7 @@ Student: Alexander JIANG, Futian (25084392R) | Course: DSAI6707 Advanced Computa
 | Required deliverable (README §2 / Project PDF §7) | Path in this archive |
 |---|---|
 | 1. Project report (PDF) | `1_report/report.pdf` (source `1_report/report.md`, bibliography `1_report/references.bib`) |
+| 1b. Report, Traditional Chinese version (Markdown) | `1_report/report_zh-TW.md` |
 | 2. Source code and README (environment, dependencies, data preparation, execution, evaluation) | `2_code/README.md`, `2_code/evo_prompt/`, `2_code/tests/` |
 | 3. Experimental data and results (raw, logs, result files) | `3_results/runs/` (per-run `gen_log.csv`, `evaluations.jsonl`, `front.jsonl`, `final.json`), `3_results/cache/llm_cache.jsonl` (every model response), `3_results/logs/matrix.log` (run log and ledger), `3_results/summary_table.md`, `3_results/summary.csv` (one row per run), `3_results/summary_search.csv`, `3_results/heldout_per_event.csv`, `3_results/heldout_tests.csv`, `3_results/smoke/` (API smoke test) |
 | 4. Supplementary (configs, prompts, figures, model outputs) | `3_results/best_prompts/` (knee prompt sets), `3_results/figures/` (three figures), `4_supplementary/PROTOCOL.md` (pre-registered analysis protocol), `4_supplementary/AI_USE.md` (AI use log), `1_report/slides_outline.md` (6-minute talk) |
