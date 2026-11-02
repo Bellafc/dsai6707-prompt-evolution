@@ -3,3 +3,6 @@
 [random s2] gen  2  evals  18  front  5  HV 0.0542  best fid 0.3027  calls 0  spent $0.0
 [random s2] gen  3  evals  24  front  3  HV 0.0691  best fid 0.3027  calls 0  spent $0.0
 [random s2] gen  4  evals  30  front  3  HV 0.0734  best fid 0.3076  calls 0  spent $0.0
+done random seed 2: api_calls 30, spent $0.02
+ledger: calls 30, tokens in 27488, out 28571, estimated spend $0.02 of $3.00
+exit 0

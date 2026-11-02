@@ -25,14 +25,16 @@ A preliminary, unpublished result from the author's MPhil project, whose harness
 ## 1.2 Research questions
 
 - **RQ1.** Can NSGA-II over prompt sets, with LLM-guided mutation, find prompt sets that dominate a hand-written baseline and single-objective or random search in fidelity, inter-agent disagreement and length?
-- **RQ2.** Which component carries the effect: the LLM-guided mutation or the selection scheme?
+- **RQ2.** Which component carries the effect: the selection scheme, LLM mutation as such, or the objective-directed guidance of the LLM mutation?
 - **RQ3.** Do the gains hold on unseen events?
+- **RQ4.** How does the method compare with a published evolutionary prompt optimiser (EvoPrompt-GA), and do the findings hold on a second model from another provider?
 
 ## 1.3 Contributions
 
 1. **Representation and objectives.** An individual is a set of three school genes (diagnosis, concepts, stance, contrast) decoded through the unchanged thesis prompt scaffold. Objectives are school fidelity, inter-school disagreement and prompt length, with Deb's constraint handling on output validity.
 2. **Operators.** Structural crossover at school and field level; rule mutation that touches one school per child; and an LLM-guided mutation in which the parent's weakest objective is turned into a rewrite instruction (AI-to-EC).
-3. **Protocol.** A written analysis protocol (`code/PROTOCOL.md`, committed before the held-out analysis; deviations in Section 4.8), held-out events from a separate seed, exact sign-flip tests on held-out events with Holm correction, and a fully cached pipeline that can be re-run offline from the committed raw outputs.
+3. **Evaluation design.** A complete 2 × 2 ablation (selection × mutation), a control in which the LLM rewrites without objective information, a published baseline (EvoPrompt-GA), and a replication of every arm on a second model (Claude Haiku 5.5, five seeds).
+4. **Protocol.** A written analysis protocol and three addenda, each committed before the runs it governs (Section 4.8), held-out events from a separate seed, exact sign-flip tests with Holm correction, and a fully cached pipeline that can be re-run offline from the committed raw outputs.
 
 # 2 Related Work
 
@@ -111,7 +113,9 @@ Each school gene has four parts: `diagnosis` (sentences), `concepts` (an ordered
 
 - **B0.** The hand-written profiles, evaluated with three independent sampling seeds.
 - **B1 random search.** Independent random rule perturbations of B0 (1 to 3 operators per school), the same number of evaluations, and the same archive.
-- **Ablation.** NSGA-II with rule mutation only (no LLM).
+- **Ablations.** NSGA-II with rule mutation only, and the GA with rule mutation only; with the two LLM arms they form a 2 × 2 design (selection × mutation).
+- **Unguided LLM control.** NSGA-II with an LLM mutation that carries no objective information: the same call, share and acceptance rule as the guided operator, but the school and the field (diagnosis or stance) are drawn at random and the instruction is fixed: "Rewrite this paragraph in your own words. Keep its meaning and keep it as one paragraph." It separates the guidance from LLM rewriting as such.
+- **Published baseline: EvoPrompt (GA)** [@Guo2024evoprompt]. Parents are chosen by roulette wheel on the score $1 - \bar g$; one LLM call per school and child applies the paper's crossover-and-mutation template (verbatim, Figure 1 of the paper) to the two parents' diagnosis paragraphs, and the best $N$ of parents and children survive. Four adaptations were needed and are stated as such: the operator is applied to each of the three schools (the paper evolves one prompt); the answer inside `<prompt>` brackets is accepted if it has 5 to 600 words (the paper's operator writes whole prompts, see Section 4.8); the final solution is the shared knee, not EvoPrompt's argmax; and the initial population is the shared one (B0 plus perturbed copies), as the paper also starts from manual prompts.
 - **Indicator.** Exact 3-D hypervolume of the feasible non-dominated archive, with reference point (1, 1, 1). The archive keeps every feasible set evaluated, so all methods are compared on the same footing.
 - **Knee.** The archive member closest to the ideal point (0, 0, 0). The rule was fixed in `code/PROTOCOL.md` before the held-out analysis. The objectives are not rescaled. Across the final fronts $g_3$ spans about 0.40 to 0.79 and $g_2$ about 0.50 to 0.78, but $g_1$ only about 0.47 to 0.60, so fidelity carries the least weight in the distance and the knee tends to be one of the shorter feasible sets.
 
@@ -123,7 +127,9 @@ The task is a set of synthetic macroeconomic events produced by `mosaic.teacher.
 
 ## 4.2 Model and backend
 
-Each call goes to an OpenAI-compatible endpoint (`qwen3.8-max`, the model used for the thesis disagreement matrix) with temperature 0.7, top-p 0.9, at most 1,024 output tokens, thinking disabled and a per-run sampling seed. Every response is stored in an append-only cache keyed by the model, the messages and the sampling parameters (`results/cache/llm_cache.jsonl`). A ledger records token counts and an estimated spend, with a USD 30 cap. The spend uses assumed list prices of USD 2.4 and 9.6 per million input and output tokens; the measured token counts are stored, so the cost can be recomputed with the provider's sheet.
+**Main model.** Each call goes to an OpenAI-compatible endpoint (`qwen3.8-max`, the model used for the thesis disagreement matrix) with temperature 0.7, top-p 0.9, at most 1,024 output tokens, thinking disabled and a per-run sampling seed. Every response is stored in an append-only cache keyed by the model, the messages and the sampling parameters (`results/cache/llm_cache.jsonl`). A ledger records token counts and an estimated spend under a cap per command. The spend uses assumed list prices of USD 2.4 and 9.6 per million input and output tokens; the measured token counts are stored, so the cost can be recomputed with the provider's sheet.
+
+**Second model.** The replication uses `claude-haiku-5-5` through the official Anthropic SDK. The model rejects non-default temperature and top-p, so its default sampling is used; thinking is disabled and the output limit is 1,024 tokens, as for qwen. The API has no sampling seed, so the seed is kept in the cache key (each seed draws its own samples) but not sent. Everything for this model is stored under `results/haiku/` with its own cache; its ledger uses the list prices of USD 0.10 and 0.50 per million tokens.
 
 ## 4.3 Hyperparameters
 
@@ -132,29 +138,29 @@ Each call goes to an OpenAI-compatible endpoint (`qwen3.8-max`, the model used f
 | Population $N$ | 6 |
 | Generations $G$ | 4 (so $N(G+1) = 30$ evaluations per run) |
 | Search events / held-out events | 5 / 10 |
-| Algorithm seeds (paired across methods) | 1, 2, 3 |
+| Algorithm seeds (paired across methods) | 1, 2, 3 (qwen); 1 to 5 (Haiku) |
 | Crossover / mutation / LLM share | 0.7 / 0.9 / 0.5 |
 | Tournament size | 2 |
 | Feasibility threshold | 0.9 |
 | Length normalisation | 600 words |
 | Hypervolume reference | (1, 1, 1) |
-| LLM edit length | 5 to 120 words |
-| Sampling | temperature 0.7, top-p 0.9, max 1,024 tokens, thinking off |
+| LLM edit length | 5 to 120 words (guided and unguided edits); 5 to 600 words (EvoPrompt answers) |
+| Sampling | qwen: temperature 0.7, top-p 0.9; Haiku: provider default; both max 1,024 tokens, thinking off |
 
 ## 4.4 Procedure
 
 1. For each method and seed, run the search on the five search events and keep the archive (`results/runs/<method>_s<seed>/gen_log.csv`, `evaluations.jsonl`, `front.jsonl`).
 2. Select the knee of the final archive and write it to `results/best_prompts/`.
 3. Re-measure each knee, and B0, on the ten held-out events. Each knee is also re-scored from the cache per event (`results/heldout_per_event.csv`).
-4. Average over seeds per event and test each method against B0 with an exact paired sign-flip test over the ten events. Correct for eight tests with Holm (`results/heldout_tests.csv`).
+4. Average over seeds per event and test each method against B0 with an exact paired sign-flip test over the ten events, with Holm over the method-versus-B0 tests of that model (`results/heldout_tests.csv`); the protocol family adds every method-versus-method test (`results/heldout_tests_protocol.csv`).
 
 ## 4.5 Statistics
 
-Search-level results are mean ± sample standard deviation over three seeds. Held-out intervals are 95% percentile bootstrap intervals over the ten events (10,000 resamples, `mosaic.stats.paired`, seed 0). They are not corrected for multiple comparisons; the p-values are exact sign-flip values and are the ones corrected with Holm. With three paired seeds the smallest attainable one-sided sign-flip p-value is 1/8, so search-level comparisons are reported descriptively. The inferential test uses the ten held-out events, where the smallest attainable two-sided p-value is 2/1024.
+Search-level results are mean ± sample standard deviation over three seeds. Held-out intervals are 95% percentile bootstrap intervals over the ten events (10,000 resamples, `mosaic.stats.paired`, seed 0). They are not corrected for multiple comparisons; the p-values are exact sign-flip values and are the ones corrected with Holm. With three paired seeds the smallest attainable one-sided sign-flip p-value is 1/8, so qwen search-level comparisons are reported descriptively, with the per-seed differences; with five seeds (Haiku) it is 1/32, and the exact one-sided value is reported. The inferential test uses the ten held-out events, where the smallest attainable two-sided p-value is 2/1024.
 
 ## 4.6 Reproduction
 
-`code/README.md` gives the commands. The matrix was run with `python -m evo_prompt.runner --methods b0 nsga2 ga random nsga2_rule --seeds 1 2 3 --gens 4 --pop 6 --heldout --budget 30`, and the tables with `python -m evo_prompt.analyze` and `python -m evo_prompt.figures`. The analysis reads only the committed cache, so it makes no model calls.
+`code/README.md` gives the commands. The qwen matrix was run with `python -m evo_prompt.runner --methods b0 nsga2 ga random nsga2_rule --seeds 1 2 3 --gens 4 --pop 6 --heldout --budget 30`, the two ablation arms with `--methods ga_rule nsga2_llmu` and the same settings, and the Haiku replication with `--profile haiku` and seeds 1 to 5 (the exact commands are in the protocol addenda). The tables come from `python -m evo_prompt.analyze` (add `--profile haiku` for the replication) and the figures from `python -m evo_prompt.figures`. The analysis reads only the committed cache, so it makes no model calls.
 
 ## 4.7 Computing environment and measured performance
 
@@ -172,19 +178,31 @@ Search-level results are mean ± sample standard deviation over three seeds. Hel
 - Summing the per-call latencies gives about 11.8 hours. This is not wall-clock time, because requests ran in parallel. The wall-clock duration of the matrix run was not logged.
 - The 20 offline tests run in under one second (0.7 to 0.9 s across repeated runs).
 
-## 4.8 Deviations from the protocol
+## 4.8 Protocol, addenda and deviations
 
-`code/PROTOCOL.md` has not been edited since it was committed, but the analysis departs from it, or from its wording, in three places.
+The analysis follows `code/PROTOCOL.md` and three addenda. Each addendum was committed before the first model call of the runs it governs; the commit times (UTC, 2026-11-02) are in the git history.
 
-1. **Timing.** The protocol states that it was written before any full-matrix result existed. In fact it was committed (2026-11-01, 15:12 UTC) while the matrix was running, together with a snapshot that already held the seed-1 knee prompt sets of NSGA-II, the GA and random search. The runner measures each knee on the held-out events at the end of its run, so we cannot rule out that some seed-1 held-out values existed at that time. The held-out tables, tests and figures were produced afterwards (16:10 to 16:31 UTC). The protocol was therefore fixed before the held-out *analysis*, not before every result; we do not call it a pre-registration.
-2. **Test family.** The protocol applies Holm across method-versus-B0 *and* method-versus-method comparisons (8 + 12 = 20 tests). Tables 3 and 4 use the 8 method-versus-B0 tests. The full 20-test family is in `results/heldout_tests_protocol.csv`: the smallest Holm-adjusted p-value is 0.508, so no conclusion changes. The only method-versus-method comparison with a raw p below 0.05 is the held-out fidelity of NSGA-II + LLM against the GA (−0.025, raw p = 0.031, adjusted p = 0.56).
+| Document | Commit | Governs |
+|---|---|---|
+| `PROTOCOL.md` | `b3cfd5e` (2026-11-01) | main qwen matrix (B0, NSGA-II + LLM, GA, random search, NSGA-II rule only) |
+| Addendum A | `78cb5a1` (04:19) | GA rule only and NSGA-II + unguided LLM on qwen; questions Q1 to Q3 and their decision rule |
+| Addendum B | `c58798a` (04:29) | Haiku replication of every arm, seeds 1 to 5 |
+| Addendum C | `507545a` (04:37) | EvoPrompt-GA baseline; parallel execution of the Haiku runs |
+
+The analysis departs from these documents, or from their wording, in the following places.
+
+1. **Timing of the main protocol.** `PROTOCOL.md` states that it was written before any full-matrix result existed. In fact it was committed (2026-11-01, 15:12 UTC) while the matrix was running, together with a snapshot that already held the seed-1 knee prompt sets of NSGA-II, the GA and random search. The runner measures each knee on the held-out events at the end of its run, so some seed-1 held-out values may have existed at that time. The held-out tables, tests and figures were produced afterwards. The main protocol was therefore fixed before the held-out *analysis*, not before every result; we do not call it a pre-registration. The addenda do not have this problem.
+2. **Test family.** The protocol applies Holm across method-versus-B0 *and* method-versus-method comparisons. Tables 3 and 4 use the method-versus-B0 tests only (12 tests for qwen). The full family (12 + 30 = 42 tests for qwen) is in `results/heldout_tests_protocol.csv`; every Holm-adjusted p-value in it is 1.0, so no conclusion changes.
 3. **Post-hoc sensitivity analysis.** Removing the held-out event whose text duplicates a search event (Section 5.2) was not in the protocol. It was added after the overlap was found.
+4. **EvoPrompt acceptance rule (amendment to addendum C).** Addendum C first applied the 5-to-120-word rule of our edit operator to EvoPrompt's answers. All 18 first-generation answers on qwen had 143 to 370 words, so every one was rejected and the baseline would have run without variation. Before any fitness comparison, the rule was changed for this arm to 5 to 600 words (`187dc01`, 04:38); long answers are penalised by the length objective instead of being discarded. The stopped first run had already written its seed-1 search files; they were moved out of `results/` without being read.
+5. **qwen EvoPrompt incomplete.** The qwen quota ran out during generation 2 of seed 1 of the restarted EvoPrompt run. As addendum C requires, the arm is reported as incomplete and left out of every qwen table; the comparison with the published baseline is made on Haiku only.
+6. **Parallel execution on Haiku.** For speed, the sequential Haiku run was stopped after B0 and NSGA-II seeds 1 to 3, its cache was frozen as a read-only base, and the remaining arms (later also individual seeds of the two slowest arms) ran in separate processes with their own cache layers. Arms therefore do not share samples drawn after the freeze, so the Haiku trajectories of, for example, NSGA-II and the GA are less coupled than on qwen. This changes only execution, not the design.
 
 # 5 Results and Analysis
 
-## 5.1 Search level
+## 5.1 Main model: search level
 
-Table 2 reports the archive and the knee on the search events. Values are mean ± sd over three seeds (`results/summary_table.md`).
+Table 2 reports the archive and the knee on the search events for the six qwen arms. Values are mean ± sd over three seeds (`results/summary_table.md`).
 
 | Method | Hypervolume | Front size | Knee fidelity | Knee disagreement | Knee validity | Knee words |
 |---|---|---|---|---|---|---|
@@ -192,23 +210,40 @@ Table 2 reports the archive and the knee on the search events. Values are mean �
 | GA (weighted sum) | 0.1220 ± 0.0130 | 10.7 ± 1.2 | 0.452 ± 0.038 | 0.459 ± 0.032 | 1.000 ± 0.000 | 305 ± 29 |
 | Random search | 0.0978 ± 0.0119 | 4.3 ± 0.6 | 0.474 ± 0.011 | 0.437 ± 0.017 | 1.000 ± 0.000 | 350 ± 38 |
 | NSGA-II, rule only | 0.0979 ± 0.0135 | 7.7 ± 4.0 | 0.460 ± 0.016 | 0.429 ± 0.061 | 0.933 ± 0.000 | 346 ± 37 |
+| GA, rule only | 0.0985 ± 0.0201 | 7.7 ± 2.1 | 0.456 ± 0.032 | 0.463 ± 0.026 | 0.933 ± 0.000 | 356 ± 52 |
+| NSGA-II + unguided LLM | 0.1022 ± 0.0320 | 9.7 ± 2.9 | 0.459 ± 0.027 | 0.418 ± 0.013 | 1.000 ± 0.000 | 338 ± 71 |
 
-![**Figure 1.** Mean hypervolume of the feasible archive per generation (3 seeds, shaded ±1 sd). Generation 0 is the shared initial population.](../results/figures/hv_vs_generation.png)
+![**Figure 1.** Mean hypervolume of the feasible archive per generation on qwen (3 seeds, shaded ±1 sd). Generation 0 is the shared initial population.](../results/figures/hv_vs_generation.png)
 
-Figure 1 shows the mean hypervolume per generation. Generation 0 is the shared initial population (0.071 for NSGA-II, the ablation and the GA alike; 0.073 for random search). From generation 1 on, NSGA-II and the GA rise above the two methods without LLM mutation (generation 4: 0.121 and 0.122, against 0.098 and 0.098), and the gap widens over the generations.
+Figure 1 shows the mean hypervolume per generation. Generation 0 is the shared initial population (0.071 for every arm except random search, 0.073). The two arms with guided LLM mutation rise above the others from generation 1 on and end at 0.121 and 0.122; the three rule-based arms and the unguided control end between 0.098 and 0.102.
 
-![**Figure 2.** Final feasible archives of the four search methods (3 seeds each, pooled), fidelity against disagreement on the search events, coloured by prompt-set length on a common scale.](../results/figures/pareto_fronts.png)
+Table 2b arranges the final hypervolume as the 2 × 2 design of selection and mutation, with the unguided control alongside.
 
-Figure 2 shows where the extra hypervolume comes from. Only the two methods with LLM mutation reach sets below about 280 words and fidelity above 0.50 on the search events; the archives of random search and the rule-only ablation stay between about 305 and 440 words, with fidelity at most 0.497.
+| Selection | Rule mutation only | Guided LLM mutation | Unguided LLM mutation |
+|---|---|---|---|
+| GA (weighted sum) | 0.0985 | 0.1220 | not run |
+| NSGA-II | 0.0979 | 0.1211 | 0.1022 |
 
+Addendum A fixed three questions and a decision rule before the two new arms were run: a direction counts as consistent only if all three paired seeds agree in sign (one-sided sign-flip p = 1/8, the smallest value three seeds allow).
 
-The pattern suggests an answer to RQ2 at this budget, with three qualifications. NSGA-II without LLM mutation has the same mean hypervolume as random search (0.0979 against 0.0978), so selection alone adds nothing visible over random sampling here. Adding the LLM as mutation operator raises the hypervolume to 0.121 for NSGA-II and 0.122 for the GA. Within each seed, NSGA-II + LLM beats the rule-only ablation in all three pairs (0.114 against 0.087, 0.108 against 0.093, 0.142 against 0.113), the strongest pattern three paired seeds can show (one-sided sign-flip p = 1/8). Against random search it is not uniform: with seed 2, random search (0.112) ends above NSGA-II + LLM (0.108).
+| Question | Comparison | Seed 1 | Seed 2 | Seed 3 | Mean | Consistent |
+|---|---|---|---|---|---|---|
+| Q1 selection, rule mutation | GA rule − NSGA-II rule | −0.0019 | −0.0049 | +0.0085 | +0.0006 | no |
+| Q2 LLM mutation, GA selection | GA − GA rule | +0.0235 | +0.0463 | +0.0007 | +0.0235 | yes |
+| Q3 guidance | NSGA-II + LLM − NSGA-II + unguided LLM | +0.0327 | +0.0212 | +0.0029 | +0.0189 | yes |
 
-- **Selection scheme.** The GA's selection is single-objective, yet its archive has the same hypervolume as NSGA-II's. This is weak evidence that selection does not matter. Both methods share the initial population per seed, and after the first generation their hypervolumes are still almost identical (0.0921 for both with seed 2; 0.1025 for both with seed 3); four generations leave little room for the two selection schemes to diverge. The comparison is also only made with LLM mutation: there is no GA with rule mutation only, so the 2 × 2 design (selection × mutation) is incomplete.
-- **Which part of the LLM operator.** The design does not separate the *objective-directed* instruction from LLM rewriting as such. A control in which the LLM rewrites a random field without being told which objective to improve is missing, so the evidence supports "LLM mutation" rather than "objective-guided LLM mutation".
-- **Strength.** With three seeds the standard deviations overlap, so all of this is descriptive, not a significance claim.
+The answer to RQ2 on qwen is now direct.
 
-## 5.2 Held-out events
+- **Selection does not matter here.** With rule mutation the two selection schemes reach the same hypervolume and disagree in sign across seeds (Q1); with guided LLM mutation they also end level (0.1211 against 0.1220). Four generations of population 6 leave little room for the schemes to differ, so this is a statement about this budget.
+- **LLM mutation helps under both selection schemes.** Under GA selection it raises the hypervolume in all three seeds (Q2), and under NSGA-II the same holds against the rule-only ablation (0.114 against 0.087, 0.108 against 0.093, 0.142 against 0.113).
+- **The guidance is what helps, not LLM rewriting as such.** The unguided control ends at 0.102, close to the rule-only arms, and the guided operator beats it in all three seeds (Q3). This is the most direct evidence for the operator proposed in Section 3.3.
+- **Strength.** All three statements rest on three paired seeds. The seed-3 differences of Q2 and Q3 are small (+0.0007 and +0.0029), and random search with seed 2 (0.112) ends above NSGA-II + LLM with seed 2 (0.108). Section 5.3 repeats the questions on a second model with five seeds.
+
+![**Figure 2.** Final feasible archives of the qwen search arms (3 seeds each, pooled), fidelity against disagreement on the search events, coloured by prompt-set length on a common scale.](../results/figures/pareto_fronts.png)
+
+Figure 2 shows where the extra hypervolume comes from. The arms with LLM mutation reach the shortest sets (242 to 256 words); every rule-based arm stays at 292 words or more. The guided NSGA-II archive also reaches the highest fidelity (0.53), while the unguided control does not exceed 0.496.
+
+## 5.2 Main model: held-out events
 
 Table 3 reports the knee solutions on the ten held-out events. The ± values are not of the same kind: for B0 they are the spread over three sampling seeds of one fixed prompt set, and for the search methods they are the spread over three algorithm seeds, each of which produces a different knee prompt set (and is evaluated with its own sampling seed). The second includes the first.
 
@@ -219,33 +254,38 @@ Table 3 reports the knee solutions on the ten held-out events. The ± values are
 | GA (weighted sum) | 0.448 ± 0.043 | 0.419 ± 0.027 | 0.978 ± 0.019 | 305 ± 29 |
 | Random search | 0.432 ± 0.009 | 0.432 ± 0.024 | 0.967 ± 0.033 | 350 ± 38 |
 | NSGA-II, rule only | 0.433 ± 0.032 | 0.428 ± 0.048 | 1.000 ± 0.000 | 346 ± 37 |
+| GA, rule only | 0.433 ± 0.006 | 0.415 ± 0.075 | 1.000 ± 0.000 | 356 ± 52 |
+| NSGA-II + unguided LLM | 0.441 ± 0.017 | 0.372 ± 0.037 | 1.000 ± 0.000 | 338 ± 71 |
 
-Table 4 gives the paired tests. Each comparison uses the ten held-out events, and Holm correction covers the eight method-versus-B0 tests.
+Table 4 gives the paired tests. Each comparison uses the ten held-out events, and Holm correction covers the twelve method-versus-B0 tests.
 
 | Comparison | Metric | Mean difference (method − B0) | 95% bootstrap CI | p (exact, raw) | p (Holm) |
 |---|---|---|---|---|---|
 | NSGA-II + LLM − B0 | fidelity | +0.0179 | [-0.0086, +0.0413] | 0.2168 | 1.0000 |
 | NSGA-II + LLM − B0 | disagreement | +0.0056 | [-0.0649, +0.0725] | 0.8672 | 1.0000 |
-| GA (weighted sum) − B0 | fidelity | +0.0426 | [+0.0133, +0.0734] | 0.0293 | 0.2051 |
+| GA (weighted sum) − B0 | fidelity | +0.0426 | [+0.0133, +0.0734] | 0.0293 | 0.3223 |
 | GA (weighted sum) − B0 | disagreement | -0.0074 | [-0.0889, +0.0704] | 0.8848 | 1.0000 |
-| Random search − B0 | fidelity | +0.0262 | [+0.0084, +0.0437] | 0.0254 | 0.2031 |
+| Random search − B0 | fidelity | +0.0262 | [+0.0084, +0.0437] | 0.0254 | 0.3047 |
 | Random search − B0 | disagreement | +0.0000 | [-0.0813, +0.0741] | 0.9805 | 1.0000 |
-| NSGA-II, rule only − B0 | fidelity | +0.0272 | [+0.0041, +0.0503] | 0.0566 | 0.3398 |
+| NSGA-II, rule only − B0 | fidelity | +0.0272 | [+0.0041, +0.0503] | 0.0566 | 0.4531 |
 | NSGA-II, rule only − B0 | disagreement | +0.0204 | [-0.0518, +0.0852] | 0.5664 | 1.0000 |
+| GA, rule only − B0 | fidelity | +0.0275 | [+0.0053, +0.0475] | 0.0410 | 0.4102 |
+| GA, rule only − B0 | disagreement | +0.0075 | [-0.0610, +0.0704] | 0.8086 | 1.0000 |
+| NSGA-II + unguided LLM − B0 | fidelity | +0.0354 | [+0.0080, +0.0632] | 0.0488 | 0.4395 |
+| NSGA-II + unguided LLM − B0 | disagreement | -0.0351 | [-0.0907, +0.0278] | 0.3242 | 1.0000 |
 
-No comparison is significant after Holm correction (smallest adjusted p = 0.203). Before correction, the exact sign-flip p-values for the fidelity gains of the GA and random search are about 0.03. The uncorrected 95% bootstrap intervals exclude zero for the fidelity gains of the GA, random search and the ablation, but the corresponding p-values do not survive the correction across eight tests. We therefore read these fidelity gains as suggestive, not established. Removing the one held-out event whose text duplicates a search event (Section 4.1), the exact sign-flip p-values on the remaining nine events are 0.059 for the GA fidelity gain, 0.051 for random search and 0.109 for the ablation, and no conclusion changes.
+No comparison is significant after Holm correction (smallest adjusted p = 0.305). Before correction, the exact sign-flip p-values of the fidelity gains of the GA, random search, the GA with rule mutation and the unguided control lie between 0.025 and 0.049, and their uncorrected bootstrap intervals exclude zero; none survives the correction across twelve tests, and none survives in the 42-test protocol family (Section 4.8). We therefore read these fidelity gains as suggestive, not established. Removing the one held-out event whose text duplicates a search event (Section 4.1), the exact sign-flip p-values on the remaining nine events are 0.059 for the GA fidelity gain, 0.051 for random search, 0.109 for NSGA-II with rule mutation, 0.066 for the GA with rule mutation and 0.082 for the unguided control, and no conclusion changes.
 
-![**Figure 3.** Held-out fidelity and disagreement of B0 and the knee solutions. Bars are the mean over the ten events; error bars are standard errors; dots are individual events.](../results/figures/heldout_bars.png)
+![**Figure 3.** Held-out fidelity and disagreement of B0 and the qwen knee solutions. Bars are the mean over the ten events; error bars are standard errors; dots are individual events.](../results/figures/heldout_bars.png)
 
+Four observations follow from the tables.
 
-Three observations follow from the tables.
+1. **The prompt sets get shorter, not less faithful.** The searched knees have 305 to 356 words against 438 for B0 (about 20% to 30% shorter), with fidelity and disagreement within a few hundredths of B0. Much of this is built into the design rather than found by the search: rule mutation can only shorten the diagnosis (Section 3.3), and the knee rule weights length more than fidelity (Section 3.5). Random search, which uses only rule mutation and the same knee rule, also ends 20% shorter. The length gain is real for a deployment that pays per token, but it is not evidence that evolution works.
+2. **The search-level advantage of guided LLM mutation does not carry over to held-out fidelity.** Random search gains more fidelity (+0.026) than NSGA-II with guided LLM mutation (+0.018), and the rule-only arms and the unguided control gain +0.027 to +0.035. Random search has no selection *during* the search, but its knee is still the best of 30 sets on the search events by the knee rule, so it is a best-of-30 selection. Held-out fidelity gains are therefore better read as an effect of choosing a prompt set on the search events at all than as an effect of any particular operator. Only the GA's gain (+0.043) is larger, and it is not significant after correction. This is the main caution for the conclusions in Section 6.
+3. **Disagreement hardly moves.** B0's own three sampling replicates, with the prompt set held fixed, range from 0.406 to 0.433 on the held-out events. Every search arm stays within 0.021 of B0 except the unguided control, whose knees lose 0.035 (0.372); its raw p-value is 0.32. That unguided rewriting may make the schools sound more alike is consistent with Section 2.3, but this experiment cannot establish it.
+4. **Search-level rankings do not carry over.** On the search events random search has the highest knee fidelity (0.474) and the GA the lowest (0.452); on the held-out events the order of these two is reversed (0.432 against 0.448). With five search events, the knee choice is driven partly by noise, which limits what the search-level comparison in Section 5.1 can say about generalisation.
 
-1. **The prompt sets get shorter, not less faithful.** The searched knees have 305 to 350 words against 438 for B0 (about 20% to 30% shorter), with fidelity and disagreement within a few hundredths of B0. Much of this is built into the design rather than found by the search: rule mutation can only shorten the diagnosis (Section 3.3), and the knee rule weights length more than fidelity (Section 3.5). Random search, which uses only rule mutation and the same knee rule, also ends 20% shorter. The length gain is real for a deployment that pays per token, but it is not evidence that evolution works.
-2. **Most of the held-out fidelity gain is not specific to evolution.** Random search gains more fidelity (+0.026) than NSGA-II with LLM mutation (+0.018); the ablation gains +0.027. Random search has no selection *during* the search, but its knee is still the best of 30 sets on the search events by the knee rule, so it is a best-of-30 selection. The gain is therefore better read as an effect of choosing a prompt set on the search events at all than as an effect of evolutionary search. Only the GA's gain (+0.043) is clearly larger, and it is not significant after correction. This is the main caution for the conclusions in Section 6.
-3. **Disagreement does not move.** No method changes disagreement by more than 0.021 on held-out events, while B0's own three sampling replicates, with the prompt set held fixed, already range from 0.406 to 0.433 on the same held-out events. The differences in disagreement are inside the sampling noise.
-4. **Search-level rankings do not carry over.** On the search events random search has the highest knee fidelity (0.474) and the GA the lowest (0.452); on the held-out events the order of these two is reversed (0.432 against 0.448). With five search events, the knee choice is driven partly by noise, which also limits what the search-level comparison in Section 5.1 can say about generalisation.
-
-## 5.3 Qualitative observations
+## 5.4 Qualitative observations
 
 Summed over three seeds, 8 of 30 LLM-guided children in NSGA-II (27%) and 10 of 34 in the GA (29%) were rejected by the 5-to-120-word check and replaced by rule mutation (`results/runs/*/evaluations.jsonl`, origin suffix `f`). Reading the accepted edits (the fields of LLM children that do not occur earlier in the same run) shows two kinds of rewrite, which match the length and fidelity instructions.
 
