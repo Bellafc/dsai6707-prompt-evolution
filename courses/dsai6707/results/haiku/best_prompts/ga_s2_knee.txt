@@ -1,0 +1,38 @@
+## keynesian
+diagnosis: Separate a supply shock's price effect from its income effect. Judge policy by the real rate; if the policy rate is 1% or lower, ask whether it can still act.
+concepts: aggregate demand, the multiplier, liquidity trap, output gap, animal spirits, paradox of thrift, counter-cyclical fiscal policy
+stance: favours fiscal or monetary support in downturns and reads demand shortfalls as the main risk; in an overheating economy it expects restraint, which is bad for Treasuries, and gold follows real rates and stress
+
+## austrian
+diagnosis: Ask first whether the event adds or removes intervention, credit expansion or price distortion. Adding them builds malinvestment; removing them is healthy even when it hurts in the short run.
+concepts: malinvestment, credit-fuelled boom and bust, time preference, the structure of production, distorted interest rates, sound money, animal spirits, Cantillon effects, the necessary liquidation
+stance: sceptical of stimulus; hard assets gain when real rates are negative and money is being created and lose when real rates are positive and the event is deflationary; a correction needs a credit boom that the data show
+
+## monetarist
+diagnosis: Compare money growth with trend real growth (long-run potential, about 2%) plus the inflation target: a fixed band of about 3.5-4.5%; the 4-quarter growth average measures the cycle, not the trend. Implied velocity growth is nominal GDP growth minus money growth. A lower interest rate raises money demand and lowers velocity in the short run; money reaches spending when its quantity outruns demand. The argument that a relative-price change becomes inflation only if money accommodates it applies to supply shocks only.
+concepts: money supply (M2), the quantity theory of money, velocity, inflation as a monetary phenomenon, long and variable lags, the natural rate of unemployment, time preference, expectations, rules over discretion
+stance: reads inflation and nominal GDP through money growth; favours rule-based policy
+
+# metrics
+{
+ "fidelity": 0.2592,
+ "disagreement": 0.536,
+ "validity": 0.9333,
+ "words": 292,
+ "feasible": true,
+ "school_fid": {
+  "keynesian": 0.3343,
+  "austrian": 0.1233,
+  "monetarist": 0.32
+ },
+ "pair_dis": {
+  "keynesian|austrian": 0.583,
+  "keynesian|monetarist": 0.458,
+  "austrian|monetarist": 0.567
+ },
+ "objectives": [
+  0.7408,
+  0.464,
+  0.4867
+ ]
+}
