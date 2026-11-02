@@ -27,9 +27,10 @@ from .genome import SchoolGene, PromptSet, b0
 from .moo import knee
 from .runner import events, sampling
 
-METHODS = ["nsga2", "ga", "random", "nsga2_rule"]
+METHODS = ["nsga2", "ga", "random", "nsga2_rule", "ga_rule", "nsga2_llmu"]
 LABEL = {"nsga2": "NSGA-II + LLM", "ga": "GA (weighted sum)", "random": "Random search",
-         "nsga2_rule": "NSGA-II, rule only", "b0": "B0 hand-written"}
+         "nsga2_rule": "NSGA-II, rule only", "ga_rule": "GA, rule only", "nsga2_llmu": "NSGA-II + unguided LLM",
+         "b0": "B0 hand-written"}
 SEEDS = [1, 2, 3]
 
 
@@ -218,8 +219,8 @@ def main(results: Path = RESULTS_DIR) -> None:
                 w.writerow([f"{m} - b0", metric, len(keep_ids), ";".join(dup_ids),
                             round(sum(diffs) / len(diffs), 4), round(sign_flip_exact(diffs), 4)])
 
-    # ---- protocol family: method vs B0 (8) plus method vs method (12), Holm over all 20 ----------------------
-    # code/PROTOCOL.md names this family; heldout_tests.csv above keeps the 8-test family used in the report tables.
+    # ---- protocol family: every method vs B0 plus every method vs method, Holm over the whole family -----------
+    # PROTOCOL.md and PROTOCOL_ADDENDUM_A.md name this family; heldout_tests.csv above keeps the method-vs-B0 tests only.
     fam = [dict(t) for t in tests]
     for i, m1 in enumerate(METHODS):
         for m2 in METHODS[i + 1:]:
@@ -231,14 +232,31 @@ def main(results: Path = RESULTS_DIR) -> None:
                 fam.append({"comparison": f"{m1} - {m2}", "metric": metric,
                             "mean_diff": round(sum(diffs) / len(diffs), 4), "ci_lo": round(boot["ci_lo"], 4),
                             "ci_hi": round(boot["ci_hi"], 4), "p_raw": round(sign_flip_exact(diffs), 4)})
-    adj20 = holm([t["p_raw"] for t in fam])
+    adj_fam = holm([t["p_raw"] for t in fam])
     with (results / "heldout_tests_protocol.csv").open("w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=["comparison", "metric", "mean_diff", "ci_lo", "ci_hi", "p_raw",
-                                           "p_holm_family20"])
+                                           "p_holm_family"])
         w.writeheader()
-        for t, p in zip(fam, adj20):
+        for t, p in zip(fam, adj_fam):
             w.writerow({**{k: t[k] for k in ("comparison", "metric", "mean_diff", "ci_lo", "ci_hi", "p_raw")},
-                        "p_holm_family20": round(p, 4)})
+                        "p_holm_family": round(p, 4)})
+
+    # ---- addendum A: per-seed hypervolume differences for the three pre-specified questions -------------------
+    hv = {(r["method"], r["seed"]): r["hv_final"] for r in rows}
+    questions = [("Q1 selection, rule mutation", "ga_rule", "nsga2_rule"), ("Q2 LLM mutation, GA selection", "ga", "ga_rule"),
+                 ("Q3 guidance, NSGA-II", "nsga2", "nsga2_llmu")]
+    qrows = []
+    for q, m1, m2 in questions:
+        if all((m, s) in hv for m in (m1, m2) for s in SEEDS):
+            d = [hv[(m1, s)] - hv[(m2, s)] for s in SEEDS]
+            qrows.append({"question": q, "comparison": f"{m1} - {m2}", **{f"diff_s{s}": round(x, 4) for s, x in zip(SEEDS, d)},
+                          "mean_diff": round(statistics.mean(d), 4), "sd_diff": round(statistics.stdev(d), 4),
+                          "consistent_sign": all(x > 0 for x in d) or all(x < 0 for x in d)})
+    if qrows:
+        with (results / "addendum_a_search.csv").open("w", newline="") as fh:
+            w = csv.DictWriter(fh, fieldnames=list(qrows[0]))
+            w.writeheader()
+            w.writerows(qrows)
 
     # ---- markdown summary -----------------------------------------------------------------------------------
     lines = ["# Summary (3 seeds per search method; B0 over 3 sampling replicates)", "",
@@ -267,7 +285,7 @@ def main(results: Path = RESULTS_DIR) -> None:
                      f"{fmt(mean_sd([h['disagreement'] for h in ho]))} | "
                      f"{fmt(mean_sd([h['validity'] for h in ho]))} | "
                      f"{fmt(mean_sd([h['words'] for h in ho]), 0)} |")
-    lines += ["", "## Paired tests vs B0 on the 10 held-out events (exact sign-flip, Holm over 8 tests)", "",
+    lines += ["", f"## Paired tests vs B0 on the 10 held-out events (exact sign-flip, Holm over {len(tests)} tests)", "",
               "| Comparison | Metric | Mean difference (method - B0) | 95% bootstrap CI | p (exact, raw) | p (Holm) |",
               "|---|---|---|---|---|---|"]
     for t in tests:

@@ -121,7 +121,7 @@ def main() -> int:
 
     # 8c. numbers added in the review pass (§4.8, §5.1, §5.2, Figure 2)
     fam = read_csv(RESULTS_DIR / "heldout_tests_protocol.csv")
-    min20 = min(float(t["p_holm_family20"]) for t in fam)
+    min20 = min(float(t["p_holm_family"]) for t in fam)
     check("protocol family: 20 tests, smallest Holm p = 0.508 quoted", len(fam) == 20 and f"{min20:.3f}" == "0.508"
           and "0.508" in rep, f"n={len(fam)}, min={min20}")
     hv4 = {m: [f"{float(rs[4]['hv']):.3f}" for rs in gl[m]] for m in gl}

@@ -16,10 +16,12 @@ import matplotlib.pyplot as plt  # noqa: E402
 
 from .config import RESULTS_DIR  # noqa: E402
 
-METHODS = ["nsga2", "ga", "random", "nsga2_rule"]
+METHODS = ["nsga2", "ga", "random", "nsga2_rule", "ga_rule", "nsga2_llmu"]
 LABEL = {"nsga2": "NSGA-II + LLM", "ga": "GA (weighted sum)", "random": "Random search",
-         "nsga2_rule": "NSGA-II, rule only", "b0": "B0 hand-written"}
-COLOR = {"nsga2": "#1b6ca8", "ga": "#2e8b57", "random": "#999999", "nsga2_rule": "#c0504d", "b0": "#444444"}
+         "nsga2_rule": "NSGA-II, rule only", "ga_rule": "GA, rule only", "nsga2_llmu": "NSGA-II + unguided LLM",
+         "b0": "B0 hand-written"}
+COLOR = {"nsga2": "#1b6ca8", "ga": "#2e8b57", "random": "#999999", "nsga2_rule": "#c0504d", "ga_rule": "#e69f00",
+         "nsga2_llmu": "#7b5ea7", "b0": "#444444"}
 SEEDS = [1, 2, 3]
 
 
@@ -53,7 +55,8 @@ def hv_curves(results: Path) -> None:
 
 
 def pareto(results: Path) -> None:
-    methods = ["nsga2", "ga", "random", "nsga2_rule"]
+    methods = [m for m in ["nsga2", "nsga2_llmu", "nsga2_rule", "ga", "ga_rule", "random"]
+               if all((results / "runs" / f"{m}_s{s}" / "front.jsonl").exists() for s in SEEDS)]
     data = {}
     for m in methods:
         xs, ys, cs = [], [], []
@@ -66,7 +69,8 @@ def pareto(results: Path) -> None:
                 cs.append(r["words"])
         data[m] = (xs, ys, cs)
     allc = [c for _, _, cs in data.values() for c in cs]
-    fig, axes = plt.subplots(2, 2, figsize=(10, 7.6), sharex=True, sharey=True)
+    ncol = 3 if len(methods) > 4 else 2
+    fig, axes = plt.subplots(2, ncol, figsize=(5 * ncol, 7.6), sharex=True, sharey=True, squeeze=False)
     for ax, m in zip(axes.flat, methods):
         xs, ys, cs = data[m]
         sc = ax.scatter(xs, ys, c=cs, cmap="viridis", vmin=min(allc), vmax=max(allc), s=36, edgecolor="k",
@@ -88,7 +92,8 @@ def heldout(results: Path) -> None:
         for r in csv.DictReader(fh):
             per.setdefault(r["method"], []).append(r)
     order = ["b0"] + METHODS
-    fig, axes = plt.subplots(1, 2, figsize=(10, 4.2))
+    order = [m for m in order if m in per]
+    fig, axes = plt.subplots(1, 2, figsize=(1.6 * len(order) + 2, 4.4))
     for ax, metric in zip(axes, ["fidelity", "disagreement"]):
         means, errs = [], []
         for i, m in enumerate(order):
