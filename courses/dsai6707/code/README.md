@@ -99,8 +99,10 @@ The API key is never written to the repository. If `OPENAI_API_KEY` is set in th
 token; otherwise the calls go without an explicit header, which works where a proxy adds the credential for the host.
 Override the endpoint with `--base-url` and `--model`.
 
-The USD spend is an **estimate**: `PRICE_IN_PER_MTOK = 2.4` and `PRICE_OUT_PER_MTOK = 9.6` in `config.py` are assumed list
-prices. The measured token counts are stored in the cache, so the cost can be recomputed with the provider's price sheet.
+The qwen calls ran on a prepaid Token Plan subscription, which has no per-call price, so the USD spend is an
+**estimate**: `PRICE_IN_PER_MTOK = 2.4` and `PRICE_OUT_PER_MTOK = 9.6` in `config.py` are assumed list prices, used for
+the budget cap. The Haiku runs use Anthropic's list prices (USD 0.10 / 0.50). The measured token counts are stored in
+the caches, so any cost can be recomputed with another price sheet.
 
 ## 5. Analysis and figures (no model calls)
 

@@ -16,7 +16,7 @@ Student: Alexander JIANG, Futian (25084392R) | Course: DSAI6707 Advanced Computa
 2. `python -m evo_prompt.figures` rewrites `3_results/figures/`.
 3. `python -m pytest -q 2_code` runs the 27 offline tests. For the Haiku replication add `--profile haiku` to steps 1 and 2.
 
-API use: qwen 3,709 calls (about USD 27.31 at assumed prices); Claude Haiku 5.5 9,412 calls (USD 5.28 at list prices). Token counts are measured.
+API use: qwen 3,709 calls on a prepaid Token Plan subscription (about USD 27.31 estimated at assumed list prices; not a charge); Claude Haiku 5.5 9,412 calls (USD 5.28 at list prices). Token counts are measured.
 
 ## Known gap
 `configs/` (lexicons, school templates, framework positions) is not inside this archive. These files are in the repository at `configs/lexicons.toml`, `configs/teacher/templates.toml` and `configs/frameworks.toml`; they are inputs to `mosaic.metrics` and `mosaic.divergence` and are not modified.
