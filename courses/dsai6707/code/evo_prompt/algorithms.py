@@ -12,6 +12,8 @@ evaluation budget N * (G + 1) individuals; they differ only in selection and in 
   evoprompt_ga  published baseline: EvoPrompt (GA) of Guo et al. (ICLR 2024), roulette-wheel selection on the
               scalar fitness 1 - mean(g1..g3), the paper's LLM crossover-and-mutation template applied to each
               school's diagnosis, top-N update (addendum C)
+  evoprompt_ga_lc  the same with one sentence appended to the template that bounds the answer's length by the
+              longer parent (addendum D)
   b0          B0: hand-written prompt set, no search (see run_b0 in runner.py)
 
 Every method keeps an external archive of all feasible evaluated prompt sets; final fronts and hypervolume are taken
@@ -33,7 +35,7 @@ from .moo import hv3, nondominated_objectives, rank_and_crowding, select
 from .operators import (apply_edit, crossover, edit_messages, evoprompt_extract, evoprompt_messages, mutate_one,
                         perturb_all, plan_llm_edit, plan_unguided_edit, roulette)
 
-METHODS = ("nsga2", "nsga2_rule", "ga", "random", "ga_rule", "nsga2_llmu", "evoprompt_ga")
+METHODS = ("nsga2", "nsga2_rule", "ga", "random", "ga_rule", "nsga2_llmu", "evoprompt_ga", "evoprompt_ga_lc")
 
 
 @dataclass
@@ -53,7 +55,7 @@ class Search:
         self.N = pop_size
         self.backend = backend
         self.use_llm = method in ("nsga2", "ga", "nsga2_llmu")
-        self.ga_select = method in ("ga", "ga_rule", "evoprompt_ga")
+        self.ga_select = method in ("ga", "ga_rule", "evoprompt_ga", "evoprompt_ga_lc")
         self.pool = concept_pool()
         self.base = b0()
         self.archive: dict[str, Ind] = {}
@@ -163,7 +165,8 @@ class Search:
         for a, b in pairs:
             for s in SCHOOLS:
                 reqs.append(Request(messages=evoprompt_messages(" ".join(a.pset.gene(s).diagnosis),
-                                                                " ".join(b.pset.gene(s).diagnosis)),
+                                                                " ".join(b.pset.gene(s).diagnosis),
+                                                                self.method == "evoprompt_ga_lc"),
                                     tag=f"evoprompt|{s}"))
         outs = self.backend.generate(reqs)
         kids, origins = [], []
@@ -200,7 +203,7 @@ class Search:
         pop = self._eval(psets, ["init"] * self.N, 0)
         self._log(0, pop)
         for g in range(1, gens + 1):
-            kids, origins = self._breed_evoprompt(pop) if self.method == "evoprompt_ga" else self._breed(pop)
+            kids, origins = self._breed_evoprompt(pop) if self.method.startswith("evoprompt") else self._breed(pop)
             cinds = self._eval(kids, origins, g)
             pop = self._survive(pop + cinds)
             self._log(g, pop)

@@ -1,1 +1,8 @@
 [random s5] gen  0  evals   6  front  4  HV 0.0407  best fid 0.2613  calls 85  spent $0.049
+[random s5] gen  1  evals  12  front  5  HV 0.0519  best fid 0.2824  calls 170  spent $0.0974
+[random s5] gen  2  evals  18  front  9  HV 0.0558  best fid 0.2917  calls 260  spent $0.1489
+[random s5] gen  3  evals  24  front  6  HV 0.0571  best fid 0.2917  calls 345  spent $0.1977
+[random s5] gen  4  evals  30  front  7  HV 0.0592  best fid 0.2917  calls 430  spent $0.2465
+done random seed 5: api_calls 460, spent $0.26
+ledger: calls 460, tokens in 451504, out 437392, estimated spend $0.26 of $3.00
+exit 0

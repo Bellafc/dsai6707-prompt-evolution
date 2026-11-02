@@ -1,0 +1,15 @@
+comparison,metric,n_events,excluded_events,mean_diff,p_exact
+nsga2 - b0,fidelity,9,syn-k0007,0.0091,0.3398
+nsga2 - b0,disagreement,9,syn-k0007,-0.0,1.0
+ga - b0,fidelity,9,syn-k0007,0.0091,0.2695
+ga - b0,disagreement,9,syn-k0007,-0.0087,0.793
+random - b0,fidelity,9,syn-k0007,0.0235,0.0938
+random - b0,disagreement,9,syn-k0007,-0.0049,0.8945
+nsga2_rule - b0,fidelity,9,syn-k0007,0.0063,0.4727
+nsga2_rule - b0,disagreement,9,syn-k0007,-0.0025,0.9375
+ga_rule - b0,fidelity,9,syn-k0007,0.0017,0.7656
+ga_rule - b0,disagreement,9,syn-k0007,0.0345,0.3594
+nsga2_llmu - b0,fidelity,9,syn-k0007,0.0224,0.0156
+nsga2_llmu - b0,disagreement,9,syn-k0007,0.0617,0.0391
+evoprompt_ga - b0,fidelity,9,syn-k0007,-0.0135,0.1797
+evoprompt_ga - b0,disagreement,9,syn-k0007,0.0098,0.6719

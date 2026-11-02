@@ -2,3 +2,7 @@
 [evoprompt_ga s4] gen  1  evals  12  front  4  HV 0.0345  best fid 0.2508  calls 50  spent $0.0319
 [evoprompt_ga s4] gen  2  evals  18  front  4  HV 0.0345  best fid 0.2508  calls 79  spent $0.0491
 [evoprompt_ga s4] gen  3  evals  24  front  4  HV 0.0345  best fid 0.2508  calls 110  spent $0.0686
+[evoprompt_ga s4] gen  4  evals  30  front  4  HV 0.0345  best fid 0.2508  calls 136  spent $0.0846
+done evoprompt_ga seed 4: api_calls 166, spent $0.10
+ledger: calls 166, tokens in 203048, out 163538, estimated spend $0.10 of $3.00
+exit 0

@@ -1,0 +1,5 @@
+question,comparison,diff_s1,diff_s2,diff_s3,diff_s4,diff_s5,mean_diff,sd_diff,consistent_sign,p_sign_flip_one_sided
+"Q1 selection, rule mutation",ga_rule - nsga2_rule,-0.0069,0.0091,-0.003,0.009,-0.0068,0.0003,0.0082,False,0.5
+"Q2 LLM mutation, GA selection",ga - ga_rule,0.0185,0.013,0.0101,-0.0085,-0.0113,0.0044,0.0134,False,0.25
+"Q3 guidance, NSGA-II",nsga2 - nsga2_llmu,0.0274,0.0134,-0.0043,0.0002,0.0322,0.0138,0.0161,False,0.0938
+Q4 published baseline,nsga2 - evoprompt_ga,0.033,0.0242,0.0233,0.0235,0.0458,0.03,0.0097,True,0.0312

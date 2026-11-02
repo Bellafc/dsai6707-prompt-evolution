@@ -165,8 +165,13 @@ EVOPROMPT_GA_TEMPLATE = (
 )
 
 
-def evoprompt_messages(p1: str, p2: str) -> list[dict]:
-    return [{"role": "user", "content": EVOPROMPT_GA_TEMPLATE.format(p1=p1, p2=p2)}]
+# Length-constrained variant (addendum D): the paper's template with one sentence appended to step 2.
+EVOPROMPT_LC_SUFFIX = " The final prompt must not be longer than the longer of Prompt 1 and Prompt 2."
+
+
+def evoprompt_messages(p1: str, p2: str, length_constrained: bool = False) -> list[dict]:
+    text = EVOPROMPT_GA_TEMPLATE.format(p1=p1, p2=p2) + (EVOPROMPT_LC_SUFFIX if length_constrained else "")
+    return [{"role": "user", "content": text}]
 
 
 def evoprompt_extract(text: str) -> str | None:

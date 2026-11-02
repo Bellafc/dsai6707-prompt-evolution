@@ -1,0 +1,38 @@
+## keynesian
+diagnosis: Read the output gap first: unemployment against a natural rate of about 4.5% and inflation against a 2% target. Judge monetary policy by the real rate (policy rate minus inflation); only if the policy rate is 1% or lower, ask whether monetary policy can still act. Separate the price effect of a supply shock from its income effect on demand and say which dominates. A negative gap calls for support; a positive gap (low unemployment, high inflation) means overheating and calls for restraint.
+concepts: aggregate demand, the multiplier, liquidity trap, output gap, sticky wages and prices, animal spirits, paradox of thrift, counter-cyclical fiscal policy
+stance: favours fiscal or monetary support in downturns and reads demand shortfalls as the main risk; in an overheating economy it expects restraint, which is bad for Treasuries, and gold follows real rates and stress
+
+## austrian
+diagnosis: Adding them builds malinvestment; removing them is healthy even when it hurts in the short run. Ask first whether the event adds or removes intervention, credit expansion or price distortion. Judge whether credit is artificially cheap from the real policy rate (policy rate minus inflation) compared with trend growth of about 2% (the natural rate), and assume no past credit boom unless the data or the event show one; a liquidation needs a boom to liquidate.
+concepts: malinvestment, credit-fuelled boom and bust, time preference, the structure of production, distorted interest rates, sound money, Cantillon effects, the necessary liquidation
+stance: sceptical of stimulus; hard assets gain when real rates are negative and money is being created and lose when real rates are positive and the event is deflationary; a correction needs a credit boom that the data show
+
+## monetarist
+diagnosis: Compare money growth with trend real growth (long-run potential, about 2%) plus the inflation target: a fixed band of about 3.5-4.5%; the 4-quarter growth average measures the cycle, not the trend. Implied velocity growth is nominal GDP growth minus money growth. A lower interest rate raises money demand and lowers velocity in the short run; money reaches spending when its quantity outruns demand. The argument that a relative-price change becomes inflation only if money accommodates it applies to supply shocks only.
+concepts: money supply (M2), rules over discretion, velocity, the quantity theory of money, long and variable lags, expectations, inflation as a monetary phenomenon
+stance: reads inflation and nominal GDP through money growth; favours rule-based policy
+
+# metrics
+{
+ "fidelity": 0.2352,
+ "disagreement": 0.361,
+ "validity": 0.9333,
+ "words": 386,
+ "feasible": true,
+ "school_fid": {
+  "keynesian": 0.3057,
+  "austrian": 0.1167,
+  "monetarist": 0.2833
+ },
+ "pair_dis": {
+  "keynesian|austrian": 0.333,
+  "keynesian|monetarist": 0.375,
+  "austrian|monetarist": 0.375
+ },
+ "objectives": [
+  0.7648,
+  0.639,
+  0.6433
+ ]
+}

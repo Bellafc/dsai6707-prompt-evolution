@@ -27,10 +27,11 @@ from .genome import SchoolGene, PromptSet, b0
 from .moo import knee
 from .runner import events, sampling
 
-METHODS = ["nsga2", "ga", "random", "nsga2_rule", "ga_rule", "nsga2_llmu", "evoprompt_ga"]
+METHODS = ["nsga2", "ga", "random", "nsga2_rule", "ga_rule", "nsga2_llmu", "evoprompt_ga", "evoprompt_ga_lc"]
 LABEL = {"nsga2": "NSGA-II + LLM", "ga": "GA (weighted sum)", "random": "Random search",
          "nsga2_rule": "NSGA-II, rule only", "ga_rule": "GA, rule only", "nsga2_llmu": "NSGA-II + unguided LLM",
-         "evoprompt_ga": "EvoPrompt (GA)", "b0": "B0 hand-written"}
+         "evoprompt_ga": "EvoPrompt (GA)",
+         "evoprompt_ga_lc": "EvoPrompt (GA), length-bounded", "b0": "B0 hand-written"}
 SEEDS = [1, 2, 3]
 
 
@@ -269,7 +270,8 @@ def main(results: Path = RESULTS_DIR, profile: str = "qwen") -> None:
     # ---- addendum A: per-seed hypervolume differences for the three pre-specified questions -------------------
     hv = {(r["method"], r["seed"]): r["hv_final"] for r in rows}
     questions = [("Q1 selection, rule mutation", "ga_rule", "nsga2_rule"), ("Q2 LLM mutation, GA selection", "ga", "ga_rule"),
-                 ("Q3 guidance, NSGA-II", "nsga2", "nsga2_llmu"), ("Q4 published baseline", "nsga2", "evoprompt_ga")]
+                 ("Q3 guidance, NSGA-II", "nsga2", "nsga2_llmu"), ("Q4 published baseline", "nsga2", "evoprompt_ga"),
+                 ("Q5 length-bounded baseline", "nsga2", "evoprompt_ga_lc")]
     qrows = []
     for q, m1, m2 in questions:
         if all((m, s) in hv for m in (m1, m2) for s in SEEDS):
@@ -287,7 +289,7 @@ def main(results: Path = RESULTS_DIR, profile: str = "qwen") -> None:
             w.writerows(qrows)
 
     # ---- markdown summary -----------------------------------------------------------------------------------
-    lines = ["# Summary (3 seeds per search method; B0 over 3 sampling replicates)", "",
+    lines = [f"# Summary ({len(SEEDS)} seeds per search method; B0 over {len(SEEDS)} sampling replicates)", "",
              "## Search events (seed 23, 5 events): archive hypervolume and knee solution", "",
              "| Method | Hypervolume | Front size | Knee fidelity | Knee disagreement | Knee validity | Knee words |",
              "|---|---|---|---|---|---|---|"]

@@ -16,12 +16,13 @@ import matplotlib.pyplot as plt  # noqa: E402
 
 from .config import RESULTS_DIR  # noqa: E402
 
-METHODS = ["nsga2", "ga", "random", "nsga2_rule", "ga_rule", "nsga2_llmu", "evoprompt_ga"]
+METHODS = ["nsga2", "ga", "random", "nsga2_rule", "ga_rule", "nsga2_llmu", "evoprompt_ga", "evoprompt_ga_lc"]
 LABEL = {"nsga2": "NSGA-II + LLM", "ga": "GA (weighted sum)", "random": "Random search",
          "nsga2_rule": "NSGA-II, rule only", "ga_rule": "GA, rule only", "nsga2_llmu": "NSGA-II + unguided LLM",
-         "evoprompt_ga": "EvoPrompt (GA)", "b0": "B0 hand-written"}
+         "evoprompt_ga": "EvoPrompt (GA)",
+         "evoprompt_ga_lc": "EvoPrompt (GA), length-bounded", "b0": "B0 hand-written"}
 COLOR = {"nsga2": "#1b6ca8", "ga": "#2e8b57", "random": "#999999", "nsga2_rule": "#c0504d", "ga_rule": "#e69f00",
-         "nsga2_llmu": "#7b5ea7", "evoprompt_ga": "#8c564b", "b0": "#444444"}
+         "nsga2_llmu": "#7b5ea7", "evoprompt_ga": "#8c564b", "evoprompt_ga_lc": "#d17a5b", "b0": "#444444"}
 SEEDS = [1, 2, 3]
 
 
@@ -55,7 +56,7 @@ def hv_curves(results: Path) -> None:
 
 
 def pareto(results: Path) -> None:
-    methods = [m for m in ["nsga2", "nsga2_llmu", "nsga2_rule", "evoprompt_ga", "ga", "ga_rule", "random"]
+    methods = [m for m in ["nsga2", "nsga2_llmu", "nsga2_rule", "evoprompt_ga", "ga", "ga_rule", "random", "evoprompt_ga_lc"]
                if all((results / "runs" / f"{m}_s{s}" / "front.jsonl").exists() for s in SEEDS)]
     data = {}
     for m in methods:

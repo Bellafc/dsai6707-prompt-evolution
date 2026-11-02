@@ -48,7 +48,7 @@ def _run(method, tmp_path, seed=1):
 
 
 def test_all_methods_run_and_spend_budget_equally(tmp_path):
-    for m in ("nsga2", "nsga2_rule", "ga", "random", "ga_rule", "nsga2_llmu", "evoprompt_ga"):
+    for m in ("nsga2", "nsga2_rule", "ga", "random", "ga_rule", "nsga2_llmu", "evoprompt_ga", "evoprompt_ga_lc"):
         s = _run(m, tmp_path / m)
         assert len(s.history) == 3
         assert s.evals_done == 4 * 3
@@ -117,3 +117,11 @@ def test_evoprompt_children_change_diagnosis_only(tmp_path):
     s = _run("evoprompt_ga", tmp_path, seed=7)
     kids = [r for r in s.eval_log if r["gen"] > 0]
     assert kids and all(r["origin"].startswith("E") for r in kids)
+
+
+def test_length_constrained_evoprompt_appends_one_sentence():
+    from evo_prompt.operators import EVOPROMPT_GA_TEMPLATE, EVOPROMPT_LC_SUFFIX, evoprompt_messages
+
+    plain = evoprompt_messages("a b c", "d e")[0]["content"]
+    lc = evoprompt_messages("a b c", "d e", True)[0]["content"]
+    assert plain == EVOPROMPT_GA_TEMPLATE.format(p1="a b c", p2="d e") and lc == plain + EVOPROMPT_LC_SUFFIX
