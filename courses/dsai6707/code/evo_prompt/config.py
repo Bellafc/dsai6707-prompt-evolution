@@ -33,3 +33,14 @@ BASE_URL = "https://token-plan.maas.qianwenaiapi.com/compatible-mode/v1"
 PRICE_IN_PER_MTOK = 2.4
 PRICE_OUT_PER_MTOK = 9.6
 BUDGET_USD = 30.0
+
+# Second-model replication (results/haiku/). Claude Haiku 5.5 through the official Anthropic SDK. The model rejects
+# non-default temperature/top_p, so the provider's default sampling is used; thinking is disabled as for qwen. The
+# sampling seed is kept in the cache key (so the three seeds draw independent samples) but is not sent to the API.
+HAIKU = {
+    "model": "claude-haiku-5-5",
+    "max_tokens": MAX_TOKENS,
+    "price_in": 0.10,  # USD per million tokens, Anthropic list price (prompts up to 100K tokens)
+    "price_out": 0.50,
+    "results": RESULTS_DIR / "haiku",
+}

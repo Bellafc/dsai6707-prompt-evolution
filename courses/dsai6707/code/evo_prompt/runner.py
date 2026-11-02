@@ -22,8 +22,8 @@ from mosaic.backends import Cache
 from mosaic.teacher import make_items
 
 from .algorithms import METHODS, Search, run_b0
-from .backend import BudgetExceeded, HTTPBackend, Ledger, OfflineBackend
-from .config import (BASE_URL, BUDGET_USD, CACHE_PATH, HELDOUT_SEED, MAX_TOKENS, MODEL, N_HELDOUT, N_SEARCH,
+from .backend import AnthropicBackend, BudgetExceeded, HTTPBackend, Ledger, OfflineBackend
+from .config import (BASE_URL, BUDGET_USD, CACHE_PATH, HAIKU, HELDOUT_SEED, MAX_TOKENS, MODEL, N_HELDOUT, N_SEARCH,
                      PRICE_IN_PER_MTOK, PRICE_OUT_PER_MTOK, RESULTS_DIR, SEARCH_SEED, TEMPERATURE, TOP_P)
 from .evaluate import Evaluator
 from .moo import knee
@@ -35,14 +35,18 @@ def events(n: int, seed: int) -> list:
     return [it.event for it in make_items(n, seed=seed) if it.school == "keynesian"][:n]
 
 
-def sampling(seed: int) -> dict:
+def sampling(seed: int, profile: str = "qwen") -> dict:
+    if profile == "haiku":
+        return {"max_tokens": HAIKU["max_tokens"], "thinking": "disabled", "seed": seed}
     return {"temperature": TEMPERATURE, "top_p": TOP_P, "max_tokens": MAX_TOKENS, "seed": seed,
             "enable_thinking": False}
 
 
 def build_backend(args, cache, ledger, seed: int):
     if args.offline:
-        return OfflineBackend(sampling(seed), cache, ledger)
+        return OfflineBackend(sampling(seed, args.profile), cache, ledger)
+    if args.profile == "haiku":
+        return AnthropicBackend(sampling(seed, "haiku"), cache, ledger=ledger, model=args.model, workers=args.workers)
     return HTTPBackend(sampling(seed), cache, ledger=ledger, model=args.model, base_url=args.base_url,
                        workers=args.workers)
 
@@ -138,8 +142,21 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--price-in", type=float, default=PRICE_IN_PER_MTOK)
     ap.add_argument("--price-out", type=float, default=PRICE_OUT_PER_MTOK)
     ap.add_argument("--cache", type=Path, default=CACHE_PATH)
-    ap.add_argument("--out", type=Path, default=RESULTS_DIR / "runs")
+    ap.add_argument("--out", type=Path, default=None, help="default: results/runs (qwen) or results/haiku/runs")
+    ap.add_argument("--profile", choices=["qwen", "haiku"], default="qwen",
+                    help="haiku: Claude Haiku 5.5 via the Anthropic SDK, own cache and results under results/haiku/")
     args = ap.parse_args(argv)
+    if args.profile == "haiku":
+        root = HAIKU["results"]
+        if args.model == MODEL:
+            args.model = HAIKU["model"]
+        if args.cache == CACHE_PATH:
+            args.cache = root / "cache" / "llm_cache.jsonl"
+        if args.price_in == PRICE_IN_PER_MTOK and args.price_out == PRICE_OUT_PER_MTOK:
+            args.price_in, args.price_out = HAIKU["price_in"], HAIKU["price_out"]
+        args.out = args.out or root / "runs"
+        args.cache.parent.mkdir(parents=True, exist_ok=True)
+    args.out = args.out or RESULTS_DIR / "runs"
 
     cache = Cache(args.cache)
     ledger = Ledger(args.budget, args.price_in, args.price_out)

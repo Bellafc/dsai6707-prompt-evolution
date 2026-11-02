@@ -93,3 +93,9 @@ def test_unguided_control_uses_neutral_instruction(tmp_path):
 def test_new_methods_share_initial_population_with_their_pairs(tmp_path):
     g0 = lambda m: [r["genome"] for r in _run(m, tmp_path / m, seed=6).eval_log if r["gen"] == 0]  # noqa: E731
     assert g0("ga_rule") == g0("nsga2_rule") == g0("nsga2_llmu") == g0("nsga2")
+
+
+def test_haiku_profile_sampling_keeps_seed_in_key_and_drops_temperature():
+    s1, s2 = sampling(1, "haiku"), sampling(2, "haiku")
+    assert "temperature" not in s1 and "top_p" not in s1 and s1["thinking"] == "disabled"
+    assert s1 != s2  # different seeds give different cache keys

@@ -121,4 +121,8 @@ def main(results: Path = RESULTS_DIR) -> None:
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+
+    from .config import HAIKU
+
+    main(HAIKU["results"] if "--profile" in sys.argv and "haiku" in sys.argv else RESULTS_DIR)

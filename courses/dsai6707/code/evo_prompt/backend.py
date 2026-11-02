@@ -143,3 +143,44 @@ class HTTPBackend(Backend):
             for f, i in futs.items():
                 out[i] = f.result()
         return out
+
+
+class AnthropicBackend(Backend):
+    """Claude models through the official Anthropic SDK (reads ANTHROPIC_API_KEY from the environment; no key is
+    written anywhere). System messages are passed as the top-level system prompt. Only max_tokens and the thinking
+    setting are sent; any other sampling entry (e.g. the seed) only distinguishes cache keys."""
+
+    chunk_size = 64
+
+    def __init__(self, sampling: dict, cache, *, ledger: Ledger, model: str, workers: int = 8):
+        super().__init__(sampling, cache)
+        import anthropic
+
+        self.model_id = model
+        self.ledger = ledger
+        self.workers = workers
+        self.client = anthropic.Anthropic(max_retries=6)
+
+    def _one(self, r) -> dict:
+        if self.ledger.exhausted():
+            raise BudgetExceeded(f"API budget {self.ledger.budget} USD spent ({self.ledger.spent:.2f})")
+        system = "\n\n".join(m["content"] for m in r.messages if m["role"] == "system")
+        msgs = [{"role": m["role"], "content": m["content"]} for m in r.messages if m["role"] != "system"]
+        kw = {"model": self.model_id, "max_tokens": self.sampling.get("max_tokens", 1024), "messages": msgs,
+              "thinking": {"type": self.sampling.get("thinking", "disabled")}}
+        if system:
+            kw["system"] = system
+        t0 = time.time()
+        resp = self.client.messages.create(**kw)
+        text = "".join(b.text for b in resp.content if b.type == "text")
+        u = {"prompt_tokens": resp.usage.input_tokens, "completion_tokens": resp.usage.output_tokens}
+        self.ledger.add(u["prompt_tokens"], u["completion_tokens"])
+        return {"text": text, "usage": u, "seconds": time.time() - t0, "stop_reason": resp.stop_reason}
+
+    def _generate(self, reqs):
+        out: list = [None] * len(reqs)
+        with ThreadPoolExecutor(max_workers=self.workers) as pool:
+            futs = {pool.submit(self._one, r): i for i, r in enumerate(reqs)}
+            for f, i in futs.items():
+                out[i] = f.result()
+        return out

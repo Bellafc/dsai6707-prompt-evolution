@@ -21,7 +21,7 @@ from pathlib import Path
 from mosaic.backends import Backend, Cache
 from mosaic.stats import holm, paired
 
-from .config import CACHE_PATH, HELDOUT_SEED, MODEL, N_HELDOUT, N_SEARCH, RESULTS_DIR, SEARCH_SEED
+from .config import HAIKU, HELDOUT_SEED, MODEL, N_HELDOUT, N_SEARCH, RESULTS_DIR, SEARCH_SEED
 from .evaluate import Evaluator
 from .genome import SchoolGene, PromptSet, b0
 from .moo import knee
@@ -37,10 +37,9 @@ SEEDS = [1, 2, 3]
 class CacheOnly(Backend):
     """Reads generations from the disk cache only; a missing entry is an error, never a new API call."""
 
-    model_id = MODEL
-
-    def __init__(self, cache: Cache, seed: int):
-        super().__init__(sampling(seed), cache)
+    def __init__(self, cache: Cache, seed: int, profile: str = "qwen"):
+        super().__init__(sampling(seed, profile), cache)
+        self.model_id = HAIKU["model"] if profile == "haiku" else MODEL
 
     def generate(self, reqs):
         out = []
@@ -98,8 +97,8 @@ def sign_flip_exact(diffs: list[float]) -> float:
     return hits / total
 
 
-def per_event_scores(pset: PromptSet, seed: int, cache: Cache, evs: list) -> list[dict]:
-    backend = CacheOnly(cache, seed)
+def per_event_scores(pset: PromptSet, seed: int, cache: Cache, evs: list, profile: str = "qwen") -> list[dict]:
+    backend = CacheOnly(cache, seed, profile)
     out = []
     for e in evs:
         ev = Evaluator(backend, [e]).evaluate([pset])[0]
@@ -108,9 +107,9 @@ def per_event_scores(pset: PromptSet, seed: int, cache: Cache, evs: list) -> lis
     return out
 
 
-def main(results: Path = RESULTS_DIR) -> None:
+def main(results: Path = RESULTS_DIR, profile: str = "qwen") -> None:
     runs = load_runs(results / "runs")
-    cache = Cache(CACHE_PATH)
+    cache = Cache(results / "cache" / "llm_cache.jsonl")
     held = events(N_HELDOUT, HELDOUT_SEED)
     (results / "figures").mkdir(parents=True, exist_ok=True)
 
@@ -162,8 +161,8 @@ def main(results: Path = RESULTS_DIR) -> None:
             if (m, s) not in runs:
                 continue
             key = knee_key(runs[(m, s)]["dir"] / "front.jsonl")
-            per_event[m].append(per_event_scores(pset_from_key(key), s, cache, held))
-    per_event["b0"] = [per_event_scores(b0(), s, cache, held) for s in SEEDS]
+            per_event[m].append(per_event_scores(pset_from_key(key), s, cache, held, profile))
+    per_event["b0"] = [per_event_scores(b0(), s, cache, held, profile) for s in SEEDS]
 
     # average over seeds per event
     avg: dict[str, list[dict]] = {}
@@ -296,4 +295,9 @@ def main(results: Path = RESULTS_DIR) -> None:
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+
+    if "--profile" in sys.argv and sys.argv[sys.argv.index("--profile") + 1] == "haiku":
+        main(HAIKU["results"], "haiku")
+    else:
+        main()
