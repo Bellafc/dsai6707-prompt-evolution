@@ -6,6 +6,9 @@ evaluation budget N * (G + 1) individuals; they differ only in selection and in 
   ga          single-objective GA: feasibility first, then the equal-weight sum of g1..g3, elitist (mu + lambda),
               same variation operators as nsga2 (isolates the effect of selection)
   random      B1: independent random rule perturbations of the hand-written prompt set, keeping the Pareto archive
+  ga_rule     the GA with rule-based mutation only (completes the 2 x 2 design selection x mutation; addendum A)
+  nsga2_llmu  NSGA-II with unguided LLM mutation: same LLM call and acceptance rule as nsga2, but a random school and
+              field and an instruction without objective information (isolates the guidance; addendum A)
   b0          B0: hand-written prompt set, no search (see run_b0 in runner.py)
 
 Every method keeps an external archive of all feasible evaluated prompt sets; final fronts and hypervolume are taken
@@ -24,9 +27,10 @@ from .config import P_CROSS, P_LLM, P_MUT, REF_POINT
 from .evaluate import Evaluation, Evaluator
 from .genome import PromptSet, b0, concept_pool
 from .moo import hv3, nondominated_objectives, rank_and_crowding, select
-from .operators import apply_edit, crossover, edit_messages, mutate_one, perturb_all, plan_llm_edit
+from .operators import (apply_edit, crossover, edit_messages, mutate_one, perturb_all, plan_llm_edit,
+                        plan_unguided_edit)
 
-METHODS = ("nsga2", "nsga2_rule", "ga", "random")
+METHODS = ("nsga2", "nsga2_rule", "ga", "random", "ga_rule", "nsga2_llmu")
 
 
 @dataclass
@@ -45,7 +49,8 @@ class Search:
         self.method = method
         self.N = pop_size
         self.backend = backend
-        self.use_llm = method in ("nsga2", "ga")
+        self.use_llm = method in ("nsga2", "ga", "nsga2_llmu")
+        self.ga_select = method in ("ga", "ga_rule")
         self.pool = concept_pool()
         self.base = b0()
         self.archive: dict[str, Ind] = {}
@@ -97,7 +102,7 @@ class Search:
     # ---- variation -----------------------------------------------------------------------------------------------
     def _breed(self, pop: list[Ind]) -> tuple[list[PromptSet], list[str]]:
         rng = self.rng
-        if self.method == "ga":
+        if self.ga_select:
             keys = [(i.ev.violation, mean(i.ev.objectives)) for i in pop]
         else:
             rank, cd = rank_and_crowding([(i.ev.objectives, i.ev.violation) for i in pop])
@@ -129,7 +134,10 @@ class Search:
             parents.append(p1)
 
         if llm_idx:
-            plans = [plan_llm_edit(rng, kids[k], parents[k].ev) for k in llm_idx]
+            if self.method == "nsga2_llmu":
+                plans = [plan_unguided_edit(rng, kids[k]) for k in llm_idx]
+            else:
+                plans = [plan_llm_edit(rng, kids[k], parents[k].ev) for k in llm_idx]
             outs = self.backend.generate(
                 [Request(messages=edit_messages(p), tag=f"llm-edit|{p.objective}") for p in plans])
             for k, plan, out in zip(llm_idx, plans, outs):
@@ -141,7 +149,7 @@ class Search:
         return kids, origins
 
     def _survive(self, union: list[Ind]) -> list[Ind]:
-        if self.method == "ga":
+        if self.ga_select:
             union.sort(key=lambda i: (i.ev.violation, mean(i.ev.objectives)))
             return union[: self.N]
         idx = select([(i.ev.objectives, i.ev.violation) for i in union], self.N)

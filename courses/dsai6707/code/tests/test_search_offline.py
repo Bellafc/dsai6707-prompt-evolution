@@ -48,7 +48,7 @@ def _run(method, tmp_path, seed=1):
 
 
 def test_all_methods_run_and_spend_budget_equally(tmp_path):
-    for m in ("nsga2", "nsga2_rule", "ga", "random"):
+    for m in ("nsga2", "nsga2_rule", "ga", "random", "ga_rule", "nsga2_llmu"):
         s = _run(m, tmp_path / m)
         assert len(s.history) == 3
         assert s.evals_done == 4 * 3
@@ -70,3 +70,26 @@ def test_archive_members_are_feasible_and_front_nondominated(tmp_path):
         for j, b in enumerate(front):
             if i != j:
                 assert not dominates(b, a), "a front member dominates another"
+
+
+def test_rule_only_methods_make_no_llm_edits(tmp_path):
+    for m in ("nsga2_rule", "ga_rule"):
+        s = _run(m, tmp_path / m, seed=3)
+        assert not any("L" in r["origin"] for r in s.eval_log)
+
+
+def test_unguided_control_uses_neutral_instruction(tmp_path):
+    from evo_prompt.operators import UNGUIDED_INSTRUCTION, plan_unguided_edit
+
+    rng = random.Random(0)
+    plans = [plan_unguided_edit(rng, b0()) for _ in range(50)]
+    assert all(p.instruction == UNGUIDED_INSTRUCTION and p.objective == -1 for p in plans)
+    assert {p.field for p in plans} == {"diagnosis", "stance"}
+    assert len({p.school for p in plans}) == 3
+    s = _run("nsga2_llmu", tmp_path, seed=4)
+    assert any("L" in r["origin"] for r in s.eval_log)
+
+
+def test_new_methods_share_initial_population_with_their_pairs(tmp_path):
+    g0 = lambda m: [r["genome"] for r in _run(m, tmp_path / m, seed=6).eval_log if r["gen"] == 0]  # noqa: E731
+    assert g0("ga_rule") == g0("nsga2_rule") == g0("nsga2_llmu") == g0("nsga2")

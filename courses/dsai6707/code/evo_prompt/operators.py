@@ -88,7 +88,7 @@ def crossover(rng, a: PromptSet, b: PromptSet) -> PromptSet:
 class LLMEdit:
     school: str
     field: str  # "diagnosis" or "stance"
-    objective: int  # 0 fidelity, 1 distinctness, 2 length
+    objective: int  # 0 fidelity, 1 distinctness, 2 length, -1 unguided control
     instruction: str
     current: str
 
@@ -121,6 +121,19 @@ def plan_llm_edit(rng, p: PromptSet, parent_ev) -> LLMEdit:
     g = p.gene(school)
     current = " ".join(g.diagnosis if field == "diagnosis" else g.stance)
     return LLMEdit(school, field, obj, instr, current)
+
+
+UNGUIDED_INSTRUCTION = "Rewrite this paragraph in your own words. Keep its meaning and keep it as one paragraph."
+
+
+def plan_unguided_edit(rng, p: PromptSet) -> LLMEdit:
+    """Control for the guided edit (method nsga2_llmu): the same LLM call and acceptance rule, but the school and the
+    field are drawn uniformly at random and the instruction carries no information about any objective."""
+    school = rng.choice(SCHOOLS)
+    field = rng.choice(["diagnosis", "stance"])
+    g = p.gene(school)
+    current = " ".join(g.diagnosis if field == "diagnosis" else g.stance)
+    return LLMEdit(school, field, -1, UNGUIDED_INSTRUCTION, current)
 
 
 def edit_messages(e: LLMEdit) -> list[dict]:
