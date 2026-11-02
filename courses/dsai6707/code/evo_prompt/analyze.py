@@ -122,8 +122,10 @@ def per_event_scores(pset: PromptSet, seed: int, cache: Cache, evs: list, profil
 
 def main(results: Path = RESULTS_DIR, profile: str = "qwen") -> None:
     runs = load_runs(results / "runs")
-    global SEEDS
+    global SEEDS, METHODS
     SEEDS = sorted({s for m, s in runs if m == "b0"}) or SEEDS
+    # arms reported as incomplete (a seed missing, e.g. qwen evoprompt_ga, addendum C) are left out of every table
+    METHODS = [m for m in METHODS if all((m, s) in runs for s in SEEDS)]
     cache = Cache(results / "cache" / "llm_cache.jsonl")
     layers: dict = {}
     held = events(N_HELDOUT, HELDOUT_SEED)

@@ -115,8 +115,9 @@ def heldout(results: Path) -> None:
 
 
 def main(results: Path = RESULTS_DIR) -> None:
-    global SEEDS
+    global SEEDS, METHODS
     SEEDS = sorted(int(p.name.rsplit("_s", 1)[1]) for p in (results / "runs").glob("b0_s*")) or SEEDS
+    METHODS = [m for m in METHODS if all((results / "runs" / f"{m}_s{s}" / "final.json").exists() for s in SEEDS)]
     (results / "figures").mkdir(parents=True, exist_ok=True)
     hv_curves(results)
     pareto(results)

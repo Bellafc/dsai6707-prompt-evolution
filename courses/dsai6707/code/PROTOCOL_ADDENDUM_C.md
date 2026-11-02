@@ -59,3 +59,10 @@ for seed 1 and written `runs/evoprompt_ga_s1/{gen_log.csv,evaluations.jsonl,fron
 `best_prompts/evoprompt_ga_s1_knee.txt` (04:37:58 UTC, before this amendment was committed at 04:38:33); it was
 stopped during the held-out evaluation, so no `final.json` exists. Those files were not opened, and the restarted
 run overwrites them; the knee file of the stopped run is in commit 953eab6. With `max_tokens` 1,024, an answer cut off before `</prompt>` still counts as rejected.
+
+## Outcome note: qwen run incomplete (2026-11-02)
+The owner's qwen token-plan quota ran out while the restarted qwen `evoprompt_ga` run was in generation 2 of seed 1.
+The run was stopped; as this addendum requires, the qwen `evoprompt_ga` arm is reported as incomplete and left out of
+every qwen table. Its raw model outputs stay in the qwen cache. The seed-1 search files left by the stopped first run
+(see the amendment) were moved out of `results/` unread, so no analysis can pick them up. The comparison with the
+published baseline is made on the Haiku replication only, where all seven arms run with five seeds.
