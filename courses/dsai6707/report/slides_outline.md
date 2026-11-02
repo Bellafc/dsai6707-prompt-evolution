@@ -18,5 +18,5 @@ Target: 6 minutes, 8 to 9 slides, about 40 seconds each. Numbers are from `resul
 
 - Pareto fronts (`results/figures/pareto_fronts.png`).
 - Ablation definition and fallback rate (8 of 30 and 10 of 34 LLM children rejected and replaced by rule mutation).
-- Protocol: pre-registered knee rule and tests (`code/PROTOCOL.md`).
+- Protocol: knee rule and tests fixed in `code/PROTOCOL.md` before the held-out analysis (deviations in report §4.8).
 - Cost: estimated spend USD 20.20 at assumed prices; token totals in `results/logs/matrix.log`.

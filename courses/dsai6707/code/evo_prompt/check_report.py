@@ -119,6 +119,23 @@ def main() -> int:
           f"{_st.median(lat):.1f}" == "14.8" and len(rows_c) == 2849 and "14.8 s" in rep and "2,849" in rep,
           f"median {_st.median(lat):.2f}, calls {len(rows_c)}")
 
+    # 8c. numbers added in the review pass (§4.8, §5.1, §5.2, Figure 2)
+    fam = read_csv(RESULTS_DIR / "heldout_tests_protocol.csv")
+    min20 = min(float(t["p_holm_family20"]) for t in fam)
+    check("protocol family: 20 tests, smallest Holm p = 0.508 quoted", len(fam) == 20 and f"{min20:.3f}" == "0.508"
+          and "0.508" in rep, f"n={len(fam)}, min={min20}")
+    hv4 = {m: [f"{float(rs[4]['hv']):.3f}" for rs in gl[m]] for m in gl}
+    check("per-seed hv quoted (nsga2 vs nsga2_rule, random s2)",
+          all(f"{a} against {b}" in rep for a, b in zip(hv4["nsga2"], hv4["nsga2_rule"]))
+          and hv4["random"][1] == "0.112" and hv4["nsga2"][1] == "0.108", str(hv4))
+    b0d = sorted(f"{float(r['heldout_disagreement']):.3f}" for r in srows if r["method"] == "b0")
+    check("B0 held-out disagreement range quoted", f"{b0d[0]} to {b0d[-1]}" in rep, str(b0d))
+    fw = {m: [json.loads(x)["words"] for s in (1, 2, 3)
+              for x in (runs / f"{m}_s{s}" / "front.jsonl").read_text().splitlines() if x.strip()]
+          for m in ("random", "nsga2_rule")}
+    lo, hi = min(min(v) for v in fw.values()), max(max(v) for v in fw.values())
+    check("Figure 2 text: no-LLM archives within 305–440 words", lo >= 305 and hi <= 440, f"{lo}–{hi}")
+
     # 9. structure and deliverables
     heads = re.findall(r"^#+ (.+)$", rep, re.M)
     for name in ["Abstract", "Introduction", "Related Work", "Method", "Experimental Setup",

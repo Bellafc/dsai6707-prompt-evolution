@@ -6,8 +6,6 @@ bibliography: references.bib
 link-citations: true
 ---
 
-> **Draft status.** Written with AI assistance (see Appendix A). Every number below is traceable to a file in `results/`; the student reviews and edits the prose before submission.
-
 # Abstract
 
 Multi-perspective LLM agents are useful only if each agent stays faithful to its perspective and the agents differ from one another. Prompt-optimisation work usually tunes one prompt against one score, so the trade-off between fidelity, mutual distinctness and prompt length is not searched directly. We cast the design of three economic-school agents (Keynesian, Austrian, Monetarist) as a constrained multi-objective problem over a *set* of prompts and search it with NSGA-II, using an LLM as a guided mutation operator. Each objective is measured on synthetic macroeconomic events through a disk-cached model backend. In a reduced-budget study (population 6, four generations, three seeds per method, 2,743 model calls, about USD 20 estimated), NSGA-II with LLM-guided mutation and a single-objective weighted-sum GA reach a hypervolume of about 0.12, against about 0.098 for random search and for NSGA-II with rule-based mutation only. On ten held-out events, the selected prompt sets are 20–30% shorter than the hand-written baseline with similar fidelity and disagreement, but no method improves significantly on the baseline after Holm correction, and random search gains almost as much fidelity as the evolutionary methods. We report these results as they are and discuss what the budget can and cannot establish.
@@ -22,7 +20,7 @@ Systems that combine several LLM agents, each speaking from a different perspect
 
 Evolutionary prompt optimisation can search prompts automatically, with an LLM supplying the variation operators [@Fernando2024promptbreeder; @Guo2024evoprompt; @Lange2024large]. These methods, however, optimise one prompt against one scalar score. None of them evolves a *set* of prompts whose members must be good individually and different from each other, and none exposes the trade-off between fidelity, distinctness and cost (prompt length). Multi-objective prompt search has started to appear [@Zhao2025pareto; @Camara2025moprompt]. We found no such work for multi-agent sets.
 
-The thesis harness from which this project borrows its measurements provides motivating evidence. In a 240-request disagreement matrix over six economic frameworks (synthetic events, seed 11, the same model identifier `qwen3.8-max`), the three trained schools disagreed about twice as much as one school disagreed with itself, while New Keynesian duplicated Keynesian within the noise floor (`research/divergence/RESULTS.md` in the thesis repository, not a bibliography entry). This evidence is used here only as motivation; none of its events or outputs enter the experiments below.
+A preliminary, unpublished result from the author's MPhil project, whose harness this project borrows for its measurements, points the same way. In a 240-request disagreement matrix over six economic frameworks (synthetic events, generator seed 11, the same model identifier `qwen3.8-max`), the three trained schools disagreed about twice as much as one school disagreed with itself, while New Keynesian duplicated Keynesian within the noise floor. This evidence is used here only as motivation; none of its events or outputs enter the experiments below.
 
 ## 1.2 Research questions
 
@@ -34,11 +32,11 @@ The thesis harness from which this project borrows its measurements provides mot
 
 1. **Representation and objectives.** An individual is a set of three school genes (diagnosis, concepts, stance, contrast) decoded through the unchanged thesis prompt scaffold. Objectives are school fidelity, inter-school disagreement and prompt length, with Deb's constraint handling on output validity.
 2. **Operators.** Structural crossover at school and field level; rule mutation that touches one school per child; and an LLM-guided mutation in which the parent's weakest objective is turned into a rewrite instruction (AI-to-EC).
-3. **Protocol.** A pre-registered analysis protocol (`code/PROTOCOL.md`), held-out events from a separate seed, exact sign-flip tests on held-out events with Holm correction, and a fully cached pipeline that can be re-run offline from the committed raw outputs.
+3. **Protocol.** A written analysis protocol (`code/PROTOCOL.md`, committed before the held-out analysis; deviations in Section 4.8), held-out events from a separate seed, exact sign-flip tests on held-out events with Holm correction, and a fully cached pipeline that can be re-run offline from the committed raw outputs.
 
 # 2 Related Work
 
-We collected 34 papers from 2024–2026 (`report/references.bib`). On 2026-11-01 every author list and first-submission date was re-checked against its arXiv page. Venue information comes from arXiv comments, the course reference list, or a venue page. The DOIs of the TEVC and CSUR surveys came from search results and must be confirmed on the publisher site before submission (see `AI_USE.md`). They are grouped by theme; the classic Promptbreeder and EvoPrompt papers are included because their venue versions are from 2024. The synthesis below is organised by method, not by paper.
+We collected 34 papers from 2024–2026 (`report/references.bib`). Every author list and first-submission date was checked against its arXiv page, and the journal DOIs, volumes and pages against the publisher records in Crossref. The papers are grouped by theme; the classic Promptbreeder and EvoPrompt papers are included because their venue versions are from 2024. The synthesis below is organised by method, not by paper.
 
 ## 2.1 LLMs as evolutionary variation operators
 
@@ -101,8 +99,8 @@ Each school gene has four parts: `diagnosis` (sentences), `concepts` (an ordered
 ## 3.3 Variation
 
 - **Structural crossover** (probability 0.7). With probability 0.5 whole school genes are swapped between parents; otherwise each field of each school is picked from one parent.
-- **Rule mutation.** One school is chosen; one or two of: drop or swap a diagnosis sentence, drop, add or reorder a concept. It changes one school, so the other two school outputs are reused from the cache.
-- **LLM-guided mutation** (probability 0.5 of the mutations in the LLM methods). The parent's evaluation picks the objective to improve, with probability proportional to its badness: fidelity (rewrite the least faithful school's diagnosis using its lexicon terms), distinctness (rewrite one field of one of the two most similar schools so that it makes different calls from the other), or length (shorten the longest school's diagnosis to 40 words). The model returns one paragraph; it is accepted if it has 5 to 120 words, and otherwise the child falls back to rule mutation (8 of 30 LLM children in NSGA-II and 10 of 34 in the GA were rejected this way).
+- **Rule mutation.** One school is chosen; one or two of: drop or swap a diagnosis sentence, drop, add or reorder a concept. It changes one school, so the other two school outputs are reused from the cache. No rule operator adds a diagnosis sentence or touches `stance` and `contrast`, so rule mutation can only keep or reduce the length of the text it edits (adding a concept adds a few words). This bias towards shorter sets matters when reading the length results (Section 5.2).
+- **LLM-guided mutation** (probability 0.5 of the mutations in the LLM methods). The parent's evaluation picks the objective to improve, with probability proportional to its badness: fidelity (rewrite the least faithful school's diagnosis using its lexicon terms), distinctness (rewrite one field of one of the two most similar schools so that it makes different calls from the other), or length (shorten the longest school's diagnosis to 40 words). The model returns one paragraph; it is accepted if it has 5 to 120 words, and otherwise the child falls back to rule mutation (summed over the three seeds, 8 of 30 LLM children in NSGA-II and 10 of 34 in the GA were rejected this way).
 
 ## 3.4 Selection
 
@@ -115,7 +113,7 @@ Each school gene has four parts: `diagnosis` (sentences), `concepts` (an ordered
 - **B1 random search.** Independent random rule perturbations of B0 (1 to 3 operators per school), the same number of evaluations, and the same archive.
 - **Ablation.** NSGA-II with rule mutation only (no LLM).
 - **Indicator.** Exact 3-D hypervolume of the feasible non-dominated archive, with reference point (1, 1, 1). The archive keeps every feasible set evaluated, so all methods are compared on the same footing.
-- **Knee.** The archive member closest to the ideal point (0, 0, 0). The rule was fixed before the held-out run (`code/PROTOCOL.md`).
+- **Knee.** The archive member closest to the ideal point (0, 0, 0). The rule was fixed in `code/PROTOCOL.md` before the held-out analysis. The objectives are not rescaled. Across the final fronts $g_3$ spans about 0.40 to 0.79 and $g_2$ about 0.50 to 0.78, but $g_1$ only about 0.47 to 0.60, so fidelity carries the least weight in the distance and the knee tends to be one of the shorter feasible sets.
 
 # 4 Experimental Setup
 
@@ -174,6 +172,14 @@ Search-level results are mean ± sample standard deviation over three seeds. Hel
 - Summing the per-call latencies gives about 11.8 hours. This is not wall-clock time, because requests ran in parallel. The wall-clock duration of the matrix run was not logged.
 - The 20 offline tests run in under one second (0.7 to 0.9 s across repeated runs).
 
+## 4.8 Deviations from the protocol
+
+`code/PROTOCOL.md` has not been edited since it was committed, but the analysis departs from it, or from its wording, in three places.
+
+1. **Timing.** The protocol states that it was written before any full-matrix result existed. In fact it was committed (2026-11-01, 15:12 UTC) while the matrix was running, together with a snapshot that already held the seed-1 knee prompt sets of NSGA-II, the GA and random search. The runner measures each knee on the held-out events at the end of its run, so we cannot rule out that some seed-1 held-out values existed at that time. The held-out tables, tests and figures were produced afterwards (16:10 to 16:31 UTC). The protocol was therefore fixed before the held-out *analysis*, not before every result; we do not call it a pre-registration.
+2. **Test family.** The protocol applies Holm across method-versus-B0 *and* method-versus-method comparisons (8 + 12 = 20 tests). Tables 3 and 4 use the 8 method-versus-B0 tests. The full 20-test family is in `results/heldout_tests_protocol.csv`: the smallest Holm-adjusted p-value is 0.508, so no conclusion changes. The only method-versus-method comparison with a raw p below 0.05 is the held-out fidelity of NSGA-II + LLM against the GA (−0.025, raw p = 0.031, adjusted p = 0.56).
+3. **Post-hoc sensitivity analysis.** Removing the held-out event whose text duplicates a search event (Section 5.2) was not in the protocol. It was added after the overlap was found.
+
 # 5 Results and Analysis
 
 ## 5.1 Search level
@@ -191,14 +197,20 @@ Table 2 reports the archive and the knee on the search events. Values are mean �
 
 Figure 1 shows the mean hypervolume per generation. Generation 0 is the shared initial population (0.071 for NSGA-II, the ablation and the GA alike; 0.073 for random search). From generation 1 on, NSGA-II and the GA rise above the two methods without LLM mutation (generation 4: 0.121 and 0.122, against 0.098 and 0.098), and the gap widens over the generations.
 
-![**Figure 2.** Final feasible archives of NSGA-II + LLM and the GA (3 seeds each), fidelity against disagreement on the search events, coloured by prompt-set length.](../results/figures/pareto_fronts.png)
+![**Figure 2.** Final feasible archives of the four search methods (3 seeds each, pooled), fidelity against disagreement on the search events, coloured by prompt-set length on a common scale.](../results/figures/pareto_fronts.png)
+
+Figure 2 shows where the extra hypervolume comes from. Only the two methods with LLM mutation reach sets below about 280 words and fidelity above 0.50 on the search events; the archives of random search and the rule-only ablation stay between about 305 and 440 words, with fidelity at most 0.497.
 
 
-The pattern answers RQ2 at this budget. NSGA-II without LLM mutation has the same hypervolume as random search (0.0979 against 0.0978), so selection alone adds nothing over random sampling here. Adding the LLM as mutation operator raises the hypervolume to 0.121 for NSGA-II and 0.122 for the GA, and the choice of selection scheme makes no visible difference (the GA's selection is single-objective, yet its archive has the same hypervolume). In this experiment the LLM-guided mutation is the component that carries the search-level gain. With three seeds the standard deviations overlap, so this is a descriptive finding, not a significance claim.
+The pattern suggests an answer to RQ2 at this budget, with three qualifications. NSGA-II without LLM mutation has the same mean hypervolume as random search (0.0979 against 0.0978), so selection alone adds nothing visible over random sampling here. Adding the LLM as mutation operator raises the hypervolume to 0.121 for NSGA-II and 0.122 for the GA. Within each seed, NSGA-II + LLM beats the rule-only ablation in all three pairs (0.114 against 0.087, 0.108 against 0.093, 0.142 against 0.113), the strongest pattern three paired seeds can show (one-sided sign-flip p = 1/8). Against random search it is not uniform: with seed 2, random search (0.112) ends above NSGA-II + LLM (0.108).
+
+- **Selection scheme.** The GA's selection is single-objective, yet its archive has the same hypervolume as NSGA-II's. This is weak evidence that selection does not matter. Both methods share the initial population per seed, and after the first generation their hypervolumes are still almost identical (0.0921 for both with seed 2; 0.1025 for both with seed 3); four generations leave little room for the two selection schemes to diverge. The comparison is also only made with LLM mutation: there is no GA with rule mutation only, so the 2 × 2 design (selection × mutation) is incomplete.
+- **Which part of the LLM operator.** The design does not separate the *objective-directed* instruction from LLM rewriting as such. A control in which the LLM rewrites a random field without being told which objective to improve is missing, so the evidence supports "LLM mutation" rather than "objective-guided LLM mutation".
+- **Strength.** With three seeds the standard deviations overlap, so all of this is descriptive, not a significance claim.
 
 ## 5.2 Held-out events
 
-Table 3 reports the knee solutions on the ten held-out events. B0 is re-measured with three sampling seeds.
+Table 3 reports the knee solutions on the ten held-out events. The ± values are not of the same kind: for B0 they are the spread over three sampling seeds of one fixed prompt set, and for the search methods they are the spread over three algorithm seeds, each of which produces a different knee prompt set (and is evaluated with its own sampling seed). The second includes the first.
 
 | Method | Fidelity | Disagreement | Validity | Words |
 |---|---|---|---|---|
@@ -228,19 +240,25 @@ No comparison is significant after Holm correction (smallest adjusted p = 0.203)
 
 Three observations follow from the tables.
 
-1. **The prompt sets get shorter, not less faithful.** The searched knees have 305 to 350 words against 438 for B0 (about 20% to 30% shorter), with fidelity and disagreement within a few hundredths of B0. For a deployment where prompt length costs tokens, this is a real trade-off gain; the experiment does not show that it is more than that.
-2. **Most of the held-out fidelity gain is not specific to evolution.** Random search, which applies no selection, gains more fidelity (+0.026) than NSGA-II with LLM mutation (+0.018); the ablation gains +0.027. Only the GA's gain (+0.043) is clearly larger, and it is not significant after correction. This does not show that search works, and it is the main caution for the conclusions in Section 6.
-3. **Disagreement does not move.** No method changes disagreement by more than 0.02 on held-out events, and B0's own three sampling replicates range from 0.22 to 0.38 on the search events. The differences in disagreement are inside the sampling noise.
+1. **The prompt sets get shorter, not less faithful.** The searched knees have 305 to 350 words against 438 for B0 (about 20% to 30% shorter), with fidelity and disagreement within a few hundredths of B0. Much of this is built into the design rather than found by the search: rule mutation can only shorten the diagnosis (Section 3.3), and the knee rule weights length more than fidelity (Section 3.5). Random search, which uses only rule mutation and the same knee rule, also ends 20% shorter. The length gain is real for a deployment that pays per token, but it is not evidence that evolution works.
+2. **Most of the held-out fidelity gain is not specific to evolution.** Random search gains more fidelity (+0.026) than NSGA-II with LLM mutation (+0.018); the ablation gains +0.027. Random search has no selection *during* the search, but its knee is still the best of 30 sets on the search events by the knee rule, so it is a best-of-30 selection. The gain is therefore better read as an effect of choosing a prompt set on the search events at all than as an effect of evolutionary search. Only the GA's gain (+0.043) is clearly larger, and it is not significant after correction. This is the main caution for the conclusions in Section 6.
+3. **Disagreement does not move.** No method changes disagreement by more than 0.021 on held-out events, while B0's own three sampling replicates, with the prompt set held fixed, already range from 0.406 to 0.433 on the same held-out events. The differences in disagreement are inside the sampling noise.
+4. **Search-level rankings do not carry over.** On the search events random search has the highest knee fidelity (0.474) and the GA the lowest (0.452); on the held-out events the order of these two is reversed (0.432 against 0.448). With five search events, the knee choice is driven partly by noise, which also limits what the search-level comparison in Section 5.1 can say about generalisation.
 
 ## 5.3 Qualitative observations
 
-What we can count: 8 of 30 LLM-guided children in NSGA-II (27%) and 10 of 34 in the GA (29%) were rejected by the 5-to-120-word check and replaced by rule mutation (`results/runs/*/evaluations.jsonl`, origin suffix `f`). What we have not done yet is a qualitative reading of the accepted edits. This is left open for the student's review, and the best prompt sets for each method are stored in `results/best_prompts/` so that the reading can be done without re-running anything.
+Summed over three seeds, 8 of 30 LLM-guided children in NSGA-II (27%) and 10 of 34 in the GA (29%) were rejected by the 5-to-120-word check and replaced by rule mutation (`results/runs/*/evaluations.jsonl`, origin suffix `f`). Reading the accepted edits (the fields of LLM children that do not occur earlier in the same run) shows two kinds of rewrite, which match the length and fidelity instructions.
+
+- **Compression.** Length-directed edits shorten a diagnosis to about 40 words and mostly keep its structure. In the NSGA-II seed-3 knee, the Keynesian diagnosis went from 130 to 40 words: "Assess the output gap via unemployment (natural ~4.5%) and inflation (2% target): negative gaps need support; positive gaps require restraint. Distinguish supply shocks' price versus income effects, noting which dominates. Evaluate policy using the real rate (policy rate minus inflation)." The definitions of the liquidity trap and the paradox of thrift, and the condition on a low policy rate, were dropped. Compression can also change the meaning. In the same run, the Monetarist sentence "a relative-price change becomes inflation only if money accommodates it" was shortened to "Money accommodates supply-shock inflation", which reverses a conditional into a claim. The lexicon-based objectives cannot detect such an error.
+- **Lexicon loading.** Fidelity-directed edits rewrite a diagnosis around school vocabulary and grow it to 80 to 110 words. A typical Austrian rewrite (NSGA-II, seed 3) reads "Ask first whether the event alters time preference or initiates credit expansion, for it is artificial credit expansion that distorts interest rates and launches the Austrian business cycle. Such distortion misguides entrepreneurs into lengthening the capital structure ... generating widespread malinvestment." These two sentences contain five of the six required Austrian lexicon terms (time preference, credit expansion, Austrian business cycle, capital structure, malinvestment); the B0 diagnosis it replaced contained two (credit expansion, malinvestment). This is the Goodhart risk named in Section 6.2 in its plain form: the edit raises the measured fidelity by naming the school's concepts, and whether it improves the analysis is not measured.
+
+Distinctness-directed edits are harder to recognise in the text. One GA rewrite of the Keynesian diagnosis (seed 2) defines the school against another one ("prioritizing demand management over concerns about capital misallocation"), which is the intended behaviour. The knee prompt sets of every run are in `results/best_prompts/`.
 
 # 6 Discussion
 
 ## 6.1 What the results say
 
-At this budget, LLM-guided mutation increases the hypervolume of the search archive relative to both random sampling and rule-based NSGA-II, which answers RQ2 in favour of the LLM as the operator. The selection scheme does not matter in our setting. On held-out events the searched prompt sets are shorter, with fidelity and disagreement close to the hand-written set, which is a modest answer to RQ1 and RQ3: no dominance over B0 is established, and no method beats random search on the held-out events by a margin that survives correction.
+At this budget, LLM mutation increases the hypervolume of the search archive relative to both random sampling and rule-based NSGA-II in the mean and in every seed against the ablation. This suggests an answer to RQ2 in favour of the LLM as the operator, but it is descriptive (three seeds), it does not isolate the objective-directed instruction, and it does not establish that the selection scheme is irrelevant, since the GA and NSGA-II trajectories are coupled and only four generations long (Section 5.1). On held-out events the searched prompt sets are shorter, with fidelity and disagreement close to the hand-written set, which is a modest answer to RQ1 and RQ3: no dominance over B0 is established, and no method beats random search on the held-out events by a margin that survives correction.
 
 ## 6.2 Limitations
 
@@ -252,21 +270,26 @@ At this budget, LLM-guided mutation increases the hypervolume of the search arch
 - **Synthetic events.** The events are generated, and their macro context is synthetic. The results say nothing about real forecasting accuracy.
 - **Confounds.** The LLM methods make more model calls per child than rule mutation, and they produce more novel text. The comparison holds the evaluation budget fixed in evaluations, not in calls.
 - **Single school family.** The three schools are one economic taxonomy. Generalisation to other perspectives is not tested.
+- **Incomplete ablation.** There is no GA with rule mutation only and no LLM mutation without the objective-directed instruction, so the effects of selection and of the guidance itself are not separated (Section 5.1).
+- **Knee rule and operator bias.** The knee is chosen by unweighted distance, in which length carries more weight than fidelity, and rule mutation can only shorten the text. Both favour shorter prompt sets independently of search quality (Sections 3.3, 3.5 and 5.2).
+- **Protocol timing.** The analysis protocol was committed during the matrix run, not before it (Section 4.8).
 
 ## 6.3 Future work
 
-A full-scale run with population 8 or more, at least five seeds, and a larger search set would give the inferential power the held-out tests lack. Replacing the lexicon with a judge model calibrated on human ratings would address the Goodhart risk. The most useful extension is a control that holds the number of model calls fixed across methods, to separate the LLM effect from the extra text it generates.
+A full-scale run with population 8 or more, at least five seeds, and a larger search set would give the inferential power the held-out tests lack. The missing arms (a GA with rule mutation only, and an LLM mutation without the objective-directed instruction) would complete the ablation. Replacing the lexicon with a judge model calibrated on human ratings would address the Goodhart risk. The most useful extension is a control that holds the number of model calls fixed across methods, to separate the LLM effect from the extra text it generates.
 
 # 7 Conclusion
 
-We formulated the design of three competing economic-school agents as a constrained multi-objective search over prompt sets, with fidelity, inter-agent disagreement and length as objectives and an LLM as the guided mutation operator. Under a reduced budget, the LLM-guided mutation raised the search hypervolume from about 0.098 to about 0.12, while selection scheme made no visible difference. On ten unseen events, the searched prompt sets are 20–30% shorter than the hand-written baseline with similar fidelity and disagreement, but no held-out improvement survives multiple-comparison correction, and random search gains almost as much fidelity as the evolutionary methods. The evidence supports LLM-guided mutation as a useful operator for prompt-set search and does not yet support a claim that the evolved sets outperform careful hand-written prompts on unseen events.
+We formulated the design of three competing economic-school agents as a constrained multi-objective search over prompt sets, with fidelity, inter-agent disagreement and length as objectives and an LLM as the guided mutation operator. Under a reduced budget, LLM mutation raised the mean search hypervolume from about 0.098 to about 0.12 and beat the rule-only ablation in every seed, while the two selection schemes, which stayed close for the four generations, reached the same hypervolume. On ten unseen events, the searched prompt sets are 20–30% shorter than the hand-written baseline with similar fidelity and disagreement, but no held-out improvement survives multiple-comparison correction, and random search gains almost as much fidelity as the evolutionary methods. The evidence suggests that LLM mutation is a useful operator for prompt-set search, with the caveats that its fidelity edits partly game the lexicon and its compressions can change meaning. It does not yet support a claim that the evolved sets outperform careful hand-written prompts on unseen events.
 
 # Appendix A: Use of AI tools
 
-- **Literature review.** Four sub-agents, each covering one theme, searched for 2024–2026 papers and opened the arXiv or venue page of each candidate. Author lists and first-submission dates of all entries were re-checked against arXiv on 2026-11-01. Venue details come from arXiv comments or the course reference list. The student still has to confirm the DOIs of the two surveys on the publisher sites before submission (see `AI_USE.md`).
-- **Code.** The evo_prompt package, tests and runner were written with an AI coding assistant. They pass 20 offline tests (`python -m pytest -q courses/dsai6707/code`) and the repository's own test suite; the student has not yet reviewed the code line by line.
+This appendix follows the course and PolyU guidance on disclosing generative AI; `AI_USE.md` in the submission archive gives the dated log.
+
+- **Literature review.** AI sub-agents, one per theme, searched for 2024–2026 papers and opened the arXiv or venue page of each candidate. Author lists and first-submission dates were checked against arXiv on 2026-11-01, and journal DOIs, volumes and pages against Crossref on 2026-11-02. Venue details come from arXiv comments, venue pages or the course reference list.
+- **Code.** The evo_prompt package, tests and runner were written with an AI coding assistant. They pass 20 offline tests (`python -m pytest -q courses/dsai6707/code`) and the repository's own test suite, and an automatic checker (`python -m evo_prompt.check_report`) compares the numbers in this report with the result files.
 - **Analysis and figures.** Written with AI assistance; numbers are generated by the scripts in `code/evo_prompt/` and can be regenerated from `results/`.
-- **Report prose.** This draft was written with AI assistance. The student is responsible for the final wording, the interpretation and the citations.
+- **Report prose.** Drafted with AI assistance. The author is responsible for the final wording, the interpretation and the citations.
 - **Experiments.** The model calls were made by the code in this repository, through the API, under the budget cap described above.
 
 # Appendix B: File map for the numbers
@@ -276,7 +299,7 @@ We formulated the design of three competing economic-school agents as a constrai
 | One row per run (search and held-out metrics) | `results/summary.csv` |
 | Hypervolume, front size, knee search metrics | `results/summary_search.csv`, `results/summary_table.md` |
 | Held-out means, per-event values | `results/summary_table.md`, `results/heldout_per_event.csv` |
-| Paired tests and Holm | `results/heldout_tests.csv` |
+| Paired tests and Holm | `results/heldout_tests.csv` (8-test family), `results/heldout_tests_protocol.csv` (20-test protocol family) |
 | Hypervolume curves | `results/runs/<method>_s<seed>/gen_log.csv`, `results/figures/hv_vs_generation.png` |
 | Evaluations and origins (LLM children, rejections) | `results/runs/<method>_s<seed>/evaluations.jsonl` |
 | Best prompt sets | `results/best_prompts/<method>_s<seed>_knee.txt` |

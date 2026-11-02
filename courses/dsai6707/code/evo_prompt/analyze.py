@@ -218,6 +218,28 @@ def main(results: Path = RESULTS_DIR) -> None:
                 w.writerow([f"{m} - b0", metric, len(keep_ids), ";".join(dup_ids),
                             round(sum(diffs) / len(diffs), 4), round(sign_flip_exact(diffs), 4)])
 
+    # ---- protocol family: method vs B0 (8) plus method vs method (12), Holm over all 20 ----------------------
+    # code/PROTOCOL.md names this family; heldout_tests.csv above keeps the 8-test family used in the report tables.
+    fam = [dict(t) for t in tests]
+    for i, m1 in enumerate(METHODS):
+        for m2 in METHODS[i + 1:]:
+            for metric in ("fidelity", "disagreement"):
+                a = [r[metric] for r in avg[m2]]
+                b = [r[metric] for r in avg[m1]]
+                diffs = [y - x for x, y in zip(a, b)]  # m1 minus m2
+                boot = paired(a, b, n_boot=10000, n_perm=1, seed=0)
+                fam.append({"comparison": f"{m1} - {m2}", "metric": metric,
+                            "mean_diff": round(sum(diffs) / len(diffs), 4), "ci_lo": round(boot["ci_lo"], 4),
+                            "ci_hi": round(boot["ci_hi"], 4), "p_raw": round(sign_flip_exact(diffs), 4)})
+    adj20 = holm([t["p_raw"] for t in fam])
+    with (results / "heldout_tests_protocol.csv").open("w", newline="") as fh:
+        w = csv.DictWriter(fh, fieldnames=["comparison", "metric", "mean_diff", "ci_lo", "ci_hi", "p_raw",
+                                           "p_holm_family20"])
+        w.writeheader()
+        for t, p in zip(fam, adj20):
+            w.writerow({**{k: t[k] for k in ("comparison", "metric", "mean_diff", "ci_lo", "ci_hi", "p_raw")},
+                        "p_holm_family20": round(p, 4)})
+
     # ---- markdown summary -----------------------------------------------------------------------------------
     lines = ["# Summary (3 seeds per search method; B0 over 3 sampling replicates)", "",
              "## Search events (seed 23, 5 events): archive hypervolume and knee solution", "",

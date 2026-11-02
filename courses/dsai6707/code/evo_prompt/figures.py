@@ -53,8 +53,9 @@ def hv_curves(results: Path) -> None:
 
 
 def pareto(results: Path) -> None:
-    fig, axes = plt.subplots(1, 2, figsize=(10, 4.2), sharey=True)
-    for ax, m in zip(axes, ["nsga2", "ga"]):
+    methods = ["nsga2", "ga", "random", "nsga2_rule"]
+    data = {}
+    for m in methods:
         xs, ys, cs = [], [], []
         for s in SEEDS:
             p = results / "runs" / f"{m}_s{s}" / "front.jsonl"
@@ -63,11 +64,19 @@ def pareto(results: Path) -> None:
                 xs.append(r["fidelity"])
                 ys.append(r["disagreement"])
                 cs.append(r["words"])
-        sc = ax.scatter(xs, ys, c=cs, cmap="viridis", s=36, edgecolor="k", linewidth=0.3)
+        data[m] = (xs, ys, cs)
+    allc = [c for _, _, cs in data.values() for c in cs]
+    fig, axes = plt.subplots(2, 2, figsize=(10, 7.6), sharex=True, sharey=True)
+    for ax, m in zip(axes.flat, methods):
+        xs, ys, cs = data[m]
+        sc = ax.scatter(xs, ys, c=cs, cmap="viridis", vmin=min(allc), vmax=max(allc), s=36, edgecolor="k",
+                        linewidth=0.3)
         ax.set_title(f"{LABEL[m]}: final archive, 3 seeds")
-        ax.set_xlabel("school fidelity (search events)")
         ax.grid(alpha=0.3)
-    axes[0].set_ylabel("signal disagreement (search events)")
+    for ax in axes[1]:
+        ax.set_xlabel("school fidelity (search events)")
+    for ax in axes[:, 0]:
+        ax.set_ylabel("signal disagreement (search events)")
     fig.colorbar(sc, ax=axes, label="prompt set words")
     fig.savefig(results / "figures" / "pareto_fronts.png", dpi=160, bbox_inches="tight")
     plt.close(fig)

@@ -104,6 +104,7 @@ Outputs in `../results/`:
 | `summary_search.csv` | one row per search run |
 | `heldout_per_event.csv` | per held-out event, averaged over seeds |
 | `heldout_tests.csv` | paired differences from B0, 95% bootstrap CI (`mosaic.stats.paired`), exact sign-flip p-values over the 10 events, Holm-adjusted p-values |
+| `heldout_tests_protocol.csv` | the full test family of `PROTOCOL.md`: the 8 method-vs-B0 tests plus 12 method-vs-method tests, Holm over all 20 |
 | `figures/*.png` | `hv_vs_generation.png`, `pareto_fronts.png`, `heldout_bars.png` |
 
 ## 6. Tests
