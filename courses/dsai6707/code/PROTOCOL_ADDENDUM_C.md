@@ -53,5 +53,9 @@ without variation. Adaptation (ii) is replaced for `evoprompt_ga` only: a bracke
 600 words (600 is the length normalisation of g3; a longer diagnosis alone saturates the length objective). Long
 answers are therefore penalised by the length objective, not discarded. Both `evoprompt_ga` runs (qwen and Haiku)
 were stopped and restarted from their caches. The only search output seen from the stopped runs was the qwen seed-1
-log line for generation 1 (hypervolume unchanged from generation 0, as expected when every answer is rejected); no
-result file was written. With `max_tokens` 1,024, an answer cut off before `</prompt>` still counts as rejected.
+log line for generation 1 (hypervolume unchanged from generation 0, as expected when every answer is rejected).
+Correction (same day): because every child was a cached copy, the stopped qwen run had already finished the search
+for seed 1 and written `runs/evoprompt_ga_s1/{gen_log.csv,evaluations.jsonl,front.jsonl}` and
+`best_prompts/evoprompt_ga_s1_knee.txt` (04:37:58 UTC, before this amendment was committed at 04:38:33); it was
+stopped during the held-out evaluation, so no `final.json` exists. Those files were not opened, and the restarted
+run overwrites them; the knee file of the stopped run is in commit 953eab6. With `max_tokens` 1,024, an answer cut off before `</prompt>` still counts as rejected.
