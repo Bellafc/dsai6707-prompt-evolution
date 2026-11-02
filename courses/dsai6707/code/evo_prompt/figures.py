@@ -77,6 +77,8 @@ def pareto(results: Path) -> None:
                         linewidth=0.3)
         ax.set_title(f"{LABEL[m]}: final archive, 3 seeds")
         ax.grid(alpha=0.3)
+    for ax in list(axes.flat)[len(methods):]:
+        ax.set_visible(False)
     for ax in axes[1]:
         ax.set_xlabel("school fidelity (search events)")
     for ax in axes[:, 0]:
