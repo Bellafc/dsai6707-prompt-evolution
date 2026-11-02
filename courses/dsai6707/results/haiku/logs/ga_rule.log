@@ -1,0 +1,32 @@
+[ga_rule s1] gen  0  evals   6  front  2  HV 0.0406  best fid 0.2784  calls 0  spent $0.0
+[ga_rule s1] gen  1  evals  12  front  3  HV 0.0430  best fid 0.2832  calls 20  spent $0.0116
+[ga_rule s1] gen  2  evals  18  front  6  HV 0.0434  best fid 0.2832  calls 50  spent $0.0288
+[ga_rule s1] gen  3  evals  24  front  8  HV 0.0472  best fid 0.2832  calls 75  spent $0.0432
+[ga_rule s1] gen  4  evals  30  front  7  HV 0.0550  best fid 0.2832  calls 110  spent $0.0631
+done ga_rule seed 1: api_calls 140, spent $0.08
+[ga_rule s2] gen  0  evals   6  front  3  HV 0.0546  best fid 0.2848  calls 140  spent $0.0799
+[ga_rule s2] gen  1  evals  12  front  3  HV 0.0560  best fid 0.2848  calls 175  spent $0.1
+[ga_rule s2] gen  2  evals  18  front  3  HV 0.0585  best fid 0.2848  calls 195  spent $0.1114
+[ga_rule s2] gen  3  evals  24  front  5  HV 0.0718  best fid 0.2971  calls 225  spent $0.1283
+[ga_rule s2] gen  4  evals  30  front  7  HV 0.0724  best fid 0.2971  calls 250  spent $0.1427
+done ga_rule seed 2: api_calls 270, spent $0.15
+[ga_rule s3] gen  0  evals   6  front  3  HV 0.0555  best fid 0.274  calls 270  spent $0.1538
+[ga_rule s3] gen  1  evals  12  front  6  HV 0.0634  best fid 0.2748  calls 295  spent $0.168
+[ga_rule s3] gen  2  evals  18  front  9  HV 0.0692  best fid 0.2748  calls 320  spent $0.1825
+[ga_rule s3] gen  3  evals  24  front 10  HV 0.0710  best fid 0.2773  calls 345  spent $0.1965
+[ga_rule s3] gen  4  evals  30  front 13  HV 0.0711  best fid 0.2773  calls 370  spent $0.2107
+done ga_rule seed 3: api_calls 400, spent $0.23
+[ga_rule s4] gen  0  evals   6  front  4  HV 0.0345  best fid 0.2508  calls 400  spent $0.2276
+[ga_rule s4] gen  1  evals  12  front  3  HV 0.0551  best fid 0.2751  calls 425  spent $0.2418
+[ga_rule s4] gen  2  evals  18  front  3  HV 0.0554  best fid 0.2751  calls 450  spent $0.2558
+[ga_rule s4] gen  3  evals  24  front  4  HV 0.0562  best fid 0.2751  calls 485  spent $0.2755
+[ga_rule s4] gen  4  evals  30  front  6  HV 0.0588  best fid 0.2751  calls 510  spent $0.2895
+done ga_rule seed 4: api_calls 540, spent $0.31
+[ga_rule s5] gen  0  evals   6  front  2  HV 0.0400  best fid 0.2851  calls 610  spent $0.347
+[ga_rule s5] gen  1  evals  12  front  2  HV 0.0433  best fid 0.2862  calls 630  spent $0.3586
+[ga_rule s5] gen  2  evals  18  front  2  HV 0.0596  best fid 0.3232  calls 655  spent $0.3729
+[ga_rule s5] gen  3  evals  24  front  3  HV 0.0625  best fid 0.3232  calls 680  spent $0.3872
+[ga_rule s5] gen  4  evals  30  front  3  HV 0.0814  best fid 0.3354  calls 710  spent $0.4041
+done ga_rule seed 5: api_calls 740, spent $0.42
+ledger: calls 740, tokens in 700499, out 701686, estimated spend $0.42 of $4.00
+exit 0

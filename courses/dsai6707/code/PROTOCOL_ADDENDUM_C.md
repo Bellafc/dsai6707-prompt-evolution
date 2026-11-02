@@ -66,3 +66,9 @@ The run was stopped; as this addendum requires, the qwen `evoprompt_ga` arm is r
 every qwen table. Its raw model outputs stay in the qwen cache. The seed-1 search files left by the stopped first run
 (see the amendment) were moved out of `results/` unread, so no analysis can pick them up. The comparison with the
 published baseline is made on the Haiku replication only, where all seven arms run with five seeds.
+
+## Execution note: per-seed processes for the two slowest Haiku arms (2026-11-02)
+`random` (seed 1 finished, seed 2 running) and `evoprompt_ga` (seeds 1 to 3 finished, seed 4 running) were stopped and
+restarted with one process per remaining seed. The running seed continues from its arm's layer; each further seed
+writes its own layer (`layers/<method>__s<seed>.jsonl`). Seeds never share cache keys (the seed is part of the key), so
+this changes only the wall-clock time. The analysis merges an arm's layers and stops if two layers disagree on a key.

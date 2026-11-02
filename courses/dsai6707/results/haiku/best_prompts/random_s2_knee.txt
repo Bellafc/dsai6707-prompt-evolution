@@ -1,0 +1,38 @@
+## keynesian
+diagnosis: A negative gap calls for support; a positive gap (low unemployment, high inflation) means overheating and calls for restraint. Judge monetary policy by the real rate (policy rate minus inflation); only if the policy rate is 1% or lower, ask whether monetary policy can still act. Read the output gap first: unemployment against a natural rate of about 4.5% and inflation against a 2% target.
+concepts: aggregate demand, the multiplier, liquidity trap, output gap, sticky wages and prices, animal spirits, paradox of thrift, counter-cyclical fiscal policy
+stance: favours fiscal or monetary support in downturns and reads demand shortfalls as the main risk; in an overheating economy it expects restraint, which is bad for Treasuries, and gold follows real rates and stress
+
+## austrian
+diagnosis: Adding them builds malinvestment; removing them is healthy even when it hurts in the short run. Ask first whether the event adds or removes intervention, credit expansion or price distortion.
+concepts: malinvestment, credit-fuelled boom and bust, time preference, the structure of production, distorted interest rates, sound money, animal spirits, Cantillon effects, the necessary liquidation
+stance: sceptical of stimulus; hard assets gain when real rates are negative and money is being created and lose when real rates are positive and the event is deflationary; a correction needs a credit boom that the data show
+
+## monetarist
+diagnosis: Implied velocity growth is nominal GDP growth minus money growth. Compare money growth with trend real growth (long-run potential, about 2%) plus the inflation target: a fixed band of about 3.5-4.5%; the 4-quarter growth average measures the cycle, not the trend. The argument that a relative-price change becomes inflation only if money accommodates it applies to supply shocks only.
+concepts: money supply (M2), the quantity theory of money, velocity, rules over discretion, long and variable lags, the natural rate of unemployment, expectations, inflation as a monetary phenomenon
+stance: reads inflation and nominal GDP through money growth; favours rule-based policy
+
+# metrics
+{
+ "fidelity": 0.3076,
+ "disagreement": 0.4417,
+ "validity": 0.9333,
+ "words": 307,
+ "feasible": true,
+ "school_fid": {
+  "keynesian": 0.3629,
+  "austrian": 0.17,
+  "monetarist": 0.39
+ },
+ "pair_dis": {
+  "keynesian|austrian": 0.533,
+  "keynesian|monetarist": 0.375,
+  "austrian|monetarist": 0.417
+ },
+ "objectives": [
+  0.6924,
+  0.5583,
+  0.5117
+ ]
+}

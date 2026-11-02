@@ -1,0 +1,20 @@
+[evoprompt_ga s1] gen  0  evals   6  front  2  HV 0.0406  best fid 0.2784  calls 0  spent $0.0
+[evoprompt_ga s1] gen  1  evals  12  front  2  HV 0.0406  best fid 0.2784  calls 55  spent $0.0347
+[evoprompt_ga s1] gen  2  evals  18  front  2  HV 0.0406  best fid 0.2784  calls 145  spent $0.0878
+[evoprompt_ga s1] gen  3  evals  24  front  2  HV 0.0406  best fid 0.2784  calls 204  spent $0.1246
+[evoprompt_ga s1] gen  4  evals  30  front  2  HV 0.0406  best fid 0.2784  calls 226  spent $0.1379
+done evoprompt_ga seed 1: api_calls 256, spent $0.16
+[evoprompt_ga s2] gen  0  evals   6  front  3  HV 0.0546  best fid 0.2848  calls 256  spent $0.1551
+[evoprompt_ga s2] gen  1  evals  12  front  3  HV 0.0546  best fid 0.2848  calls 364  spent $0.2178
+[evoprompt_ga s2] gen  2  evals  18  front  3  HV 0.0546  best fid 0.2848  calls 427  spent $0.2552
+[evoprompt_ga s2] gen  3  evals  24  front  3  HV 0.0546  best fid 0.2848  calls 477  spent $0.2857
+[evoprompt_ga s2] gen  4  evals  30  front  3  HV 0.0546  best fid 0.2848  calls 488  spent $0.2924
+done evoprompt_ga seed 2: api_calls 508, spent $0.30
+[evoprompt_ga s3] gen  0  evals   6  front  3  HV 0.0555  best fid 0.274  calls 508  spent $0.3039
+[evoprompt_ga s3] gen  1  evals  12  front  3  HV 0.0555  best fid 0.274  calls 616  spent $0.3659
+[evoprompt_ga s3] gen  2  evals  18  front  3  HV 0.0555  best fid 0.274  calls 676  spent $0.4024
+[evoprompt_ga s3] gen  3  evals  24  front  3  HV 0.0555  best fid 0.274  calls 699  spent $0.4158
+[evoprompt_ga s3] gen  4  evals  30  front  3  HV 0.0555  best fid 0.274  calls 699  spent $0.4158
+done evoprompt_ga seed 3: api_calls 729, spent $0.43
+[evoprompt_ga s4] gen  0  evals   6  front  4  HV 0.0345  best fid 0.2508  calls 729  spent $0.4332
+exit 143

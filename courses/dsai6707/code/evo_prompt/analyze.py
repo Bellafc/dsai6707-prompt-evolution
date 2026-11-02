@@ -100,13 +100,21 @@ def sign_flip_exact(diffs: list[float]) -> float:
 def method_cache(results: Path, method: str, main_cache: Cache, layers: dict) -> Cache:
     """The cache a method's runs read: its own layer over the frozen base if the method ran in parallel
     (results/.../cache/layers/<method>.jsonl, addendum C), else the shared cache."""
-    p = results / "cache" / "layers" / f"{method}.jsonl"
-    if not p.exists():
+    files = sorted((results / "cache" / "layers").glob(f"{method}.jsonl")) + sorted(
+        (results / "cache" / "layers").glob(f"{method}__s*.jsonl"))  # per-seed layers (addendum C outcome note)
+    if not files:
         return main_cache
     if method not in layers:
         from .backend import LayeredCache
 
-        layers[method] = LayeredCache(Cache(p), main_cache)
+        own = Cache(files[0])
+        for f in files[1:]:
+            extra = Cache(f)
+            clash = [k for k in extra.mem if k in own.mem and extra.mem[k]["text"] != own.mem[k]["text"]]
+            if clash:
+                raise ValueError(f"conflicting cache layers for {method}: {len(clash)} keys")
+            own.mem.update(extra.mem)
+        layers[method] = LayeredCache(own, main_cache)
     return layers[method]
 
 

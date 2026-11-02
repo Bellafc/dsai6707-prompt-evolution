@@ -1,0 +1,75 @@
+{
+ "method": "ga_rule",
+ "seed": 3,
+ "gens": 4,
+ "pop": 6,
+ "n_search": 5,
+ "evaluations": 30,
+ "hv_final": 0.071088,
+ "front_size": 13,
+ "search_events": [
+  "syn-k0000",
+  "syn-k0001",
+  "syn-k0002",
+  "syn-k0003",
+  "syn-k0004"
+ ],
+ "knee": {
+  "fidelity": 0.244,
+  "disagreement": 0.5553,
+  "validity": 1.0,
+  "words": 344,
+  "feasible": true,
+  "school_fid": {
+   "keynesian": 0.2486,
+   "austrian": 0.1333,
+   "monetarist": 0.35
+  },
+  "pair_dis": {
+   "keynesian|austrian": 0.533,
+   "keynesian|monetarist": 0.533,
+   "austrian|monetarist": 0.6
+  },
+  "objectives": [
+   0.756,
+   0.4447,
+   0.5733
+  ]
+ },
+ "api_calls_total": 370,
+ "spent_usd_total": 0.2107,
+ "heldout_events": [
+  "syn-k0000",
+  "syn-k0001",
+  "syn-k0002",
+  "syn-k0003",
+  "syn-k0004",
+  "syn-k0005",
+  "syn-k0006",
+  "syn-k0007",
+  "syn-k0008",
+  "syn-k0009"
+ ],
+ "heldout": {
+  "fidelity": 0.2118,
+  "disagreement": 0.489,
+  "validity": 1.0,
+  "words": 344,
+  "feasible": true,
+  "school_fid": {
+   "keynesian": 0.1571,
+   "austrian": 0.135,
+   "monetarist": 0.3433
+  },
+  "pair_dis": {
+   "keynesian|austrian": 0.467,
+   "keynesian|monetarist": 0.467,
+   "austrian|monetarist": 0.533
+  },
+  "objectives": [
+   0.7882,
+   0.511,
+   0.5733
+  ]
+ }
+}

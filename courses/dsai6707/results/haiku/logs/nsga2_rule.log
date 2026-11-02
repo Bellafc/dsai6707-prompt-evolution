@@ -1,0 +1,32 @@
+[nsga2_rule s1] gen  0  evals   6  front  2  HV 0.0406  best fid 0.2784  calls 0  spent $0.0
+[nsga2_rule s1] gen  1  evals  12  front  5  HV 0.0454  best fid 0.2784  calls 20  spent $0.0116
+[nsga2_rule s1] gen  2  evals  18  front  6  HV 0.0462  best fid 0.2819  calls 50  spent $0.0288
+[nsga2_rule s1] gen  3  evals  24  front  7  HV 0.0475  best fid 0.2819  calls 70  spent $0.0403
+[nsga2_rule s1] gen  4  evals  30  front  5  HV 0.0619  best fid 0.319  calls 100  spent $0.0572
+done nsga2_rule seed 1: api_calls 130, spent $0.07
+[nsga2_rule s2] gen  0  evals   6  front  3  HV 0.0546  best fid 0.2848  calls 130  spent $0.0742
+[nsga2_rule s2] gen  1  evals  12  front  6  HV 0.0551  best fid 0.2848  calls 165  spent $0.0943
+[nsga2_rule s2] gen  2  evals  18  front  6  HV 0.0610  best fid 0.2848  calls 195  spent $0.1117
+[nsga2_rule s2] gen  3  evals  24  front  6  HV 0.0627  best fid 0.2848  calls 230  spent $0.1319
+[nsga2_rule s2] gen  4  evals  30  front  7  HV 0.0632  best fid 0.2879  calls 260  spent $0.1493
+done nsga2_rule seed 2: api_calls 280, spent $0.16
+[nsga2_rule s3] gen  0  evals   6  front  3  HV 0.0555  best fid 0.274  calls 280  spent $0.1608
+[nsga2_rule s3] gen  1  evals  12  front  4  HV 0.0622  best fid 0.2748  calls 300  spent $0.172
+[nsga2_rule s3] gen  2  evals  18  front  4  HV 0.0645  best fid 0.2757  calls 330  spent $0.1889
+[nsga2_rule s3] gen  3  evals  24  front  8  HV 0.0674  best fid 0.2757  calls 360  spent $0.2058
+[nsga2_rule s3] gen  4  evals  30  front 12  HV 0.0741  best fid 0.2811  calls 395  spent $0.2259
+done nsga2_rule seed 3: api_calls 425, spent $0.24
+[nsga2_rule s4] gen  0  evals   6  front  4  HV 0.0345  best fid 0.2508  calls 425  spent $0.2429
+[nsga2_rule s4] gen  1  evals  12  front  6  HV 0.0374  best fid 0.2508  calls 455  spent $0.2601
+[nsga2_rule s4] gen  2  evals  18  front  8  HV 0.0438  best fid 0.2675  calls 480  spent $0.2746
+[nsga2_rule s4] gen  3  evals  24  front  6  HV 0.0470  best fid 0.2675  calls 505  spent $0.2887
+[nsga2_rule s4] gen  4  evals  30  front  5  HV 0.0498  best fid 0.2675  calls 535  spent $0.3061
+done nsga2_rule seed 4: api_calls 565, spent $0.32
+[nsga2_rule s5] gen  0  evals   6  front  1  HV 0.0588  best fid 0.3108  calls 635  spent $0.3632
+[nsga2_rule s5] gen  1  evals  12  front  2  HV 0.0596  best fid 0.3163  calls 655  spent $0.3748
+[nsga2_rule s5] gen  2  evals  18  front  5  HV 0.0759  best fid 0.3163  calls 685  spent $0.3921
+[nsga2_rule s5] gen  3  evals  24  front  7  HV 0.0818  best fid 0.3163  calls 710  spent $0.4062
+[nsga2_rule s5] gen  4  evals  30  front 10  HV 0.0883  best fid 0.3163  calls 740  spent $0.4231
+done nsga2_rule seed 5: api_calls 770, spent $0.44
+ledger: calls 770, tokens in 730795, out 734436, estimated spend $0.44 of $4.00
+exit 0

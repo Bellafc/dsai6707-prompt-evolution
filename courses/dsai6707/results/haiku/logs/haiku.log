@@ -1,0 +1,27 @@
+done b0 seed 1: api_calls 45, spent $0.03
+done b0 seed 2: api_calls 90, spent $0.05
+done b0 seed 3: api_calls 135, spent $0.08
+done b0 seed 4: api_calls 180, spent $0.10
+done b0 seed 5: api_calls 225, spent $0.13
+[nsga2 s1] gen  0  evals   6  front  2  HV 0.0406  best fid 0.2784  calls 300  spent $0.1731
+[nsga2 s1] gen  1  evals  12  front  4  HV 0.0508  best fid 0.2952  calls 331  spent $0.1904
+[nsga2 s1] gen  2  evals  18  front  5  HV 0.0614  best fid 0.3063  calls 369  spent $0.2109
+[nsga2 s1] gen  3  evals  24  front  2  HV 0.0665  best fid 0.311  calls 402  spent $0.2286
+[nsga2 s1] gen  4  evals  30  front  2  HV 0.0736  best fid 0.311  calls 433  spent $0.2458
+done nsga2 seed 1: api_calls 463, spent $0.26
+[nsga2 s2] gen  0  evals   6  front  3  HV 0.0546  best fid 0.2848  calls 538  spent $0.3063
+[nsga2 s2] gen  1  evals  12  front  5  HV 0.0669  best fid 0.2944  calls 572  spent $0.3241
+[nsga2 s2] gen  2  evals  18  front  7  HV 0.0711  best fid 0.3105  calls 592  spent $0.3355
+[nsga2 s2] gen  3  evals  24  front  8  HV 0.0787  best fid 0.3411  calls 610  spent $0.3444
+[nsga2 s2] gen  4  evals  30  front 11  HV 0.0788  best fid 0.3411  calls 630  spent $0.3557
+done nsga2 seed 2: api_calls 660, spent $0.37
+[nsga2 s3] gen  0  evals   6  front  3  HV 0.0555  best fid 0.274  calls 735  spent $0.4161
+[nsga2 s3] gen  1  evals  12  front  4  HV 0.0710  best fid 0.274  calls 766  spent $0.4334
+[nsga2 s3] gen  2  evals  18  front  6  HV 0.0769  best fid 0.3062  calls 790  spent $0.4453
+[nsga2 s3] gen  3  evals  24  front  9  HV 0.0779  best fid 0.3062  calls 829  spent $0.466
+[nsga2 s3] gen  4  evals  30  front 10  HV 0.0787  best fid 0.3062  calls 864  spent $0.486
+done nsga2 seed 3: api_calls 894, spent $0.50
+[nsga2 s4] gen  0  evals   6  front  4  HV 0.0345  best fid 0.2508  calls 964  spent $0.5434
+[nsga2 s4] gen  1  evals  12  front  6  HV 0.0390  best fid 0.2511  calls 990  spent $0.5577
+[nsga2 s4] gen  2  evals  18  front  8  HV 0.0495  best fid 0.2511  calls 1024  spent $0.5751
+exit 143
