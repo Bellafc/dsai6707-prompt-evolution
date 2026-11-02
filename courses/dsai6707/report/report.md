@@ -102,7 +102,7 @@ Each school gene has four parts: `diagnosis` (sentences), `concepts` (an ordered
 
 - **Structural crossover** (probability 0.7). With probability 0.5 whole school genes are swapped between parents; otherwise each field of each school is picked from one parent.
 - **Rule mutation.** One school is chosen; one or two of: drop or swap a diagnosis sentence, drop, add or reorder a concept. It changes one school, so the other two school outputs are reused from the cache. No rule operator adds a diagnosis sentence or touches `stance` and `contrast`, so rule mutation can only keep or reduce the length of the text it edits (adding a concept adds a few words). This bias towards shorter sets matters when reading the length results (Section 5.2).
-- **LLM-guided mutation** (probability 0.5 of the mutations in the LLM methods). The parent's evaluation picks the objective to improve, with probability proportional to its badness: fidelity (rewrite the least faithful school's diagnosis using its lexicon terms), distinctness (rewrite one field of one of the two most similar schools so that it makes different calls from the other), or length (shorten the longest school's diagnosis to 40 words). The model returns one paragraph; it is accepted if it has 5 to 120 words, and otherwise the child falls back to rule mutation (summed over the three seeds, 8 of 30 LLM children in NSGA-II and 10 of 34 in the GA were rejected this way).
+- **LLM-guided mutation** (probability 0.5 of the mutations in the LLM methods). The parent's evaluation picks the objective to improve, with probability proportional to its badness: fidelity (rewrite the least faithful school's diagnosis using its lexicon terms), distinctness (rewrite one field of one of the two most similar schools so that it makes different calls from the other), or length (shorten the longest school's diagnosis to 40 words). The model returns one paragraph; it is accepted if it has 5 to 120 words, and otherwise the child falls back to rule mutation (on qwen, summed over the three seeds, 8 of 30 LLM children in NSGA-II and 10 of 34 in the GA were rejected this way; on Haiku about half, Section 5.3).
 
 ## 3.4 Selection
 
@@ -307,11 +307,11 @@ The absolute fidelity is much lower than on qwen (0.25 to 0.30 against 0.45 to 0
 | Question | Comparison | Seeds 1 to 5 | Mean | Consistent | p (one-sided) |
 |---|---|---|---|---|---|
 | Q1 selection, rule mutation | GA rule − NSGA-II rule | −0.007, +0.009, −0.003, +0.009, −0.007 | +0.000 | no | 0.500 |
-| Q2 LLM mutation, GA selection | GA − GA rule | +0.019, +0.013, +0.010, −0.009, −0.011 | +0.004 | no | 0.250 |
+| Q2 LLM mutation, GA selection | GA − GA rule | +0.018, +0.013, +0.010, −0.008, −0.011 | +0.004 | no | 0.250 |
 | (Q2 under NSGA-II) | NSGA-II + LLM − NSGA-II rule | +0.012, +0.016, +0.005, +0.008, −0.006 | +0.007 | no | 0.094 |
 | Q3 guidance | NSGA-II + LLM − NSGA-II + unguided LLM | +0.027, +0.013, −0.004, +0.000, +0.032 | +0.014 | no | 0.094 |
 | Q4 published baseline | NSGA-II + LLM − EvoPrompt (GA) | +0.033, +0.024, +0.023, +0.024, +0.046 | +0.030 | yes | 0.031 |
-| Q5 length-bounded baseline | NSGA-II + LLM − EvoPrompt (GA), length-bounded | +0.029, +0.023, +0.019, +0.013, +0.043 | +0.025 | yes | 0.031 |
+| Q5 length-bounded baseline | NSGA-II + LLM − EvoPrompt (GA), length-bounded | +0.029, +0.023, +0.018, +0.013, +0.043 | +0.025 | yes | 0.031 |
 
 What carries over from qwen, and what does not:
 

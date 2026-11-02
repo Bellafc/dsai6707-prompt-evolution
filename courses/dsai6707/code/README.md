@@ -43,6 +43,19 @@ python -m evo_prompt.runner --offline --methods nsga2 ga random b0 --seeds 1 --g
 # full matrix, as run for the report (needs an OpenAI-compatible endpoint; see section 4)
 python -m evo_prompt.runner --methods b0 nsga2 ga random nsga2_rule --seeds 1 2 3 \
   --gens 4 --pop 6 --heldout --budget 30 --out ../results/runs
+# ablation arms of PROTOCOL_ADDENDUM_A.md (same settings)
+python -m evo_prompt.runner --methods ga_rule nsga2_llmu --seeds 1 2 3 --gens 4 --pop 6 --heldout --budget 15
+
+# second-model replication on Claude Haiku 5.5 (PROTOCOL_ADDENDUM_B.md to _D.md); needs ANTHROPIC_API_KEY in the
+# environment and `pip install anthropic`; everything goes to ../results/haiku/
+python -m evo_prompt.runner --profile haiku --methods b0 nsga2 ga random nsga2_rule ga_rule nsga2_llmu \
+  evoprompt_ga evoprompt_ga_lc --seeds 1 2 3 4 5 --gens 4 --pop 6 --heldout --budget 15
+# the report's runs were split into parallel processes with --cache-base (frozen shared cache) and one --cache layer
+# per arm or seed; the exact split is described in PROTOCOL_ADDENDUM_C.md
+
+# tables and figures (cache only, no model calls)
+python -m evo_prompt.analyze && python -m evo_prompt.figures
+python -m evo_prompt.analyze --profile haiku && python -m evo_prompt.figures --profile haiku
 ```
 
 Methods:
@@ -54,6 +67,10 @@ Methods:
 | `ga` | Single-objective GA (feasibility first, then equal-weight sum), same operators as `nsga2` |
 | `random` | B1 random search: independent rule perturbations of B0, same number of evaluations |
 | `nsga2_rule` | Ablation: NSGA-II without LLM-guided mutation |
+| `ga_rule` | Ablation: the GA with rule mutation only (completes the 2 x 2 design; addendum A) |
+| `nsga2_llmu` | Control: NSGA-II with an LLM mutation that carries no objective information (addendum A) |
+| `evoprompt_ga` | Published baseline: EvoPrompt (GA), Guo et al. ICLR 2024, adapted to prompt sets (addendum C) |
+| `evoprompt_ga_lc` | The same with one length sentence added to the template (addendum D, post hoc) |
 
 Each search run writes to `../results/runs/<method>_s<seed>/`:
 
@@ -104,7 +121,8 @@ Outputs in `../results/`:
 | `summary_search.csv` | one row per search run |
 | `heldout_per_event.csv` | per held-out event, averaged over seeds |
 | `heldout_tests.csv` | paired differences from B0, 95% bootstrap CI (`mosaic.stats.paired`), exact sign-flip p-values over the 10 events, Holm-adjusted p-values |
-| `heldout_tests_protocol.csv` | the full test family of `PROTOCOL.md`: the 8 method-vs-B0 tests plus 12 method-vs-method tests, Holm over all 20 |
+| `heldout_tests_protocol.csv` | the full test family of `PROTOCOL.md`: every method-vs-B0 and method-vs-method test, Holm over the whole family |
+| `addendum_a_search.csv` | per-seed final-hypervolume differences for Q1 to Q5 with the exact one-sided sign-flip p-value |
 | `figures/*.png` | `hv_vs_generation.png`, `pareto_fronts.png`, `heldout_bars.png` |
 
 ## 6. Tests
@@ -124,7 +142,8 @@ machinery, the genome decoding, the operators, the evaluator's caching and feasi
 ```
 code/
   README.md            this file
-  PROTOCOL.md          analysis protocol, fixed before the full matrix
+  PROTOCOL.md          analysis protocol (committed during the main matrix run; see report section 4.8)
+  PROTOCOL_ADDENDUM_A.md .. _D.md   addenda, each committed before the runs it governs (D is post hoc)
   conftest.py          puts evo_prompt on the import path for pytest
   evo_prompt/
     config.py          protocol constants (seeds, events, feasibility, reference point, model, budget)
@@ -132,8 +151,9 @@ code/
     evaluate.py        objectives: fidelity, disagreement, validity, length; the evaluator with memoisation
     operators.py       rule mutation, structural crossover, LLM-guided mutation (plan, prompt, validated apply)
     moo.py             constrained dominance, fast non-dominated sort, crowding, exact 3-D hypervolume, knee
-    algorithms.py      Search class: NSGA-II, NSGA-II without LLM, GA, random; archive and history
-    backend.py         concurrent OpenAI-compatible backend on mosaic's cache, USD ledger, and OfflineBackend (deterministic fake model for tests and dry runs)
+    algorithms.py      Search class: NSGA-II, GA, random, the ablations, EvoPrompt (GA); archive and history
+    backend.py         concurrent OpenAI-compatible backend, Anthropic SDK backend (Haiku), layered cache, USD ledger,
+                       and OfflineBackend (deterministic fake model for tests and dry runs)
     runner.py          command line: search runs, B0, held-out re-measurement
     analyze.py         tables and exact paired tests (cache only)
     figures.py         report figures
