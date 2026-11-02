@@ -1,0 +1,2 @@
+[evoprompt_ga_lc s5] gen  0  evals   6  front  3  HV 0.0345  best fid 0.2625  calls 70  spent $0.0402
+[evoprompt_ga_lc s5] gen  1  evals  12  front  4  HV 0.0388  best fid 0.2794  calls 178  spent $0.0959
