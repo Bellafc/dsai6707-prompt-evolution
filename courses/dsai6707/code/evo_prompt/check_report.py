@@ -111,6 +111,14 @@ def main() -> int:
     check("length: method means are 305–350 (report: '305 to 350 words')",
           min(means.values()) == 305 and max(means.values()) == 350 and "305 to 350" in rep, str(means))
 
+    # 8b. measured latency quoted in §4.7 (median and call counts from the cache)
+    import statistics as _st
+    rows_c = [json.loads(x) for x in (RESULTS_DIR / "cache" / "llm_cache.jsonl").read_text(encoding="utf-8").splitlines() if x.strip()]
+    lat = [r["seconds"] for r in rows_c if isinstance(r.get("seconds"), (int, float)) and r["seconds"] > 0]
+    check("latency: median 14.8 s and 2,849 recorded calls quoted in §4.7",
+          f"{_st.median(lat):.1f}" == "14.8" and len(rows_c) == 2849 and "14.8 s" in rep and "2,849" in rep,
+          f"median {_st.median(lat):.2f}, calls {len(rows_c)}")
+
     # 9. structure and deliverables
     heads = re.findall(r"^#+ (.+)$", rep, re.M)
     for name in ["Abstract", "Introduction", "Related Work", "Method", "Experimental Setup",

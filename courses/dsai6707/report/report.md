@@ -158,6 +158,22 @@ Search-level results are mean ± sample standard deviation over three seeds. Hel
 
 `code/README.md` gives the commands. The matrix was run with `python -m evo_prompt.runner --methods b0 nsga2 ga random nsga2_rule --seeds 1 2 3 --gens 4 --pop 6 --heldout --budget 30`, and the tables with `python -m evo_prompt.analyze` and `python -m evo_prompt.figures`. The analysis reads only the committed cache, so it makes no model calls.
 
+## 4.7 Computing environment and measured performance
+
+**Hardware.** The search and the analysis ran on a CPU-only Linux machine (x86_64, no GPU). The language model was accessed over HTTPS through an OpenAI-compatible chat endpoint, so the model's hardware is outside our control.
+
+**Software.** Python 3.13.18; numpy 2.5.3 (analysis), matplotlib 3.11.2 (figures), pytest 9.2.0 (tests). The model client uses only the Python standard library. The versions are those of the environment in which the reported runs were made; no lock file is provided.
+
+**Concurrency.** Each batch of model calls sends up to 16 requests in parallel. Every response is written to the cache before the next batch starts.
+
+**Measured performance.** The figures below come from `results/cache/llm_cache.jsonl`, which stores the response time of every call.
+
+- Recorded calls: 2,849, of which 2,743 belong to the matrix and 106 to the API smoke test.
+- Per-call latency: median 14.8 s, mean 14.9 s, 90th percentile 17.0 s, maximum 183.9 s.
+- Token totals over all recorded calls: 1,928,385 input and 1,700,982 output tokens.
+- Summing the per-call latencies gives about 11.8 hours. This is not wall-clock time, because requests ran in parallel. The wall-clock duration of the matrix run was not logged.
+- The 20 offline tests run in under one second (0.7 to 0.9 s across repeated runs).
+
 # 5 Results and Analysis
 
 ## 5.1 Search level
