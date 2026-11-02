@@ -1,4 +1,4 @@
-# Summary (3 seeds per search method; B0 over 3 sampling replicates)
+# Summary (5 seeds per search method; B0 over 5 sampling replicates)
 
 ## Search events (seed 23, 5 events): archive hypervolume and knee solution
 
@@ -11,6 +11,7 @@
 | GA, rule only | 0.0677 ± 0.0107 | 7.2 ± 3.6 | 0.267 ± 0.033 | 0.509 ± 0.064 | 0.987 ± 0.030 | 343 ± 19 |
 | NSGA-II + unguided LLM | 0.0606 ± 0.0146 | 5.2 ± 1.9 | 0.290 ± 0.013 | 0.457 ± 0.071 | 0.973 ± 0.037 | 368 ± 44 |
 | EvoPrompt (GA) | 0.0444 ± 0.0099 | 3.0 ± 0.7 | 0.254 ± 0.020 | 0.456 ± 0.068 | 0.973 ± 0.037 | 392 ± 28 |
+| EvoPrompt (GA), length-bounded | 0.0491 ± 0.0085 | 6.2 ± 0.8 | 0.262 ± 0.020 | 0.483 ± 0.037 | 0.973 ± 0.037 | 412 ± 45 |
 
 ## Held-out events (seed 29, 10 events): knee solution, mean ± std over seeds
 
@@ -24,8 +25,9 @@
 | GA, rule only | 0.241 ± 0.050 | 0.506 ± 0.046 | 0.967 ± 0.033 | 343 ± 19 |
 | NSGA-II + unguided LLM | 0.261 ± 0.019 | 0.518 ± 0.069 | 0.967 ± 0.024 | 368 ± 44 |
 | EvoPrompt (GA) | 0.224 ± 0.005 | 0.495 ± 0.040 | 0.947 ± 0.018 | 392 ± 28 |
+| EvoPrompt (GA), length-bounded | 0.243 ± 0.010 | 0.463 ± 0.088 | 0.940 ± 0.028 | 412 ± 45 |
 
-## Paired tests vs B0 on the 10 held-out events (exact sign-flip, Holm over 14 tests)
+## Paired tests vs B0 on the 10 held-out events (exact sign-flip, Holm over 16 tests)
 
 | Comparison | Metric | Mean difference (method - B0) | 95% bootstrap CI | p (exact, raw) | p (Holm) |
 |---|---|---|---|---|---|
@@ -39,7 +41,9 @@
 | nsga2_rule - b0 | disagreement | +0.0077 | [-0.0411, +0.0622] | 0.8047 | 1.0000 |
 | ga_rule - b0 | fidelity | +0.0032 | [-0.0063, +0.0135] | 0.5547 | 1.0000 |
 | ga_rule - b0 | disagreement | +0.0466 | [-0.0178, +0.1044] | 0.2031 | 1.0000 |
-| nsga2_llmu - b0 | fidelity | +0.0230 | [+0.0114, +0.0345] | 0.0078 | 0.1094 |
-| nsga2_llmu - b0 | disagreement | +0.0578 | [+0.0155, +0.1055] | 0.0273 | 0.3555 |
+| nsga2_llmu - b0 | fidelity | +0.0230 | [+0.0114, +0.0345] | 0.0078 | 0.1250 |
+| nsga2_llmu - b0 | disagreement | +0.0578 | [+0.0155, +0.1055] | 0.0273 | 0.4102 |
 | evoprompt_ga - b0 | fidelity | -0.0136 | [-0.0281, +0.0016] | 0.1270 | 1.0000 |
 | evoprompt_ga - b0 | disagreement | +0.0177 | [-0.0190, +0.0544] | 0.4219 | 1.0000 |
+| evoprompt_ga_lc - b0 | fidelity | +0.0047 | [-0.0096, +0.0185] | 0.5508 | 1.0000 |
+| evoprompt_ga_lc - b0 | disagreement | -0.0133 | [-0.0600, +0.0389] | 0.6250 | 1.0000 |

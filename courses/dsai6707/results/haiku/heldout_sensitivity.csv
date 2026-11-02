@@ -13,3 +13,5 @@ nsga2_llmu - b0,fidelity,9,syn-k0007,0.0224,0.0156
 nsga2_llmu - b0,disagreement,9,syn-k0007,0.0617,0.0391
 evoprompt_ga - b0,fidelity,9,syn-k0007,-0.0135,0.1797
 evoprompt_ga - b0,disagreement,9,syn-k0007,0.0098,0.6719
+evoprompt_ga_lc - b0,fidelity,9,syn-k0007,0.0043,0.625
+evoprompt_ga_lc - b0,disagreement,9,syn-k0007,-0.0111,0.7188

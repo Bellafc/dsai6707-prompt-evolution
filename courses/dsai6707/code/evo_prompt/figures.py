@@ -46,7 +46,8 @@ def hv_curves(results: Path) -> None:
                         color=COLOR[m], alpha=0.12)
     ax.set_xlabel("generation (population 6; 0 = initial population)")
     ax.set_ylabel("hypervolume of feasible archive")
-    ax.set_title("Hypervolume vs generation (mean ± sd, 3 seeds)")
+    ax.set_title(f"Hypervolume vs generation (mean ± sd, {len(SEEDS)} seeds)")
+    ax.set_xticks(range(5))
     ax.grid(alpha=0.3)
     ax.legend(fontsize=8)
     fig.tight_layout()
@@ -76,7 +77,7 @@ def pareto(results: Path) -> None:
         xs, ys, cs = data[m]
         sc = ax.scatter(xs, ys, c=cs, cmap="viridis", vmin=min(allc), vmax=max(allc), s=36, edgecolor="k",
                         linewidth=0.3)
-        ax.set_title(f"{LABEL[m]}: final archive, 3 seeds")
+        ax.set_title(f"{LABEL[m]}: final archive, {len(SEEDS)} seeds", fontsize=9)
         ax.grid(alpha=0.3)
     for ax in list(axes.flat)[len(methods):]:
         ax.set_visible(False)

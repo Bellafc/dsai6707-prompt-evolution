@@ -8,7 +8,7 @@ link-citations: true
 
 # Abstract
 
-Multi-perspective LLM agents are useful only if each agent stays faithful to its perspective and the agents differ from one another. Prompt-optimisation work usually tunes one prompt against one score, so the trade-off between fidelity, mutual distinctness and prompt length is not searched directly. We cast the design of three economic-school agents (Keynesian, Austrian, Monetarist) as a constrained multi-objective problem over a *set* of prompts and search it with NSGA-II, using an LLM as a guided mutation operator. Each objective is measured on synthetic macroeconomic events through a disk-cached model backend. In a reduced-budget study (population 6, four generations, three seeds per method, 2,743 model calls, about USD 20 estimated), NSGA-II with LLM-guided mutation and a single-objective weighted-sum GA reach a hypervolume of about 0.12, against about 0.098 for random search and for NSGA-II with rule-based mutation only. On ten held-out events, the selected prompt sets are 20–30% shorter than the hand-written baseline with similar fidelity and disagreement, but no method improves significantly on the baseline after Holm correction, and random search gains almost as much fidelity as the evolutionary methods. We report these results as they are and discuss what the budget can and cannot establish.
+Multi-perspective LLM agents are useful only if each agent stays faithful to its perspective and the agents differ from one another. Prompt-optimisation work usually tunes one prompt against one score, so the trade-off between fidelity, mutual distinctness and prompt length is not searched directly. We cast the design of three economic-school agents (Keynesian, Austrian, Monetarist) as a constrained multi-objective problem over a *set* of prompts, search it with NSGA-II, and propose an LLM mutation that turns the parent's weakest objective into a rewrite instruction. On the main model (`qwen3.8-max`, population 6, four generations, three seeds), a complete ablation shows that the selection scheme makes no difference at this budget and that the guidance carries the gain: guided LLM mutation reaches a hypervolume of about 0.12 against about 0.10 for rule mutation and for LLM rewriting without objective information, and beats both in every seed. A replication of every arm on Claude Haiku 5.5 with five seeds points the same way in four of five seeds, less clearly because a length rule tuned to the first model rejected half of its edits. Against the published EvoPrompt-GA, the verbatim operator fails in this length- and format-constrained problem, and a length-bounded variant, added after that result, stays behind the guided method in all five seeds (one-sided p = 0.031). On held-out events no method beats the hand-written prompts after Holm correction on either model, and random search gains about as much fidelity as evolution; the searched sets are 20–30% shorter at similar fidelity and disagreement. All protocols, raw model outputs (13,121 calls, about USD 33 in total) and analysis code are released.
 
 **Keywords:** evolutionary prompt optimisation, multi-objective evolutionary algorithms, NSGA-II, LLM-guided mutation, multi-agent diversity, quality-diversity.
 
@@ -174,13 +174,13 @@ Search-level results are mean ± sample standard deviation over three seeds. Hel
 
 - qwen, recorded calls: 3,709, of which 2,743 belong to the main matrix, 106 to the API smoke test, 675 to the two ablation arms and 185 to the incomplete EvoPrompt run.
 - qwen, per-call latency: median 14.9 s, mean 15.0 s, 90th percentile 17.3 s, maximum 183.9 s; token totals 2,510,128 input and 2,217,418 output.
-- <!--HAIKU-PERF-->
+- Haiku, recorded calls: 9,412 (the smoke test of addendum B is not included); per-call latency median 5.6 s, mean 5.7 s, 90th percentile 7.0 s, maximum 10.0 s; token totals 9,261,362 input and 8,710,072 output; summed latency about 14.9 hours.
 - Summing the qwen per-call latencies gives about 15.4 hours. This is not wall-clock time, because requests ran in parallel. Wall-clock durations were not logged.
 - The 27 offline tests run in about one second.
 
 ## 4.8 Protocol, addenda and deviations
 
-The analysis follows `code/PROTOCOL.md` and three addenda. Each addendum was committed before the first model call of the runs it governs; the commit times (UTC, 2026-11-02) are in the git history.
+The analysis follows `code/PROTOCOL.md` and four addenda. Each addendum was committed before the first model call of the runs it governs; the commit times (UTC, 2026-11-02) are in the git history.
 
 | Document | Commit | Governs |
 |---|---|---|
@@ -188,15 +188,17 @@ The analysis follows `code/PROTOCOL.md` and three addenda. Each addendum was com
 | Addendum A | `78cb5a1` (04:19) | GA rule only and NSGA-II + unguided LLM on qwen; questions Q1 to Q3 and their decision rule |
 | Addendum B | `c58798a` (04:29) | Haiku replication of every arm, seeds 1 to 5 |
 | Addendum C | `507545a` (04:37) | EvoPrompt-GA baseline; parallel execution of the Haiku runs |
+| Addendum D | `f5e935e` (05:00) | length-bounded EvoPrompt variant on Haiku (post hoc, see item 7) |
 
 The analysis departs from these documents, or from their wording, in the following places.
 
 1. **Timing of the main protocol.** `PROTOCOL.md` states that it was written before any full-matrix result existed. In fact it was committed (2026-11-01, 15:12 UTC) while the matrix was running, together with a snapshot that already held the seed-1 knee prompt sets of NSGA-II, the GA and random search. The runner measures each knee on the held-out events at the end of its run, so some seed-1 held-out values may have existed at that time. The held-out tables, tests and figures were produced afterwards. The main protocol was therefore fixed before the held-out *analysis*, not before every result; we do not call it a pre-registration. The addenda do not have this problem.
-2. **Test family.** The protocol applies Holm across method-versus-B0 *and* method-versus-method comparisons. Tables 3 and 4 use the method-versus-B0 tests only (12 tests for qwen). The full family (12 + 30 = 42 tests for qwen) is in `results/heldout_tests_protocol.csv`; every Holm-adjusted p-value in it is 1.0, so no conclusion changes.
+2. **Test family.** The protocol applies Holm across method-versus-B0 *and* method-versus-method comparisons. Tables 3 and 4 use the method-versus-B0 tests only (12 tests for qwen). The full family (12 + 30 = 42 tests for qwen, 16 + 56 = 72 for Haiku) is in `results/heldout_tests_protocol.csv` and its Haiku counterpart; the smallest Holm-adjusted p-value is 1.0 for qwen and 0.425 for Haiku, so no conclusion changes.
 3. **Post-hoc sensitivity analysis.** Removing the held-out event whose text duplicates a search event (Section 5.2) was not in the protocol. It was added after the overlap was found.
 4. **EvoPrompt acceptance rule (amendment to addendum C).** Addendum C first applied the 5-to-120-word rule of our edit operator to EvoPrompt's answers. All 18 first-generation answers on qwen had 143 to 370 words, so every one was rejected and the baseline would have run without variation. Before any fitness comparison, the rule was changed for this arm to 5 to 600 words (`187dc01`, 04:38); long answers are penalised by the length objective instead of being discarded. The stopped first run had already written its seed-1 search files; they were moved out of `results/` without being read.
 5. **qwen EvoPrompt incomplete.** The qwen quota ran out during generation 2 of seed 1 of the restarted EvoPrompt run. As addendum C requires, the arm is reported as incomplete and left out of every qwen table; the comparison with the published baseline is made on Haiku only.
-6. **Parallel execution on Haiku.** For speed, the sequential Haiku run was stopped after B0 and NSGA-II seeds 1 to 3, its cache was frozen as a read-only base, and the remaining arms (later also individual seeds of the two slowest arms) ran in separate processes with their own cache layers. Arms therefore do not share samples drawn after the freeze, so the Haiku trajectories of, for example, NSGA-II and the GA are less coupled than on qwen. This changes only execution, not the design.
+6. **Parallel execution on Haiku.** For speed, the sequential Haiku run was stopped after B0 and NSGA-II seeds 1 to 3, its cache was frozen as a read-only base, and the remaining arms (later also individual seeds of the two slowest arms) ran in separate processes with their own cache layers. Arms therefore do not share samples drawn after the freeze, so the Haiku trajectories of, for example, NSGA-II and the GA are less coupled than on qwen. This changes only execution, not the design. It also means that the initial populations of seeds 4 and 5 were sampled separately per arm, so generation-0 hypervolumes differ slightly between Haiku arms (Figure 4).
+7. **Post-hoc variant.** Addendum D was written after the Haiku EvoPrompt result had been seen and analysed. It adds the smallest change that lets that baseline work in this problem; the verbatim baseline is reported as well, and the variant is labelled as post hoc wherever it appears.
 
 # 5 Results and Analysis
 
@@ -298,7 +300,7 @@ Every arm was re-run on Claude Haiku 5.5 with five seeds (addendum B), together 
 | GA, rule only | 0.0677 ± 0.0107 | 7.2 ± 3.6 | 0.267 ± 0.033 | 0.509 ± 0.064 | 343 ± 19 |
 | NSGA-II + unguided LLM | 0.0606 ± 0.0146 | 5.2 ± 1.9 | 0.290 ± 0.013 | 0.457 ± 0.071 | 368 ± 44 |
 | EvoPrompt (GA) | 0.0444 ± 0.0099 | 3.0 ± 0.7 | 0.254 ± 0.020 | 0.456 ± 0.068 | 392 ± 28 |
-<!--LC-ROW-->
+| EvoPrompt (GA), length-bounded | 0.0491 ± 0.0085 | 6.2 ± 0.8 | 0.262 ± 0.020 | 0.483 ± 0.037 | 412 ± 45 |
 
 The absolute fidelity is much lower than on qwen (0.25 to 0.30 against 0.45 to 0.47 on the search events): Haiku uses fewer of the lexicon terms, so fidelity values are not comparable across models, only within one. NSGA-II with guided LLM mutation again has the highest mean hypervolume. Table 5b repeats the questions of addendum A and adds the comparisons with the baseline; with five seeds the exact one-sided sign-flip p-value can reach 1/32 = 0.031.
 
@@ -309,18 +311,32 @@ The absolute fidelity is much lower than on qwen (0.25 to 0.30 against 0.45 to 0
 | (Q2 under NSGA-II) | NSGA-II + LLM − NSGA-II rule | +0.012, +0.016, +0.005, +0.008, −0.006 | +0.007 | no | 0.094 |
 | Q3 guidance | NSGA-II + LLM − NSGA-II + unguided LLM | +0.027, +0.013, −0.004, +0.000, +0.032 | +0.014 | no | 0.094 |
 | Q4 published baseline | NSGA-II + LLM − EvoPrompt (GA) | +0.033, +0.024, +0.023, +0.024, +0.046 | +0.030 | yes | 0.031 |
-<!--Q5-ROW-->
+| Q5 length-bounded baseline | NSGA-II + LLM − EvoPrompt (GA), length-bounded | +0.029, +0.023, +0.019, +0.013, +0.043 | +0.025 | yes | 0.031 |
 
 What carries over from qwen, and what does not:
 
 - **Selection still does not matter** (Q1, and NSGA-II + LLM against the GA: 0.0744 against 0.0721, mixed signs).
 - **The LLM effects are weaker and no longer consistent.** Guided LLM mutation beats rule mutation in four of five seeds under NSGA-II and three of five under the GA, and beats the unguided control in four of five (Q3, p = 0.094). The direction agrees with qwen; the decision rule of addendum A (all seeds agree) is not met. One reason is visible in the logs: Haiku writes longer rewrites, so 28 of 60 guided edits in NSGA-II (47%) and 27 of 54 in the GA (50%) were rejected by the 120-word rule and fell back to rule mutation, against 27% and 29% on qwen and 6 of 48 (13%) for the unguided control. On Haiku the guided arms therefore ran with half of their LLM edits replaced by rule mutation.
 - **The verbatim EvoPrompt baseline fails in this problem, and the comparison with it says little.** NSGA-II + LLM beats EvoPrompt-GA in all five seeds (Q4, p = 0.031), but the reason is not subtle. EvoPrompt's children had 668 to 1,132 words (initial population: median 420), every one saturated the length objective, and only 3 of 120 were feasible, because agent outputs to such long prompts were often cut off or unparseable. Its archive never improved on the initial population (hypervolume 0.044 in every generation). The paper's operator asks for "a better prompt" and has no notion of length or of the output format, which is exactly what this problem constrains.
-<!--LC-TEXT-->
+- **The length-bounded variant works as an optimiser but stays behind.** With one sentence added to the template (addendum D, decided after the result above), EvoPrompt's children had 396 to 608 words (median 480), 60 of 120 were feasible, no answer was rejected, and the archive improved in every generation (from 0.044 to 0.049). NSGA-II + LLM still beats it in all five seeds (Q5, mean +0.025, p = 0.031). Its children stay longer than the initial sets, so the length objective and the format constraint still cost it: a general operator told only about length does worse than one that is told which of the three objectives to improve.
 
-On the held-out events (Table 6, `results/haiku/heldout_tests.csv`) no method differs from B0 after Holm correction over the method-versus-B0 tests; the smallest adjusted p-value is that of the unguided control's fidelity gain (+0.023, raw p = 0.008, adjusted 0.109 over 14 tests). The same arm also raises disagreement (+0.058, raw p = 0.027), the opposite of its effect on qwen (−0.035), so the effect of unguided rewriting on disagreement is not stable across models. B0's five sampling replicates span 0.446 to 0.540 in held-out disagreement, wider than on qwen.
+![**Figure 4.** Mean hypervolume of the feasible archive per generation on Haiku (5 seeds, shaded ±1 sd). Initial populations differ slightly between arms because, after the cache was frozen, seeds 4 and 5 drew their initial samples separately per arm (Section 4.8).](../results/haiku/figures/hv_vs_generation.png)
 
-<!--HAIKU-HELDOUT-TABLE-->
+On the held-out events (Table 6, `results/haiku/heldout_tests.csv`) no method differs from B0 after Holm correction over the method-versus-B0 tests; the smallest adjusted p-value is that of the unguided control's fidelity gain (+0.023, raw p = 0.008, adjusted 0.125 over 16 tests), and in the 72-test protocol family the smallest is 0.425. Neither EvoPrompt arm differs from NSGA-II + LLM on held-out events after correction. The same arm also raises disagreement (+0.058, raw p = 0.027), the opposite of its effect on qwen (−0.035), so the effect of unguided rewriting on disagreement is not stable across models. B0's five sampling replicates span 0.446 to 0.540 in held-out disagreement, wider than on qwen.
+
+Table 6 gives the held-out means on Haiku (mean ± sd over five seeds; B0 over five sampling replicates).
+
+| Method | Fidelity | Disagreement | Validity | Words |
+|---|---|---|---|---|
+| B0 hand-written | 0.238 ± 0.018 | 0.427 ± 0.067 | 0.927 ± 0.043 | 438 |
+| NSGA-II + LLM | 0.248 ± 0.027 | 0.481 ± 0.039 | 0.960 ± 0.028 | 323 ± 33 |
+| GA (weighted sum) | 0.244 ± 0.034 | 0.459 ± 0.031 | 0.940 ± 0.049 | 330 ± 30 |
+| Random search | 0.259 ± 0.023 | 0.488 ± 0.058 | 0.933 ± 0.033 | 345 ± 26 |
+| NSGA-II, rule only | 0.243 ± 0.020 | 0.458 ± 0.044 | 0.973 ± 0.028 | 344 ± 24 |
+| GA, rule only | 0.241 ± 0.050 | 0.506 ± 0.046 | 0.967 ± 0.033 | 343 ± 19 |
+| NSGA-II + unguided LLM | 0.261 ± 0.019 | 0.518 ± 0.069 | 0.967 ± 0.024 | 368 ± 44 |
+| EvoPrompt (GA) | 0.224 ± 0.005 | 0.495 ± 0.040 | 0.947 ± 0.018 | 392 ± 28 |
+| EvoPrompt (GA), length-bounded | 0.243 ± 0.010 | 0.463 ± 0.088 | 0.940 ± 0.028 | 412 ± 45 |
 
 ## 5.4 Qualitative observations
 
@@ -337,13 +353,13 @@ Distinctness-directed edits are harder to recognise in the text. One GA rewrite 
 
 **RQ2 (which component).** On both models the selection scheme makes no difference at this budget, and NSGA-II with guided LLM mutation reaches the highest mean search hypervolume. On qwen the evidence for the proposed operator is direct: guided LLM mutation beats rule mutation under both selection schemes and beats LLM rewriting without objective information in every seed, while the unguided control does no better than rule mutation. The gain therefore comes from the guidance, not from letting an LLM rewrite the text. On Haiku the same comparisons point the same way in four of five seeds but do not meet the decision rule fixed in addendum A, and half of the guided edits there were rejected by a length rule that was tuned to qwen. The operator's benefit is real on the model it was designed with and weaker, though not reversed, on a model that writes longer answers.
 
-**RQ4 (published baseline, second model).** The verbatim EvoPrompt-GA operator fails in this problem: it lengthens every prompt until the agents' outputs break. <!--LC-DISCUSSION--> The more general lesson is that operators built for one prompt and one score do not carry over to a set of prompts with a length objective and an output-format constraint, which is the gap Section 2 identified.
+**RQ4 (published baseline, second model).** The verbatim EvoPrompt-GA operator fails in this problem: it lengthens every prompt until the agents' outputs break. Bounding its length with one added sentence (addendum D, decided after that result) makes it work as an optimiser, but NSGA-II with guided LLM mutation still reaches a higher hypervolume in all five seeds (p = 0.031); on held-out events neither EvoPrompt arm differs from it after correction. The more general lesson is that operators built for one prompt and one score do not carry over to a set of prompts with a length objective and an output-format constraint, which is the gap Section 2 identified.
 
 **RQ1 and RQ3 (dominance, unseen events).** No method dominates the hand-written set on held-out events on either model, and no held-out difference survives correction. The searched sets are 20% to 30% shorter at similar fidelity and disagreement, but that is largely built into the operators and the knee rule (Section 5.2). The fidelity gains that appear before correction are as large for random search as for evolution, which points to the effect of choosing among candidates on the search events rather than to any operator.
 
 ## 6.2 Limitations
 
-- **Budget.** Population 6 and four generations give 30 evaluations per run. This is a small study, reduced from the planned population 8 and five generations. In total the qwen runs made 3,709 calls (estimated USD 27.31 at assumed prices, including the smoke test and the incomplete EvoPrompt run) and the Haiku runs <!--HAIKU-SPEND-->.
+- **Budget.** Population 6 and four generations give 30 evaluations per run. This is a small study, reduced from the planned population 8 and five generations. In total the qwen runs made 3,709 calls (estimated USD 27.31 at assumed prices, including the smoke test and the incomplete EvoPrompt run) and the Haiku runs made 9,412 calls (USD 5.28 at list prices).
 - **Seeds.** Three seeds per arm on qwen (smallest one-sided p 1/8) and five on Haiku (1/32). The search-level qwen findings are descriptive.
 - **Models and sampling.** `qwen3.8-max` and Claude Haiku 5.5 are both used through an API, with different sampling (qwen 0.7 / 0.9, Haiku the provider default), so their absolute values are not comparable; only directions are compared. Outputs are cached but not bit-reproducible; the raw responses are committed so that every analysis can be repeated without the API.
 - **Acceptance rule tuned to one model.** The 120-word limit on LLM edits rejected about 28% of guided edits on qwen and about half on Haiku. A limit expressed relative to the current text, or an instruction that states the limit, would remove this asymmetry.
@@ -361,7 +377,7 @@ A run with more generations would test whether the selection scheme matters once
 
 # 7 Conclusion
 
-We formulated the design of three competing economic-school agents as a constrained multi-objective search over prompt sets, with fidelity, inter-agent disagreement and length as objectives, and proposed an LLM mutation that turns the parent's weakest objective into a rewrite instruction. A complete ablation on the main model shows that the selection scheme does not matter at this budget and that the guidance, not LLM rewriting as such, carries the search-level gain: guided mutation beat both rule mutation and an unguided LLM control in every seed. A replication on a second model with five seeds points the same way in four of five seeds but less clearly, partly because a length rule tuned to the first model rejected half of its edits. The verbatim EvoPrompt-GA baseline fails in this constrained problem<!--LC-CONCLUSION-->. On unseen events no method beats the hand-written prompts after correction, and random search gains about as much fidelity as evolution. The evidence supports objective-guided LLM mutation as the useful ingredient for prompt-set search, with the caveats that its fidelity edits partly game the lexicon and its compressions can change meaning; it does not support a claim that evolved prompt sets outperform careful hand-written ones on unseen events.
+We formulated the design of three competing economic-school agents as a constrained multi-objective search over prompt sets, with fidelity, inter-agent disagreement and length as objectives, and proposed an LLM mutation that turns the parent's weakest objective into a rewrite instruction. A complete ablation on the main model shows that the selection scheme does not matter at this budget and that the guidance, not LLM rewriting as such, carries the search-level gain: guided mutation beat both rule mutation and an unguided LLM control in every seed. A replication on a second model with five seeds points the same way in four of five seeds but less clearly, partly because a length rule tuned to the first model rejected half of its edits. The verbatim EvoPrompt-GA baseline fails in this constrained problem, and a length-bounded variant of it, which does improve, stays behind the guided method in all five seeds on the second model. On unseen events no method beats the hand-written prompts after correction, and random search gains about as much fidelity as evolution. The evidence supports objective-guided LLM mutation as the useful ingredient for prompt-set search, with the caveats that its fidelity edits partly game the lexicon and its compressions can change meaning; it does not support a claim that evolved prompt sets outperform careful hand-written ones on unseen events.
 
 # Appendix A: Use of AI tools
 
