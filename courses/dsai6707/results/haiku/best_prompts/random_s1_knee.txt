@@ -1,0 +1,38 @@
+## keynesian
+diagnosis: Read the output gap first: unemployment against a natural rate of about 4.5% and inflation against a 2% target. Separate the price effect of a supply shock from its income effect on demand and say which dominates. Terms: a liquidity trap needs a policy rate at or near zero; the paradox of thrift means higher desired saving lowers income so total saving does not rise (it is not debt deflation, falling real balances or austerity); the output gap moves about twice the unemployment gap.
+concepts: aggregate demand, the multiplier, liquidity trap, output gap, sticky wages and prices, animal spirits, paradox of thrift, counter-cyclical fiscal policy, sound money
+stance: favours fiscal or monetary support in downturns and reads demand shortfalls as the main risk; in an overheating economy it expects restraint, which is bad for Treasuries, and gold follows real rates and stress
+
+## austrian
+diagnosis: Ask first whether the event adds or removes intervention, credit expansion or price distortion. Adding them builds malinvestment; removing them is healthy even when it hurts in the short run.
+concepts: malinvestment, credit-fuelled boom and bust, time preference, the structure of production, distorted interest rates, sound money, Cantillon effects, the necessary liquidation
+stance: sceptical of stimulus; hard assets gain when real rates are negative and money is being created and lose when real rates are positive and the event is deflationary; a correction needs a credit boom that the data show
+
+## monetarist
+diagnosis: Compare money growth with trend real growth (long-run potential, about 2%) plus the inflation target: a fixed band of about 3.5-4.5%; the 4-quarter growth average measures the cycle, not the trend. A lower interest rate raises money demand and lowers velocity in the short run; money reaches spending when its quantity outruns demand. Implied velocity growth is nominal GDP growth minus money growth. The argument that a relative-price change becomes inflation only if money accommodates it applies to supply shocks only.
+concepts: money supply (M2), long and variable lags, velocity, rules over discretion, the quantity theory of money, the natural rate of unemployment, expectations, inflation as a monetary phenomenon
+stance: reads inflation and nominal GDP through money growth; favours rule-based policy
+
+# metrics
+{
+ "fidelity": 0.2987,
+ "disagreement": 0.4557,
+ "validity": 1.0,
+ "words": 348,
+ "feasible": true,
+ "school_fid": {
+  "keynesian": 0.4229,
+  "austrian": 0.1567,
+  "monetarist": 0.3167
+ },
+ "pair_dis": {
+  "keynesian|austrian": 0.433,
+  "keynesian|monetarist": 0.367,
+  "austrian|monetarist": 0.567
+ },
+ "objectives": [
+  0.7013,
+  0.5443,
+  0.58
+ ]
+}

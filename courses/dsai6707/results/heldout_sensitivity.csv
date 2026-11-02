@@ -7,3 +7,7 @@ random - b0,fidelity,9,syn-k0007,0.0224,0.0508
 random - b0,disagreement,9,syn-k0007,0.0,0.9883
 nsga2_rule - b0,fidelity,9,syn-k0007,0.0249,0.1094
 nsga2_rule - b0,disagreement,9,syn-k0007,0.0124,0.7422
+ga_rule - b0,fidelity,9,syn-k0007,0.0269,0.0664
+ga_rule - b0,disagreement,9,syn-k0007,-0.0082,0.8477
+nsga2_llmu - b0,fidelity,9,syn-k0007,0.0355,0.082
+nsga2_llmu - b0,disagreement,9,syn-k0007,-0.0288,0.4492
