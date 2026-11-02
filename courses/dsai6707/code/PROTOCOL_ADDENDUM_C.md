@@ -45,3 +45,13 @@ qwen study. The analysis reads each arm's own layer over the base.
 - Held-out: `evoprompt_ga` vs B0 joins the method-versus-B0 table (14 tests, Holm over 14) and the protocol family
   (14 + 42 = 56 tests, Holm over 56). The comparison of interest is `nsga2` vs `evoprompt_ga`, read inside the family.
 - The LLM answer rejection rate of `evoprompt_ga` is reported next to those of the other LLM arms.
+
+## Amendment (2026-11-02, after 18 operator outputs and before any fitness comparison)
+The first qwen generation showed that the paper's operator writes whole prompts: all 18 bracketed answers had 143 to
+370 words, so the 120-word acceptance rule (adaptation ii above) rejected every one and the baseline would have run
+without variation. Adaptation (ii) is replaced for `evoprompt_ga` only: a bracketed answer is accepted if it has 5 to
+600 words (600 is the length normalisation of g3; a longer diagnosis alone saturates the length objective). Long
+answers are therefore penalised by the length objective, not discarded. Both `evoprompt_ga` runs (qwen and Haiku)
+were stopped and restarted from their caches. The only search output seen from the stopped runs was the qwen seed-1
+log line for generation 1 (hypervolume unchanged from generation 0, as expected when every answer is rejected); no
+result file was written. With `max_tokens` 1,024, an answer cut off before `</prompt>` still counts as rejected.

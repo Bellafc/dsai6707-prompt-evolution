@@ -26,7 +26,7 @@ from statistics import mean
 
 from mosaic.backends import Request
 
-from .config import P_CROSS, P_LLM, P_MUT, REF_POINT
+from .config import LENGTH_REF_WORDS, P_CROSS, P_LLM, P_MUT, REF_POINT
 from .evaluate import Evaluation, Evaluator
 from .genome import SCHOOLS, PromptSet, b0, concept_pool, sentences
 from .moo import hv3, nondominated_objectives, rank_and_crowding, select
@@ -155,7 +155,7 @@ class Search:
         """EvoPrompt (GA): for each of the N children, pick two parents by roulette wheel on the fitness score
         (infeasible sets get a near-zero weight) and let the LLM cross over and mutate each school's diagnosis.
         Concepts, stance and contrast are inherited from the first parent. An answer without <prompt> brackets or
-        outside 5 to 120 words leaves that school's diagnosis as in the first parent (origin suffix f)."""
+        outside 5 to 600 words leaves that school's diagnosis as in the first parent (origin suffix f)."""
         rng = self.rng
         scores = [(1.0 - mean(i.ev.objectives)) if i.ev.feasible else 1e-6 for i in pop]
         pairs = [(pop[roulette(rng, scores)], pop[roulette(rng, scores)]) for _ in range(self.N)]
@@ -172,7 +172,8 @@ class Search:
             for j, s in enumerate(SCHOOLS):
                 text = evoprompt_extract(outs[k * len(SCHOOLS) + j]["text"])
                 text = " ".join((text or "").split()).strip('"')
-                if 5 <= len(text.split()) <= 120:
+                if 5 <= len(text.split()) <= LENGTH_REF_WORDS:  # amendment to addendum C: the paper's operator
+                    # writes whole prompts (143-370 words for qwen), so the 120-word cap of our edit operator does not apply
                     child = child.replace_gene(replace(child.gene(s), diagnosis=sentences(text)))
                 else:
                     o += "f"
