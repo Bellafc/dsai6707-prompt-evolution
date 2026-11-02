@@ -22,7 +22,7 @@ from mosaic.backends import Cache
 from mosaic.teacher import make_items
 
 from .algorithms import METHODS, Search, run_b0
-from .backend import AnthropicBackend, BudgetExceeded, HTTPBackend, Ledger, OfflineBackend
+from .backend import AnthropicBackend, BudgetExceeded, HTTPBackend, LayeredCache, Ledger, OfflineBackend
 from .config import (BASE_URL, BUDGET_USD, CACHE_PATH, HAIKU, HELDOUT_SEED, MAX_TOKENS, MODEL, N_HELDOUT, N_SEARCH,
                      PRICE_IN_PER_MTOK, PRICE_OUT_PER_MTOK, RESULTS_DIR, SEARCH_SEED, TEMPERATURE, TOP_P)
 from .evaluate import Evaluator
@@ -142,6 +142,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--price-in", type=float, default=PRICE_IN_PER_MTOK)
     ap.add_argument("--price-out", type=float, default=PRICE_OUT_PER_MTOK)
     ap.add_argument("--cache", type=Path, default=CACHE_PATH)
+    ap.add_argument("--cache-base", type=Path, default=None,
+                    help="read-only base cache; new generations go to --cache (parallel runs, addendum C)")
     ap.add_argument("--out", type=Path, default=None, help="default: results/runs (qwen) or results/haiku/runs")
     ap.add_argument("--profile", choices=["qwen", "haiku"], default="qwen",
                     help="haiku: Claude Haiku 5.5 via the Anthropic SDK, own cache and results under results/haiku/")
@@ -159,6 +161,8 @@ def main(argv: list[str] | None = None) -> int:
     args.out = args.out or RESULTS_DIR / "runs"
 
     cache = Cache(args.cache)
+    if args.cache_base is not None:
+        cache = LayeredCache(cache, Cache(args.cache_base))
     ledger = Ledger(args.budget, args.price_in, args.price_out)
     summaries = []
     try:

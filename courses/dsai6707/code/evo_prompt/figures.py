@@ -16,12 +16,12 @@ import matplotlib.pyplot as plt  # noqa: E402
 
 from .config import RESULTS_DIR  # noqa: E402
 
-METHODS = ["nsga2", "ga", "random", "nsga2_rule", "ga_rule", "nsga2_llmu"]
+METHODS = ["nsga2", "ga", "random", "nsga2_rule", "ga_rule", "nsga2_llmu", "evoprompt_ga"]
 LABEL = {"nsga2": "NSGA-II + LLM", "ga": "GA (weighted sum)", "random": "Random search",
          "nsga2_rule": "NSGA-II, rule only", "ga_rule": "GA, rule only", "nsga2_llmu": "NSGA-II + unguided LLM",
-         "b0": "B0 hand-written"}
+         "evoprompt_ga": "EvoPrompt (GA)", "b0": "B0 hand-written"}
 COLOR = {"nsga2": "#1b6ca8", "ga": "#2e8b57", "random": "#999999", "nsga2_rule": "#c0504d", "ga_rule": "#e69f00",
-         "nsga2_llmu": "#7b5ea7", "b0": "#444444"}
+         "nsga2_llmu": "#7b5ea7", "evoprompt_ga": "#8c564b", "b0": "#444444"}
 SEEDS = [1, 2, 3]
 
 
@@ -55,7 +55,7 @@ def hv_curves(results: Path) -> None:
 
 
 def pareto(results: Path) -> None:
-    methods = [m for m in ["nsga2", "nsga2_llmu", "nsga2_rule", "ga", "ga_rule", "random"]
+    methods = [m for m in ["nsga2", "nsga2_llmu", "nsga2_rule", "evoprompt_ga", "ga", "ga_rule", "random"]
                if all((results / "runs" / f"{m}_s{s}" / "front.jsonl").exists() for s in SEEDS)]
     data = {}
     for m in methods:
@@ -69,7 +69,7 @@ def pareto(results: Path) -> None:
                 cs.append(r["words"])
         data[m] = (xs, ys, cs)
     allc = [c for _, _, cs in data.values() for c in cs]
-    ncol = 3 if len(methods) > 4 else 2
+    ncol = 4 if len(methods) > 6 else 3 if len(methods) > 4 else 2
     fig, axes = plt.subplots(2, ncol, figsize=(5 * ncol, 7.6), sharex=True, sharey=True, squeeze=False)
     for ax, m in zip(axes.flat, methods):
         xs, ys, cs = data[m]
@@ -113,6 +113,8 @@ def heldout(results: Path) -> None:
 
 
 def main(results: Path = RESULTS_DIR) -> None:
+    global SEEDS
+    SEEDS = sorted(int(p.name.rsplit("_s", 1)[1]) for p in (results / "runs").glob("b0_s*")) or SEEDS
     (results / "figures").mkdir(parents=True, exist_ok=True)
     hv_curves(results)
     pareto(results)

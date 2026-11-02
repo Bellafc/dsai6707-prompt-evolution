@@ -151,3 +151,39 @@ def apply_edit(p: PromptSet, e: LLMEdit, text: str) -> PromptSet | None:
     g = p.gene(e.school)
     new = replace(g, diagnosis=sentences(text)) if e.field == "diagnosis" else replace(g, stance=sentences(text))
     return p.replace_gene(new)
+
+
+# EvoPrompt (GA) operator, Guo et al. (ICLR 2024), Figure 1 / Algorithm 2: one LLM call performs crossover of two parent
+# prompts and mutation of the result. The template is the paper's text verbatim; the answer is read from the
+# <prompt>...</prompt> brackets. Applied to the diagnosis paragraph of each school (see PROTOCOL_ADDENDUM_C.md).
+EVOPROMPT_GA_TEMPLATE = (
+    "Please follow the instruction step-by-step to generate a better prompt.\n"
+    "1. Cross over the following prompts and generate a new prompt:\n"
+    "Prompt 1: {p1}\n"
+    "Prompt 2: {p2}\n"
+    "2. Mutate the prompt generated in Step 1 and generate a final prompt bracketed with <prompt> and </prompt>."
+)
+
+
+def evoprompt_messages(p1: str, p2: str) -> list[dict]:
+    return [{"role": "user", "content": EVOPROMPT_GA_TEMPLATE.format(p1=p1, p2=p2)}]
+
+
+def evoprompt_extract(text: str) -> str | None:
+    """The text inside the last <prompt>...</prompt> pair, or None if there is none."""
+    import re
+
+    found = re.findall(r"<prompt>(.*?)</prompt>", text or "", re.S | re.I)
+    return found[-1] if found else None
+
+
+def roulette(rng, scores: list[float]) -> int:
+    """Roulette-wheel selection, p_i = s_i / sum_j s_j (EvoPrompt Section 3.2)."""
+    total = sum(scores)
+    x = rng.random() * total
+    acc = 0.0
+    for i, sc in enumerate(scores):
+        acc += sc
+        if x <= acc:
+            return i
+    return len(scores) - 1

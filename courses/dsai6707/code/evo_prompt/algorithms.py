@@ -9,6 +9,9 @@ evaluation budget N * (G + 1) individuals; they differ only in selection and in 
   ga_rule     the GA with rule-based mutation only (completes the 2 x 2 design selection x mutation; addendum A)
   nsga2_llmu  NSGA-II with unguided LLM mutation: same LLM call and acceptance rule as nsga2, but a random school and
               field and an instruction without objective information (isolates the guidance; addendum A)
+  evoprompt_ga  published baseline: EvoPrompt (GA) of Guo et al. (ICLR 2024), roulette-wheel selection on the
+              scalar fitness 1 - mean(g1..g3), the paper's LLM crossover-and-mutation template applied to each
+              school's diagnosis, top-N update (addendum C)
   b0          B0: hand-written prompt set, no search (see run_b0 in runner.py)
 
 Every method keeps an external archive of all feasible evaluated prompt sets; final fronts and hypervolume are taken
@@ -18,19 +21,19 @@ from that archive, so methods are compared on the same footing.
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from statistics import mean
 
 from mosaic.backends import Request
 
 from .config import P_CROSS, P_LLM, P_MUT, REF_POINT
 from .evaluate import Evaluation, Evaluator
-from .genome import PromptSet, b0, concept_pool
+from .genome import SCHOOLS, PromptSet, b0, concept_pool, sentences
 from .moo import hv3, nondominated_objectives, rank_and_crowding, select
-from .operators import (apply_edit, crossover, edit_messages, mutate_one, perturb_all, plan_llm_edit,
-                        plan_unguided_edit)
+from .operators import (apply_edit, crossover, edit_messages, evoprompt_extract, evoprompt_messages, mutate_one,
+                        perturb_all, plan_llm_edit, plan_unguided_edit, roulette)
 
-METHODS = ("nsga2", "nsga2_rule", "ga", "random", "ga_rule", "nsga2_llmu")
+METHODS = ("nsga2", "nsga2_rule", "ga", "random", "ga_rule", "nsga2_llmu", "evoprompt_ga")
 
 
 @dataclass
@@ -50,7 +53,7 @@ class Search:
         self.N = pop_size
         self.backend = backend
         self.use_llm = method in ("nsga2", "ga", "nsga2_llmu")
-        self.ga_select = method in ("ga", "ga_rule")
+        self.ga_select = method in ("ga", "ga_rule", "evoprompt_ga")
         self.pool = concept_pool()
         self.base = b0()
         self.archive: dict[str, Ind] = {}
@@ -148,6 +151,35 @@ class Search:
                 kids[k] = new
         return kids, origins
 
+    def _breed_evoprompt(self, pop: list[Ind]) -> tuple[list[PromptSet], list[str]]:
+        """EvoPrompt (GA): for each of the N children, pick two parents by roulette wheel on the fitness score
+        (infeasible sets get a near-zero weight) and let the LLM cross over and mutate each school's diagnosis.
+        Concepts, stance and contrast are inherited from the first parent. An answer without <prompt> brackets or
+        outside 5 to 120 words leaves that school's diagnosis as in the first parent (origin suffix f)."""
+        rng = self.rng
+        scores = [(1.0 - mean(i.ev.objectives)) if i.ev.feasible else 1e-6 for i in pop]
+        pairs = [(pop[roulette(rng, scores)], pop[roulette(rng, scores)]) for _ in range(self.N)]
+        reqs = []
+        for a, b in pairs:
+            for s in SCHOOLS:
+                reqs.append(Request(messages=evoprompt_messages(" ".join(a.pset.gene(s).diagnosis),
+                                                                " ".join(b.pset.gene(s).diagnosis)),
+                                    tag=f"evoprompt|{s}"))
+        outs = self.backend.generate(reqs)
+        kids, origins = [], []
+        for k, (a, _) in enumerate(pairs):
+            child, o = a.pset, "E"
+            for j, s in enumerate(SCHOOLS):
+                text = evoprompt_extract(outs[k * len(SCHOOLS) + j]["text"])
+                text = " ".join((text or "").split()).strip('"')
+                if 5 <= len(text.split()) <= 120:
+                    child = child.replace_gene(replace(child.gene(s), diagnosis=sentences(text)))
+                else:
+                    o += "f"
+            kids.append(child)
+            origins.append(o)
+        return kids, origins
+
     def _survive(self, union: list[Ind]) -> list[Ind]:
         if self.ga_select:
             union.sort(key=lambda i: (i.ev.violation, mean(i.ev.objectives)))
@@ -167,7 +199,7 @@ class Search:
         pop = self._eval(psets, ["init"] * self.N, 0)
         self._log(0, pop)
         for g in range(1, gens + 1):
-            kids, origins = self._breed(pop)
+            kids, origins = self._breed_evoprompt(pop) if self.method == "evoprompt_ga" else self._breed(pop)
             cinds = self._eval(kids, origins, g)
             pop = self._survive(pop + cinds)
             self._log(g, pop)

@@ -23,6 +23,23 @@ class BudgetExceeded(RuntimeError):
     pass
 
 
+class LayeredCache:
+    """A read-only base cache plus this process's own cache file. get() looks in the own layer first, then in the
+    base; put() writes only to the own layer. Lets several runner processes start from one frozen cache snapshot
+    without writing to the same file (PROTOCOL_ADDENDUM_C.md)."""
+
+    def __init__(self, own, base):
+        self.own, self.base = own, base
+        self.path = own.path
+
+    def get(self, key):
+        hit = self.own.get(key)
+        return hit if hit is not None else self.base.get(key)
+
+    def put(self, key, rec):
+        self.own.put(key, rec)
+
+
 class Ledger:
     def __init__(self, budget_usd: float, price_in: float, price_out: float):
         self.budget = budget_usd
@@ -63,6 +80,12 @@ class OfflineBackend(Backend):
         for r in reqs:
             h = hashlib.sha256(json.dumps(r.messages, sort_keys=True).encode()).digest()
             rng = random.Random(int.from_bytes(h[:8], "big"))
+            if "bracketed with <prompt> and </prompt>" in r.messages[-1]["content"]:  # EvoPrompt (GA) operator
+                words = r.messages[-1]["content"].split("Prompt 1:")[1].split()[: rng.randint(12, 40)]
+                self.ledger.add(0, 0)
+                out.append({"text": "1. Crossover Prompt: x\n2. <prompt>" + " ".join(words) + "</prompt>",
+                            "usage": {"prompt_tokens": 0, "completion_tokens": 0}, "seconds": 0.0})
+                continue
             lines = "\n".join(f"{a}: {rng.choice(['LONG', 'SHORT', 'NEUTRAL'])} (conviction {rng.randint(1, 5)}) - synthetic"
                               for a in ASSETS)
             text = ("[Think]\nSynthetic reasoning.\n[Output]\nCausal chain: shock -> demand -> prices.\n"

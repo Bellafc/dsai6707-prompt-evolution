@@ -1,0 +1,38 @@
+[ga_rule s1] gen  0  evals   6  front  5  HV 0.0584  best fid 0.4494  calls 0  spent $0.0
+[ga_rule s1] gen  1  evals  12  front  7  HV 0.0649  best fid 0.4494  calls 10  spent $0.0769
+[ga_rule s1] gen  2  evals  18  front  7  HV 0.0673  best fid 0.4494  calls 35  spent $0.2617
+[ga_rule s1] gen  3  evals  24  front 11  HV 0.0749  best fid 0.5032  calls 60  spent $0.4454
+[ga_rule s1] gen  4  evals  30  front  6  HV 0.0853  best fid 0.5032  calls 90  spent $0.6695
+done ga_rule seed 1: api_calls 110, spent $0.82
+[ga_rule s2] gen  0  evals   6  front  3  HV 0.0719  best fid 0.477  calls 110  spent $0.8179
+[ga_rule s2] gen  1  evals  12  front  4  HV 0.0857  best fid 0.4844  calls 110  spent $0.8179
+[ga_rule s2] gen  2  evals  18  front  7  HV 0.0860  best fid 0.4844  calls 135  spent $1.0035
+[ga_rule s2] gen  3  evals  24  front  8  HV 0.0876  best fid 0.4844  calls 165  spent $1.2309
+[ga_rule s2] gen  4  evals  30  front 10  HV 0.0886  best fid 0.4844  calls 190  spent $1.4181
+done ga_rule seed 2: api_calls 210, spent $1.57
+[ga_rule s3] gen  0  evals   6  front  2  HV 0.0835  best fid 0.4602  calls 210  spent $1.5656
+[ga_rule s3] gen  1  evals  12  front  5  HV 0.0996  best fid 0.4602  calls 215  spent $1.6009
+[ga_rule s3] gen  2  evals  18  front  5  HV 0.1059  best fid 0.4602  calls 230  spent $1.7101
+[ga_rule s3] gen  3  evals  24  front  4  HV 0.1142  best fid 0.467  calls 255  spent $1.8868
+[ga_rule s3] gen  4  evals  30  front  7  HV 0.1216  best fid 0.4913  calls 285  spent $2.1015
+done ga_rule seed 3: api_calls 305, spent $2.24
+[nsga2_llmu s1] gen  0  evals   6  front  5  HV 0.0584  best fid 0.4494  calls 305  spent $2.2434
+[nsga2_llmu s1] gen  1  evals  12  front  8  HV 0.0704  best fid 0.4602  calls 311  spent $2.2814
+[nsga2_llmu s1] gen  2  evals  18  front 10  HV 0.0706  best fid 0.4602  calls 331  spent $2.4323
+[nsga2_llmu s1] gen  3  evals  24  front 10  HV 0.0802  best fid 0.4625  calls 364  spent $2.6601
+[nsga2_llmu s1] gen  4  evals  30  front 13  HV 0.0810  best fid 0.467  calls 402  spent $2.9249
+done nsga2_llmu seed 1: api_calls 432, spent $3.15
+[nsga2_llmu s2] gen  0  evals   6  front  3  HV 0.0719  best fid 0.477  calls 432  spent $3.1488
+[nsga2_llmu s2] gen  1  evals  12  front  6  HV 0.0727  best fid 0.477  calls 456  spent $3.2976
+[nsga2_llmu s2] gen  2  evals  18  front 10  HV 0.0735  best fid 0.477  calls 488  spent $3.5225
+[nsga2_llmu s2] gen  3  evals  24  front  7  HV 0.0813  best fid 0.4941  calls 504  spent $3.6328
+[nsga2_llmu s2] gen  4  evals  30  front  8  HV 0.0867  best fid 0.4956  calls 534  spent $3.8587
+done nsga2_llmu seed 2: api_calls 564, spent $4.08
+[nsga2_llmu s3] gen  0  evals   6  front  2  HV 0.0835  best fid 0.4602  calls 564  spent $4.0779
+[nsga2_llmu s3] gen  1  evals  12  front  4  HV 0.1025  best fid 0.4754  calls 570  spent $4.1159
+[nsga2_llmu s3] gen  2  evals  18  front  5  HV 0.1060  best fid 0.4754  calls 596  spent $4.3073
+[nsga2_llmu s3] gen  3  evals  24  front  8  HV 0.1256  best fid 0.4754  calls 618  spent $4.4554
+[nsga2_llmu s3] gen  4  evals  30  front  8  HV 0.1390  best fid 0.4956  calls 655  spent $4.7132
+done nsga2_llmu seed 3: api_calls 675, spent $4.86
+ledger: calls 675, tokens in 445000, out 394578, estimated spend $4.86 of $15.00
+exit 0

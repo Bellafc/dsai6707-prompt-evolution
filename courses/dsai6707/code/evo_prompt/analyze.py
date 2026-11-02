@@ -27,10 +27,10 @@ from .genome import SchoolGene, PromptSet, b0
 from .moo import knee
 from .runner import events, sampling
 
-METHODS = ["nsga2", "ga", "random", "nsga2_rule", "ga_rule", "nsga2_llmu"]
+METHODS = ["nsga2", "ga", "random", "nsga2_rule", "ga_rule", "nsga2_llmu", "evoprompt_ga"]
 LABEL = {"nsga2": "NSGA-II + LLM", "ga": "GA (weighted sum)", "random": "Random search",
          "nsga2_rule": "NSGA-II, rule only", "ga_rule": "GA, rule only", "nsga2_llmu": "NSGA-II + unguided LLM",
-         "b0": "B0 hand-written"}
+         "evoprompt_ga": "EvoPrompt (GA)", "b0": "B0 hand-written"}
 SEEDS = [1, 2, 3]
 
 
@@ -97,6 +97,19 @@ def sign_flip_exact(diffs: list[float]) -> float:
     return hits / total
 
 
+def method_cache(results: Path, method: str, main_cache: Cache, layers: dict) -> Cache:
+    """The cache a method's runs read: its own layer over the frozen base if the method ran in parallel
+    (results/.../cache/layers/<method>.jsonl, addendum C), else the shared cache."""
+    p = results / "cache" / "layers" / f"{method}.jsonl"
+    if not p.exists():
+        return main_cache
+    if method not in layers:
+        from .backend import LayeredCache
+
+        layers[method] = LayeredCache(Cache(p), main_cache)
+    return layers[method]
+
+
 def per_event_scores(pset: PromptSet, seed: int, cache: Cache, evs: list, profile: str = "qwen") -> list[dict]:
     backend = CacheOnly(cache, seed, profile)
     out = []
@@ -109,7 +122,10 @@ def per_event_scores(pset: PromptSet, seed: int, cache: Cache, evs: list, profil
 
 def main(results: Path = RESULTS_DIR, profile: str = "qwen") -> None:
     runs = load_runs(results / "runs")
+    global SEEDS
+    SEEDS = sorted({s for m, s in runs if m == "b0"}) or SEEDS
     cache = Cache(results / "cache" / "llm_cache.jsonl")
+    layers: dict = {}
     held = events(N_HELDOUT, HELDOUT_SEED)
     (results / "figures").mkdir(parents=True, exist_ok=True)
 
@@ -161,7 +177,7 @@ def main(results: Path = RESULTS_DIR, profile: str = "qwen") -> None:
             if (m, s) not in runs:
                 continue
             key = knee_key(runs[(m, s)]["dir"] / "front.jsonl")
-            per_event[m].append(per_event_scores(pset_from_key(key), s, cache, held, profile))
+            per_event[m].append(per_event_scores(pset_from_key(key), s, method_cache(results, m, cache, layers), held, profile))
     per_event["b0"] = [per_event_scores(b0(), s, cache, held, profile) for s in SEEDS]
 
     # average over seeds per event
@@ -243,14 +259,17 @@ def main(results: Path = RESULTS_DIR, profile: str = "qwen") -> None:
     # ---- addendum A: per-seed hypervolume differences for the three pre-specified questions -------------------
     hv = {(r["method"], r["seed"]): r["hv_final"] for r in rows}
     questions = [("Q1 selection, rule mutation", "ga_rule", "nsga2_rule"), ("Q2 LLM mutation, GA selection", "ga", "ga_rule"),
-                 ("Q3 guidance, NSGA-II", "nsga2", "nsga2_llmu")]
+                 ("Q3 guidance, NSGA-II", "nsga2", "nsga2_llmu"), ("Q4 published baseline", "nsga2", "evoprompt_ga")]
     qrows = []
     for q, m1, m2 in questions:
         if all((m, s) in hv for m in (m1, m2) for s in SEEDS):
             d = [hv[(m1, s)] - hv[(m2, s)] for s in SEEDS]
             qrows.append({"question": q, "comparison": f"{m1} - {m2}", **{f"diff_s{s}": round(x, 4) for s, x in zip(SEEDS, d)},
                           "mean_diff": round(statistics.mean(d), 4), "sd_diff": round(statistics.stdev(d), 4),
-                          "consistent_sign": all(x > 0 for x in d) or all(x < 0 for x in d)})
+                          "consistent_sign": all(x > 0 for x in d) or all(x < 0 for x in d),
+                          "p_sign_flip_one_sided": round(sum(1 for sg in itertools.product((-1, 1), repeat=len(d))
+                                                             if sum(a * b for a, b in zip(sg, d)) >= sum(d) - 1e-12)
+                                                         / 2 ** len(d), 4)})
     if qrows:
         with (results / "addendum_a_search.csv").open("w", newline="") as fh:
             w = csv.DictWriter(fh, fieldnames=list(qrows[0]))

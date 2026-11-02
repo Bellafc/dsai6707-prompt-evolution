@@ -48,7 +48,7 @@ def _run(method, tmp_path, seed=1):
 
 
 def test_all_methods_run_and_spend_budget_equally(tmp_path):
-    for m in ("nsga2", "nsga2_rule", "ga", "random", "ga_rule", "nsga2_llmu"):
+    for m in ("nsga2", "nsga2_rule", "ga", "random", "ga_rule", "nsga2_llmu", "evoprompt_ga"):
         s = _run(m, tmp_path / m)
         assert len(s.history) == 3
         assert s.evals_done == 4 * 3
@@ -99,3 +99,21 @@ def test_haiku_profile_sampling_keeps_seed_in_key_and_drops_temperature():
     s1, s2 = sampling(1, "haiku"), sampling(2, "haiku")
     assert "temperature" not in s1 and "top_p" not in s1 and s1["thinking"] == "disabled"
     assert s1 != s2  # different seeds give different cache keys
+
+
+def test_evoprompt_operator_template_extraction_and_roulette():
+    from evo_prompt.operators import EVOPROMPT_GA_TEMPLATE, evoprompt_extract, roulette
+
+    assert EVOPROMPT_GA_TEMPLATE.startswith("Please follow the instruction step-by-step to generate a better prompt.")
+    assert "2. Mutate the prompt generated in Step 1" in EVOPROMPT_GA_TEMPLATE
+    assert evoprompt_extract("1. Crossover Prompt: a\n2. <prompt>Final text.</prompt>") == "Final text."
+    assert evoprompt_extract("no brackets") is None
+    rng = random.Random(0)
+    picks = [roulette(rng, [0.1, 0.0, 0.9]) for _ in range(2000)]
+    assert picks.count(1) == 0 and 1500 < picks.count(2) < 1900
+
+
+def test_evoprompt_children_change_diagnosis_only(tmp_path):
+    s = _run("evoprompt_ga", tmp_path, seed=7)
+    kids = [r for r in s.eval_log if r["gen"] > 0]
+    assert kids and all(r["origin"].startswith("E") for r in kids)
